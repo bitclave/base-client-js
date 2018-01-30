@@ -1,7 +1,10 @@
-import {ClientProfile} from './ClientProfile';
-import Profile from '../models/Profile';
+import {ClientData} from './ClientData';
+import {HttpTransport} from '../source/HttpTransport';
+import {HttpMethod} from '../source/HttpMethod';
 
-export default class ClientProfileImpl implements ClientProfile {
+export default class ClientDataImpl implements ClientData {
+
+    private readonly CLIENT_DATA: string = '/client/{id}/';
 
     private transport: HttpTransport;
 
@@ -9,14 +12,16 @@ export default class ClientProfileImpl implements ClientProfile {
         this.transport = transport;
     }
 
-    getProfile(): Promise<Map<string, string>> {
-        return this.transport.sendRequest()
+    getData(id: string): Promise<Map<string, string>> {
+        return this.transport
+            .sendRequest(this.CLIENT_DATA.replace('{id}', id), HttpMethod.Get)
+            .then((response) => Object.assign(new Map<string, string>(), response.json));
     }
 
-    updateProfile(): Promise<Map<string, string>> {
-        return new Promise<Profile>((resolve, reject) => {
-
-        });
+    updateData(id: string, data: Map<string, string>): Promise<Map<string, string>> {
+        return this.transport
+            .sendRequest(this.CLIENT_DATA.replace('{id}', id), HttpMethod.Patch, data)
+            .then((response) => Object.assign(new Map<string, string>(), response.json));
     }
 
 }

@@ -1,9 +1,7 @@
-import Profile from '../models/Profile';
+export interface ClientData {
 
-export interface ClientProfile {
+    getData(id: string): Promise<Map<string, string>>;
 
-    getProfile(): Promise<Map<string, string>>;
-
-    updateProfile(): Promise<Map<string, string>>;
+    updateData(id: string, data: Map<string, string>): Promise<Map<string, string>>;
 
 }

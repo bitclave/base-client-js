@@ -4,6 +4,6 @@ export interface Auth {
 
     signUp(address: string): Promise<Account>
 
-    signIn(): Promise<Account>
+    signIn(id: string): Promise<Account>
 
 }

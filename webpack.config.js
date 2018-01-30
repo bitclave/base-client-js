@@ -4,6 +4,10 @@ const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
 module.exports = {
     entry: './src/Base.ts',
     devtool: 'inline-source-map',
+    node: {
+        fs: 'empty',
+        child_process: 'empty'
+    },
     module: {
         rules: [
             {
