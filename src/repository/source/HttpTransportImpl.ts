@@ -1,7 +1,6 @@
 import {HttpMethod} from './HttpMethod';
-import Response from './Response';
 import {HttpTransport} from './HttpTransport';
-
+import Response from './Response';
 
 let XMLHttpRequest: any;
 

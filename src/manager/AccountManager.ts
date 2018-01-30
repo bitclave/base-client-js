@@ -1,7 +1,7 @@
 import {Auth} from '../repository/auth/Auth';
-import Account from '../repository/models/Account';
 import {ClientData} from '../repository/client/ClientData';
 import Profile from '../repository/models/Profile';
+import Account from '../repository/models/Account';
 
 export default class AccountManager {
 
@@ -21,7 +21,9 @@ export default class AccountManager {
     }
 
     signIn(id: string): Promise<Account> {
-        return this.auth.signIn(id).then(this.onGetAccount.bind(this));
+        return this.auth
+            .signIn(id)
+            .then(this.onGetAccount.bind(this));
     }
 
     getProfile(): Profile {

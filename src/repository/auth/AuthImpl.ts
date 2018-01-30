@@ -1,7 +1,7 @@
-import Account from '../models/Account';
 import {Auth} from './Auth';
 import {HttpMethod} from '../source/HttpMethod';
 import {HttpTransport} from '../source/HttpTransport';
+import Account from '../models/Account';
 
 export default class AuthImpl implements Auth {
 

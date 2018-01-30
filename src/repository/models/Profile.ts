@@ -17,10 +17,6 @@ export default class Profile {
         return this._data as Map<string, string>;
     }
 
-    set data(data: Map<string, string>) {
-        this._data = data;
-    }
-
     get email(): string {
         return this._email;
     }
