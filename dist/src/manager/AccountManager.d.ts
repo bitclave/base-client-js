@@ -1,7 +1,7 @@
 import { Auth } from '../repository/auth/Auth';
-import Account from '../repository/models/Account';
 import { ClientData } from '../repository/client/ClientData';
 import Profile from '../repository/models/Profile';
+import Account from '../repository/models/Account';
 export default class AccountManager {
     private auth;
     private clientData;

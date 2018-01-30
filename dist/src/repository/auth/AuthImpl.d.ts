@@ -1,6 +1,6 @@
-import Account from '../models/Account';
 import { Auth } from './Auth';
 import { HttpTransport } from '../source/HttpTransport';
+import Account from '../models/Account';
 export default class AuthImpl implements Auth {
     private readonly SIGN_UP;
     private readonly SIGN_IN;

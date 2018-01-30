@@ -1,6 +1,6 @@
 import { HttpMethod } from './HttpMethod';
-import Response from './Response';
 import { HttpTransport } from './HttpTransport';
+import Response from './Response';
 export default class HttpTransportImpl implements HttpTransport {
     private readonly HEADERS;
     private host;
