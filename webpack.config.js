@@ -1,4 +1,5 @@
-const path = require('path');
+const Path = require('path');
+const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
 
 module.exports = {
     entry: './src/Base.ts',
@@ -17,6 +18,16 @@ module.exports = {
     },
     output: {
         filename: 'Base.js',
-        path: path.resolve(__dirname, 'dist')
-    }
+        path: Path.resolve(__dirname, 'dist')
+    },
+    plugins: [
+        new TypedocWebpackPlugin({
+            out: './docs',
+            module: 'es6',
+            target: 'es6',
+            exclude: '**/node_modules/**/*.*',
+            experimentalDecorators: true,
+            excludeExternals: true
+        }, './src/')
+    ]
 };
