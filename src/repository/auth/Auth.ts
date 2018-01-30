@@ -1,15 +1,9 @@
-export default class Auth {
+import Account from '../models/Account';
 
-    signUp(address: string): Promise<any> {
-        return new Promise((resolve, reject) => {
+export interface Auth {
 
-        });
-    }
+    signUp(address: string): Promise<Account>
 
-    signIn(): Promise<any> {
-        return new Promise((resolve, reject) => {
-
-        });
-    }
+    signIn(id: string): Promise<Account>
 
 }

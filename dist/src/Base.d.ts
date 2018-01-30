@@ -1,8 +1,9 @@
-import Auth from './repository/auth/Auth';
 import Wallet from './repository/wallet/Wallet';
-import Profile from './repository/profile/Profile';
+import AccountManager from './manager/AccountManager';
 export default class Base {
-    auth: Auth;
-    wallet: Wallet;
-    profile: Profile;
+    private _wallet;
+    private _accountManager;
+    constructor(host: string);
+    readonly wallet: Wallet;
+    readonly accountManager: AccountManager;
 }
