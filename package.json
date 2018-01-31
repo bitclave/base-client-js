@@ -4,7 +4,7 @@
   "description": "Base JS library for BASE-platform",
   "main": "Base.js",
   "scripts": {
-    "test": "mocha --require ts:ts-node/register \"./test/*.ts\"",
+    "test": "mocha --require ts-node/register \"./test/*.ts\"",
     "build": "webpack"
   },
   "repository": {

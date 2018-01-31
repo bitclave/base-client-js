@@ -1,5 +1,5 @@
-import {Auth} from '../repository/auth/Auth';
-import {ClientData} from '../repository/client/ClientData';
+import { Auth } from '../repository/auth/Auth';
+import { ClientData } from '../repository/client/ClientData';
 import Profile from '../repository/models/Profile';
 import Account from '../repository/models/Account';
 
@@ -35,11 +35,13 @@ export default class AccountManager {
     }
 
     private onGetAccount(account: Account): Promise<Account> {
-        return this.clientData.getData(account.id).then(data => {
-            this.profile = new Profile(data, 'email', account);
+        return this.clientData
+            .getData(account.id)
+            .then(data => {
+                this.profile = new Profile(data, account);
 
-            return account;
-        });
+                return account;
+            });
     }
 
 }
