@@ -1,20 +1,17 @@
 {
   "compilerOptions": {
-    "outDir": "./",
-    "module": "commonjs",
-    "target": "es6",
-    "baseUrl": "http://localhost:8080",
+    "outDir": "dist",
+    "module": "esnext",
+    "target": "es5",
     "lib": [
       "es6",
       "dom"
     ],
     "sourceMap": true,
+    "allowJs": true,
+    "jsx": "react",
     "moduleResolution": "node",
-    "rootDir": "./",
-    "emitDecoratorMetadata": true,
-    "removeComments": false,
-    "declaration": true,
-    "experimentalDecorators": true,
+    "rootDir": "src",
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
@@ -25,7 +22,11 @@
   },
   "exclude": [
     "node_modules",
-    "test",
-    "dist"
+    "build",
+    "scripts",
+    "acceptance-tests",
+    "webpack",
+    "jest",
+    "src/setupTests.ts"
   ]
 }
