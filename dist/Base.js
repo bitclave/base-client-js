@@ -16589,7 +16589,6 @@ class LocalStorageImpl {
         storage.setItem(key, value);
     }
     getItem(key) {
-        storage.removeItem(key);
         return storage.getItem(key);
     }
 }
