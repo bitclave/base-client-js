@@ -96,12 +96,16 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_repository_auth_authimpl_.authimpl.html#sign_in" class="tsd-kind-icon">SIGN_<wbr>IN</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_repository_auth_authimpl_.authimpl.html#sign_up" class="tsd-kind-icon">SIGN_<wbr>UP</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_repository_auth_authimpl_.authimpl.html#storage_account_key" class="tsd-kind-icon">STORAGE_<wbr>ACCOUNT_<wbr>KEY</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_repository_auth_authimpl_.authimpl.html#storage" class="tsd-kind-icon">storage</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_repository_auth_authimpl_.authimpl.html#transport" class="tsd-kind-icon">transport</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_auth_authimpl_.authimpl.html#loadaccount" class="tsd-kind-icon">load<wbr>Account</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_auth_authimpl_.authimpl.html#saveaccount" class="tsd-kind-icon">save<wbr>Account</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_auth_authimpl_.authimpl.html#signin" class="tsd-kind-icon">sign<wbr>In</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_auth_authimpl_.authimpl.html#signup" class="tsd-kind-icon">sign<wbr>Up</a></li>
 							</ul>
@@ -115,19 +119,22 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Auth<wbr>Impl<span class="tsd-signature-symbol">(</span>transport<span class="tsd-signature-symbol">: </span><a href="../interfaces/_repository_source_httptransport_.httptransport.html" class="tsd-signature-type">HttpTransport</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_repository_auth_authimpl_.authimpl.html" class="tsd-signature-type">AuthImpl</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Auth<wbr>Impl<span class="tsd-signature-symbol">(</span>transport<span class="tsd-signature-symbol">: </span><a href="../interfaces/_repository_source_http_httptransport_.httptransport.html" class="tsd-signature-type">HttpTransport</a>, storage<span class="tsd-signature-symbol">: </span><a href="../interfaces/_repository_source_storage_storage_.storage.html" class="tsd-signature-type">Storage</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_repository_auth_authimpl_.authimpl.html" class="tsd-signature-type">AuthImpl</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/repository/auth/AuthImpl.ts#L11">repository/auth/AuthImpl.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/repository/auth/AuthImpl.ts#L15">repository/auth/AuthImpl.ts:15</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>transport: <a href="../interfaces/_repository_source_httptransport_.httptransport.html" class="tsd-signature-type">HttpTransport</a></h5>
+									<h5>transport: <a href="../interfaces/_repository_source_http_httptransport_.httptransport.html" class="tsd-signature-type">HttpTransport</a></h5>
+								</li>
+								<li>
+									<h5>storage: <a href="../interfaces/_repository_source_storage_storage_.storage.html" class="tsd-signature-type">Storage</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_repository_auth_authimpl_.authimpl.html" class="tsd-signature-type">AuthImpl</a></h4>
@@ -143,7 +150,7 @@
 					<div class="tsd-signature tsd-kind-icon">SIGN_<wbr>IN<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;/signIn&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/repository/auth/AuthImpl.ts#L9">repository/auth/AuthImpl.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/repository/auth/AuthImpl.ts#L10">repository/auth/AuthImpl.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -153,17 +160,37 @@
 					<div class="tsd-signature tsd-kind-icon">SIGN_<wbr>UP<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;/signUp&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/repository/auth/AuthImpl.ts#L8">repository/auth/AuthImpl.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/repository/auth/AuthImpl.ts#L9">repository/auth/AuthImpl.ts:9</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="storage_account_key" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> STORAGE_<wbr>ACCOUNT_<wbr>KEY</h3>
+					<div class="tsd-signature tsd-kind-icon">STORAGE_<wbr>ACCOUNT_<wbr>KEY<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;base_account&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/repository/auth/AuthImpl.ts#L12">repository/auth/AuthImpl.ts:12</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="storage" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> storage</h3>
+					<div class="tsd-signature tsd-kind-icon">storage<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_repository_source_storage_storage_.storage.html" class="tsd-signature-type">Storage</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/repository/auth/AuthImpl.ts#L15">repository/auth/AuthImpl.ts:15</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="transport" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> transport</h3>
-					<div class="tsd-signature tsd-kind-icon">transport<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_repository_source_httptransport_.httptransport.html" class="tsd-signature-type">HttpTransport</a></div>
+					<div class="tsd-signature tsd-kind-icon">transport<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_repository_source_http_httptransport_.httptransport.html" class="tsd-signature-type">HttpTransport</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/repository/auth/AuthImpl.ts#L11">repository/auth/AuthImpl.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/repository/auth/AuthImpl.ts#L14">repository/auth/AuthImpl.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -171,23 +198,74 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="loadaccount" class="tsd-anchor"></a>
+					<h3>load<wbr>Account</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">load<wbr>Account<span class="tsd-signature-symbol">(</span>secretKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_repository_auth_auth_.auth.html">Auth</a>.<a href="../interfaces/_repository_auth_auth_.auth.html#loadaccount">loadAccount</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/repository/auth/AuthImpl.ts#L42">repository/auth/AuthImpl.ts:42</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>secretKey: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="saveaccount" class="tsd-anchor"></a>
+					<h3>save<wbr>Account</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">save<wbr>Account<span class="tsd-signature-symbol">(</span>account<span class="tsd-signature-symbol">: </span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a>, secretKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_repository_auth_auth_.auth.html">Auth</a>.<a href="../interfaces/_repository_auth_auth_.auth.html#saveaccount">saveAccount</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/repository/auth/AuthImpl.ts#L34">repository/auth/AuthImpl.ts:34</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>account: <a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a></h5>
+								</li>
+								<li>
+									<h5>secretKey: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="signin" class="tsd-anchor"></a>
 					<h3>sign<wbr>In</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">sign<wbr>In<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">sign<wbr>In<span class="tsd-signature-symbol">(</span>account<span class="tsd-signature-symbol">: </span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_repository_auth_auth_.auth.html">Auth</a>.<a href="../interfaces/_repository_auth_auth_.auth.html#signin">signIn</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/repository/auth/AuthImpl.ts#L23">repository/auth/AuthImpl.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/repository/auth/AuthImpl.ts#L28">repository/auth/AuthImpl.ts:28</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>id: <span class="tsd-signature-type">string</span></h5>
+									<h5>account: <a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -198,20 +276,20 @@
 					<a name="signup" class="tsd-anchor"></a>
 					<h3>sign<wbr>Up</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">sign<wbr>Up<span class="tsd-signature-symbol">(</span>address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">sign<wbr>Up<span class="tsd-signature-symbol">(</span>account<span class="tsd-signature-symbol">: </span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_repository_auth_auth_.auth.html">Auth</a>.<a href="../interfaces/_repository_auth_auth_.auth.html#signup">signUp</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/repository/auth/AuthImpl.ts#L17">repository/auth/AuthImpl.ts:17</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/repository/auth/AuthImpl.ts#L22">repository/auth/AuthImpl.ts:22</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>address: <span class="tsd-signature-type">string</span></h5>
+									<h5>account: <a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -248,22 +326,34 @@
 						<a href="../modules/_repository_models_account_.html">"repository/models/<wbr>Account"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="../modules/_repository_models_keypair_.html">"repository/models/<wbr>Key<wbr>Pair"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_repository_models_profile_.html">"repository/models/<wbr>Profile"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_repository_source_httpmethod_.html">"repository/source/<wbr>Http<wbr>Method"</a>
+						<a href="../modules/_repository_source_http_httpmethod_.html">"repository/source/http/<wbr>Http<wbr>Method"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_repository_source_httptransport_.html">"repository/source/<wbr>Http<wbr>Transport"</a>
+						<a href="../modules/_repository_source_http_httptransport_.html">"repository/source/http/<wbr>Http<wbr>Transport"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_repository_source_httptransportimpl_.html">"repository/source/<wbr>Http<wbr>Transport<wbr>Impl"</a>
+						<a href="../modules/_repository_source_http_httptransportimpl_.html">"repository/source/http/<wbr>Http<wbr>Transport<wbr>Impl"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_repository_source_response_.html">"repository/source/<wbr>Response"</a>
+						<a href="../modules/_repository_source_http_response_.html">"repository/source/http/<wbr>Response"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_repository_source_storage_localstorageimpl_.html">"repository/source/storage/<wbr>Local<wbr>Storage<wbr>Impl"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_repository_source_storage_storage_.html">"repository/source/storage/<wbr>Storage"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_repository_wallet_wallet_.html">"repository/wallet/<wbr>Wallet"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_utils_cryptoutils_.html">"utils/<wbr>Crypto<wbr>Utils"</a>
 					</li>
 				</ul>
 			</nav>
@@ -284,7 +374,19 @@
 								<a href="_repository_auth_authimpl_.authimpl.html#sign_up" class="tsd-kind-icon">SIGN_<wbr>UP</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_repository_auth_authimpl_.authimpl.html#storage_account_key" class="tsd-kind-icon">STORAGE_<wbr>ACCOUNT_<wbr>KEY</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_repository_auth_authimpl_.authimpl.html#storage" class="tsd-kind-icon">storage</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_repository_auth_authimpl_.authimpl.html#transport" class="tsd-kind-icon">transport</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_repository_auth_authimpl_.authimpl.html#loadaccount" class="tsd-kind-icon">load<wbr>Account</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_repository_auth_authimpl_.authimpl.html#saveaccount" class="tsd-kind-icon">save<wbr>Account</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_repository_auth_authimpl_.authimpl.html#signin" class="tsd-kind-icon">sign<wbr>In</a>

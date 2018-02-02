@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>HttpTransportImpl | basejs</title>
+	<title>KeyPair | basejs</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,13 +54,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_repository_source_httptransportimpl_.html">&quot;repository/source/HttpTransportImpl&quot;</a>
+					<a href="../modules/_repository_models_keypair_.html">&quot;repository/models/KeyPair&quot;</a>
 				</li>
 				<li>
-					<a href="_repository_source_httptransportimpl_.httptransportimpl.html">HttpTransportImpl</a>
+					<a href="_repository_models_keypair_.keypair.html">KeyPair</a>
 				</li>
 			</ul>
-			<h1>Class HttpTransportImpl</h1>
+			<h1>Class KeyPair</h1>
 		</div>
 	</div>
 </header>
@@ -71,14 +71,8 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">HttpTransportImpl</span>
+						<span class="target">KeyPair</span>
 					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel">
-				<h3>Implements</h3>
-				<ul class="tsd-hierarchy">
-					<li><a href="../interfaces/_repository_source_httptransport_.httptransport.html" class="tsd-signature-type">HttpTransport</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -88,21 +82,21 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_repository_source_httptransportimpl_.httptransportimpl.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_repository_models_keypair_.keypair.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_repository_source_httptransportimpl_.httptransportimpl.html#headers" class="tsd-kind-icon">HEADERS</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_repository_source_httptransportimpl_.httptransportimpl.html#host" class="tsd-kind-icon">host</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_repository_models_keypair_.keypair.html#_privatekey" class="tsd-kind-icon">_private<wbr>Key</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_repository_models_keypair_.keypair.html#_publickey" class="tsd-kind-icon">_public<wbr>Key</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
-							<h3>Methods</h3>
+							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_source_httptransportimpl_.httptransportimpl.html#gethost" class="tsd-kind-icon">get<wbr>Host</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_source_httptransportimpl_.httptransportimpl.html#sendrequest" class="tsd-kind-icon">send<wbr>Request</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="_repository_models_keypair_.keypair.html#privatekey" class="tsd-kind-icon">private<wbr>Key</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="_repository_models_keypair_.keypair.html#publickey" class="tsd-kind-icon">public<wbr>Key</a></li>
 							</ul>
 						</section>
 					</div>
@@ -114,22 +108,25 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Http<wbr>Transport<wbr>Impl<span class="tsd-signature-symbol">(</span>host<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_repository_source_httptransportimpl_.httptransportimpl.html" class="tsd-signature-type">HttpTransportImpl</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Key<wbr>Pair<span class="tsd-signature-symbol">(</span>privateKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, publicKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_repository_models_keypair_.keypair.html" class="tsd-signature-type">KeyPair</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/repository/source/HttpTransportImpl.ts#L18">repository/source/HttpTransportImpl.ts:18</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/repository/models/KeyPair.ts#L4">repository/models/KeyPair.ts:4</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>host: <span class="tsd-signature-type">string</span></h5>
+									<h5>privateKey: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>publicKey: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_repository_source_httptransportimpl_.httptransportimpl.html" class="tsd-signature-type">HttpTransportImpl</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_repository_models_keypair_.keypair.html" class="tsd-signature-type">KeyPair</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -137,70 +134,59 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="headers" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> HEADERS</h3>
-					<div class="tsd-signature tsd-kind-icon">HEADERS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Map&lt;string, string&gt;([[&#x27;Accept&#x27;, &#x27;application/json&#x27;], [&#x27;Content-Type&#x27;, &#x27;application/json&#x27;]])</span></div>
+					<a name="_privatekey" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _private<wbr>Key</h3>
+					<div class="tsd-signature tsd-kind-icon">_private<wbr>Key<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/repository/source/HttpTransportImpl.ts#L15">repository/source/HttpTransportImpl.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/repository/models/KeyPair.ts#L3">repository/models/KeyPair.ts:3</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="host" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> host</h3>
-					<div class="tsd-signature tsd-kind-icon">host<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="_publickey" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _public<wbr>Key</h3>
+					<div class="tsd-signature tsd-kind-icon">_public<wbr>Key<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/repository/source/HttpTransportImpl.ts#L18">repository/source/HttpTransportImpl.ts:18</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/repository/models/KeyPair.ts#L4">repository/models/KeyPair.ts:4</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="gethost" class="tsd-anchor"></a>
-					<h3>get<wbr>Host</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Host<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+				<h2>Accessors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="privatekey" class="tsd-anchor"></a>
+					<h3>private<wbr>Key</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> privateKey<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/_repository_source_httptransport_.httptransport.html">HttpTransport</a>.<a href="../interfaces/_repository_source_httptransport_.httptransport.html#gethost">getHost</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/repository/source/HttpTransportImpl.ts#L47">repository/source/HttpTransportImpl.ts:47</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/repository/models/KeyPair.ts#L12">repository/models/KeyPair.ts:12</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="sendrequest" class="tsd-anchor"></a>
-					<h3>send<wbr>Request</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">send<wbr>Request<span class="tsd-signature-symbol">(</span>method<span class="tsd-signature-symbol">: </span><a href="../enums/_repository_source_httpmethod_.httpmethod.html" class="tsd-signature-type">HttpMethod</a>, data<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_source_response_.response.html" class="tsd-signature-type">Response</a><span class="tsd-signature-symbol">&gt;</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="publickey" class="tsd-anchor"></a>
+					<h3>public<wbr>Key</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> publicKey<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/_repository_source_httptransport_.httptransport.html">HttpTransport</a>.<a href="../interfaces/_repository_source_httptransport_.httptransport.html#sendrequest">sendRequest</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/repository/source/HttpTransportImpl.ts#L24">repository/source/HttpTransportImpl.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/repository/models/KeyPair.ts#L16">repository/models/KeyPair.ts:16</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>method: <a href="../enums/_repository_source_httpmethod_.httpmethod.html" class="tsd-signature-type">HttpMethod</a></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> data: <span class="tsd-signature-type">any</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_source_response_.response.html" class="tsd-signature-type">Response</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -233,23 +219,35 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_repository_models_account_.html">"repository/models/<wbr>Account"</a>
 					</li>
+					<li class="current tsd-kind-external-module">
+						<a href="../modules/_repository_models_keypair_.html">"repository/models/<wbr>Key<wbr>Pair"</a>
+					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_repository_models_profile_.html">"repository/models/<wbr>Profile"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_repository_source_httpmethod_.html">"repository/source/<wbr>Http<wbr>Method"</a>
+						<a href="../modules/_repository_source_http_httpmethod_.html">"repository/source/http/<wbr>Http<wbr>Method"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_repository_source_httptransport_.html">"repository/source/<wbr>Http<wbr>Transport"</a>
-					</li>
-					<li class="current tsd-kind-external-module">
-						<a href="../modules/_repository_source_httptransportimpl_.html">"repository/source/<wbr>Http<wbr>Transport<wbr>Impl"</a>
+						<a href="../modules/_repository_source_http_httptransport_.html">"repository/source/http/<wbr>Http<wbr>Transport"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_repository_source_response_.html">"repository/source/<wbr>Response"</a>
+						<a href="../modules/_repository_source_http_httptransportimpl_.html">"repository/source/http/<wbr>Http<wbr>Transport<wbr>Impl"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_repository_source_http_response_.html">"repository/source/http/<wbr>Response"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_repository_source_storage_localstorageimpl_.html">"repository/source/storage/<wbr>Local<wbr>Storage<wbr>Impl"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_repository_source_storage_storage_.html">"repository/source/storage/<wbr>Storage"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_repository_wallet_wallet_.html">"repository/wallet/<wbr>Wallet"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_utils_cryptoutils_.html">"utils/<wbr>Crypto<wbr>Utils"</a>
 					</li>
 				</ul>
 			</nav>
@@ -258,30 +256,27 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_repository_source_httptransportimpl_.httptransportimpl.html" class="tsd-kind-icon">Http<wbr>Transport<wbr>Impl</a>
+						<a href="_repository_models_keypair_.keypair.html" class="tsd-kind-icon">Key<wbr>Pair</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_repository_source_httptransportimpl_.httptransportimpl.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_repository_models_keypair_.keypair.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_repository_source_httptransportimpl_.httptransportimpl.html#headers" class="tsd-kind-icon">HEADERS</a>
+								<a href="_repository_models_keypair_.keypair.html#_privatekey" class="tsd-kind-icon">_private<wbr>Key</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_repository_source_httptransportimpl_.httptransportimpl.html#host" class="tsd-kind-icon">host</a>
+								<a href="_repository_models_keypair_.keypair.html#_publickey" class="tsd-kind-icon">_public<wbr>Key</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_repository_source_httptransportimpl_.httptransportimpl.html#gethost" class="tsd-kind-icon">get<wbr>Host</a>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="_repository_models_keypair_.keypair.html#privatekey" class="tsd-kind-icon">private<wbr>Key</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_repository_source_httptransportimpl_.httptransportimpl.html#sendrequest" class="tsd-kind-icon">send<wbr>Request</a>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="_repository_models_keypair_.keypair.html#publickey" class="tsd-kind-icon">public<wbr>Key</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_repository_source_httptransportimpl_.html#xmlhttprequest" class="tsd-kind-icon">XMLHttp<wbr>Request</a>
-					</li>
 				</ul>
 			</nav>
 		</div>

@@ -1,4 +1,6 @@
 export default class Account {
-    readonly id: string;
-    readonly token: string;
+    id: string;
+    publicKey: string;
+    hash: string;
+    constructor(publicKey?: string, hash?: string);
 }

@@ -1,5 +1,5 @@
 import { ClientData } from './ClientData';
-import { HttpTransport } from '../source/HttpTransport';
+import { HttpTransport } from '../source/http/HttpTransport';
 export default class ClientDataImpl implements ClientData {
     private readonly CLIENT_DATA;
     private transport;

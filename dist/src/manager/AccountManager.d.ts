@@ -7,9 +7,12 @@ export default class AccountManager {
     private clientData;
     private profile;
     constructor(auth: Auth, clientData: ClientData);
-    signUp(address: string): Promise<Account>;
-    signIn(id: string): Promise<Account>;
+    signUp(mnemonicPhrase: string): Promise<Account>;
+    signIn(mnemonicPhrase: string): Promise<Account>;
     getProfile(): Profile;
     hasActiveAccount(): boolean;
-    private onGetAccount(account);
+    private generateKeyPair(mnemonicPhrase);
+    private getAccount(secretKey, account);
+    private generateAccount(keyPair);
+    private onGetAccount(account, secretKey);
 }

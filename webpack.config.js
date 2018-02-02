@@ -3,7 +3,7 @@ const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
 
 module.exports = {
     entry: './src/Base.ts',
-    devtool: 'inline-source-map',
+    devtool: 'source-map',
     node: {
         fs: 'empty',
         child_process: 'empty'
@@ -18,11 +18,15 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: [ '.tsx', '.ts', '.js' ]
+        modules: [Path.resolve('./node_modules'), Path.resolve('./src')],
+        extensions: ['.tsx', '.ts', '.js']
     },
     output: {
         filename: 'Base.js',
-        path: Path.resolve(__dirname, 'dist')
+        path: Path.resolve(__dirname, 'dist'),
+        library: 'Base',
+        libraryTarget: "umd2",
+        umdNamedDefine: true
     },
     plugins: [
         new TypedocWebpackPlugin({

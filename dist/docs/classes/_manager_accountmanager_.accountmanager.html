@@ -96,6 +96,9 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_manager_accountmanager_.accountmanager.html#generateaccount" class="tsd-kind-icon">generate<wbr>Account</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_manager_accountmanager_.accountmanager.html#generatekeypair" class="tsd-kind-icon">generate<wbr>Key<wbr>Pair</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_manager_accountmanager_.accountmanager.html#getaccount" class="tsd-kind-icon">get<wbr>Account</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_accountmanager_.accountmanager.html#getprofile" class="tsd-kind-icon">get<wbr>Profile</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_accountmanager_.accountmanager.html#hasactiveaccount" class="tsd-kind-icon">has<wbr>Active<wbr>Account</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_manager_accountmanager_.accountmanager.html#ongetaccount" class="tsd-kind-icon">on<wbr>Get<wbr>Account</a></li>
@@ -118,7 +121,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/manager/AccountManager.ts#L10">manager/AccountManager.ts:10</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/manager/AccountManager.ts#L12">manager/AccountManager.ts:12</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -143,7 +146,7 @@
 					<div class="tsd-signature tsd-kind-icon">auth<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_repository_auth_auth_.auth.html" class="tsd-signature-type">Auth</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/manager/AccountManager.ts#L8">manager/AccountManager.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/manager/AccountManager.ts#L10">manager/AccountManager.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -153,7 +156,7 @@
 					<div class="tsd-signature tsd-kind-icon">client<wbr>Data<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_repository_client_clientdata_.clientdata.html" class="tsd-signature-type">ClientData</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/manager/AccountManager.ts#L9">manager/AccountManager.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/manager/AccountManager.ts#L11">manager/AccountManager.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -163,13 +166,85 @@
 					<div class="tsd-signature tsd-kind-icon">profile<span class="tsd-signature-symbol">:</span> <a href="_repository_models_profile_.profile.html" class="tsd-signature-type">Profile</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/manager/AccountManager.ts#L10">manager/AccountManager.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/manager/AccountManager.ts#L12">manager/AccountManager.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="generateaccount" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> generate<wbr>Account</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">generate<wbr>Account<span class="tsd-signature-symbol">(</span>keyPair<span class="tsd-signature-symbol">: </span><a href="_repository_models_keypair_.keypair.html" class="tsd-signature-type">KeyPair</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/manager/AccountManager.ts#L56">manager/AccountManager.ts:56</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>keyPair: <a href="_repository_models_keypair_.keypair.html" class="tsd-signature-type">KeyPair</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="generatekeypair" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> generate<wbr>Key<wbr>Pair</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">generate<wbr>Key<wbr>Pair<span class="tsd-signature-symbol">(</span>mnemonicPhrase<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_keypair_.keypair.html" class="tsd-signature-type">KeyPair</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/manager/AccountManager.ts#L40">manager/AccountManager.ts:40</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>mnemonicPhrase: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_keypair_.keypair.html" class="tsd-signature-type">KeyPair</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="getaccount" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> get<wbr>Account</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Account<span class="tsd-signature-symbol">(</span>secretKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, account<span class="tsd-signature-symbol">: </span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/manager/AccountManager.ts#L50">manager/AccountManager.ts:50</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>secretKey: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>account: <a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="getprofile" class="tsd-anchor"></a>
 					<h3>get<wbr>Profile</h3>
@@ -180,7 +255,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/manager/AccountManager.ts#L29">manager/AccountManager.ts:29</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/manager/AccountManager.ts#L32">manager/AccountManager.ts:32</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="_repository_models_profile_.profile.html" class="tsd-signature-type">Profile</a></h4>
@@ -197,7 +272,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/manager/AccountManager.ts#L33">manager/AccountManager.ts:33</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/manager/AccountManager.ts#L36">manager/AccountManager.ts:36</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -208,19 +283,22 @@
 					<a name="ongetaccount" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> on<wbr>Get<wbr>Account</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">on<wbr>Get<wbr>Account<span class="tsd-signature-symbol">(</span>account<span class="tsd-signature-symbol">: </span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Get<wbr>Account<span class="tsd-signature-symbol">(</span>account<span class="tsd-signature-symbol">: </span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a>, secretKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/manager/AccountManager.ts#L37">manager/AccountManager.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/manager/AccountManager.ts#L63">manager/AccountManager.ts:63</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>account: <a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a></h5>
+								</li>
+								<li>
+									<h5>secretKey: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -231,19 +309,19 @@
 					<a name="signin" class="tsd-anchor"></a>
 					<h3>sign<wbr>In</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">sign<wbr>In<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">sign<wbr>In<span class="tsd-signature-symbol">(</span>mnemonicPhrase<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/manager/AccountManager.ts#L23">manager/AccountManager.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/manager/AccountManager.ts#L26">manager/AccountManager.ts:26</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>id: <span class="tsd-signature-type">string</span></h5>
+									<h5>mnemonicPhrase: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -254,19 +332,19 @@
 					<a name="signup" class="tsd-anchor"></a>
 					<h3>sign<wbr>Up</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">sign<wbr>Up<span class="tsd-signature-symbol">(</span>address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">sign<wbr>Up<span class="tsd-signature-symbol">(</span>mnemonicPhrase<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/802461d/src/manager/AccountManager.ts#L17">manager/AccountManager.ts:17</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/96e559b/src/manager/AccountManager.ts#L19">manager/AccountManager.ts:19</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>address: <span class="tsd-signature-type">string</span></h5>
+									<h5>mnemonicPhrase: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -303,22 +381,34 @@
 						<a href="../modules/_repository_models_account_.html">"repository/models/<wbr>Account"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="../modules/_repository_models_keypair_.html">"repository/models/<wbr>Key<wbr>Pair"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_repository_models_profile_.html">"repository/models/<wbr>Profile"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_repository_source_httpmethod_.html">"repository/source/<wbr>Http<wbr>Method"</a>
+						<a href="../modules/_repository_source_http_httpmethod_.html">"repository/source/http/<wbr>Http<wbr>Method"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_repository_source_httptransport_.html">"repository/source/<wbr>Http<wbr>Transport"</a>
+						<a href="../modules/_repository_source_http_httptransport_.html">"repository/source/http/<wbr>Http<wbr>Transport"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_repository_source_httptransportimpl_.html">"repository/source/<wbr>Http<wbr>Transport<wbr>Impl"</a>
+						<a href="../modules/_repository_source_http_httptransportimpl_.html">"repository/source/http/<wbr>Http<wbr>Transport<wbr>Impl"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_repository_source_response_.html">"repository/source/<wbr>Response"</a>
+						<a href="../modules/_repository_source_http_response_.html">"repository/source/http/<wbr>Response"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_repository_source_storage_localstorageimpl_.html">"repository/source/storage/<wbr>Local<wbr>Storage<wbr>Impl"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_repository_source_storage_storage_.html">"repository/source/storage/<wbr>Storage"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_repository_wallet_wallet_.html">"repository/wallet/<wbr>Wallet"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_utils_cryptoutils_.html">"utils/<wbr>Crypto<wbr>Utils"</a>
 					</li>
 				</ul>
 			</nav>
@@ -340,6 +430,15 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_manager_accountmanager_.accountmanager.html#profile" class="tsd-kind-icon">profile</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_manager_accountmanager_.accountmanager.html#generateaccount" class="tsd-kind-icon">generate<wbr>Account</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_manager_accountmanager_.accountmanager.html#generatekeypair" class="tsd-kind-icon">generate<wbr>Key<wbr>Pair</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_manager_accountmanager_.accountmanager.html#getaccount" class="tsd-kind-icon">get<wbr>Account</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_manager_accountmanager_.accountmanager.html#getprofile" class="tsd-kind-icon">get<wbr>Profile</a>
