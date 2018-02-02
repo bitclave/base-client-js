@@ -1,6 +1,6 @@
 import {ClientData} from './ClientData';
-import {HttpTransport} from '../source/HttpTransport';
-import {HttpMethod} from '../source/HttpMethod';
+import {HttpTransport} from '../source/http/HttpTransport';
+import {HttpMethod} from '../source/http/HttpMethod';
 
 export default class ClientDataImpl implements ClientData {
 

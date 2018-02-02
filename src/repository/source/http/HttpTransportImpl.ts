@@ -1,5 +1,5 @@
-import {HttpMethod} from './HttpMethod';
-import {HttpTransport} from './HttpTransport';
+import { HttpMethod } from './HttpMethod';
+import { HttpTransport } from './HttpTransport';
 import Response from './Response';
 
 let XMLHttpRequest: any;
@@ -36,7 +36,11 @@ export default class HttpTransportImpl implements HttpTransport {
                 request.send(JSON.stringify(data));
 
                 const result: Response = new Response(request.responseText, request.status);
-                resolve(result);
+                if (result.json.status > 300) {
+                    reject(result)
+                } else {
+                    resolve(result);
+                }
 
             } catch (e) {
                 reject(e);
