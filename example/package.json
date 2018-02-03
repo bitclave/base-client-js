@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/base": "^0.0.1",
     "@types/node": "^9.4.0",
     "@types/react": "^16.0.35",
     "@types/react-dom": "^16.0.3",
@@ -10,12 +11,16 @@
     "@types/react-router-dom": "^4.2.3",
     "@types/reactstrap": "^5.0.12",
     "bootstrap": "^4.0.0",
+    "inversify": "^4.10.0",
+    "inversify-binding-decorators": "^3.2.0",
+    "inversify-inject-decorators": "^3.1.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts-ts": "2.13.0",
+    "react-scripts-ts": "^2.13.0",
     "reactstrap": "^5.0.0-beta",
+    "reflect-metadata": "^0.1.12",
     "typescript": "^2.6.2"
   },
   "scripts": {

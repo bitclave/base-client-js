@@ -5,8 +5,8 @@ import Col from 'reactstrap/lib/Col';
 import Row from 'reactstrap/lib/Row';
 
 interface Prop {
-    keyField: string;
-    valueField: string;
+    name: string;
+    value: string;
     onDeleteClick: Function|null;
 }
 
@@ -14,8 +14,8 @@ export default class ClientDataHolder extends React.Component<Prop, {}> {
     render() {
         return (
             <Row>
-                <Col className="client-data-item-field" xs="6" sm="4">{this.props.keyField}</Col>
-                <Col className="client-data-item-field" xs="6" sm="4">{this.props.valueField}</Col>
+                <Col className="client-data-item-field" xs="6" sm="4">{this.props.name}</Col>
+                <Col className="client-data-item-field" xs="6" sm="4">{this.props.value}</Col>
                 <Col className="client-data-item-field" sm="4">{this.showDeleteButton()}</Col>
             </Row>
 

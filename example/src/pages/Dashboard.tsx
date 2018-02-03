@@ -7,8 +7,16 @@ import FormGroup from 'reactstrap/lib/FormGroup';
 import Input from 'reactstrap/lib/Input';
 import Row from 'reactstrap/lib/Row';
 import Col from 'reactstrap/lib/Col';
+import { lazyInject } from '../Injections';
+import BaseManager from '../manager/BaseManager';
+import ClientDataList from '../components/lists/ClientDataList';
 
 export default class Dashboard extends React.Component {
+
+    @lazyInject(BaseManager)
+    baseManager: BaseManager;
+
+    clientData: Map<string, string> = new Map();
 
     render() {
         return (
@@ -35,8 +43,11 @@ export default class Dashboard extends React.Component {
                                 </Row>
                             </FormGroup>
 
-                            <ClientDataHolder keyField="Key:" valueField="Value:" onDeleteClick={null}/>
-                            <ClientDataHolder keyField="Em" valueField="s@" onDeleteClick={() => this.onDeleteClick()}/>
+                            <ClientDataHolder name="Key:" value="Value:" onDeleteClick={null}/>
+                            <ClientDataList
+                                data={this.clientData}
+                                onDeleteClick={(key: string) => this.onDeleteClick(key)}
+                            />
                         </Form>
                     </div>
                 </Container>
@@ -44,20 +55,30 @@ export default class Dashboard extends React.Component {
         );
     }
 
+    componentWillMount() {
+        this.getDataList();
+    }
+
     getDataList() {
-        foreach((item) =>{
-            return
-        })
+        this.baseManager.loadClientData().then(data => {
+            this.clientData = data;
+
+            this.setState({data: this.clientData});
+        }).catch(response => {
+            alert('message: ' + response);
+        });
     }
 
     onLogoutClick() {
+     // dasd
     }
 
     onAddClick() {
+        // dsd
     }
 
-    onDeleteClick() {
-        console.log('delete');
+    onDeleteClick(key: string) {
+        console.log(this.baseManager);
     }
 
 }
