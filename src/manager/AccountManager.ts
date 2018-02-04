@@ -65,9 +65,7 @@ export default class AccountManager {
             .then(account => this.clientData.getData(account.id))
             .then(data => {
                 this.profile = new Profile(data, account);
-                if (account.id != null && account.publicKey != null) {
-                    //sddsd
-                }
+
                 return account;
             });
     }

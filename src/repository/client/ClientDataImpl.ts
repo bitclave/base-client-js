@@ -1,6 +1,7 @@
-import {ClientData} from './ClientData';
-import {HttpTransport} from '../source/http/HttpTransport';
-import {HttpMethod} from '../source/http/HttpMethod';
+import { ClientData } from './ClientData';
+import { HttpTransport } from '../source/http/HttpTransport';
+import { HttpMethod } from '../source/http/HttpMethod';
+import JsonUtils from '../../utils/JsonUtils';
 
 export default class ClientDataImpl implements ClientData {
 
@@ -15,13 +16,13 @@ export default class ClientDataImpl implements ClientData {
     getData(id: string): Promise<Map<string, string>> {
         return this.transport
             .sendRequest(this.CLIENT_DATA.replace('{id}', id), HttpMethod.Get)
-            .then((response) => Object.assign(new Map<string, string>(), response.json));
+            .then((response) => JsonUtils.jsonToMap<string, string>(response.json));
     }
 
     updateData(id: string, data: Map<string, string>): Promise<Map<string, string>> {
         return this.transport
             .sendRequest(this.CLIENT_DATA.replace('{id}', id), HttpMethod.Patch, data)
-            .then((response) => Object.assign(new Map<string, string>(), response.json));
+            .then((response) => JsonUtils.jsonToMap<string, string>(response.json));
     }
 
 }

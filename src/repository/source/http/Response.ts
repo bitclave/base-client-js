@@ -9,7 +9,7 @@ export default class Response {
         this._status = status;
     }
 
-    get json(): any {
+    get json(): object {
         return this._json;
     }
 

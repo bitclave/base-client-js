@@ -1,0 +1,9 @@
+export default class JsonUtils {
+
+    public static jsonToMap<K, V>(json: Object): Map<K, V> {
+        const map: Map<K, V> = new Map<K, V>();
+        Object.keys(json).forEach((key: any) => map.set(key, json[key]));
+        return map;
+    }
+
+}
