@@ -11,7 +11,6 @@ export default class BaseManager {
 
     constructor() {
         this.base = new Base(Config.getBaseEndPoint());
-        console.log('INIT BASE');
     }
 
     signUp(mnemonicPhrase: string): Promise<Account> {
@@ -25,11 +24,11 @@ export default class BaseManager {
     loadClientData(): Promise<Map<string, string>> {
         return new Promise<Map<string, string>>((resolve, reject) => {
             if (this.base.accountManager.hasActiveAccount()) {
-                console.log(this.base.accountManager.getProfile().data);
                 resolve(this.base.accountManager.getProfile().data);
             } else {
                 reject('not have active accounts');
             }
         });
     }
+
 }
