@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>LocalStorageImpl | base</title>
+	<title>JsonUtils | base</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,13 +54,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_repository_source_storage_localstorageimpl_.html">&quot;repository/source/storage/LocalStorageImpl&quot;</a>
+					<a href="../modules/_utils_jsonutils_.html">&quot;utils/JsonUtils&quot;</a>
 				</li>
 				<li>
-					<a href="_repository_source_storage_localstorageimpl_.localstorageimpl.html">LocalStorageImpl</a>
+					<a href="_utils_jsonutils_.jsonutils.html">JsonUtils</a>
 				</li>
 			</ul>
-			<h1>Class LocalStorageImpl</h1>
+			<h1>Class JsonUtils</h1>
 		</div>
 	</div>
 </header>
@@ -71,14 +71,8 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">LocalStorageImpl</span>
+						<span class="target">JsonUtils</span>
 					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel">
-				<h3>Implements</h3>
-				<ul class="tsd-hierarchy">
-					<li><a href="../interfaces/_repository_source_storage_storage_.storage.html" class="tsd-signature-type">Storage</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -88,8 +82,7 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_source_storage_localstorageimpl_.localstorageimpl.html#getitem" class="tsd-kind-icon">get<wbr>Item</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_source_storage_localstorageimpl_.localstorageimpl.html#setitem" class="tsd-kind-icon">set<wbr>Item</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static"><a href="_utils_jsonutils_.jsonutils.html#jsontomap" class="tsd-kind-icon">json<wbr>ToMap</a></li>
 							</ul>
 						</section>
 					</div>
@@ -97,54 +90,35 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getitem" class="tsd-anchor"></a>
-					<h3>get<wbr>Item</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Item<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
+					<a name="jsontomap" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> json<wbr>ToMap</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">json<wbr>ToMap&lt;K, V&gt;<span class="tsd-signature-symbol">(</span>json<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/_repository_source_storage_storage_.storage.html">Storage</a>.<a href="../interfaces/_repository_source_storage_storage_.storage.html#getitem">getItem</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/d005eed/src/repository/source/storage/LocalStorageImpl.ts#L18">repository/source/storage/LocalStorageImpl.ts:18</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/d005eed/src/utils/JsonUtils.ts#L3">utils/JsonUtils.ts:3</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>K</h4>
+								</li>
+								<li>
+									<h4>V</h4>
+								</li>
+							</ul>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>key: <span class="tsd-signature-type">string</span></h5>
+									<h5>json: <span class="tsd-signature-type">Object</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="setitem" class="tsd-anchor"></a>
-					<h3>set<wbr>Item</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Item<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/_repository_source_storage_storage_.storage.html">Storage</a>.<a href="../interfaces/_repository_source_storage_storage_.storage.html#setitem">setItem</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/d005eed/src/repository/source/storage/LocalStorageImpl.ts#L14">repository/source/storage/LocalStorageImpl.ts:14</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>key: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>value: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">K</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">V</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -195,7 +169,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_repository_source_http_response_.html">"repository/source/http/<wbr>Response"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_repository_source_storage_localstorageimpl_.html">"repository/source/storage/<wbr>Local<wbr>Storage<wbr>Impl"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -207,7 +181,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_utils_cryptoutils_.html">"utils/<wbr>Crypto<wbr>Utils"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_utils_jsonutils_.html">"utils/<wbr>Json<wbr>Utils"</a>
 					</li>
 				</ul>
@@ -217,21 +191,15 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_repository_source_storage_localstorageimpl_.localstorageimpl.html" class="tsd-kind-icon">Local<wbr>Storage<wbr>Impl</a>
+						<a href="_utils_jsonutils_.jsonutils.html" class="tsd-kind-icon">Json<wbr>Utils</a>
 						<ul>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_repository_source_storage_localstorageimpl_.localstorageimpl.html#getitem" class="tsd-kind-icon">get<wbr>Item</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_repository_source_storage_localstorageimpl_.localstorageimpl.html#setitem" class="tsd-kind-icon">set<wbr>Item</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
+								<a href="_utils_jsonutils_.jsonutils.html#jsontomap" class="tsd-kind-icon">json<wbr>ToMap</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_repository_source_storage_localstorageimpl_.html#storage" class="tsd-kind-icon">storage</a>
-					</li>
 				</ul>
 			</nav>
 		</div>

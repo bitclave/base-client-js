@@ -2,6 +2,6 @@ export default class Response {
     private _json;
     private _status;
     constructor(json: string, status: number);
-    readonly json: any;
+    readonly json: object;
     readonly status: number;
 }
