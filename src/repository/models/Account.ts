@@ -10,4 +10,8 @@ export default class Account {
         this.hash = hash;
     }
 
+    isValid(): boolean {
+        return (this.id !== null && this.id.length == 64);
+    }
+
 }

@@ -1,10 +1,11 @@
-import { Auth } from './Auth';
+import { AccountRepository } from './AccountRepository';
 import { HttpMethod } from '../source/http/HttpMethod';
 import { HttpTransport } from '../source/http/HttpTransport';
 import Account from '../models/Account';
 import { Storage } from '../source/storage/Storage';
+import CryptoUtils from '../../utils/CryptoUtils';
 
-export default class AuthImpl implements Auth {
+export default class AccountRepositoryImpl implements AccountRepository {
 
     private readonly SIGN_UP: string = '/signUp';
     private readonly SIGN_IN: string = '/signIn';
@@ -33,7 +34,7 @@ export default class AuthImpl implements Auth {
 
     saveAccount(account: Account, secretKey: string): Promise<Account> {
         return new Promise<Account>(resolve => {
-            const encrypted = JSON.stringify(account); // will be encrypted
+            const encrypted = CryptoUtils.encryptAes256(JSON.stringify(account), secretKey);
             this.storage.setItem(this.STORAGE_ACCOUNT_KEY, encrypted);
             resolve(account);
         });
@@ -41,13 +42,20 @@ export default class AuthImpl implements Auth {
 
     loadAccount(secretKey: string): Promise<Account> {
         return new Promise<Account>((resolve, reject) => {
-            const decrypted: string = this.storage.getItem(this.STORAGE_ACCOUNT_KEY);
-            const account: Account = Object.assign(new Account(), JSON.parse(decrypted));
+            const ciphertext : string = this.storage.getItem(this.STORAGE_ACCOUNT_KEY);
+            if (!ciphertext || ciphertext.length === 0) {
+                reject()
 
-            if (account.id.length == 64) {
-                resolve(account);
             } else {
-                reject();
+                const decrypted = CryptoUtils.decryptAes256(ciphertext, secretKey);
+                const account: Account = Object.assign(new Account(), JSON.parse(decrypted));
+
+                if (account.id.length == 64) {
+                    resolve(account);
+
+                } else {
+                    reject();
+                }
             }
         });
     }

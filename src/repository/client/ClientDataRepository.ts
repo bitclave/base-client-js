@@ -1,4 +1,4 @@
-export interface ClientData {
+export interface ClientDataRepository {
 
     getData(id: string): Promise<Map<string, string>>;
 

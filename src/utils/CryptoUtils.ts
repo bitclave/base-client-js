@@ -9,15 +9,20 @@ export default class CryptoUtils {
     }
 
     public static encryptAes256(message: string, pass: string): string {
-        const array: any = CryptoJS.AES.encrypt(message, pass, {outputLength: 256});
+        const ciphertext: any = CryptoJS.AES.encrypt(message, pass, {outputLength: 256});
 
-        return array.toString(CryptoJS.enc.Utf8);
+        return ciphertext.toString();
     }
 
-    public static decryptAes256(encrypted: string, pass: string): string {
-        const array = CryptoJS.AES.decrypt(encrypted, pass, {outputLength: 256});
+    public static decryptAes256(ciphertext: string, pass: string): string {
+        const bytes = CryptoJS.AES.decrypt(ciphertext, pass, {outputLength: 256});
 
-        return array.toString(CryptoJS.enc.Hex);
+        return bytes.toString(CryptoJS.enc.Utf8);
+    }
+
+    public static PBKDF2(password: string, keySize: number): string { //for generate private key
+        return CryptoJS.PBKDF2(password, CryptoUtils.keccak256(password), {keySize: keySize / 32, iterations: 2048})
+            .toString(CryptoJS.enc.Hex);
     }
 
 }

@@ -1,6 +1,6 @@
 import Account from '../models/Account';
 
-export interface Auth {
+export interface AccountRepository {
 
     signUp(account: Account): Promise<Account>
 

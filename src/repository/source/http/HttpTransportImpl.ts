@@ -27,21 +27,28 @@ export default class HttpTransportImpl implements HttpTransport {
             try {
                 const url = path ? this.getHost() + path : this.getHost();
                 const request: XMLHttpRequest = new XMLHttpRequest();
-                request.open(method, url, false);
+                request.open(method, url);
 
                 this.HEADERS.forEach((value, key) => {
                     request.setRequestHeader(key, value);
                 });
 
-                request.send(JSON.stringify(data ? data : {}));
+                request.onload = () => {
+                    const result: Response = new Response(request.responseText, request.status);
+                    if (request.status >= 200 && request.status < 300) {
+                        resolve(result);
 
-                const result: Response = new Response(request.responseText, request.status);
-                if (result.json['status'] > 300) {
+                    } else {
+                        reject(result);
+                    }
+                };
+
+                request.onerror = () => {
+                    const result: Response = new Response(request.responseText, request.status);
                     reject(result);
-                } else {
-                    resolve(result);
-                }
+                };
 
+                request.send(JSON.stringify(data ? data : {}));
             } catch (e) {
                 reject(e);
             }

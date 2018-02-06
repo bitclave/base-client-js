@@ -1,9 +1,9 @@
-import { ClientData } from './ClientData';
+import { ClientDataRepository } from './ClientDataRepository';
 import { HttpTransport } from '../source/http/HttpTransport';
 import { HttpMethod } from '../source/http/HttpMethod';
 import JsonUtils from '../../utils/JsonUtils';
 
-export default class ClientDataImpl implements ClientData {
+export default class ClientDataRepositoryImpl implements ClientDataRepository {
 
     private readonly CLIENT_DATA: string = '/client/{id}/';
 
@@ -21,7 +21,10 @@ export default class ClientDataImpl implements ClientData {
 
     updateData(id: string, data: Map<string, string>): Promise<Map<string, string>> {
         return this.transport
-            .sendRequest(this.CLIENT_DATA.replace('{id}', id), HttpMethod.Patch, data)
+            .sendRequest(
+                this.CLIENT_DATA.replace('{id}', id),
+                HttpMethod.Patch, JsonUtils.mapToJson(data)
+            )
             .then((response) => JsonUtils.jsonToMap<string, string>(response.json));
     }
 

@@ -6,4 +6,14 @@ export default class JsonUtils {
         return map;
     }
 
+    public static mapToJson(map: Map<any, any>): any {
+        const result: any = {};
+
+        map.forEach((value, key) => {
+            result[key] = value;
+        });
+
+        return result;
+    }
+
 }
