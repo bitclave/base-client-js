@@ -3,4 +3,5 @@ export default class Account {
     publicKey: string;
     hash: string;
     constructor(publicKey?: string, hash?: string);
+    isValid(): boolean;
 }

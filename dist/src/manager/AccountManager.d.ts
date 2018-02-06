@@ -1,12 +1,14 @@
-import { Auth } from '../repository/auth/Auth';
-import { ClientData } from '../repository/client/ClientData';
+import { AccountRepository } from '../repository/account/AccountRepository';
 import Profile from '../repository/models/Profile';
 import Account from '../repository/models/Account';
+import { KeyPairCreator } from '../utils/keypair/KeyPairCreator';
+import { BehaviorSubject } from 'rxjs/Rx';
 export default class AccountManager {
-    private auth;
-    private clientData;
+    private accountRepository;
     private profile;
-    constructor(auth: Auth, clientData: ClientData);
+    private keyPairCreator;
+    private authAccountBehavior;
+    constructor(auth: AccountRepository, keyPairCreator: KeyPairCreator, authAccountBehavior: BehaviorSubject<Account>);
     signUp(mnemonicPhrase: string): Promise<Account>;
     signIn(mnemonicPhrase: string): Promise<Account>;
     getProfile(): Profile;
