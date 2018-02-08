@@ -1,4 +1,4 @@
-import { KeyPairCreator } from './KeyPairCreator';
+import { KeyPairHelper } from './KeyPairHelper';
 export default class KeyPairFactory {
-    static getDefaultKeyPairCreator(): KeyPairCreator;
+    static getDefaultKeyPairCreator(): KeyPairHelper;
 }

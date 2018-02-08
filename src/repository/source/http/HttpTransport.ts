@@ -1,5 +1,6 @@
 import {HttpMethod} from './HttpMethod';
 import Response from './Response'
+import { HttpInterceptor } from './HttpInterceptor';
 
 export interface HttpTransport {
 
@@ -8,5 +9,7 @@ export interface HttpTransport {
     sendRequest(method: HttpMethod, data?: any): Promise<Response>
 
     sendRequest(path: string, method: HttpMethod, data?: any): Promise<Response>
+
+    addInterceptor(interceptor: HttpInterceptor): HttpTransport
 
 }

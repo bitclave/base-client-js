@@ -2,33 +2,32 @@ import { AccountRepository } from '../repository/account/AccountRepository';
 import Profile from '../repository/models/Profile';
 import Account from '../repository/models/Account';
 import KeyPair from '../utils/keypair/KeyPair';
-import CryptoUtils from '../utils/CryptoUtils';
-import { KeyPairCreator } from '../utils/keypair/KeyPairCreator';
+import { KeyPairHelper } from '../utils/keypair/KeyPairHelper';
 import { BehaviorSubject } from 'rxjs/Rx';
 
 export default class AccountManager {
 
     private accountRepository: AccountRepository;
     private profile: Profile;
-    private keyPairCreator: KeyPairCreator;
+    private keyPairCreator: KeyPairHelper;
     private authAccountBehavior: BehaviorSubject<Account>;
 
     constructor(auth: AccountRepository,
-                keyPairCreator: KeyPairCreator,
+                keyPairCreator: KeyPairHelper,
                 authAccountBehavior: BehaviorSubject<Account>) {
         this.accountRepository = auth;
         this.keyPairCreator = keyPairCreator;
         this.authAccountBehavior = authAccountBehavior;
     }
 
-    signUp(mnemonicPhrase: string): Promise<Account> {
+    registration(mnemonicPhrase: string): Promise<Account> {
         return this.generateKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
-            .then((account) => this.accountRepository.signUp(account))
-            .then(account => this.onGetAccount(account, mnemonicPhrase));
+            .then((account) => this.accountRepository.registration(account))
+            .then(this.onGetAccount.bind(this));
     }
 
-    signIn(mnemonicPhrase: string): Promise<Account> {
+    checkAccount(mnemonicPhrase: string): Promise<Account> {
         return this.generateKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
             .then((account: Account) => this.getAccount(mnemonicPhrase, account));
@@ -49,25 +48,20 @@ export default class AccountManager {
     }
 
     private getAccount(secretKey: string, account: Account): Promise<Account> {
-        return this.accountRepository.loadAccount(secretKey)
-            .catch(reason => this.accountRepository.signIn(account))
-            .then((account: Account) => this.onGetAccount(account, secretKey));
+        return this.accountRepository.checkAccount(account)
+            .then(this.onGetAccount.bind(this));
     }
 
     private generateAccount(keyPair: KeyPair): Promise<Account> {
         return new Promise<Account>((resolve) => {
-            const hash: string = CryptoUtils.keccak256(keyPair.privateKey + keyPair.publicKey);
-            resolve(new Account(keyPair.publicKey, hash));
+            resolve(new Account(keyPair.publicKey));
         });
     }
 
-    private onGetAccount(account: Account, secretKey: string): Promise<Account> {
-        return this.accountRepository.saveAccount(account, secretKey)
-            .then((account: Account) => {
-                this.authAccountBehavior.next(account);
-                return account;
-            });
+    private onGetAccount(account: Account): Account {
+        this.authAccountBehavior.next(account);
 
+        return account;
     }
 
 }

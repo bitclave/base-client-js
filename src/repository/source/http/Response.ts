@@ -5,7 +5,12 @@ export default class Response {
 
 
     constructor(json: string, status: number) {
-        this._json = JSON.parse(json);
+        try {
+            this._json = JSON.parse(json);
+        } catch (e) {
+            this._json = json;
+        }
+
         this._status = status;
     }
 

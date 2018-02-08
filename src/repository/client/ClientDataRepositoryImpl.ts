@@ -5,7 +5,8 @@ import JsonUtils from '../../utils/JsonUtils';
 
 export default class ClientDataRepositoryImpl implements ClientDataRepository {
 
-    private readonly CLIENT_DATA: string = '/client/{id}/';
+    private readonly CLIENT_GET_DATA: string = '/client/{pk}/';
+    private readonly CLIENT_SET_DATA: string = '/client/';
 
     private transport: HttpTransport;
 
@@ -13,16 +14,19 @@ export default class ClientDataRepositoryImpl implements ClientDataRepository {
         this.transport = transport;
     }
 
-    getData(id: string): Promise<Map<string, string>> {
+    getData(pk: string): Promise<Map<string, string>> {
         return this.transport
-            .sendRequest(this.CLIENT_DATA.replace('{id}', id), HttpMethod.Get)
+            .sendRequest(
+                this.CLIENT_GET_DATA.replace('{pk}', pk),
+                HttpMethod.Get
+            )
             .then((response) => JsonUtils.jsonToMap<string, string>(response.json));
     }
 
-    updateData(id: string, data: Map<string, string>): Promise<Map<string, string>> {
+    updateData(pk: string, data: Map<string, string>): Promise<Map<string, string>> {
         return this.transport
             .sendRequest(
-                this.CLIENT_DATA.replace('{id}', id),
+                this.CLIENT_SET_DATA,
                 HttpMethod.Patch, JsonUtils.mapToJson(data)
             )
             .then((response) => JsonUtils.jsonToMap<string, string>(response.json));

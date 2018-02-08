@@ -1,17 +1,13 @@
 export default class Account {
 
-    id: string = '';
     publicKey: string = '';
-    hash: string = '';
 
-    constructor(publicKey: string = '', hash: string = '') {
-        this.id = '';
+    constructor(publicKey: string = '') {
         this.publicKey = publicKey;
-        this.hash = hash;
     }
 
     isValid(): boolean {
-        return (this.id !== null && this.id.length == 64);
+        return (this.publicKey !== null && this.publicKey.length == 66);
     }
 
 }

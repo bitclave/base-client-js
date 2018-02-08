@@ -1,6 +1,7 @@
 import { HttpMethod } from './HttpMethod';
 import { HttpTransport } from './HttpTransport';
 import Response from './Response';
+import { HttpInterceptor } from './HttpInterceptor';
 
 let XMLHttpRequest: any;
 
@@ -12,7 +13,9 @@ if ((typeof window !== 'undefined' && (<any>window).XMLHttpRequest)) {
 
 export default class HttpTransportImpl implements HttpTransport {
 
-    private readonly HEADERS: Map<string, string> = new Map<string, string>([
+    private interceptors: Set<HttpInterceptor> = new Set<HttpInterceptor>();
+
+    private headers: Map<string, string> = new Map<string, string>([
         ['Accept', 'application/json'], ['Content-Type', 'application/json']]);
 
     private host: string;
@@ -21,15 +24,30 @@ export default class HttpTransportImpl implements HttpTransport {
         this.host = host;
     }
 
+    addInterceptor(interceptor: HttpInterceptor): HttpTransport {
+        if (!this.interceptors.has(interceptor)) {
+            this.interceptors.add(interceptor);
+        }
+
+        return this;
+    }
+
     sendRequest(method: HttpMethod, data?: any): Promise<Response>
     sendRequest(path: string, method: HttpMethod, data?: any): Promise<Response> {
         return new Promise<Response>((resolve, reject) => {
             try {
+                this.interceptors.forEach(interceptor => {
+                    interceptor.onIntercept(path, this.headers, data);
+                    path = interceptor.getPath();
+                    this.headers = interceptor.getHeaders();
+                    data = interceptor.getData();
+                });
+
                 const url = path ? this.getHost() + path : this.getHost();
                 const request: XMLHttpRequest = new XMLHttpRequest();
                 request.open(method, url);
 
-                this.HEADERS.forEach((value, key) => {
+                this.headers.forEach((value, key) => {
                     request.setRequestHeader(key, value);
                 });
 
