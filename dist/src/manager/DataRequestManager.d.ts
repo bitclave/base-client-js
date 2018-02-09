@@ -1,5 +1,3 @@
-/// <reference types="lodash" />
-import { List } from 'lodash';
 import { DataRequestRepository } from '../repository/requests/DataRequestRepository';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
@@ -10,7 +8,7 @@ export default class DataRequestManager {
     private encrypt;
     private decrypt;
     constructor(dataRequestRepository: DataRequestRepository, encrypt: MessageEncrypt, decrypt: MessageDecrypt);
-    createRequest(recipientPk: string, fields: List<string>): Promise<string>;
+    createRequest(recipientPk: string, fields: Array<string>): Promise<string>;
     responseToRequest(requestId: number, senderPk: string, fields?: Array<string>): Promise<DataRequestState>;
     getRequests(fromPk: string | undefined, toPk: string | undefined, state: DataRequestState): Promise<Array<DataRequest>>;
     decryptMessage<T>(senderPk: string, encrypted: string): T;

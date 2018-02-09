@@ -43396,6 +43396,10 @@ class CryptoUtils {
         const array = CryptoJS.SHA3(message, { outputLength: 256 });
         return array.toString(CryptoJS.enc.Hex);
     }
+    static sha384(message) {
+        const array = CryptoJS.SHA384(message);
+        return array.toString(CryptoJS.enc.Hex);
+    }
     static encryptAes256(message, pass) {
         const ciphertext = CryptoJS.AES.encrypt(message, pass, { outputLength: 256 });
         return ciphertext.toString();
@@ -43405,8 +43409,7 @@ class CryptoUtils {
         return bytes.toString(CryptoJS.enc.Utf8);
     }
     static PBKDF2(password, keySize) {
-        return CryptoJS.PBKDF2(password, CryptoUtils.keccak256(password), { keySize: keySize / 32, iterations: 2048 })
-            .toString(CryptoJS.enc.Hex);
+        return CryptoJS.PBKDF2(password, CryptoUtils.sha384(CryptoUtils.sha384(password)), { keySize: keySize / 32, iterations: 10000 }).toString(CryptoJS.enc.Hex);
     }
 }
 exports.default = CryptoUtils;
@@ -62103,7 +62106,7 @@ class BitKeyPair {
             .toString('base64');
     }
     generatePasswordForFiled(fieldName) {
-        return CryptoUtils_1.default.PBKDF2(this.privateKey.toString(16) + fieldName.toLowerCase(), 256);
+        return CryptoUtils_1.default.PBKDF2(CryptoUtils_1.default.keccak256(this.privateKey.toString(16)) + fieldName.toLowerCase(), 384);
     }
     decryptMessage(senderPk, encrypted) {
         const ecies = ECIES()
