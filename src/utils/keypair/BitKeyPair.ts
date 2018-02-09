@@ -44,11 +44,14 @@ export default class BitKeyPair implements KeyPairHelper {
     }
 
     generatePasswordForFiled(fieldName: String): string {
-        return CryptoUtils.PBKDF2(this.privateKey.toString(16) + fieldName.toLowerCase(), 256);
+        return CryptoUtils.PBKDF2(
+            CryptoUtils.keccak256(this.privateKey.toString(16)) + fieldName.toLowerCase(),
+            384
+        );
     }
 
     decryptMessage(senderPk: string, encrypted: string): string {
-        const ecies = ECIES()
+        const ecies: any = ECIES()
             .privateKey(this.privateKey)
             .publicKey(bitcore.PublicKey.fromString(senderPk));
 

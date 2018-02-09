@@ -8,6 +8,12 @@ export default class CryptoUtils {
         return array.toString(CryptoJS.enc.Hex);
     }
 
+    public static sha384(message: string): string {
+        const array: any = CryptoJS.SHA384(message);
+
+        return array.toString(CryptoJS.enc.Hex);
+    }
+
     public static encryptAes256(message: string, pass: string): string {
         const ciphertext: any = CryptoJS.AES.encrypt(message, pass, {outputLength: 256});
 
@@ -21,8 +27,11 @@ export default class CryptoUtils {
     }
 
     public static PBKDF2(password: string, keySize: number): string { //for generate private key
-        return CryptoJS.PBKDF2(password, CryptoUtils.keccak256(password), {keySize: keySize / 32, iterations: 2048})
-            .toString(CryptoJS.enc.Hex);
+        return CryptoJS.PBKDF2(
+            password,
+            CryptoUtils.sha384(CryptoUtils.sha384(password)),
+            {keySize: keySize / 32, iterations: 10000}
+        ).toString(CryptoJS.enc.Hex);
     }
 
 }

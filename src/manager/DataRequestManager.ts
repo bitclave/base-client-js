@@ -1,4 +1,3 @@
-import { List } from 'lodash';
 import { DataRequestRepository } from '../repository/requests/DataRequestRepository';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
@@ -19,7 +18,7 @@ export default class DataRequestManager {
         this.decrypt = decrypt;
     }
 
-    public createRequest(recipientPk: string, fields: List<string>): Promise<string> {
+    public createRequest(recipientPk: string, fields: Array<string>): Promise<string> {
         const encrypted = this.encrypt
             .encryptMessage(recipientPk, JSON.stringify(fields).toLowerCase());
 
