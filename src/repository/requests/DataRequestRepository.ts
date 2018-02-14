@@ -7,6 +7,6 @@ export interface DataRequestRepository {
 
     createResponse(requestId: number, encryptedResponse: string | null): Promise<DataRequestState>;
 
-    getRequests(fromPk: string | null, toPk: string | null , state: DataRequestState): Promise<Array<DataRequest>>
+    getRequests(fromPk: string | null, toPk: string | null, state: DataRequestState): Promise<Array<DataRequest>>
 
 }

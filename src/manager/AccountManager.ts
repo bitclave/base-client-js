@@ -1,5 +1,4 @@
 import { AccountRepository } from '../repository/account/AccountRepository';
-import Profile from '../repository/models/Profile';
 import Account from '../repository/models/Account';
 import KeyPair from '../utils/keypair/KeyPair';
 import { KeyPairHelper } from '../utils/keypair/KeyPairHelper';
@@ -8,7 +7,6 @@ import { BehaviorSubject } from 'rxjs/Rx';
 export default class AccountManager {
 
     private accountRepository: AccountRepository;
-    private profile: Profile;
     private keyPairCreator: KeyPairHelper;
     private authAccountBehavior: BehaviorSubject<Account>;
 
@@ -30,15 +28,7 @@ export default class AccountManager {
     checkAccount(mnemonicPhrase: string): Promise<Account> {
         return this.generateKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
-            .then((account: Account) => this.getAccount(mnemonicPhrase, account));
-    }
-
-    getProfile(): Profile {
-        return this.profile;
-    }
-
-    hasActiveAccount(): boolean {
-        return this.profile != null && this.profile.account != null;
+            .then(this.getAccount.bind(this));
     }
 
     private generateKeyPair(mnemonicPhrase: string): Promise<KeyPair> {
@@ -47,7 +37,7 @@ export default class AccountManager {
         });
     }
 
-    private getAccount(secretKey: string, account: Account): Promise<Account> {
+    private getAccount(account: Account): Promise<Account> {
         return this.accountRepository.checkAccount(account)
             .then(this.onGetAccount.bind(this));
     }

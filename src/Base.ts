@@ -19,6 +19,8 @@ import { MessageEncrypt } from './utils/keypair/MessageEncrypt';
 import { MessageDecrypt } from './utils/keypair/MessageDecrypt';
 import { MessageSigner } from './utils/keypair/MessageSigner';
 
+export { DataRequestState } from './repository/models/DataRequestState';
+
 export default class Base {
 
     private _wallet: Wallet;

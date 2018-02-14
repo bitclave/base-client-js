@@ -66,8 +66,7 @@ export default class ProfileManager {
             .then(encrypted => this.clientDataRepository.updateData(this.account.publicKey, encrypted));
     }
 
-    private prepareData(data: Map<string, string>,
-                        encrypt: boolean): Promise<Map<string, string>> {
+    private prepareData(data: Map<string, string>, encrypt: boolean): Promise<Map<string, string>> {
         return new Promise<Map<string, string>>(resolve => {
             const result: Map<string, string> = new Map<string, string>();
             let pass;

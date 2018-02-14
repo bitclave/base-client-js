@@ -41,13 +41,13 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
     getRequests(fromPk: string | null, toPk: string | null, state: DataRequestState): Promise<Array<DataRequest>> {
         let path: string = '';
 
-        if (fromPk != null && toPk != null) {
+        if (!this.isEmpty(fromPk) && !this.isEmpty(toPk)) {
             path = this.GET_DATA_REQUEST_FROM_TO;
 
-        } else if (fromPk != null && toPk == null) {
+        } else if (!this.isEmpty(fromPk) && this.isEmpty(toPk)) {
             path = this.GET_DATA_REQUEST_FORM;
 
-        } else if (fromPk == null && toPk != null) {
+        } else if (this.isEmpty(fromPk) && !this.isEmpty(toPk)) {
             path = this.GET_DATA_REQUEST_TO;
         }
 
@@ -60,6 +60,10 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
                 path,
                 HttpMethod.Get
             ).then((response) => Object.assign([], response.json));
+    }
+
+    private isEmpty(value: string | null): boolean {
+        return value == null || value.trim().length === 0;
     }
 
 }
