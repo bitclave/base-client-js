@@ -66,7 +66,7 @@ export default class Auth extends React.Component<Props> {
         this.baseManager.signIn(this.mnemonicPhrase)
             .then(account => history.replace('dashboard'))
             .catch(response => {
-                if (response.json.status === 405) {
+                if (response.json.status === 404) {
                     alert('User not found');
                 } else {
                     alert('message: ' + response.json.error);

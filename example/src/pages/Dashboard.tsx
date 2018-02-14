@@ -8,15 +8,49 @@ import Input from 'reactstrap/lib/Input';
 import Row from 'reactstrap/lib/Row';
 import Col from 'reactstrap/lib/Col';
 import { lazyInject } from '../Injections';
-import BaseManager from '../manager/BaseManager';
+import BaseManager, { SyncDataListener } from '../manager/BaseManager';
 import ClientDataList from '../components/lists/ClientDataList';
+import { RouteComponentProps } from 'react-router';
+import ButtonGroup from 'reactstrap/lib/ButtonGroup';
+import Badge from 'reactstrap/lib/Badge';
+import DataRequest from 'base/repository/models/DataRequest';
+import { DataRequestState } from 'base';
 
-export default class Dashboard extends React.Component {
+interface Props extends RouteComponentProps<{}> {
+}
+
+interface State {
+    inputKey: string;
+    inputValue: string;
+    numberRequests: number;
+    numberResponses: number;
+}
+
+export default class Dashboard extends React.Component<Props, State> implements SyncDataListener {
 
     @lazyInject(BaseManager)
     baseManager: BaseManager;
 
     clientData: Map<string, string> = new Map();
+
+    constructor(props: Props) {
+        super(props);
+        this.state = {
+            inputKey: '',
+            inputValue: '',
+            numberRequests: 0,
+            numberResponses: 0,
+        };
+    }
+
+    componentDidMount() {
+        this.baseManager.addSyncDataListener(this);
+        this.getDataList();
+    }
+
+    componentWillUnmount() {
+        this.baseManager.removeSyncDataListener(this);
+    }
 
     render() {
         return (
@@ -25,20 +59,41 @@ export default class Dashboard extends React.Component {
                     Logout
                 </Button>
 
+                <ButtonGroup className="m-2 btn-group-toggle justify-content-center">
+                    <Button color="primary" onClick={e => this.onRequestsClick()}>
+                        Requests <Badge color="secondary">{this.state.numberRequests}</Badge>
+                    </Button>{''}
+                    <Button color="primary" onClick={e => this.onResponsesClick()}>
+                        Responses <Badge color="secondary">{this.state.numberResponses}</Badge>
+                    </Button>{''}
+                    <Button color="primary" onClick={e => this.onCreateRequestClick()}>
+                        Create request
+                    </Button>
+                </ButtonGroup>
+
                 <Container className="h-100 align-items-center">
                     <div className="row h-100 justify-content-center align-items-center">
                         <Form>
                             <FormGroup>
                                 <Row>
                                     <Col className="p-0" xs="6" sm="4">
-                                        <Input placeholder="key"/>
+                                        <Input
+                                            value={this.state.inputKey || ''}
+                                            placeholder="key"
+                                            onChange={e => this.onChangeKey(e.target.value)}
+                                        />
                                     </Col>
                                     <Col className="p-0" xs="6" sm="4">
-                                        <Input placeholder="value"/>
+                                        <Input
+                                            value={this.state.inputValue || ''}
+                                            placeholder="value"
+                                            onChange={e => this.onChangeValue(e.target.value)}
+                                        />
                                     </Col>
-                                    <Col sm="4"><Button color="primary" onClick={(e) => this.onAddClick()}>
-                                        Add
-                                    </Button>
+                                    <Col sm="4">
+                                        <Button color="primary" onClick={e => this.onSetClick()}>
+                                            Set
+                                        </Button>
                                     </Col>
                                 </Row>
                             </FormGroup>
@@ -48,6 +103,9 @@ export default class Dashboard extends React.Component {
                                 data={this.clientData}
                                 onDeleteClick={(key: string) => this.onDeleteClick(key)}
                             />
+                            <Button color="primary" className="m-2 float-right" onClick={e => this.onSaveClick()}>
+                                Save
+                            </Button>
                         </Form>
                     </div>
                 </Container>
@@ -55,30 +113,80 @@ export default class Dashboard extends React.Component {
         );
     }
 
-    componentWillMount() {
-        this.getDataList();
-    }
+    async onSyncData(result: Array<DataRequest>) {
+        let countRequests = 0;
+        let countResponses = 0;
+        result.forEach(item => {
+            if (item.state === DataRequestState.ACCEPT || item.state === DataRequestState.REJECT) {
+                countResponses++;
+            } else if (item.state === DataRequestState.AWAIT) {
+                countRequests++;
+            }
+        });
 
-    getDataList() {
-        this.baseManager.loadClientData().then(data => {
-            this.clientData = data;
-
-            this.setState({data: this.clientData});
-        }).catch(response => {
-            alert('message: ' + response);
+        this.setState({
+            numberRequests: countRequests,
+            numberResponses: countResponses,
         });
     }
 
-    onLogoutClick() {
-     // dasd
+    private async getDataList() {
+        return this.baseManager.loadClientData()
+            .then(data => this.clientData = data)
+            .catch(response => console.log('message: ' + JSON.stringify(response)));
     }
 
-    onAddClick() {
-        // dsd
+    private onChangeKey(key: string) {
+        this.setState({inputKey: key});
     }
 
-    onDeleteClick(key: string) {
-        console.log(this.baseManager);
+    private onChangeValue(value: string) {
+        this.setState({inputValue: value});
+    }
+
+    private onLogoutClick() {
+        const {history} = this.props;
+        history.replace('/');
+    }
+
+    private onRequestsClick() {
+        const {history} = this.props;
+        history.push('requests');
+    }
+
+    private onResponsesClick() {
+        const {history} = this.props;
+        history.push('responses');
+    }
+
+    private onCreateRequestClick() {
+        const {history} = this.props;
+        history.push('create-request');
+    }
+
+    private onSaveClick() {
+        this.baseManager.saveData(this.clientData)
+            .then(result => alert('data has been saved'))
+            .catch(e => alert('Something went wrong! data not saved! =('));
+    }
+
+    private onSetClick() {
+        const {inputKey, inputValue} = this.state;
+        if (inputKey == null
+            || inputKey.trim().length === 0
+            || inputValue == null
+            || inputValue.trim().length === 0) {
+            alert('The key and value must not be empty');
+            return;
+        }
+
+        this.clientData.set(inputKey, inputValue);
+        this.setState({inputKey: '', inputValue: ''});
+    }
+
+    private onDeleteClick(key: string) {
+        this.clientData.delete(key);
+        this.setState({});
     }
 
 }

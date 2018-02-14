@@ -9,3 +9,8 @@ body, html {
 body > #root > div {
     height: 100vh;
 }
+
+.checkbox-default {
+    position: absolute;
+    margin: 8px;
+}

@@ -7,7 +7,7 @@ import Row from 'reactstrap/lib/Row';
 interface Prop {
     name: string;
     value: string;
-    onDeleteClick: Function|null;
+    onDeleteClick: Function | null;
 }
 
 export default class ClientDataHolder extends React.Component<Prop, {}> {

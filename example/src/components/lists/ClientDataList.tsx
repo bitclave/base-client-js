@@ -6,7 +6,7 @@ interface Properties {
     onDeleteClick: Function;
 }
 
-export default class ClientDataList extends React.Component<Properties, {}> {
+export default class ClientDataList extends React.Component<Properties> {
 
     render() {
         return (
@@ -18,16 +18,22 @@ export default class ClientDataList extends React.Component<Properties, {}> {
 
     bindItems() {
         const {data, onDeleteClick} = this.props;
-        const result: Array<Object> = [];
+        const result: Array<object> = [];
         let index: number = 0;
         let item: object;
 
         data.forEach((value: string, key: string) => {
-            item = <ClientDataHolder name={key} value={value} onDeleteClick={() => onDeleteClick(key)} key={index}/>;
+            item = (
+                <ClientDataHolder
+                    name={key}
+                    value={value}
+                    onDeleteClick={() => onDeleteClick(key)}
+                    key={index}
+                />
+            );
             result.push(item);
             index++;
         });
-
         return result;
     }
 

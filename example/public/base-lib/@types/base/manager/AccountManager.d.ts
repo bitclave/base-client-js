@@ -1,18 +1,16 @@
-import { Auth } from '../repository/auth/Auth';
-import { ClientData } from '../repository/client/ClientData';
-import Profile from '../repository/models/Profile';
+import { AccountRepository } from '../repository/account/AccountRepository';
 import Account from '../repository/models/Account';
+import { KeyPairHelper } from '../utils/keypair/KeyPairHelper';
+import { BehaviorSubject } from 'rxjs/Rx';
 export default class AccountManager {
-    private auth;
-    private clientData;
-    private profile;
-    constructor(auth: Auth, clientData: ClientData);
-    signUp(mnemonicPhrase: string): Promise<Account>;
-    signIn(mnemonicPhrase: string): Promise<Account>;
-    getProfile(): Profile;
-    hasActiveAccount(): boolean;
+    private accountRepository;
+    private keyPairCreator;
+    private authAccountBehavior;
+    constructor(auth: AccountRepository, keyPairCreator: KeyPairHelper, authAccountBehavior: BehaviorSubject<Account>);
+    registration(mnemonicPhrase: string): Promise<Account>;
+    checkAccount(mnemonicPhrase: string): Promise<Account>;
     private generateKeyPair(mnemonicPhrase);
-    private getAccount(secretKey, account);
+    private getAccount(account);
     private generateAccount(keyPair);
-    private onGetAccount(account, secretKey);
+    private onGetAccount(account);
 }
