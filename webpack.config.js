@@ -8,6 +8,7 @@ module.exports = {
         fs: 'empty',
         child_process: 'empty'
     },
+    target: 'node',
     module: {
         rules: [
             {
