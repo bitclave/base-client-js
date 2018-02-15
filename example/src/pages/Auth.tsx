@@ -6,6 +6,7 @@ import Form from 'reactstrap/lib/Form';
 import { RouteComponentProps } from 'react-router';
 import { lazyInject } from '../Injections';
 import BaseManager from '../manager/BaseManager';
+import { FormEvent } from 'react';
 
 interface Props extends RouteComponentProps<{}> {
 }
@@ -20,7 +21,7 @@ export default class Auth extends React.Component<Props> {
     render() {
         return (
             <div className="d-flex align-items-center flex-column justify-content-center h-100">
-                <Form>
+                <Form onSubmit={e => this.onSubmit(e)}>
                     <FormGroup>
                         <Input
                             onChange={e => this.onChangeMnemonic(e.target.value)}
@@ -44,11 +45,16 @@ export default class Auth extends React.Component<Props> {
         );
     }
 
-    onChangeMnemonic(mnemonicPhrase: string) {
+    private onSubmit(e: FormEvent<HTMLFormElement>) {
+        this.onSingIn();
+        e.preventDefault();
+    }
+
+    private onChangeMnemonic(mnemonicPhrase: string) {
         this.mnemonicPhrase = mnemonicPhrase;
     }
 
-    onSingUp() {
+    private onSingUp() {
         const {history} = this.props;
         this.baseManager.signUp(this.mnemonicPhrase)
             .then(account => history.replace('dashboard'))
@@ -61,7 +67,7 @@ export default class Auth extends React.Component<Props> {
             });
     }
 
-    onSingIn() {
+    private onSingIn() {
         const {history} = this.props;
         this.baseManager.signIn(this.mnemonicPhrase)
             .then(account => history.replace('dashboard'))

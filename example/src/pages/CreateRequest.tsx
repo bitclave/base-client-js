@@ -9,6 +9,7 @@ import Input from 'reactstrap/lib/Input';
 import { lazyInject } from '../Injections';
 import BaseManager from '../manager/BaseManager';
 import Container from 'reactstrap/lib/Container';
+import { FormEvent } from 'react';
 
 interface Props extends RouteComponentProps<{}> {
 }
@@ -43,7 +44,7 @@ export default class CreateRequest extends React.Component<Props, State> {
                 <Container className="h-100 p-4">
 
                     <div className="h-100 justify-content-center align-items-center">
-                        <Form>
+                        <Form onSubmit={e => this.onSubmitSearch(e)}>
                             <InputGroup>
                                 <Input
                                     value={this.state.searchClientId}
@@ -51,7 +52,7 @@ export default class CreateRequest extends React.Component<Props, State> {
                                     placeholder="client id"
                                 />
                                 <InputGroupAddon addonType="prepend">
-                                    <Button color="primary" onClick={e => this.onClickSearch()}>Search</Button>
+                                    <Button color="primary" onClick={e => this.onSearchClick()}>Search</Button>
                                 </InputGroupAddon>
                             </InputGroup>
 
@@ -73,6 +74,11 @@ export default class CreateRequest extends React.Component<Props, State> {
                 </Container>
             </div>
         );
+    }
+
+    private onSubmitSearch(e: FormEvent<HTMLFormElement>) {
+        this.onSearchClick();
+        e.preventDefault();
     }
 
     private onBackClick() {
@@ -110,7 +116,7 @@ export default class CreateRequest extends React.Component<Props, State> {
         this.setState({searchClientId: '', clientFields: []});
     }
 
-    private onClickSearch() {
+    private onSearchClick() {
         this.clientCheckedFields.clear();
         this.setState({clientFields: []});
 

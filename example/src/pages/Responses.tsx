@@ -70,10 +70,10 @@ export default class Responses extends React.Component<Props, State> implements 
     private prepareResponseData(item: DataRequest): Promise<ResponseModel> {
         return this.baseManager.getAuthorizedData(item.toPk, item.responseData)
             .then(result => {
-                return new ResponseModel(item.id, item.fromPk, result, item.state);
+                return new ResponseModel(item.id, item.toPk, result, item.state);
             })
             .catch(reason => {
-                return new ResponseModel(item.id, item.fromPk, new Map(), item.state);
+                return new ResponseModel(item.id, item.toPk, new Map(), item.state);
             });
     }
 

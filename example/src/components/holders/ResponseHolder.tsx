@@ -13,7 +13,7 @@ export default class ResponseHolder extends React.Component<Prop, {}> {
     render() {
         return (
             <Row>
-                <Col className="client-data-item-field" xs="auto">{this.props.model.from}</Col>
+                <Col className="client-data-item-field col-7" >{this.props.model.from}</Col>
                 <Col className="client-data-item-field" xs="3">{this.prepareFields()}</Col>
                 <Col
                     className={this.stateStyle()}
