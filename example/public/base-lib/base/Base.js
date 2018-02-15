@@ -29043,15 +29043,17 @@ exports.reduce = reduce;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-class Account {
-    constructor(publicKey = '') {
+var Account = /** @class */ (function () {
+    function Account(publicKey) {
+        if (publicKey === void 0) { publicKey = ''; }
         this.publicKey = '';
         this.publicKey = publicKey;
     }
-    isValid() {
+    Account.prototype.isValid = function () {
         return (this.publicKey !== null && this.publicKey.length == 66);
-    }
-}
+    };
+    return Account;
+}());
 exports.default = Account;
 
 
@@ -30941,20 +30943,23 @@ var HttpMethod;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-class JsonUtils {
-    static jsonToMap(json) {
-        const map = new Map();
-        Object.keys(json).forEach((key) => map.set(key, json[key]));
-        return map;
+var JsonUtils = /** @class */ (function () {
+    function JsonUtils() {
     }
-    static mapToJson(map) {
-        const result = {};
-        map.forEach((value, key) => {
+    JsonUtils.jsonToMap = function (json) {
+        var map = new Map();
+        Object.keys(json).forEach(function (key) { return map.set(key, json[key]); });
+        return map;
+    };
+    JsonUtils.mapToJson = function (map) {
+        var result = {};
+        map.forEach(function (value, key) {
             result[key] = value;
         });
         return result;
-    }
-}
+    };
+    return JsonUtils;
+}());
 exports.default = JsonUtils;
 
 
@@ -35298,28 +35303,31 @@ module.exports = require("url");
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const CryptoJS = __webpack_require__(240);
-class CryptoUtils {
-    static keccak256(message) {
-        const array = CryptoJS.SHA3(message, { outputLength: 256 });
-        return array.toString(CryptoJS.enc.Hex);
+var CryptoJS = __webpack_require__(240);
+var CryptoUtils = /** @class */ (function () {
+    function CryptoUtils() {
     }
-    static sha384(message) {
-        const array = CryptoJS.SHA384(message);
+    CryptoUtils.keccak256 = function (message) {
+        var array = CryptoJS.SHA3(message, { outputLength: 256 });
         return array.toString(CryptoJS.enc.Hex);
-    }
-    static encryptAes256(message, pass) {
-        const ciphertext = CryptoJS.AES.encrypt(message, pass, { outputLength: 256 });
+    };
+    CryptoUtils.sha384 = function (message) {
+        var array = CryptoJS.SHA384(message);
+        return array.toString(CryptoJS.enc.Hex);
+    };
+    CryptoUtils.encryptAes256 = function (message, pass) {
+        var ciphertext = CryptoJS.AES.encrypt(message, pass, { outputLength: 256 });
         return ciphertext.toString();
-    }
-    static decryptAes256(ciphertext, pass) {
-        const bytes = CryptoJS.AES.decrypt(ciphertext, pass, { outputLength: 256 });
+    };
+    CryptoUtils.decryptAes256 = function (ciphertext, pass) {
+        var bytes = CryptoJS.AES.decrypt(ciphertext, pass, { outputLength: 256 });
         return bytes.toString(CryptoJS.enc.Utf8);
-    }
-    static PBKDF2(password, keySize) {
+    };
+    CryptoUtils.PBKDF2 = function (password, keySize) {
         return CryptoJS.PBKDF2(password, CryptoUtils.sha384(CryptoUtils.sha384(password)), { keySize: keySize / 32, iterations: 10000 }).toString(CryptoJS.enc.Hex);
-    }
-}
+    };
+    return CryptoUtils;
+}());
 exports.default = CryptoUtils;
 
 
@@ -48943,50 +48951,67 @@ exports.VirtualAction = VirtualAction;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const HttpTransportImpl_1 = __webpack_require__(227);
-const AuthRepositoryImpl_1 = __webpack_require__(234);
-const ClientDataRepositoryImpl_1 = __webpack_require__(235);
-const Wallet_1 = __webpack_require__(236);
-const AccountManager_1 = __webpack_require__(237);
-const KeyPairFactory_1 = __webpack_require__(238);
-const Rx_1 = __webpack_require__(312);
-const ProfileManager_1 = __webpack_require__(598);
-const Account_1 = __webpack_require__(58);
-const SignInterceptor_1 = __webpack_require__(599);
-const DataRequestManager_1 = __webpack_require__(601);
-const DataRequestRepositoryImpl_1 = __webpack_require__(602);
+var HttpTransportImpl_1 = __webpack_require__(227);
+var AuthRepositoryImpl_1 = __webpack_require__(234);
+var ClientDataRepositoryImpl_1 = __webpack_require__(235);
+var Wallet_1 = __webpack_require__(236);
+var AccountManager_1 = __webpack_require__(237);
+var KeyPairFactory_1 = __webpack_require__(238);
+var Rx_1 = __webpack_require__(312);
+var ProfileManager_1 = __webpack_require__(598);
+var Account_1 = __webpack_require__(58);
+var SignInterceptor_1 = __webpack_require__(599);
+var DataRequestManager_1 = __webpack_require__(601);
+var DataRequestRepositoryImpl_1 = __webpack_require__(602);
 var DataRequestState_1 = __webpack_require__(108);
 exports.DataRequestState = DataRequestState_1.DataRequestState;
-class Base {
-    constructor(host) {
+var Base = /** @class */ (function () {
+    function Base(host) {
         this._authAccountBehavior = new Rx_1.BehaviorSubject(new Account_1.default());
-        const keyPairHelper = KeyPairFactory_1.default.getDefaultKeyPairCreator();
-        const messageSigner = keyPairHelper;
-        const encryptMessage = keyPairHelper;
-        const decryptMessage = keyPairHelper;
-        const transport = new HttpTransportImpl_1.default(host)
+        var keyPairHelper = KeyPairFactory_1.default.getDefaultKeyPairCreator();
+        var messageSigner = keyPairHelper;
+        var encryptMessage = keyPairHelper;
+        var decryptMessage = keyPairHelper;
+        var transport = new HttpTransportImpl_1.default(host)
             .addInterceptor(new SignInterceptor_1.default(messageSigner));
-        const accountRepository = new AuthRepositoryImpl_1.default(transport);
-        const clientDataRepository = new ClientDataRepositoryImpl_1.default(transport);
-        const dataRequestRepository = new DataRequestRepositoryImpl_1.default(transport);
+        var accountRepository = new AuthRepositoryImpl_1.default(transport);
+        var clientDataRepository = new ClientDataRepositoryImpl_1.default(transport);
+        var dataRequestRepository = new DataRequestRepositoryImpl_1.default(transport);
         this._wallet = new Wallet_1.default();
         this._accountManager = new AccountManager_1.default(accountRepository, keyPairHelper, this._authAccountBehavior);
         this._profileManager = new ProfileManager_1.default(clientDataRepository, this._authAccountBehavior.asObservable(), encryptMessage, decryptMessage);
         this._dataRequestManager = new DataRequestManager_1.default(dataRequestRepository, encryptMessage, decryptMessage);
     }
-    get wallet() {
-        return this._wallet;
-    }
-    get accountManager() {
-        return this._accountManager;
-    }
-    get profileManager() {
-        return this._profileManager;
-    }
-    get dataRequestManager() {
-        return this._dataRequestManager;
-    }
-}
+    Object.defineProperty(Base.prototype, "wallet", {
+        get: function () {
+            return this._wallet;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Base.prototype, "accountManager", {
+        get: function () {
+            return this._accountManager;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Base.prototype, "profileManager", {
+        get: function () {
+            return this._profileManager;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Base.prototype, "dataRequestManager", {
+        get: function () {
+            return this._dataRequestManager;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return Base;
+}());
 exports.default = Base;
 
 
@@ -48997,67 +49022,69 @@ exports.default = Base;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const Response_1 = __webpack_require__(228);
-let XMLHttpRequest;
+var Response_1 = __webpack_require__(228);
+var XMLHttpRequest;
 if ((typeof window !== 'undefined' && window.XMLHttpRequest)) {
     XMLHttpRequest = window.XMLHttpRequest;
 }
 else {
     XMLHttpRequest = __webpack_require__(229).XMLHttpRequest;
 }
-class HttpTransportImpl {
-    constructor(host) {
+var HttpTransportImpl = /** @class */ (function () {
+    function HttpTransportImpl(host) {
         this.interceptors = new Set();
         this.headers = new Map([
             ['Accept', 'application/json'], ['Content-Type', 'application/json']
         ]);
         this.host = host;
     }
-    addInterceptor(interceptor) {
+    HttpTransportImpl.prototype.addInterceptor = function (interceptor) {
         if (!this.interceptors.has(interceptor)) {
             this.interceptors.add(interceptor);
         }
         return this;
-    }
-    sendRequest(path, method, data) {
-        return new Promise((resolve, reject) => {
+    };
+    HttpTransportImpl.prototype.sendRequest = function (path, method, data) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
             try {
-                this.interceptors.forEach(interceptor => {
-                    interceptor.onIntercept(path, this.headers, data);
+                _this.interceptors.forEach(function (interceptor) {
+                    interceptor.onIntercept(path, _this.headers, data);
                     path = interceptor.getPath();
-                    this.headers = interceptor.getHeaders();
+                    _this.headers = interceptor.getHeaders();
                     data = interceptor.getData();
                 });
-                const url = path ? this.getHost() + path : this.getHost();
-                const request = new XMLHttpRequest();
-                request.open(method, url);
-                this.headers.forEach((value, key) => {
-                    request.setRequestHeader(key, value);
+                var url = path ? _this.getHost() + path : _this.getHost();
+                var request_1 = new XMLHttpRequest();
+                request_1.open(method, url);
+                _this.headers.forEach(function (value, key) {
+                    request_1.setRequestHeader(key, value);
                 });
-                request.onload = () => {
-                    const result = new Response_1.default(request.responseText, request.status);
-                    if (request.status >= 200 && request.status < 300) {
+                request_1.onload = function () {
+                    var result = new Response_1.default(request_1.responseText, request_1.status);
+                    if (request_1.status >= 200 && request_1.status < 300) {
                         resolve(result);
                     }
                     else {
                         reject(result);
                     }
                 };
-                request.onerror = () => {
-                    const result = new Response_1.default(request.responseText, request.status);
+                request_1.onerror = function () {
+                    var result = new Response_1.default(request_1.responseText, request_1.status);
                     reject(result);
                 };
-                request.send(JSON.stringify(data ? data : {}));
+                request_1.send(JSON.stringify(data ? data : {}));
             }
             catch (e) {
                 reject(e);
             }
         });
-    }
-    getHost() {
+    };
+    HttpTransportImpl.prototype.getHost = function () {
         return this.host;
-    }
-}
+    };
+    return HttpTransportImpl;
+}());
 exports.default = HttpTransportImpl;
 
 
@@ -49068,8 +49095,8 @@ exports.default = HttpTransportImpl;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-class Response {
-    constructor(json, status) {
+var Response = /** @class */ (function () {
+    function Response(json, status) {
         try {
             this._json = JSON.parse(json);
         }
@@ -49078,13 +49105,22 @@ class Response {
         }
         this._status = status;
     }
-    get json() {
-        return this._json;
-    }
-    get status() {
-        return this._status;
-    }
-}
+    Object.defineProperty(Response.prototype, "json", {
+        get: function () {
+            return this._json;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Response.prototype, "status", {
+        get: function () {
+            return this._status;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return Response;
+}());
 exports.default = Response;
 
 
@@ -49745,25 +49781,26 @@ module.exports = require("https");
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const HttpMethod_1 = __webpack_require__(77);
-const Account_1 = __webpack_require__(58);
-class AccountRepositoryImpl {
-    constructor(transport) {
+var HttpMethod_1 = __webpack_require__(77);
+var Account_1 = __webpack_require__(58);
+var AccountRepositoryImpl = /** @class */ (function () {
+    function AccountRepositoryImpl(transport) {
         this.SIGN_UP = '/registration';
         this.SIGN_IN = '/exist';
         this.transport = transport;
     }
-    registration(account) {
+    AccountRepositoryImpl.prototype.registration = function (account) {
         return this.transport
             .sendRequest(this.SIGN_UP, HttpMethod_1.HttpMethod.Post, account)
-            .then((response) => Object.assign(new Account_1.default(), response.json));
-    }
-    checkAccount(account) {
+            .then(function (response) { return Object.assign(new Account_1.default(), response.json); });
+    };
+    AccountRepositoryImpl.prototype.checkAccount = function (account) {
         return this.transport
             .sendRequest(this.SIGN_IN, HttpMethod_1.HttpMethod.Post, account)
-            .then((response) => Object.assign(new Account_1.default(), response.json));
-    }
-}
+            .then(function (response) { return Object.assign(new Account_1.default(), response.json); });
+    };
+    return AccountRepositoryImpl;
+}());
 exports.default = AccountRepositoryImpl;
 
 
@@ -49774,25 +49811,26 @@ exports.default = AccountRepositoryImpl;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const HttpMethod_1 = __webpack_require__(77);
-const JsonUtils_1 = __webpack_require__(78);
-class ClientDataRepositoryImpl {
-    constructor(transport) {
+var HttpMethod_1 = __webpack_require__(77);
+var JsonUtils_1 = __webpack_require__(78);
+var ClientDataRepositoryImpl = /** @class */ (function () {
+    function ClientDataRepositoryImpl(transport) {
         this.CLIENT_GET_DATA = '/client/{pk}/';
         this.CLIENT_SET_DATA = '/client/';
         this.transport = transport;
     }
-    getData(pk) {
+    ClientDataRepositoryImpl.prototype.getData = function (pk) {
         return this.transport
             .sendRequest(this.CLIENT_GET_DATA.replace('{pk}', pk), HttpMethod_1.HttpMethod.Get)
-            .then((response) => JsonUtils_1.default.jsonToMap(response.json));
-    }
-    updateData(pk, data) {
+            .then(function (response) { return JsonUtils_1.default.jsonToMap(response.json); });
+    };
+    ClientDataRepositoryImpl.prototype.updateData = function (pk, data) {
         return this.transport
             .sendRequest(this.CLIENT_SET_DATA, HttpMethod_1.HttpMethod.Patch, JsonUtils_1.default.mapToJson(data))
-            .then((response) => JsonUtils_1.default.jsonToMap(response.json));
-    }
-}
+            .then(function (response) { return JsonUtils_1.default.jsonToMap(response.json); });
+    };
+    return ClientDataRepositoryImpl;
+}());
 exports.default = ClientDataRepositoryImpl;
 
 
@@ -49803,12 +49841,15 @@ exports.default = ClientDataRepositoryImpl;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-class Wallet {
-    createWallet() {
-        return new Promise((resolve, reject) => {
-        });
+var Wallet = /** @class */ (function () {
+    function Wallet() {
     }
-}
+    Wallet.prototype.createWallet = function () {
+        return new Promise(function (resolve, reject) {
+        });
+    };
+    return Wallet;
+}());
 exports.default = Wallet;
 
 
@@ -49819,43 +49860,46 @@ exports.default = Wallet;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const Account_1 = __webpack_require__(58);
-class AccountManager {
-    constructor(auth, keyPairCreator, authAccountBehavior) {
+var Account_1 = __webpack_require__(58);
+var AccountManager = /** @class */ (function () {
+    function AccountManager(auth, keyPairCreator, authAccountBehavior) {
         this.accountRepository = auth;
         this.keyPairCreator = keyPairCreator;
         this.authAccountBehavior = authAccountBehavior;
     }
-    registration(mnemonicPhrase) {
+    AccountManager.prototype.registration = function (mnemonicPhrase) {
+        var _this = this;
         return this.generateKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
-            .then((account) => this.accountRepository.registration(account))
+            .then(function (account) { return _this.accountRepository.registration(account); })
             .then(this.onGetAccount.bind(this));
-    }
-    checkAccount(mnemonicPhrase) {
+    };
+    AccountManager.prototype.checkAccount = function (mnemonicPhrase) {
         return this.generateKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
             .then(this.getAccount.bind(this));
-    }
-    generateKeyPair(mnemonicPhrase) {
-        return new Promise(resolve => {
-            resolve(this.keyPairCreator.createKeyPair(mnemonicPhrase));
+    };
+    AccountManager.prototype.generateKeyPair = function (mnemonicPhrase) {
+        var _this = this;
+        return new Promise(function (resolve) {
+            resolve(_this.keyPairCreator.createKeyPair(mnemonicPhrase));
         });
-    }
-    getAccount(account) {
+    };
+    AccountManager.prototype.getAccount = function (account) {
         return this.accountRepository.checkAccount(account)
             .then(this.onGetAccount.bind(this));
-    }
-    generateAccount(keyPair) {
-        return new Promise((resolve) => {
+    };
+    AccountManager.prototype.generateAccount = function (keyPair) {
+        return new Promise(function (resolve) {
             resolve(new Account_1.default(keyPair.publicKey));
         });
-    }
-    onGetAccount(account) {
+    };
+    AccountManager.prototype.onGetAccount = function (account) {
         this.authAccountBehavior.next(account);
         return account;
-    }
-}
+    };
+    return AccountManager;
+}());
 exports.default = AccountManager;
 
 
@@ -49866,12 +49910,15 @@ exports.default = AccountManager;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const BitKeyPair_1 = __webpack_require__(239);
-class KeyPairFactory {
-    static getDefaultKeyPairCreator() {
-        return new BitKeyPair_1.default();
+var BitKeyPair_1 = __webpack_require__(239);
+var KeyPairFactory = /** @class */ (function () {
+    function KeyPairFactory() {
     }
-}
+    KeyPairFactory.getDefaultKeyPairCreator = function () {
+        return new BitKeyPair_1.default();
+    };
+    return KeyPairFactory;
+}());
 exports.default = KeyPairFactory;
 
 
@@ -49882,48 +49929,51 @@ exports.default = KeyPairFactory;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const CryptoUtils_1 = __webpack_require__(110);
-const KeyPair_1 = __webpack_require__(264);
-const bitcore = __webpack_require__(30);
-const Message = __webpack_require__(303);
-const ECIES = __webpack_require__(305);
-class BitKeyPair {
-    createKeyPair(passPhrase) {
-        const pbkdf2 = CryptoUtils_1.default.PBKDF2(passPhrase, 256);
-        const hash = bitcore.crypto.Hash.sha256(new bitcore.deps.Buffer(pbkdf2));
-        const bn = bitcore.crypto.BN.fromBuffer(hash);
+var CryptoUtils_1 = __webpack_require__(110);
+var KeyPair_1 = __webpack_require__(264);
+var bitcore = __webpack_require__(30);
+var Message = __webpack_require__(303);
+var ECIES = __webpack_require__(305);
+var BitKeyPair = /** @class */ (function () {
+    function BitKeyPair() {
+    }
+    BitKeyPair.prototype.createKeyPair = function (passPhrase) {
+        var pbkdf2 = CryptoUtils_1.default.PBKDF2(passPhrase, 256);
+        var hash = bitcore.crypto.Hash.sha256(new bitcore.deps.Buffer(pbkdf2));
+        var bn = bitcore.crypto.BN.fromBuffer(hash);
         this.privateKey = new bitcore.PrivateKey(bn);
         this.publicKey = this.privateKey.toPublicKey();
-        const privateKeyHex = this.privateKey.toString(16);
-        const publicKeyHex = this.publicKey.toString(16);
+        var privateKeyHex = this.privateKey.toString(16);
+        var publicKeyHex = this.publicKey.toString(16);
         return new KeyPair_1.default(privateKeyHex, publicKeyHex);
-    }
-    signMessage(data) {
-        const message = new Message(data);
+    };
+    BitKeyPair.prototype.signMessage = function (data) {
+        var message = new Message(data);
         return message.sign(this.privateKey);
-    }
-    getPublicKey() {
+    };
+    BitKeyPair.prototype.getPublicKey = function () {
         return this.publicKey.toString(16);
-    }
-    encryptMessage(recipientPk, message) {
-        const ecies = ECIES()
+    };
+    BitKeyPair.prototype.encryptMessage = function (recipientPk, message) {
+        var ecies = ECIES()
             .privateKey(this.privateKey)
             .publicKey(bitcore.PublicKey.fromString(recipientPk));
         return ecies.encrypt(message)
             .toString('base64');
-    }
-    generatePasswordForFiled(fieldName) {
+    };
+    BitKeyPair.prototype.generatePasswordForFiled = function (fieldName) {
         return CryptoUtils_1.default.PBKDF2(CryptoUtils_1.default.keccak256(this.privateKey.toString(16)) + fieldName.toLowerCase(), 384);
-    }
-    decryptMessage(senderPk, encrypted) {
-        const ecies = ECIES()
+    };
+    BitKeyPair.prototype.decryptMessage = function (senderPk, encrypted) {
+        var ecies = ECIES()
             .privateKey(this.privateKey)
             .publicKey(bitcore.PublicKey.fromString(senderPk));
         return ecies
             .decrypt(new Buffer(encrypted, 'base64'))
             .toString();
-    }
-}
+    };
+    return BitKeyPair;
+}());
 exports.default = BitKeyPair;
 
 
@@ -53338,18 +53388,27 @@ exports.default = BitKeyPair;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-class KeyPair {
-    constructor(privateKey, publicKey) {
+var KeyPair = /** @class */ (function () {
+    function KeyPair(privateKey, publicKey) {
         this._privateKey = privateKey;
         this._publicKey = publicKey;
     }
-    get privateKey() {
-        return this._privateKey;
-    }
-    get publicKey() {
-        return this._publicKey;
-    }
-}
+    Object.defineProperty(KeyPair.prototype, "privateKey", {
+        get: function () {
+            return this._privateKey;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(KeyPair.prototype, "publicKey", {
+        get: function () {
+            return this._publicKey;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return KeyPair;
+}());
 exports.default = KeyPair;
 
 
@@ -72738,39 +72797,42 @@ exports.zipAll = zipAll_1.zipAll;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const Account_1 = __webpack_require__(58);
-const CryptoUtils_1 = __webpack_require__(110);
-const JsonUtils_1 = __webpack_require__(78);
-class ProfileManager {
-    constructor(clientRepository, authAccountBehavior, encrypt, decrypt) {
+var Account_1 = __webpack_require__(58);
+var CryptoUtils_1 = __webpack_require__(110);
+var JsonUtils_1 = __webpack_require__(78);
+var ProfileManager = /** @class */ (function () {
+    function ProfileManager(clientRepository, authAccountBehavior, encrypt, decrypt) {
+        var _this = this;
         this.account = new Account_1.default();
         this.clientDataRepository = clientRepository;
         authAccountBehavior
-            .subscribe(e => this.onChangeAccount(e));
+            .subscribe(function (e) { return _this.onChangeAccount(e); });
         this.encrypt = encrypt;
         this.decrypt = decrypt;
     }
-    onChangeAccount(account) {
+    ProfileManager.prototype.onChangeAccount = function (account) {
         this.account = account;
-    }
-    getData() {
+    };
+    ProfileManager.prototype.getData = function () {
+        var _this = this;
         return this.getRawData(this.account.publicKey)
-            .then(data => this.prepareData(data, false));
-    }
-    getRawData(anyPublicKey) {
+            .then(function (data) { return _this.prepareData(data, false); });
+    };
+    ProfileManager.prototype.getRawData = function (anyPublicKey) {
         return this.clientDataRepository.getData(anyPublicKey);
-    }
-    getAuthorizedData(recipientPk, encryptedData) {
-        return new Promise(resolve => {
-            const strDecrypt = this.decrypt.decryptMessage(recipientPk, encryptedData);
-            const jsonDecrypt = JSON.parse(strDecrypt);
-            const arrayResponse = JsonUtils_1.default.jsonToMap(jsonDecrypt);
-            const result = new Map();
-            this.getRawData(recipientPk).then((recipientData) => {
-                arrayResponse.forEach((value, key) => {
+    };
+    ProfileManager.prototype.getAuthorizedData = function (recipientPk, encryptedData) {
+        var _this = this;
+        return new Promise(function (resolve) {
+            var strDecrypt = _this.decrypt.decryptMessage(recipientPk, encryptedData);
+            var jsonDecrypt = JSON.parse(strDecrypt);
+            var arrayResponse = JsonUtils_1.default.jsonToMap(jsonDecrypt);
+            var result = new Map();
+            _this.getRawData(recipientPk).then(function (recipientData) {
+                arrayResponse.forEach(function (value, key) {
                     if (recipientData.has(key)) {
                         try {
-                            const data = recipientData.get(key);
+                            var data = recipientData.get(key);
                             result.set(key, CryptoUtils_1.default.decryptAes256(data, value));
                         }
                         catch (_a) {
@@ -72781,18 +72843,20 @@ class ProfileManager {
                 resolve(result);
             });
         });
-    }
-    updateData(data) {
+    };
+    ProfileManager.prototype.updateData = function (data) {
+        var _this = this;
         return this.prepareData(data, true)
-            .then(encrypted => this.clientDataRepository.updateData(this.account.publicKey, encrypted));
-    }
-    prepareData(data, encrypt) {
-        return new Promise(resolve => {
-            const result = new Map();
-            let pass;
-            let changedValue;
-            data.forEach((value, key) => {
-                pass = this.encrypt.generatePasswordForFiled(key);
+            .then(function (encrypted) { return _this.clientDataRepository.updateData(_this.account.publicKey, encrypted); });
+    };
+    ProfileManager.prototype.prepareData = function (data, encrypt) {
+        var _this = this;
+        return new Promise(function (resolve) {
+            var result = new Map();
+            var pass;
+            var changedValue;
+            data.forEach(function (value, key) {
+                pass = _this.encrypt.generatePasswordForFiled(key);
                 changedValue = encrypt
                     ? CryptoUtils_1.default.encryptAes256(value, pass)
                     : CryptoUtils_1.default.decryptAes256(value, pass);
@@ -72800,8 +72864,9 @@ class ProfileManager {
             });
             resolve(result);
         });
-    }
-}
+    };
+    return ProfileManager;
+}());
 exports.default = ProfileManager;
 
 
@@ -72812,28 +72877,29 @@ exports.default = ProfileManager;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const SignedRequest_1 = __webpack_require__(600);
-class SignInterceptor {
-    constructor(messageSigner) {
+var SignedRequest_1 = __webpack_require__(600);
+var SignInterceptor = /** @class */ (function () {
+    function SignInterceptor(messageSigner) {
         this.messageSigner = messageSigner;
     }
-    onIntercept(path, headers, data) {
+    SignInterceptor.prototype.onIntercept = function (path, headers, data) {
         this.path = path;
         this.headers = headers;
         if (data != null) {
             this.data = new SignedRequest_1.default(data, this.messageSigner.getPublicKey(), this.messageSigner.signMessage(JSON.stringify(data)));
         }
-    }
-    getData() {
+    };
+    SignInterceptor.prototype.getData = function () {
         return this.data;
-    }
-    getPath() {
+    };
+    SignInterceptor.prototype.getPath = function () {
         return this.path;
-    }
-    getHeaders() {
+    };
+    SignInterceptor.prototype.getHeaders = function () {
         return this.headers;
-    }
-}
+    };
+    return SignInterceptor;
+}());
 exports.default = SignInterceptor;
 
 
@@ -72844,13 +72910,14 @@ exports.default = SignInterceptor;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-class SignedRequest {
-    constructor(data, publicKey, sig) {
+var SignedRequest = /** @class */ (function () {
+    function SignedRequest(data, publicKey, sig) {
         this.data = data;
         this.pk = publicKey;
         this.sig = sig;
     }
-}
+    return SignedRequest;
+}());
 exports.default = SignedRequest;
 
 
@@ -72861,36 +72928,39 @@ exports.default = SignedRequest;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const JsonUtils_1 = __webpack_require__(78);
-class DataRequestManager {
-    constructor(dataRequestRepository, encrypt, decrypt) {
+var JsonUtils_1 = __webpack_require__(78);
+var DataRequestManager = /** @class */ (function () {
+    function DataRequestManager(dataRequestRepository, encrypt, decrypt) {
         this.dataRequestRepository = dataRequestRepository;
         this.encrypt = encrypt;
         this.decrypt = decrypt;
     }
-    createRequest(recipientPk, fields) {
-        const encrypted = this.encrypt
+    DataRequestManager.prototype.createRequest = function (recipientPk, fields) {
+        var encrypted = this.encrypt
             .encryptMessage(recipientPk, JSON.stringify(fields).toLowerCase());
         return this.dataRequestRepository.createRequest(recipientPk, encrypted);
-    }
-    responseToRequest(requestId, senderPk, fields) {
-        let encrypt = '';
+    };
+    DataRequestManager.prototype.responseToRequest = function (requestId, senderPk, fields) {
+        var _this = this;
+        var encrypt = '';
         if (fields != null && fields.length > 0) {
-            const resultMap = new Map();
-            fields.forEach(value => {
-                resultMap.set(value, this.encrypt.generatePasswordForFiled(value.toLowerCase()));
+            var resultMap_1 = new Map();
+            fields.forEach(function (value) {
+                resultMap_1.set(value, _this.encrypt.generatePasswordForFiled(value.toLowerCase()));
             });
-            const jsonMap = JsonUtils_1.default.mapToJson(resultMap);
+            var jsonMap = JsonUtils_1.default.mapToJson(resultMap_1);
             encrypt = this.encrypt
                 .encryptMessage(senderPk, JSON.stringify(jsonMap));
         }
         return this.dataRequestRepository.createResponse(requestId, encrypt);
-    }
-    getRequests(fromPk = '', toPk = '', state) {
+    };
+    DataRequestManager.prototype.getRequests = function (fromPk, toPk, state) {
+        if (fromPk === void 0) { fromPk = ''; }
+        if (toPk === void 0) { toPk = ''; }
         return this.dataRequestRepository.getRequests(fromPk, toPk, state);
-    }
-    decryptMessage(senderPk, encrypted) {
-        const decrypted = this.decrypt.decryptMessage(senderPk, encrypted);
+    };
+    DataRequestManager.prototype.decryptMessage = function (senderPk, encrypted) {
+        var decrypted = this.decrypt.decryptMessage(senderPk, encrypted);
         try {
             return JSON.parse(decrypted);
         }
@@ -72898,8 +72968,9 @@ class DataRequestManager {
             console.log(decrypted, e);
             return {};
         }
-    }
-}
+    };
+    return DataRequestManager;
+}());
 exports.default = DataRequestManager;
 
 
@@ -72910,11 +72981,11 @@ exports.default = DataRequestManager;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const DataRequest_1 = __webpack_require__(603);
-const HttpMethod_1 = __webpack_require__(77);
-const DataRequestState_1 = __webpack_require__(108);
-class DataRequestRepositoryImpl {
-    constructor(transport) {
+var DataRequest_1 = __webpack_require__(603);
+var HttpMethod_1 = __webpack_require__(77);
+var DataRequestState_1 = __webpack_require__(108);
+var DataRequestRepositoryImpl = /** @class */ (function () {
+    function DataRequestRepositoryImpl(transport) {
         this.CREATE_DATA_REQUEST = '/request/';
         this.GET_DATA_REQUEST_FORM = '/request/from/{fromPk}/state/{state}/';
         this.GET_DATA_REQUEST_TO = '/request/to/{toPk}/state/{state}/';
@@ -72922,18 +72993,18 @@ class DataRequestRepositoryImpl {
         this.RESPONSE_DATA_REQUEST = '/request/{id}/';
         this.transport = transport;
     }
-    createRequest(toPk, encryptedRequest) {
-        const data = new DataRequest_1.default(toPk, encryptedRequest);
+    DataRequestRepositoryImpl.prototype.createRequest = function (toPk, encryptedRequest) {
+        var data = new DataRequest_1.default(toPk, encryptedRequest);
         return this.transport
-            .sendRequest(this.CREATE_DATA_REQUEST, HttpMethod_1.HttpMethod.Post, data).then((response) => response.json.toString());
-    }
-    createResponse(requestId, encryptedResponse) {
+            .sendRequest(this.CREATE_DATA_REQUEST, HttpMethod_1.HttpMethod.Post, data).then(function (response) { return response.json.toString(); });
+    };
+    DataRequestRepositoryImpl.prototype.createResponse = function (requestId, encryptedResponse) {
         return this.transport
             .sendRequest(this.RESPONSE_DATA_REQUEST.replace('{id}', requestId.toString()), HttpMethod_1.HttpMethod.Patch, encryptedResponse || '')
-            .then((response) => DataRequestState_1.DataRequestState[response.json.toString()]);
-    }
-    getRequests(fromPk, toPk, state) {
-        let path = '';
+            .then(function (response) { return DataRequestState_1.DataRequestState[response.json.toString()]; });
+    };
+    DataRequestRepositoryImpl.prototype.getRequests = function (fromPk, toPk, state) {
+        var path = '';
         if (!this.isEmpty(fromPk) && !this.isEmpty(toPk)) {
             path = this.GET_DATA_REQUEST_FROM_TO;
         }
@@ -72947,12 +73018,13 @@ class DataRequestRepositoryImpl {
             .replace('{toPk}', (toPk || ''))
             .replace('{state}', state);
         return this.transport
-            .sendRequest(path, HttpMethod_1.HttpMethod.Get).then((response) => Object.assign([], response.json));
-    }
-    isEmpty(value) {
+            .sendRequest(path, HttpMethod_1.HttpMethod.Get).then(function (response) { return Object.assign([], response.json); });
+    };
+    DataRequestRepositoryImpl.prototype.isEmpty = function (value) {
         return value == null || value.trim().length === 0;
-    }
-}
+    };
+    return DataRequestRepositoryImpl;
+}());
 exports.default = DataRequestRepositoryImpl;
 
 
@@ -72963,9 +73035,12 @@ exports.default = DataRequestRepositoryImpl;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const DataRequestState_1 = __webpack_require__(108);
-class DataRequest {
-    constructor(toPk = '', requestData = '', responseData = '') {
+var DataRequestState_1 = __webpack_require__(108);
+var DataRequest = /** @class */ (function () {
+    function DataRequest(toPk, requestData, responseData) {
+        if (toPk === void 0) { toPk = ''; }
+        if (requestData === void 0) { requestData = ''; }
+        if (responseData === void 0) { responseData = ''; }
         this.id = 0;
         this.fromPk = '';
         this.toPk = '';
@@ -72976,7 +73051,8 @@ class DataRequest {
         this.requestData = requestData;
         this.responseData = responseData;
     }
-}
+    return DataRequest;
+}());
 exports.default = DataRequest;
 
 
