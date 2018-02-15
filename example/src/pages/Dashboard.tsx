@@ -71,6 +71,8 @@ export default class Dashboard extends React.Component<Props, State> implements 
                     </Button>
                 </ButtonGroup>
 
+                <div className="m-2 text-white">your id: {this.baseManager.getId()}</div>
+
                 <Container className="h-100 align-items-center">
                     <div className="row h-100 justify-content-center align-items-center">
                         <Form>

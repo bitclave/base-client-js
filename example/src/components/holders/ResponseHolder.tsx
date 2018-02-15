@@ -17,7 +17,7 @@ export default class ResponseHolder extends React.Component<Prop, {}> {
                 <Col className="client-data-item-field" xs="3">{this.prepareFields()}</Col>
                 <Col
                     className={this.stateStyle()}
-                    xs="auto"
+                    xs="1"
                 >
                     {this.props.model.state}
                 </Col>

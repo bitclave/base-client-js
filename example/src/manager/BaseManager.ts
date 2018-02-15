@@ -43,6 +43,10 @@ export default class BaseManager {
             });
     }
 
+    getId() {
+        return this.account ? this.account.publicKey : 'undefined';
+    }
+
     loadClientData(): Promise<Map<string, string>> {
         return this.base.profileManager.getData();
     }
