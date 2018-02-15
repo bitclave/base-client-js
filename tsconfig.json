@@ -2,10 +2,10 @@
   "compilerOptions": {
     "outDir": "./",
     "module": "commonjs",
-    "target": "es6",
+    "target": "es5",
     "baseUrl": "http://localhost:8080",
     "lib": [
-      "es6",
+      "es2016",
       "dom"
     ],
     "sourceMap": true,
