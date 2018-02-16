@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { FormEvent } from 'react';
 import Button from 'reactstrap/lib/Button';
 import Input from 'reactstrap/lib/Input';
 import FormGroup from 'reactstrap/lib/FormGroup';
@@ -6,7 +7,6 @@ import Form from 'reactstrap/lib/Form';
 import { RouteComponentProps } from 'react-router';
 import { lazyInject } from '../Injections';
 import BaseManager from '../manager/BaseManager';
-import { FormEvent } from 'react';
 
 interface Props extends RouteComponentProps<{}> {
 }
@@ -21,6 +21,11 @@ export default class Auth extends React.Component<Props> {
     render() {
         return (
             <div className="d-flex align-items-center flex-column justify-content-center h-100">
+                <h1 className="text-white text-center mb-5">
+                    Raw Dev
+                    <br/>
+                    No UX
+                </h1>
                 <Form onSubmit={e => this.onSubmit(e)}>
                     <FormGroup>
                         <Input
@@ -37,7 +42,7 @@ export default class Auth extends React.Component<Props> {
                     </FormGroup>
                     <FormGroup>
                         <Button block={true} size="lg" color="primary" onClick={e => this.onSingIn()}>
-                            SignIn
+                            Sign In
                         </Button>
                     </FormGroup>
                 </Form>
