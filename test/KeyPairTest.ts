@@ -9,7 +9,7 @@ const should = require('chai')
     .use(require('chai-as-promised'))
     .should();
 
-describe('Key pair and cryptography', async function () {
+describe('Key pair and cryptography', async () => {
     const keyPairHelper: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
     const messageSigner: MessageSigner = keyPairHelper;
 
