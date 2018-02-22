@@ -17,7 +17,6 @@ describe('Profile Manager', async () => {
 
     const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
     const keyPairHelperBob: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
-    const keyPairHelper: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
     const clientRepository: ClientDataRepositoryImplMock = new ClientDataRepositoryImplMock();
 
     keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
