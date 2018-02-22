@@ -71,4 +71,5 @@ describe('Account Manager', async () => {
             .be
             .equal(accountBob.publicKey);
     });
+
 });
