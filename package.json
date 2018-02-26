@@ -4,11 +4,30 @@
   "description": "Base JS library for BASE-platform",
   "main": "Base.js",
   "scripts": {
-    "test": "npm run remove-bitcore-lib-dep && nyc --reporter=lcov --reporter=text mocha --timeout 10000 --recursive --require ts-node/register \"./test/**/*Test.ts\"",
+    "test": "npm run remove-bitcore-lib-dep && mocha --timeout 10000 --recursive --require ts-node/register \"./test/**/*Test.ts\"",
     "coverage": "nyc npm run test",
-    "coveralls": "npm run coverage && cat coverage/lcov.info | coveralls && rm -rf ./coverage --verbose",
+    "coveralls": "npm run coverage && cat coverage/lcov.info | coveralls",
     "remove-bitcore-lib-dep": "node remove-bitcore-lib-dep.js",
     "build": "npm run remove-bitcore-lib-dep && webpack"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "remove-bitcore-lib-dep.js",
+      "**/*.d.ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "lcov",
+      "text"
+    ]
   },
   "repository": {
     "type": "git",
