@@ -5,6 +5,9 @@
   "main": "Base.js",
   "scripts": {
     "test": "mocha --recursive --require ts-node/register \"./test/**/*Test.ts\"",
+    "coverage": "nyc npm run test",
+    "coveralls": "npm run coverage -s && cat coverage/lcov.info | coveralls --verbose",
+    "remove-bitcore-lib-dep": "node remove-bitcore-lib-dep.js",
     "build": "webpack"
   },
   "repository": {
@@ -42,8 +45,11 @@
     "babel-preset-es2015": "^6.24.1",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
+    "coveralls": "^3.0.0",
+    "istanbul": "^0.4.5",
     "mocha": "^5.0.0",
     "node-localstorage": "^1.3.0",
+    "nyc": "^11.4.1",
     "ts-loader": "^3.4.0",
     "ts-node": "^4.1.0",
     "typedoc": "^0.9.0",
