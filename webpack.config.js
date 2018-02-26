@@ -11,7 +11,7 @@ module.exports = {
     target: 'node',
     module: {
         loaders: [
-            { test: /\.ts(x?)$/, loader: "babel-loader?presets[]=es2015!ts-loader" }
+            { test: /\.ts(x?)$/, loader: "babel-loader?presets[]=preset-env!ts-loader" }
         ],
         rules: [
             {

@@ -38,6 +38,7 @@
     "rxjs": "^6.0.0-alpha.2"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.0.0-beta.40",
     "@types/chai": "^4.1.2",
     "@types/mocha": "^2.2.48",
     "babel-core": "^6.26.0",
