@@ -10,8 +10,4 @@ install:
   - npm run remove-bitcore-lib-dep
 
 script:
-  - npm test
-
-after_script:
-  - npm run coveralls
-  
+  - npm coveralls
