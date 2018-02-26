@@ -8,7 +8,6 @@ const pathsToClean = [
 
 (function () {
     function deleteFolderRecursive(path) {
-        console.log(path, fs.existsSync(path));
         if (fs.existsSync(path)) {
             fs.readdirSync(path).forEach(function (file, index) {
                 const curPath = path + "/" + file;
