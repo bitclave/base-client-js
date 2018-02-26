@@ -1,8 +1,8 @@
 import { DataRequestRepository } from '../repository/requests/DataRequestRepository';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
-import DataRequest from '../repository/models/DataRequest';
 import { DataRequestState } from '../repository/models/DataRequestState';
+import DataRequest from '../repository/models/DataRequest';
 export default class DataRequestManager {
     private dataRequestRepository;
     private encrypt;
