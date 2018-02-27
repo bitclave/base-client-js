@@ -10,7 +10,7 @@ The repository also includes an example application, demonstrating how to integr
 
 # Overview
 
-![Alt text](https://drive.google.com/open?id=1fnQOdj_xKDWHscl4NNLIqhjTwSdWzpF5)
+![Alt text](https://github.com/bitclave/base-client-js/blob/develop/imgages/base_phase1_overview.png)
 
 # How to run
 - from root directory run
