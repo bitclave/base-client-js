@@ -18,6 +18,14 @@ export default class DataRequestManager {
         this.decrypt = decrypt;
     }
 
+    /**
+     * Creates data access request to a specific user for a specific personal data.
+     * @param {string} recipientPk Public Key of the user that the personal data is requested from.
+     * @param {Array<string>} fields Array of name identifiers for the requested data fields
+     * (e.g. this is keys in {Map<string, string>}).
+     *
+     * @returns {Promise<string>} Returns requestID upon successful request record creation.
+     */
     public createRequest(recipientPk: string, fields: Array<string>): Promise<string> {
         const encrypted = this.encrypt
             .encryptMessage(recipientPk, JSON.stringify(fields).toLowerCase());
@@ -25,6 +33,15 @@ export default class DataRequestManager {
         return this.dataRequestRepository.createRequest(recipientPk, encrypted);
     }
 
+    /**
+     * Creates a response to a previously submitted data access request.
+     * @param {number} requestId ID of existed the request.
+     * @param {string} senderPk Public key of the user that issued data access request.
+     * @param {Array<string>} fields (Optional). null or empty for {@link DataRequestState.REJECT}.
+     * Arrays names of fields for accept access. (e.g. this is keys in {Map<string, string>} - personal data).
+     *
+     * @returns {Promise<DataRequestState>} state of request of data {@link DataRequestState}.
+     */
     public responseToRequest(requestId: number, senderPk: string,
                              fields?: Array<string>): Promise<DataRequestState> {
         let encrypt = '';
@@ -43,17 +60,32 @@ export default class DataRequestManager {
         return this.dataRequestRepository.createResponse(requestId, encrypt);
     }
 
+    /**
+     * Returns a list of outstanding data access requests, where data access requests meet the provided search criteria.
+     * @param {string} fromPk (Optional if toPk exist.) public key of the user that issued data access request.
+     * @param {string} toPk (Optional if fromPk exist.) public key of the user that is expected to.
+     * @param {DataRequestState} state of request.
+     *
+     * @returns {Promise<Array<DataRequest>>}  List of {@link DataRequest}, or empty list
+     */
     public getRequests(fromPk: string = '', toPk: string = '', state: DataRequestState): Promise<Array<DataRequest>> {
         return this.dataRequestRepository.getRequests(fromPk, toPk, state);
     }
 
-    public decryptMessage<T>(senderPk: string, encrypted: string): T {
+    /**
+     * Decodes a message that was encrypted by the owner of the private key that matches the provided public key.
+     * @param {string} senderPk public key of the user that issued data access request.
+     * @param {string} encrypted encrypted data from {@link DataRequest#requestData} (ECIES).
+     *
+     * @returns {object} object with data or empty object if was error.
+     */
+    public decryptMessage(senderPk: string, encrypted: string): any {
         const decrypted = this.decrypt.decryptMessage(senderPk, encrypted);
         try {
             return JSON.parse(decrypted);
         } catch (e) {
             console.log(decrypted, e);
-            return {} as T;
+            return {};
         }
     }
 

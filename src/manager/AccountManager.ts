@@ -18,14 +18,28 @@ export default class AccountManager {
         this.authAccountBehavior = authAccountBehavior;
     }
 
-    registration(mnemonicPhrase: string): Promise<Account> {
+    /**
+     * Registers a new user in the system.
+     * @param {string} mnemonicPhrase Mnemonic phrase for Public/Private key pair
+     * generation for asymmetric encryption scheme.
+     *
+     * @returns {Promise<Account>} {Account} after successful registration or http exception if fail.
+     */
+    public registration(mnemonicPhrase: string): Promise<Account> {
         return this.generateKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
             .then((account) => this.accountRepository.registration(account))
             .then(this.onGetAccount.bind(this));
     }
 
-    checkAccount(mnemonicPhrase: string): Promise<Account> {
+    /**
+     * Checks if user with provided mnemonic phrase is already registered in the system.
+     * @param {string} mnemonicPhrase Mnemonic phrase for Public/Private key pair
+     * generation for asymmetric encryption scheme.
+     *
+     * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
+     */
+    public checkAccount(mnemonicPhrase: string): Promise<Account> {
         return this.generateKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
             .then(this.getAccount.bind(this));

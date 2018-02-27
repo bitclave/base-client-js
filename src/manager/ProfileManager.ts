@@ -18,25 +18,39 @@ export default class ProfileManager {
         this.clientDataRepository = clientRepository;
 
         authAccountBehavior
-            .subscribe(e => this.onChangeAccount(e));
+            .subscribe(this.onChangeAccount.bind(this));
 
         this.encrypt = encrypt;
         this.decrypt = decrypt;
     }
 
-    private onChangeAccount(account: Account) {
-        this.account = account;
-    }
-
+    /**
+     * Returns decrypted data of the authorized user.
+     *
+     * @returns {Promise<Map<string, string>>} Map key => value.
+     */
     public getData(): Promise<Map<string, string>> {
         return this.getRawData(this.account.publicKey)
             .then(data => this.prepareData(data, false));
     }
 
+    /**
+     * Returns raw (encrypted) data of user with provided ID (Public Key).
+     * @param {string} anyPublicKey Public key of client.
+     *
+     * @returns {Promise<Map<string, string>>} Map key => value.
+     */
     public getRawData(anyPublicKey: string): Promise<Map<string, string>> {
         return this.clientDataRepository.getData(anyPublicKey);
     }
 
+    /**
+     * Decrypts accepted personal data {@link DataRequest#responseData} when state is {@link DataRequestState#ACCEPT}.
+     * @param {string} recipientPk  Public key of the user that is expected to.
+     * @param {string} encryptedData encrypted data {@link DataRequest#responseData}.
+     *
+     * @returns {Promise<Map<string, string>>} Map key => value.
+     */
     public getAuthorizedData(recipientPk: string, encryptedData: string): Promise<Map<string, string>> {
         return new Promise<Map<string, string>>(resolve => {
             const strDecrypt = this.decrypt.decryptMessage(recipientPk, encryptedData);
@@ -61,9 +75,19 @@ export default class ProfileManager {
         });
     }
 
+    /**
+     * Encrypts and stores personal data in BASE.
+     * @param {Map<string, string>} data not encrypted data e.g. Map {"name": "Adam"} etc.
+     *
+     * @returns {Promise<Map<string, string>>} Map with encrypted data.
+     */
     public updateData(data: Map<string, string>): Promise<Map<string, string>> {
         return this.prepareData(data, true)
             .then(encrypted => this.clientDataRepository.updateData(this.account.publicKey, encrypted));
+    }
+
+    private onChangeAccount(account: Account) {
+        this.account = account;
     }
 
     private prepareData(data: Map<string, string>, encrypt: boolean): Promise<Map<string, string>> {
