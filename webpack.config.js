@@ -35,9 +35,10 @@ module.exports = {
     plugins: [
         new TypedocWebpackPlugin({
             out: './docs',
-            module: 'es6',
+            module: 'commonjs',
             target: 'es6',
             exclude: '**/node_modules/**/*.*',
+            excludePrivate: true,
             experimentalDecorators: true,
             excludeExternals: true
         }, './src/')

@@ -63,9 +63,10 @@ export default class ProfileManager {
                     if (recipientData.has(key)) {
                         try {
                             const data: string = recipientData.get(key) as string;
-                            result.set(key, CryptoUtils.decryptAes256(data, value));
-                        } catch {
-                            console.log('decryption error: ', key, recipientData.get(key));
+                            const decryptedValue: string = CryptoUtils.decryptAes256(data, value);
+                            result.set(key, decryptedValue);
+                        } catch (e) {
+                            console.log('decryption error: ', key, ' => ', recipientData.get(key), e);
                         }
                     }
                 });
