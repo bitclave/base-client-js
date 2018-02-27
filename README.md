@@ -6,7 +6,7 @@ JS client side library for interaction with BASE platform.
 
 This repository contains code for BASE-CLIENT-JS library. This library can be integrated by our partners to interact with BASE platform from client side. The library does not store any keys.
 
-The repository also includes an example applciation, demonstrating how to integrate the library in WEB application
+The repository also includes an example application, demonstrating how to integrate the library in WEB application
 
 # How to run
 - from root directory run
