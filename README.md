@@ -1,4 +1,4 @@
-#BASE-CLIENT-JS
+# BASE-CLIENT-JS
 JS client side library for interaction with BASE platform.
 
 [![Build Status](https://travis-ci.org/bitclave/base-client-js.svg?branch=develop)](https://travis-ci.org/bitclave/base-client-js)
@@ -8,7 +8,7 @@ This repository contains code for BASE-CLIENT-JS library. This library can be in
 
 The repository also includes an example applciation, demonstrating how to integrate the library in WEB application
 
-#How to run
+# How to run
 - from root directory run
 ```
 npm install
