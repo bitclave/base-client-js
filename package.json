@@ -47,7 +47,6 @@
   },
   "homepage": "https://github.com/bitclave/base-js#readme",
   "dependencies": {
-    "@types/prop-types": "^15.5.2",
     "bitcore-lib": "^0.15.0",
     "bitcore-ecies": "^1.0.3",
     "bitcore-message": "^1.0.4",
