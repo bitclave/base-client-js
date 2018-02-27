@@ -72861,10 +72861,11 @@ var ProfileManager = /** @class */ (function () {
                     if (recipientData.has(key)) {
                         try {
                             var data = recipientData.get(key);
-                            result.set(key, CryptoUtils_1.default.decryptAes256(data, value));
+                            var decryptedValue = CryptoUtils_1.default.decryptAes256(data, value);
+                            result.set(key, decryptedValue);
                         }
-                        catch (_a) {
-                            console.log('decryption error: ', key, recipientData.get(key));
+                        catch (e) {
+                            console.log('decryption error: ', key, ' => ', recipientData.get(key), e);
                         }
                     }
                 });
