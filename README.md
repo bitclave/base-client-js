@@ -8,6 +8,10 @@ This repository contains code for BASE-CLIENT-JS library. This library can be in
 
 The repository also includes an example application, demonstrating how to integrate the library in WEB application
 
+# Overview
+
+![Alt text](https://drive.google.com/open?id=1fnQOdj_xKDWHscl4NNLIqhjTwSdWzpF5)
+
 # How to run
 - from root directory run
 ```
