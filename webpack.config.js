@@ -4,9 +4,6 @@ const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
 module.exports = {
     entry: './src/Base.ts',
     devtool: 'source-map',
-    nyc: {
-        "include": "app"
-    },
     node: {
         fs: 'empty',
         child_process: 'empty'

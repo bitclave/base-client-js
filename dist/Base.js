@@ -49867,6 +49867,13 @@ var AccountManager = /** @class */ (function () {
         this.keyPairCreator = keyPairCreator;
         this.authAccountBehavior = authAccountBehavior;
     }
+    /**
+     * Registers a new user in the system.
+     * @param {string} mnemonicPhrase Mnemonic phrase for Public/Private key pair
+     * generation for asymmetric encryption scheme.
+     *
+     * @returns {Promise<Account>} {Account} after successful registration or http exception if fail.
+     */
     AccountManager.prototype.registration = function (mnemonicPhrase) {
         var _this = this;
         return this.generateKeyPair(mnemonicPhrase)
@@ -49874,6 +49881,13 @@ var AccountManager = /** @class */ (function () {
             .then(function (account) { return _this.accountRepository.registration(account); })
             .then(this.onGetAccount.bind(this));
     };
+    /**
+     * Checks if user with provided mnemonic phrase is already registered in the system.
+     * @param {string} mnemonicPhrase Mnemonic phrase for Public/Private key pair
+     * generation for asymmetric encryption scheme.
+     *
+     * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
+     */
     AccountManager.prototype.checkAccount = function (mnemonicPhrase) {
         return this.generateKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
@@ -72802,25 +72816,39 @@ var CryptoUtils_1 = __webpack_require__(110);
 var JsonUtils_1 = __webpack_require__(78);
 var ProfileManager = /** @class */ (function () {
     function ProfileManager(clientRepository, authAccountBehavior, encrypt, decrypt) {
-        var _this = this;
         this.account = new Account_1.default();
         this.clientDataRepository = clientRepository;
         authAccountBehavior
-            .subscribe(function (e) { return _this.onChangeAccount(e); });
+            .subscribe(this.onChangeAccount.bind(this));
         this.encrypt = encrypt;
         this.decrypt = decrypt;
     }
-    ProfileManager.prototype.onChangeAccount = function (account) {
-        this.account = account;
-    };
+    /**
+     * Returns decrypted data of the authorized user.
+     *
+     * @returns {Promise<Map<string, string>>} Map key => value.
+     */
     ProfileManager.prototype.getData = function () {
         var _this = this;
         return this.getRawData(this.account.publicKey)
             .then(function (data) { return _this.prepareData(data, false); });
     };
+    /**
+     * Returns raw (encrypted) data of user with provided ID (Public Key).
+     * @param {string} anyPublicKey Public key of client.
+     *
+     * @returns {Promise<Map<string, string>>} Map key => value.
+     */
     ProfileManager.prototype.getRawData = function (anyPublicKey) {
         return this.clientDataRepository.getData(anyPublicKey);
     };
+    /**
+     * Decrypts accepted personal data {@link DataRequest#responseData} when state is {@link DataRequestState#ACCEPT}.
+     * @param {string} recipientPk  Public key of the user that is expected to.
+     * @param {string} encryptedData encrypted data {@link DataRequest#responseData}.
+     *
+     * @returns {Promise<Map<string, string>>} Map key => value.
+     */
     ProfileManager.prototype.getAuthorizedData = function (recipientPk, encryptedData) {
         var _this = this;
         return new Promise(function (resolve) {
@@ -72844,10 +72872,19 @@ var ProfileManager = /** @class */ (function () {
             });
         });
     };
+    /**
+     * Encrypts and stores personal data in BASE.
+     * @param {Map<string, string>} data not encrypted data e.g. Map {"name": "Adam"} etc.
+     *
+     * @returns {Promise<Map<string, string>>} Map with encrypted data.
+     */
     ProfileManager.prototype.updateData = function (data) {
         var _this = this;
         return this.prepareData(data, true)
             .then(function (encrypted) { return _this.clientDataRepository.updateData(_this.account.publicKey, encrypted); });
+    };
+    ProfileManager.prototype.onChangeAccount = function (account) {
+        this.account = account;
     };
     ProfileManager.prototype.prepareData = function (data, encrypt) {
         var _this = this;
@@ -72935,11 +72972,28 @@ var DataRequestManager = /** @class */ (function () {
         this.encrypt = encrypt;
         this.decrypt = decrypt;
     }
+    /**
+     * Creates data access request to a specific user for a specific personal data.
+     * @param {string} recipientPk Public Key of the user that the personal data is requested from.
+     * @param {Array<string>} fields Array of name identifiers for the requested data fields
+     * (e.g. this is keys in {Map<string, string>}).
+     *
+     * @returns {Promise<string>} Returns requestID upon successful request record creation.
+     */
     DataRequestManager.prototype.createRequest = function (recipientPk, fields) {
         var encrypted = this.encrypt
             .encryptMessage(recipientPk, JSON.stringify(fields).toLowerCase());
         return this.dataRequestRepository.createRequest(recipientPk, encrypted);
     };
+    /**
+     * Creates a response to a previously submitted data access request.
+     * @param {number} requestId ID of existed the request.
+     * @param {string} senderPk Public key of the user that issued data access request.
+     * @param {Array<string>} fields (Optional). null or empty for {@link DataRequestState.REJECT}.
+     * Arrays names of fields for accept access. (e.g. this is keys in {Map<string, string>} - personal data).
+     *
+     * @returns {Promise<DataRequestState>} state of request of data {@link DataRequestState}.
+     */
     DataRequestManager.prototype.responseToRequest = function (requestId, senderPk, fields) {
         var _this = this;
         var encrypt = '';
@@ -72954,11 +73008,26 @@ var DataRequestManager = /** @class */ (function () {
         }
         return this.dataRequestRepository.createResponse(requestId, encrypt);
     };
+    /**
+     * Returns a list of outstanding data access requests, where data access requests meet the provided search criteria.
+     * @param {string} fromPk (Optional if toPk exist.) public key of the user that issued data access request.
+     * @param {string} toPk (Optional if fromPk exist.) public key of the user that is expected to.
+     * @param {DataRequestState} state of request.
+     *
+     * @returns {Promise<Array<DataRequest>>}  List of {@link DataRequest}, or empty list
+     */
     DataRequestManager.prototype.getRequests = function (fromPk, toPk, state) {
         if (fromPk === void 0) { fromPk = ''; }
         if (toPk === void 0) { toPk = ''; }
         return this.dataRequestRepository.getRequests(fromPk, toPk, state);
     };
+    /**
+     * Decodes a message that was encrypted by the owner of the private key that matches the provided public key.
+     * @param {string} senderPk public key of the user that issued data access request.
+     * @param {string} encrypted encrypted data from {@link DataRequest#requestData} (ECIES).
+     *
+     * @returns {object} object with data or empty object if was error.
+     */
     DataRequestManager.prototype.decryptMessage = function (senderPk, encrypted) {
         var decrypted = this.decrypt.decryptMessage(senderPk, encrypted);
         try {
