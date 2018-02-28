@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>SignInterceptor | base</title>
+	<title>RepositoryStrategyInterceptor | base</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,13 +54,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_repository_source_http_signinterceptor_.html">&quot;repository/source/http/SignInterceptor&quot;</a>
+					<a href="../modules/_repository_source_http_repositorystrategyinterceptor_.html">&quot;repository/source/http/RepositoryStrategyInterceptor&quot;</a>
 				</li>
 				<li>
-					<a href="_repository_source_http_signinterceptor_.signinterceptor.html">SignInterceptor</a>
+					<a href="_repository_source_http_repositorystrategyinterceptor_.repositorystrategyinterceptor.html">RepositoryStrategyInterceptor</a>
 				</li>
 			</ul>
-			<h1>Class SignInterceptor</h1>
+			<h1>Class RepositoryStrategyInterceptor</h1>
 		</div>
 	</div>
 </header>
@@ -71,7 +71,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">SignInterceptor</span>
+						<span class="target">RepositoryStrategyInterceptor</span>
 					</li>
 				</ul>
 			</section>
@@ -88,16 +88,17 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_repository_source_http_signinterceptor_.signinterceptor.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_repository_source_http_repositorystrategyinterceptor_.repositorystrategyinterceptor.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_source_http_signinterceptor_.signinterceptor.html#getdata" class="tsd-kind-icon">get<wbr>Data</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_source_http_signinterceptor_.signinterceptor.html#getheaders" class="tsd-kind-icon">get<wbr>Headers</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_source_http_signinterceptor_.signinterceptor.html#getpath" class="tsd-kind-icon">get<wbr>Path</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_source_http_signinterceptor_.signinterceptor.html#onintercept" class="tsd-kind-icon">on<wbr>Intercept</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_source_http_repositorystrategyinterceptor_.repositorystrategyinterceptor.html#changestrategy" class="tsd-kind-icon">change<wbr>Strategy</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_source_http_repositorystrategyinterceptor_.repositorystrategyinterceptor.html#getdata" class="tsd-kind-icon">get<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_source_http_repositorystrategyinterceptor_.repositorystrategyinterceptor.html#getheaders" class="tsd-kind-icon">get<wbr>Headers</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_source_http_repositorystrategyinterceptor_.repositorystrategyinterceptor.html#getpath" class="tsd-kind-icon">get<wbr>Path</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_source_http_repositorystrategyinterceptor_.repositorystrategyinterceptor.html#onintercept" class="tsd-kind-icon">on<wbr>Intercept</a></li>
 							</ul>
 						</section>
 					</div>
@@ -109,28 +110,51 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Sign<wbr>Interceptor<span class="tsd-signature-symbol">(</span>messageSigner<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_keypair_messagesigner_.messagesigner.html" class="tsd-signature-type">MessageSigner</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_repository_source_http_signinterceptor_.signinterceptor.html" class="tsd-signature-type">SignInterceptor</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Repository<wbr>Strategy<wbr>Interceptor<span class="tsd-signature-symbol">(</span>strategy<span class="tsd-signature-symbol">: </span><a href="../enums/_repository_repositorystrategytype_.repositorystrategytype.html" class="tsd-signature-type">RepositoryStrategyType</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_repository_source_http_repositorystrategyinterceptor_.repositorystrategyinterceptor.html" class="tsd-signature-type">RepositoryStrategyInterceptor</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cb4f808/src/repository/source/http/SignInterceptor.ts#L10">repository/source/http/SignInterceptor.ts:10</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cb4f808/src/repository/source/http/RepositoryStrategyInterceptor.ts#L9">repository/source/http/RepositoryStrategyInterceptor.ts:9</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>messageSigner: <a href="../interfaces/_utils_keypair_messagesigner_.messagesigner.html" class="tsd-signature-type">MessageSigner</a></h5>
+									<h5>strategy: <a href="../enums/_repository_repositorystrategytype_.repositorystrategytype.html" class="tsd-signature-type">RepositoryStrategyType</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_repository_source_http_signinterceptor_.signinterceptor.html" class="tsd-signature-type">SignInterceptor</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_repository_source_http_repositorystrategyinterceptor_.repositorystrategyinterceptor.html" class="tsd-signature-type">RepositoryStrategyInterceptor</a></h4>
 						</li>
 					</ul>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="changestrategy" class="tsd-anchor"></a>
+					<h3>change<wbr>Strategy</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">change<wbr>Strategy<span class="tsd-signature-symbol">(</span>strategy<span class="tsd-signature-symbol">: </span><a href="../enums/_repository_repositorystrategytype_.repositorystrategytype.html" class="tsd-signature-type">RepositoryStrategyType</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cb4f808/src/repository/source/http/RepositoryStrategyInterceptor.ts#L15">repository/source/http/RepositoryStrategyInterceptor.ts:15</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>strategy: <a href="../enums/_repository_repositorystrategytype_.repositorystrategytype.html" class="tsd-signature-type">RepositoryStrategyType</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="getdata" class="tsd-anchor"></a>
 					<h3>get<wbr>Data</h3>
@@ -142,7 +166,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_repository_source_http_httpinterceptor_.httpinterceptor.html">HttpInterceptor</a>.<a href="../interfaces/_repository_source_http_httpinterceptor_.httpinterceptor.html#getdata">getData</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cb4f808/src/repository/source/http/SignInterceptor.ts#L28">repository/source/http/SignInterceptor.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cb4f808/src/repository/source/http/RepositoryStrategyInterceptor.ts#L27">repository/source/http/RepositoryStrategyInterceptor.ts:27</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -160,7 +184,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_repository_source_http_httpinterceptor_.httpinterceptor.html">HttpInterceptor</a>.<a href="../interfaces/_repository_source_http_httpinterceptor_.httpinterceptor.html#getheaders">getHeaders</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cb4f808/src/repository/source/http/SignInterceptor.ts#L36">repository/source/http/SignInterceptor.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cb4f808/src/repository/source/http/RepositoryStrategyInterceptor.ts#L35">repository/source/http/RepositoryStrategyInterceptor.ts:35</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -178,7 +202,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_repository_source_http_httpinterceptor_.httpinterceptor.html">HttpInterceptor</a>.<a href="../interfaces/_repository_source_http_httpinterceptor_.httpinterceptor.html#getpath">getPath</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cb4f808/src/repository/source/http/SignInterceptor.ts#L32">repository/source/http/SignInterceptor.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cb4f808/src/repository/source/http/RepositoryStrategyInterceptor.ts#L31">repository/source/http/RepositoryStrategyInterceptor.ts:31</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -196,7 +220,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_repository_source_http_httpinterceptor_.httpinterceptor.html">HttpInterceptor</a>.<a href="../interfaces/_repository_source_http_httpinterceptor_.httpinterceptor.html#onintercept">onIntercept</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cb4f808/src/repository/source/http/SignInterceptor.ts#L16">repository/source/http/SignInterceptor.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cb4f808/src/repository/source/http/RepositoryStrategyInterceptor.ts#L19">repository/source/http/RepositoryStrategyInterceptor.ts:19</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -224,7 +248,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_repository_source_http_signinterceptor_.html">"repository/source/http/<wbr>Sign<wbr>Interceptor"</a>
+						<a href="../modules/_repository_source_http_repositorystrategyinterceptor_.html">"repository/source/http/<wbr>Repository<wbr>Strategy<wbr>Interceptor"</a>
 					</li>
 				</ul>
 			</nav>
@@ -233,22 +257,25 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_repository_source_http_signinterceptor_.signinterceptor.html" class="tsd-kind-icon">Sign<wbr>Interceptor</a>
+						<a href="_repository_source_http_repositorystrategyinterceptor_.repositorystrategyinterceptor.html" class="tsd-kind-icon">Repository<wbr>Strategy<wbr>Interceptor</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_repository_source_http_signinterceptor_.signinterceptor.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_repository_source_http_repositorystrategyinterceptor_.repositorystrategyinterceptor.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_repository_source_http_signinterceptor_.signinterceptor.html#getdata" class="tsd-kind-icon">get<wbr>Data</a>
+								<a href="_repository_source_http_repositorystrategyinterceptor_.repositorystrategyinterceptor.html#changestrategy" class="tsd-kind-icon">change<wbr>Strategy</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_repository_source_http_signinterceptor_.signinterceptor.html#getheaders" class="tsd-kind-icon">get<wbr>Headers</a>
+								<a href="_repository_source_http_repositorystrategyinterceptor_.repositorystrategyinterceptor.html#getdata" class="tsd-kind-icon">get<wbr>Data</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_repository_source_http_signinterceptor_.signinterceptor.html#getpath" class="tsd-kind-icon">get<wbr>Path</a>
+								<a href="_repository_source_http_repositorystrategyinterceptor_.repositorystrategyinterceptor.html#getheaders" class="tsd-kind-icon">get<wbr>Headers</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_repository_source_http_signinterceptor_.signinterceptor.html#onintercept" class="tsd-kind-icon">on<wbr>Intercept</a>
+								<a href="_repository_source_http_repositorystrategyinterceptor_.repositorystrategyinterceptor.html#getpath" class="tsd-kind-icon">get<wbr>Path</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_repository_source_http_repositorystrategyinterceptor_.repositorystrategyinterceptor.html#onintercept" class="tsd-kind-icon">on<wbr>Intercept</a>
 							</li>
 						</ul>
 					</li>

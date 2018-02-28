@@ -1,7 +1,7 @@
 import { AccountRepository } from '../repository/account/AccountRepository';
 import Account from '../repository/models/Account';
 import { KeyPairHelper } from '../utils/keypair/KeyPairHelper';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs/Rx';
 export default class AccountManager {
     private accountRepository;
     private keyPairCreator;
