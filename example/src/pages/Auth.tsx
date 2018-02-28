@@ -7,28 +7,54 @@ import Form from 'reactstrap/lib/Form';
 import { RouteComponentProps } from 'react-router';
 import { lazyInject } from '../Injections';
 import BaseManager from '../manager/BaseManager';
+import { RepositoryStrategyType } from 'base';
 
 interface Props extends RouteComponentProps<{}> {
 }
 
-export default class Auth extends React.Component<Props> {
+interface State {
+    mnemonicPhrase: string;
+    strategy: RepositoryStrategyType;
+}
+
+export default class Auth extends React.Component<Props, State> {
 
     @lazyInject(BaseManager)
     baseManager: BaseManager;
 
-    mnemonicPhrase: string = '';
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            mnemonicPhrase: '',
+            strategy: RepositoryStrategyType.Postgres
+        };
+    }
 
     render() {
         return (
-            <div className="d-flex align-items-center flex-column justify-content-center h-100">
+            <div className="text-white d-flex align-items-center flex-column justify-content-center h-100">
                 <h1 className="text-white text-center mb-5">
                     Raw Dev
                     <br/>
                     No UX
                 </h1>
+                <Form className="m-4">
+                    Change strategy for Base Node:
+                    <select
+                        className="form-control form-control-sm"
+                        name="select"
+                        id="strategy"
+                        onChange={e => this.onChangeStrategy(e.target)}
+                    >
+                        <option data-value={RepositoryStrategyType.Postgres}>Centralized (Postgres)</option>
+                        <option data-value={RepositoryStrategyType.Hybrid}>Hybrid (Ethereum)</option>
+                    </select>
+                </Form>
                 <Form onSubmit={e => this.onSubmit(e)}>
                     <FormGroup>
                         <Input
+                            value={this.state.mnemonicPhrase}
                             onChange={e => this.onChangeMnemonic(e.target.value)}
                             className="form-control form-control-lg"
                             bsSize="lg"
@@ -50,18 +76,25 @@ export default class Auth extends React.Component<Props> {
         );
     }
 
+    private onChangeStrategy(collection: HTMLSelectElement) {
+        const item: HTMLOptionElement = collection[collection.selectedIndex];
+        const strategy: RepositoryStrategyType = item.getAttribute('data-value') as RepositoryStrategyType;
+        this.setState({strategy: strategy});
+        this.baseManager.changeStrategy(strategy);
+    }
+
     private onSubmit(e: FormEvent<HTMLFormElement>) {
         this.onSingIn();
         e.preventDefault();
     }
 
     private onChangeMnemonic(mnemonicPhrase: string) {
-        this.mnemonicPhrase = mnemonicPhrase;
+        this.setState({mnemonicPhrase: mnemonicPhrase});
     }
 
     private onSingUp() {
         const {history} = this.props;
-        this.baseManager.signUp(this.mnemonicPhrase)
+        this.baseManager.signUp(this.state.mnemonicPhrase)
             .then(account => history.replace('dashboard'))
             .catch(response => {
                 if (response.json.status === 409) {
@@ -74,7 +107,7 @@ export default class Auth extends React.Component<Props> {
 
     private onSingIn() {
         const {history} = this.props;
-        this.baseManager.signIn(this.mnemonicPhrase)
+        this.baseManager.signIn(this.state.mnemonicPhrase)
             .then(account => history.replace('dashboard'))
             .catch(response => {
                 if (response.json.status === 404) {

@@ -1,6 +1,6 @@
 import Config from '../Config';
 import { injectable } from 'inversify';
-import { DataRequestState, default as Base } from 'base';
+import { DataRequestState, default as Base, RepositoryStrategyType } from 'base';
 import 'reflect-metadata';
 import Account from 'base/repository/models/Account';
 import DataRequestManager from 'base/manager/DataRequestManager';
@@ -23,6 +23,11 @@ export default class BaseManager {
 
     constructor() {
         this.base = new Base(Config.getBaseEndPoint());
+        this.changeStrategy(RepositoryStrategyType.Postgres);
+    }
+
+    changeStrategy(strategy: RepositoryStrategyType) {
+        this.base.changeStrategy(strategy);
     }
 
     signUp(mnemonicPhrase: string): Promise<Account> {
