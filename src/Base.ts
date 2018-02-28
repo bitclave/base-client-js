@@ -18,8 +18,11 @@ import { DataRequestRepository } from './repository/requests/DataRequestReposito
 import { MessageEncrypt } from './utils/keypair/MessageEncrypt';
 import { MessageDecrypt } from './utils/keypair/MessageDecrypt';
 import { MessageSigner } from './utils/keypair/MessageSigner';
+import RepositoryStrategyInterceptor from './repository/source/http/RepositoryStrategyInterceptor';
+import { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 
 export { DataRequestState } from './repository/models/DataRequestState';
+export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 
 export default class Base {
 
@@ -28,6 +31,7 @@ export default class Base {
     private _profileManager: ProfileManager;
     private _dataRequestManager: DataRequestManager;
     private _authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
+    private _repositoryStrategyInterceptor: RepositoryStrategyInterceptor;
 
     constructor(host: string) {
         const keyPairHelper: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
@@ -35,8 +39,11 @@ export default class Base {
         const encryptMessage: MessageEncrypt = keyPairHelper;
         const decryptMessage: MessageDecrypt = keyPairHelper;
 
+        this._repositoryStrategyInterceptor = new RepositoryStrategyInterceptor(RepositoryStrategyType.Postgres);
+
         const transport: HttpTransport = new HttpTransportImpl(host)
-            .addInterceptor(new SignInterceptor(messageSigner));
+            .addInterceptor(new SignInterceptor(messageSigner))
+            .addInterceptor(this._repositoryStrategyInterceptor);
 
         const accountRepository: AccountRepository = new AccountRepositoryImpl(transport);
         const clientDataRepository: ClientDataRepository = new ClientDataRepositoryImpl(transport);
@@ -58,6 +65,10 @@ export default class Base {
         );
 
         this._dataRequestManager = new DataRequestManager(dataRequestRepository, encryptMessage, decryptMessage);
+    }
+
+    changeStrategy(strategy: RepositoryStrategyType) {
+        this._repositoryStrategyInterceptor.changeStrategy(strategy);
     }
 
     get wallet(): Wallet {
