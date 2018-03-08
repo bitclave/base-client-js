@@ -20,9 +20,16 @@ import { MessageDecrypt } from './utils/keypair/MessageDecrypt';
 import { MessageSigner } from './utils/keypair/MessageSigner';
 import RepositoryStrategyInterceptor from './repository/source/http/RepositoryStrategyInterceptor';
 import { RepositoryStrategyType } from './repository/RepositoryStrategyType';
+import OfferManager from './manager/OfferManager';
+import { OfferRepository } from './repository/offer/OfferRepository';
+import OfferRepositoryImpl from './repository/offer/OfferRepositoryImpl';
+import SearchRequestManager from './manager/SearchRequestManager';
+import { SearchRequestRepository } from './repository/search/SearchRequestRepository';
+import SearchRequestRepositoryImpl from './repository/search/SearchRequestRepositoryImpl';
 
 export { DataRequestState } from './repository/models/DataRequestState';
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
+export { CompareAction } from './repository/models/CompareAction';
 
 export default class Base {
 
@@ -30,6 +37,8 @@ export default class Base {
     private _accountManager: AccountManager;
     private _profileManager: ProfileManager;
     private _dataRequestManager: DataRequestManager;
+    private _offerManager: OfferManager;
+    private _searchRequestManager: SearchRequestManager;
     private _authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
     private _repositoryStrategyInterceptor: RepositoryStrategyInterceptor;
 
@@ -48,6 +57,8 @@ export default class Base {
         const accountRepository: AccountRepository = new AccountRepositoryImpl(transport);
         const clientDataRepository: ClientDataRepository = new ClientDataRepositoryImpl(transport);
         const dataRequestRepository: DataRequestRepository = new DataRequestRepositoryImpl(transport);
+        const offerRepository: OfferRepository = new OfferRepositoryImpl(transport);
+        const searchRequestRepository: SearchRequestRepository = new SearchRequestRepositoryImpl(transport);
 
         this._wallet = new Wallet();
 
@@ -65,6 +76,13 @@ export default class Base {
         );
 
         this._dataRequestManager = new DataRequestManager(dataRequestRepository, encryptMessage, decryptMessage);
+
+        this._offerManager = new OfferManager(offerRepository, this._authAccountBehavior.asObservable());
+
+        this._searchRequestManager = new SearchRequestManager(
+            searchRequestRepository,
+            this._authAccountBehavior.asObservable()
+        );
     }
 
     changeStrategy(strategy: RepositoryStrategyType) {
@@ -85,6 +103,14 @@ export default class Base {
 
     get dataRequestManager(): DataRequestManager {
         return this._dataRequestManager;
+    }
+
+    get offerManager(): OfferManager {
+        return this._offerManager;
+    }
+
+    get searchRequestManager(): SearchRequestManager {
+        return this._searchRequestManager;
     }
 
 }
