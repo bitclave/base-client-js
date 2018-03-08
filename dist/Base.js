@@ -73283,7 +73283,7 @@ var Offer_1 = __webpack_require__(609);
 var HttpMethod_1 = __webpack_require__(45);
 var OfferRepositoryImpl = /** @class */ (function () {
     function OfferRepositoryImpl(transport) {
-        this.OFFER_API = 'client/{owner}/offer/{id}';
+        this.OFFER_API = '/client/{owner}/offer/{id}';
         this.transport = transport;
     }
     OfferRepositoryImpl.prototype.create = function (owner, offer) {
@@ -73423,7 +73423,7 @@ var SearchRequest_1 = __webpack_require__(612);
 var HttpMethod_1 = __webpack_require__(45);
 var SearchRequestRepositoryImpl = /** @class */ (function () {
     function SearchRequestRepositoryImpl(transport) {
-        this.SEARCH_REQUEST_API = 'client/{owner}/search/{id}';
+        this.SEARCH_REQUEST_API = '/client/{owner}/search/{id}';
         this.transport = transport;
     }
     SearchRequestRepositoryImpl.prototype.create = function (owner, searchRequest) {
