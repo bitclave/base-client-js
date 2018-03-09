@@ -26,10 +26,14 @@ import OfferRepositoryImpl from './repository/offer/OfferRepositoryImpl';
 import SearchRequestManager from './manager/SearchRequestManager';
 import { SearchRequestRepository } from './repository/search/SearchRequestRepository';
 import SearchRequestRepositoryImpl from './repository/search/SearchRequestRepositoryImpl';
+import SearchRequest from './repository/models/SearchRequest';
+import Offer from './repository/models/Offer';
 
 export { DataRequestState } from './repository/models/DataRequestState';
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
+export {SearchRequest}
+export {Offer}
 
 export default class Base {
 
