@@ -10,7 +10,7 @@ interface Prop {
     onDeleteClick: Function | null;
 }
 
-export default class ClientDataHolder extends React.Component<Prop, {}> {
+export default class PairItemHolder extends React.Component<Prop, {}> {
     render() {
         return (
             <Row>

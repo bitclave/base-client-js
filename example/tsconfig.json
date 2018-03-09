@@ -24,7 +24,6 @@
     "emitDecoratorMetadata": true
   },
   "exclude": [
-    "node_modules",
     "build",
     "public",
     "scripts",

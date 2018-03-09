@@ -5,6 +5,8 @@ import 'reflect-metadata';
 import Account from 'base/repository/models/Account';
 import DataRequestManager from 'base/manager/DataRequestManager';
 import DataRequest from 'base/repository/models/DataRequest';
+import OfferManager from 'base/manager/OfferManager';
+import SearchRequestManager from 'base/manager/SearchRequestManager';
 
 export interface SyncDataListener {
 
@@ -46,6 +48,14 @@ export default class BaseManager {
                 this.prepareStartSyncState();
                 return this.account;
             });
+    }
+
+    getOfferManager(): OfferManager {
+        return this.base.offerManager;
+    }
+
+    getSearchRequestManager(): SearchRequestManager {
+        return this.base.searchRequestManager;
     }
 
     getId() {
