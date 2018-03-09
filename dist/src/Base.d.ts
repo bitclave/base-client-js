@@ -5,9 +5,13 @@ import DataRequestManager from './manager/DataRequestManager';
 import { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 import OfferManager from './manager/OfferManager';
 import SearchRequestManager from './manager/SearchRequestManager';
+import SearchRequest from './repository/models/SearchRequest';
+import Offer from './repository/models/Offer';
 export { DataRequestState } from './repository/models/DataRequestState';
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
+export { SearchRequest };
+export { Offer };
 export default class Base {
     private _wallet;
     private _accountManager;
