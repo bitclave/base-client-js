@@ -308,7 +308,9 @@ export default class CreateOffer extends React.Component<Props, State> {
             this.compare[pos].value = inputCompareValue;
         } else {
             this.compare.push(new Pair(inputCompareKey, inputCompareValue));
-            this.compareRules.push(new Pair(inputCompareKey, this.compareActions[0]));
+            this.compareRules.push(
+                new Pair(inputCompareKey, CompareAction.EQUALLY.toString())
+            );
         }
 
         this.setState({inputCompareKey: '', inputCompareValue: ''});
