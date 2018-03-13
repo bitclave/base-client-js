@@ -4,6 +4,8 @@ import DataRequestManager from '../../src/manager/DataRequestManager';
 import DataRequestRepositoryImplMock from './DataRequestRepositoryImplMock';
 import { DataRequestState } from '../../src/repository/models/DataRequestState';
 import JsonUtils from '../../src/utils/JsonUtils';
+import { BehaviorSubject } from 'rxjs/Rx';
+import Account from '../../src/repository/models/Account';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
@@ -23,10 +25,14 @@ describe('Data Request Manager', async () => {
     keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
     keyPairHelperBob.createKeyPair(passPhraseBob);
 
+    const accountAlisa: Account = new Account(keyPairHelperAlisa.getPublicKey());
+    const authAccountBehaviorAlisa: BehaviorSubject<Account> = new BehaviorSubject<Account>(accountAlisa);
+
     dataRepository.setPK(keyPairHelperAlisa.getPublicKey(), keyPairHelperBob.getPublicKey());
 
     const requestManager = new DataRequestManager(
         dataRepository,
+        authAccountBehaviorAlisa,
         keyPairHelperAlisa,
         keyPairHelperAlisa
     );
@@ -90,6 +96,10 @@ describe('Data Request Manager', async () => {
             alisaFields.should.be.contain.deep(key);
         });
 
+    });
+
+    it('share data for offer', async () => {
+        await requestManager.shareDataForOffer(1, keyPairHelperBob.getPublicKey(), this.alisaFields)
     });
 
 });

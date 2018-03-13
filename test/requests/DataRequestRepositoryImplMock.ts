@@ -2,15 +2,18 @@ import { DataRequestRepository } from '../../src/repository/requests/DataRequest
 import DataRequest from '../../src/repository/models/DataRequest';
 import { DataRequestState } from '../../src/repository/models/DataRequestState';
 import { isNullOrUndefined } from 'util';
+import OfferShareData from '../../src/repository/models/OfferShareData';
 
 export default class DataRequestRepositoryImplMock implements DataRequestRepository {
 
     private _data: Array<DataRequest> = [];
+    private _shareData: Set<OfferShareData> = new Set();
     private fromPK: string = null;
     private toPk: string = null;
 
     clearData() {
         this._data = [];
+        this._shareData = new Set();
     }
 
     setPK(fromPK: string, toPk: string) {
@@ -63,6 +66,13 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
             });
 
             resolve(result);
+        });
+    }
+
+    shareDataForOffer(offerId: number, clientPk: string, clientResponse: string): Promise<void> {
+        return new Promise<void>(resolve => {
+            this._shareData.add(new OfferShareData(offerId, clientPk, clientResponse));
+            resolve();
         });
     }
 
