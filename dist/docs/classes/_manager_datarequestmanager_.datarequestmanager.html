@@ -92,6 +92,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_datarequestmanager_.datarequestmanager.html#decryptmessage" class="tsd-kind-icon">decrypt<wbr>Message</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_datarequestmanager_.datarequestmanager.html#getrequests" class="tsd-kind-icon">get<wbr>Requests</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_datarequestmanager_.datarequestmanager.html#responsetorequest" class="tsd-kind-icon">response<wbr>ToRequest</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_datarequestmanager_.datarequestmanager.html#sharedataforoffer" class="tsd-kind-icon">share<wbr>Data<wbr>For<wbr>Offer</a></li>
 							</ul>
 						</section>
 					</div>
@@ -103,19 +104,22 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Data<wbr>Request<wbr>Manager<span class="tsd-signature-symbol">(</span>dataRequestRepository<span class="tsd-signature-symbol">: </span><a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html" class="tsd-signature-type">DataRequestRepository</a>, encrypt<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_keypair_messageencrypt_.messageencrypt.html" class="tsd-signature-type">MessageEncrypt</a>, decrypt<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_keypair_messagedecrypt_.messagedecrypt.html" class="tsd-signature-type">MessageDecrypt</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_manager_datarequestmanager_.datarequestmanager.html" class="tsd-signature-type">DataRequestManager</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Data<wbr>Request<wbr>Manager<span class="tsd-signature-symbol">(</span>dataRequestRepository<span class="tsd-signature-symbol">: </span><a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html" class="tsd-signature-type">DataRequestRepository</a>, authAccountBehavior<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span>, encrypt<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_keypair_messageencrypt_.messageencrypt.html" class="tsd-signature-type">MessageEncrypt</a>, decrypt<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_keypair_messagedecrypt_.messagedecrypt.html" class="tsd-signature-type">MessageDecrypt</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_manager_datarequestmanager_.datarequestmanager.html" class="tsd-signature-type">DataRequestManager</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/5da6c0e/src/manager/DataRequestManager.ts#L12">manager/DataRequestManager.ts:12</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a037ba9/src/manager/DataRequestManager.ts#L15">manager/DataRequestManager.ts:15</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>dataRequestRepository: <a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html" class="tsd-signature-type">DataRequestRepository</a></h5>
+								</li>
+								<li>
+									<h5>authAccountBehavior: <span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 								<li>
 									<h5>encrypt: <a href="../interfaces/_utils_keypair_messageencrypt_.messageencrypt.html" class="tsd-signature-type">MessageEncrypt</a></h5>
@@ -141,7 +145,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/5da6c0e/src/manager/DataRequestManager.ts#L29">manager/DataRequestManager.ts:29</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a037ba9/src/manager/DataRequestManager.ts#L36">manager/DataRequestManager.ts:36</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -180,7 +184,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/5da6c0e/src/manager/DataRequestManager.ts#L82">manager/DataRequestManager.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a037ba9/src/manager/DataRequestManager.ts#L93">manager/DataRequestManager.ts:93</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -218,7 +222,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/5da6c0e/src/manager/DataRequestManager.ts#L71">manager/DataRequestManager.ts:71</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a037ba9/src/manager/DataRequestManager.ts#L65">manager/DataRequestManager.ts:65</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -262,7 +266,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/5da6c0e/src/manager/DataRequestManager.ts#L45">manager/DataRequestManager.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a037ba9/src/manager/DataRequestManager.ts#L52">manager/DataRequestManager.ts:52</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -294,6 +298,46 @@
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../enums/_repository_models_datarequeststate_.datarequeststate.html" class="tsd-signature-type">DataRequestState</a><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>state of request of data <a href="../enums/_repository_models_datarequeststate_.datarequeststate.html">DataRequestState</a>.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="sharedataforoffer" class="tsd-anchor"></a>
+					<h3>share<wbr>Data<wbr>For<wbr>Offer</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">share<wbr>Data<wbr>For<wbr>Offer<span class="tsd-signature-symbol">(</span>offerId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, offerOwner<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, acceptedFields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a037ba9/src/manager/DataRequestManager.ts#L78">manager/DataRequestManager.ts:78</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Share data for offer.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>offerId: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>id of Offer.</p>
+									</div>
+								</li>
+								<li>
+									<h5>offerOwner: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Public key of offer owner.</p>
+									</div>
+								</li>
+								<li>
+									<h5>acceptedFields: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -331,6 +375,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_manager_datarequestmanager_.datarequestmanager.html#responsetorequest" class="tsd-kind-icon">response<wbr>ToRequest</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_manager_datarequestmanager_.datarequestmanager.html#sharedataforoffer" class="tsd-kind-icon">share<wbr>Data<wbr>For<wbr>Offer</a>
 							</li>
 						</ul>
 					</li>

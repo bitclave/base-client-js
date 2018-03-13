@@ -3,11 +3,14 @@ import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { DataRequestState } from '../repository/models/DataRequestState';
 import DataRequest from '../repository/models/DataRequest';
+import Account from '../repository/models/Account';
+import { Observable } from 'rxjs/Rx';
 export default class DataRequestManager {
+    private account;
     private dataRequestRepository;
     private encrypt;
     private decrypt;
-    constructor(dataRequestRepository: DataRequestRepository, encrypt: MessageEncrypt, decrypt: MessageDecrypt);
+    constructor(dataRequestRepository: DataRequestRepository, authAccountBehavior: Observable<Account>, encrypt: MessageEncrypt, decrypt: MessageDecrypt);
     /**
      * Creates data access request to a specific user for a specific personal data.
      * @param {string} recipientPk Public Key of the user that the personal data is requested from.
@@ -37,6 +40,16 @@ export default class DataRequestManager {
      */
     getRequests(fromPk: string | undefined, toPk: string | undefined, state: DataRequestState): Promise<Array<DataRequest>>;
     /**
+     * Share data for offer.
+     * @param {number} offerId id of Offer.
+     * @param {string} offerOwner Public key of offer owner.
+     * @param {Map<string, string>} acceptedFields. Arrays names of fields for accept access.
+     * (e.g. this is keys in {Map<string, string>} - personal data).
+     *
+     * @returns {Promise<void>}
+     */
+    shareDataForOffer(offerId: number, offerOwner: string, acceptedFields: Array<string>): Promise<void>;
+    /**
      * Decodes a message that was encrypted by the owner of the private key that matches the provided public key.
      * @param {string} senderPk public key of the user that issued data access request.
      * @param {string} encrypted encrypted data from {@link DataRequest#requestData} (ECIES).
@@ -44,4 +57,6 @@ export default class DataRequestManager {
      * @returns {object} object with data or empty object if was error.
      */
     decryptMessage(senderPk: string, encrypted: string): any;
+    private getEncryptedDataForFields(senderPk, fields?);
+    private onChangeAccount(account);
 }

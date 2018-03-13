@@ -97,6 +97,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_requests_datarequestrepositoryimpl_.datarequestrepositoryimpl.html#createrequest" class="tsd-kind-icon">create<wbr>Request</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_requests_datarequestrepositoryimpl_.datarequestrepositoryimpl.html#createresponse" class="tsd-kind-icon">create<wbr>Response</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_requests_datarequestrepositoryimpl_.datarequestrepositoryimpl.html#getrequests" class="tsd-kind-icon">get<wbr>Requests</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_requests_datarequestrepositoryimpl_.datarequestrepositoryimpl.html#sharedataforoffer" class="tsd-kind-icon">share<wbr>Data<wbr>For<wbr>Offer</a></li>
 							</ul>
 						</section>
 					</div>
@@ -114,7 +115,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/5da6c0e/src/repository/requests/DataRequestRepositoryImpl.ts#L15">repository/requests/DataRequestRepositoryImpl.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a037ba9/src/repository/requests/DataRequestRepositoryImpl.ts#L17">repository/requests/DataRequestRepositoryImpl.ts:17</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -141,7 +142,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html">DataRequestRepository</a>.<a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html#createrequest">createRequest</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/5da6c0e/src/repository/requests/DataRequestRepositoryImpl.ts#L21">repository/requests/DataRequestRepositoryImpl.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a037ba9/src/repository/requests/DataRequestRepositoryImpl.ts#L23">repository/requests/DataRequestRepositoryImpl.ts:23</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -168,7 +169,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html">DataRequestRepository</a>.<a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html#createresponse">createResponse</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/5da6c0e/src/repository/requests/DataRequestRepositoryImpl.ts#L31">repository/requests/DataRequestRepositoryImpl.ts:31</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a037ba9/src/repository/requests/DataRequestRepositoryImpl.ts#L33">repository/requests/DataRequestRepositoryImpl.ts:33</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -195,7 +196,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html">DataRequestRepository</a>.<a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html#getrequests">getRequests</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/5da6c0e/src/repository/requests/DataRequestRepositoryImpl.ts#L41">repository/requests/DataRequestRepositoryImpl.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a037ba9/src/repository/requests/DataRequestRepositoryImpl.ts#L43">repository/requests/DataRequestRepositoryImpl.ts:43</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -211,6 +212,36 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_datarequest_.datarequest.html" class="tsd-signature-type">DataRequest</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="sharedataforoffer" class="tsd-anchor"></a>
+					<h3>share<wbr>Data<wbr>For<wbr>Offer</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">share<wbr>Data<wbr>For<wbr>Offer<span class="tsd-signature-symbol">(</span>offerId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, clientPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, encryptedClientResponse<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html">DataRequestRepository</a>.<a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html#sharedataforoffer">shareDataForOffer</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a037ba9/src/repository/requests/DataRequestRepositoryImpl.ts#L67">repository/requests/DataRequestRepositoryImpl.ts:67</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>offerId: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>clientPk: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>encryptedClientResponse: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -245,6 +276,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_repository_requests_datarequestrepositoryimpl_.datarequestrepositoryimpl.html#getrequests" class="tsd-kind-icon">get<wbr>Requests</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_repository_requests_datarequestrepositoryimpl_.datarequestrepositoryimpl.html#sharedataforoffer" class="tsd-kind-icon">share<wbr>Data<wbr>For<wbr>Offer</a>
 							</li>
 						</ul>
 					</li>

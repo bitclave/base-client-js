@@ -49077,12 +49077,12 @@ var Account_1 = __webpack_require__(41);
 var SignInterceptor_1 = __webpack_require__(603);
 var DataRequestManager_1 = __webpack_require__(605);
 var DataRequestRepositoryImpl_1 = __webpack_require__(606);
-var RepositoryStrategyInterceptor_1 = __webpack_require__(608);
+var RepositoryStrategyInterceptor_1 = __webpack_require__(609);
 var RepositoryStrategyType_1 = __webpack_require__(226);
-var OfferManager_1 = __webpack_require__(609);
-var OfferRepositoryImpl_1 = __webpack_require__(610);
-var SearchRequestManager_1 = __webpack_require__(611);
-var SearchRequestRepositoryImpl_1 = __webpack_require__(612);
+var OfferManager_1 = __webpack_require__(610);
+var OfferRepositoryImpl_1 = __webpack_require__(611);
+var SearchRequestManager_1 = __webpack_require__(612);
+var SearchRequestRepositoryImpl_1 = __webpack_require__(613);
 var SearchRequest_1 = __webpack_require__(229);
 exports.SearchRequest = SearchRequest_1.default;
 var Offer_1 = __webpack_require__(227);
@@ -49112,7 +49112,7 @@ var Base = /** @class */ (function () {
         this._wallet = new Wallet_1.default();
         this._accountManager = new AccountManager_1.default(accountRepository, keyPairHelper, this._authAccountBehavior);
         this._profileManager = new ProfileManager_1.default(clientDataRepository, this._authAccountBehavior.asObservable(), encryptMessage, decryptMessage);
-        this._dataRequestManager = new DataRequestManager_1.default(dataRequestRepository, encryptMessage, decryptMessage);
+        this._dataRequestManager = new DataRequestManager_1.default(dataRequestRepository, this._authAccountBehavior.asObservable(), encryptMessage, decryptMessage);
         this._offerManager = new OfferManager_1.default(offerRepository, this._authAccountBehavior.asObservable());
         this._searchRequestManager = new SearchRequestManager_1.default(searchRequestRepository, this._authAccountBehavior.asObservable());
     }
@@ -73119,10 +73119,12 @@ exports.default = SignedRequest;
 Object.defineProperty(exports, "__esModule", { value: true });
 var JsonUtils_1 = __webpack_require__(46);
 var DataRequestManager = /** @class */ (function () {
-    function DataRequestManager(dataRequestRepository, encrypt, decrypt) {
+    function DataRequestManager(dataRequestRepository, authAccountBehavior, encrypt, decrypt) {
         this.dataRequestRepository = dataRequestRepository;
         this.encrypt = encrypt;
         this.decrypt = decrypt;
+        authAccountBehavior
+            .subscribe(this.onChangeAccount.bind(this));
     }
     /**
      * Creates data access request to a specific user for a specific personal data.
@@ -73147,18 +73149,7 @@ var DataRequestManager = /** @class */ (function () {
      * @returns {Promise<DataRequestState>} state of request of data {@link DataRequestState}.
      */
     DataRequestManager.prototype.responseToRequest = function (requestId, senderPk, fields) {
-        var _this = this;
-        var encrypt = '';
-        if (fields != null && fields.length > 0) {
-            var resultMap_1 = new Map();
-            fields.forEach(function (value) {
-                resultMap_1.set(value, _this.encrypt.generatePasswordForFiled(value.toLowerCase()));
-            });
-            var jsonMap = JsonUtils_1.default.mapToJson(resultMap_1);
-            encrypt = this.encrypt
-                .encryptMessage(senderPk, JSON.stringify(jsonMap));
-        }
-        return this.dataRequestRepository.createResponse(requestId, encrypt);
+        return this.dataRequestRepository.createResponse(requestId, this.getEncryptedDataForFields(senderPk, fields));
     };
     /**
      * Returns a list of outstanding data access requests, where data access requests meet the provided search criteria.
@@ -73172,6 +73163,18 @@ var DataRequestManager = /** @class */ (function () {
         if (fromPk === void 0) { fromPk = ''; }
         if (toPk === void 0) { toPk = ''; }
         return this.dataRequestRepository.getRequests(fromPk, toPk, state);
+    };
+    /**
+     * Share data for offer.
+     * @param {number} offerId id of Offer.
+     * @param {string} offerOwner Public key of offer owner.
+     * @param {Map<string, string>} acceptedFields. Arrays names of fields for accept access.
+     * (e.g. this is keys in {Map<string, string>} - personal data).
+     *
+     * @returns {Promise<void>}
+     */
+    DataRequestManager.prototype.shareDataForOffer = function (offerId, offerOwner, acceptedFields) {
+        return this.dataRequestRepository.shareDataForOffer(offerId, this.account.publicKey, this.getEncryptedDataForFields(offerOwner, acceptedFields));
     };
     /**
      * Decodes a message that was encrypted by the owner of the private key that matches the provided public key.
@@ -73190,6 +73193,23 @@ var DataRequestManager = /** @class */ (function () {
             return {};
         }
     };
+    DataRequestManager.prototype.getEncryptedDataForFields = function (senderPk, fields) {
+        var _this = this;
+        var encryptedMessage = '';
+        if (fields != null && fields.length > 0) {
+            var resultMap_1 = new Map();
+            fields.forEach(function (value) {
+                resultMap_1.set(value, _this.encrypt.generatePasswordForFiled(value.toLowerCase()));
+            });
+            var jsonMap = JsonUtils_1.default.mapToJson(resultMap_1);
+            encryptedMessage = this.encrypt
+                .encryptMessage(senderPk, JSON.stringify(jsonMap));
+        }
+        return encryptedMessage;
+    };
+    DataRequestManager.prototype.onChangeAccount = function (account) {
+        this.account = account;
+    };
     return DataRequestManager;
 }());
 exports.default = DataRequestManager;
@@ -73205,6 +73225,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var DataRequest_1 = __webpack_require__(607);
 var HttpMethod_1 = __webpack_require__(45);
 var DataRequestState_1 = __webpack_require__(108);
+var OfferShareData_1 = __webpack_require__(608);
 var DataRequestRepositoryImpl = /** @class */ (function () {
     function DataRequestRepositoryImpl(transport) {
         this.CREATE_DATA_REQUEST = '/request/';
@@ -73212,6 +73233,7 @@ var DataRequestRepositoryImpl = /** @class */ (function () {
         this.GET_DATA_REQUEST_TO = '/request/to/{toPk}/state/{state}/';
         this.GET_DATA_REQUEST_FROM_TO = '/request/from/{fromPk}/to/{toPk}/state/{state}/';
         this.RESPONSE_DATA_REQUEST = '/request/{id}/';
+        this.SHARE_DATA_FOR_OFFER = '/share/';
         this.transport = transport;
     }
     DataRequestRepositoryImpl.prototype.createRequest = function (toPk, encryptedRequest) {
@@ -73240,6 +73262,12 @@ var DataRequestRepositoryImpl = /** @class */ (function () {
             .replace('{state}', state);
         return this.transport
             .sendRequest(path, HttpMethod_1.HttpMethod.Get).then(function (response) { return Object.assign([], response.json); });
+    };
+    DataRequestRepositoryImpl.prototype.shareDataForOffer = function (offerId, clientPk, encryptedClientResponse) {
+        var shareData = new OfferShareData_1.default(offerId, clientPk, encryptedClientResponse);
+        return this.transport
+            .sendRequest(this.SHARE_DATA_FOR_OFFER, HttpMethod_1.HttpMethod.Post, shareData)
+            .then(function () { });
     };
     DataRequestRepositoryImpl.prototype.isEmpty = function (value) {
         return value == null || value.trim().length === 0;
@@ -73284,6 +73312,30 @@ exports.default = DataRequest;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var OfferShareData = /** @class */ (function () {
+    function OfferShareData(offerId, clientId, clientResponse) {
+        this.offerId = 0;
+        this.clientId = '0x0';
+        this.offerOwner = '0x0';
+        this.clientResponse = '';
+        this.worth = '0';
+        this.accepted = false;
+        this.offerId = offerId;
+        this.clientId = clientId;
+        this.clientResponse = clientResponse;
+    }
+    return OfferShareData;
+}());
+exports.default = OfferShareData;
+
+
+/***/ }),
+/* 609 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 var RepositoryStrategyInterceptor = /** @class */ (function () {
     function RepositoryStrategyInterceptor(strategy) {
         this.strategy = strategy;
@@ -73312,7 +73364,7 @@ exports.default = RepositoryStrategyInterceptor;
 
 
 /***/ }),
-/* 609 */
+/* 610 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73359,7 +73411,7 @@ exports.default = OfferManager;
 
 
 /***/ }),
-/* 610 */
+/* 611 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73407,7 +73459,7 @@ exports.default = OfferRepositoryImpl;
 
 
 /***/ }),
-/* 611 */
+/* 612 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73448,7 +73500,7 @@ exports.default = SearchRequestManager;
 
 
 /***/ }),
-/* 612 */
+/* 613 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
