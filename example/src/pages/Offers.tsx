@@ -45,6 +45,7 @@ export default class Offers extends React.Component<Props, State> {
                 <Container className="h-100 p-4">
                     <div className="h-100 justify-content-center align-items-center">
                         <OfferList
+                            selectable={false}
                             data={this.state.offersList}
                             onItemClick={(item: Offer) => this.onOfferClick(item)}
                         />

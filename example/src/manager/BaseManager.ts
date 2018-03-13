@@ -7,6 +7,7 @@ import DataRequestManager from 'base/manager/DataRequestManager';
 import DataRequest from 'base/repository/models/DataRequest';
 import OfferManager from 'base/manager/OfferManager';
 import SearchRequestManager from 'base/manager/SearchRequestManager';
+import Offer from 'base/repository/models/Offer';
 
 export interface SyncDataListener {
 
@@ -103,6 +104,15 @@ export default class BaseManager {
                 this.cacheRequests = this.cacheRequests.filter(item => item.id !== requestId);
                 return state;
             });
+    }
+
+    public shareDataForOffer(offer: Offer): Promise<void> {
+        const fields: Array<string> = [];
+        offer.compare.forEach((value, key) => {
+            fields.push(key.toString().toLowerCase());
+        });
+
+        return this.base.dataRequestManager.shareDataForOffer(offer.id, offer.owner, fields);
     }
 
     private prepareStartSyncState() {

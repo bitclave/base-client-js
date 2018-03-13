@@ -2,14 +2,14 @@ import * as React from 'react';
 import Col from 'reactstrap/lib/Col';
 import Row from 'reactstrap/lib/Row';
 import SearchRequest from 'base/repository/models/SearchRequest';
+import { default as AbstractHolder, AbstractProperties, AbstractState } from './AbstractHolder';
 
-interface Properties {
-    model: SearchRequest;
+interface Properties extends AbstractProperties<SearchRequest> {
 }
 
-export default class SearchRequestHolder extends React.Component<Properties, {}> {
+export default class SearchRequestHolder extends AbstractHolder<Properties, SearchRequest, AbstractState> {
 
-    render() {
+    public bindModel(model: SearchRequest): object {
         return (
             <Row>
                 <Col className="client-data-item-field" xs="2" sm="1">{this.props.model.id.toString()}</Col>
@@ -22,7 +22,7 @@ export default class SearchRequestHolder extends React.Component<Properties, {}>
         const result: Array<object> = [];
 
         this.props.model.tags.forEach((value, key) => {
-            result.push(<div>{key} => {value}</div>);
+            result.push(<div key={key.toString()}>{key} => {value}</div>);
         });
 
         return result;

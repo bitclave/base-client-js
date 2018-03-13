@@ -11,11 +11,12 @@ export default class SearchRequestList extends AbstractList<Properties, SearchRe
     bindHolder(dataItem: SearchRequest, position: number): Object {
         return (
             <SearchRequestHolder
+                selected={false}
+                onClick={(model: SearchRequest, target: React.Component) => this.onClick(model, target)}
                 model={dataItem}
                 key={position}
             />
         );
-
     }
 
 }

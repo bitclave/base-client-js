@@ -11,16 +11,12 @@ export default class OfferList extends AbstractList<Properties, Offer> {
     bindHolder(dataItem: Offer, position: number): Object {
         return (
             <OfferHolder
-                onClick={() => this.onClick(dataItem)}
+                selected={false}
+                onClick={(model: Offer, target: React.Component) => this.onClick(model, target)}
                 model={dataItem}
                 key={position}
             />
         );
     }
 
-    private onClick(item: Offer) {
-        if (this.props.onItemClick) {
-            this.props.onItemClick(item);
-        }
-    }
 }

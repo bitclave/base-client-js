@@ -45,6 +45,7 @@ export default class SearchRequests extends React.Component<Props, State> {
                 <Container className="h-100 p-4">
                     <div className="h-100 justify-content-center align-items-center">
                         <SearchRequestList
+                            selectable={false}
                             data={this.state.requests}
                         />
                     </div>

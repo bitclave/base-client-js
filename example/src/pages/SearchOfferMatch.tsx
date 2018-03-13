@@ -15,6 +15,8 @@ interface Props extends RouteComponentProps<{}> {
 interface State {
     offersList: Array<Offer>;
     searchRequestList: Array<SearchRequest>;
+    selectedOffer: Offer | undefined;
+    selectedSearch: SearchRequest | undefined;
 }
 
 export default class SearchOfferMatch extends React.Component<Props, State> {
@@ -26,7 +28,9 @@ export default class SearchOfferMatch extends React.Component<Props, State> {
         super(props);
         this.state = {
             offersList: [],
-            searchRequestList: []
+            searchRequestList: [],
+            selectedOffer: undefined,
+            selectedSearch: undefined
         };
     }
 
@@ -52,6 +56,7 @@ export default class SearchOfferMatch extends React.Component<Props, State> {
                     <div className="justify-content-center align-items-center">
                         <div className="text-white">Offers:</div>
                         <OfferList
+                            selectable={true}
                             data={this.state.offersList}
                             onItemClick={(item: Offer) => this.onOfferClick(item)}
                         />
@@ -60,14 +65,38 @@ export default class SearchOfferMatch extends React.Component<Props, State> {
                     <div className="my-5 justify-content-center align-items-center">
                         <div className="text-white">Search Requests:</div>
                         <SearchRequestList
+                            selectable={true}
                             data={this.state.searchRequestList}
                             onItemClick={(item: SearchRequest) => this.onRequestClick(item)}
                         />
                     </div>
 
+                    <div className="text-center">
+                        <Button
+                            color="primary"
+                            onClick={() => this.onMatchClick()}
+                        >
+                            Match offer with search
+                        </Button>
+                    </div>
                 </Container>
             </div>
         );
+    }
+
+    private onMatchClick() {
+        if (this.state.selectedOffer === undefined) {
+            alert('Please select offer');
+            return;
+        }
+
+        if (this.state.selectedSearch === undefined) {
+            alert('Please select search request');
+            return;
+        }
+        this.baseManager.shareDataForOffer(this.state.selectedOffer)
+            .then(() => alert('data successful shared!'))
+            .catch(() => alert('something went wrong'));
     }
 
     private onSyncOffers(result: Array<Offer>) {
@@ -84,11 +113,11 @@ export default class SearchOfferMatch extends React.Component<Props, State> {
     }
 
     private onOfferClick(offer: Offer) {
-        //
+        this.setState({selectedOffer: offer});
     }
 
     private onRequestClick(searchRequest: SearchRequest) {
-        //
+        this.setState({selectedSearch: searchRequest});
     }
 
 }
