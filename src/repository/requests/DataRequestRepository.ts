@@ -9,4 +9,6 @@ export interface DataRequestRepository {
 
     getRequests(fromPk: string | null, toPk: string | null, state: DataRequestState): Promise<Array<DataRequest>>
 
+    shareDataForOffer(offerId: number, clientPk: string, encryptedClientResponse: string): Promise<void>
+
 }

@@ -79,7 +79,12 @@ export default class Base {
             decryptMessage
         );
 
-        this._dataRequestManager = new DataRequestManager(dataRequestRepository, encryptMessage, decryptMessage);
+        this._dataRequestManager = new DataRequestManager(
+            dataRequestRepository,
+            this._authAccountBehavior.asObservable(),
+            encryptMessage,
+            decryptMessage
+        );
 
         this._offerManager = new OfferManager(offerRepository, this._authAccountBehavior.asObservable());
 

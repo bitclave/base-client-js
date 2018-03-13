@@ -4,18 +4,25 @@ import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { DataRequestState } from '../repository/models/DataRequestState';
 import JsonUtils from '../utils/JsonUtils';
 import DataRequest from '../repository/models/DataRequest';
+import Account from '../repository/models/Account';
+import { Observable } from 'rxjs/Rx';
 
 export default class DataRequestManager {
 
+    private account: Account;
     private dataRequestRepository: DataRequestRepository;
     private encrypt: MessageEncrypt;
     private decrypt: MessageDecrypt;
 
     constructor(dataRequestRepository: DataRequestRepository,
+                authAccountBehavior: Observable<Account>,
                 encrypt: MessageEncrypt, decrypt: MessageDecrypt) {
         this.dataRequestRepository = dataRequestRepository;
         this.encrypt = encrypt;
         this.decrypt = decrypt;
+
+        authAccountBehavior
+            .subscribe(this.onChangeAccount.bind(this));
     }
 
     /**
@@ -44,20 +51,7 @@ export default class DataRequestManager {
      */
     public responseToRequest(requestId: number, senderPk: string,
                              fields?: Array<string>): Promise<DataRequestState> {
-        let encrypt = '';
-
-        if (fields != null && fields.length > 0) {
-            const resultMap: Map<string, string> = new Map();
-            fields.forEach(value => {
-                resultMap.set(value, this.encrypt.generatePasswordForFiled(value.toLowerCase()));
-            });
-
-            const jsonMap: any = JsonUtils.mapToJson(resultMap);
-            encrypt = this.encrypt
-                .encryptMessage(senderPk, JSON.stringify(jsonMap));
-        }
-
-        return this.dataRequestRepository.createResponse(requestId, encrypt);
+        return this.dataRequestRepository.createResponse(requestId, this.getEncryptedDataForFields(senderPk, fields));
     }
 
     /**
@@ -70,6 +64,23 @@ export default class DataRequestManager {
      */
     public getRequests(fromPk: string = '', toPk: string = '', state: DataRequestState): Promise<Array<DataRequest>> {
         return this.dataRequestRepository.getRequests(fromPk, toPk, state);
+    }
+
+    /**
+     * Share data for offer.
+     * @param {number} offerId id of Offer.
+     * @param {string} offerOwner Public key of offer owner.
+     * @param {Map<string, string>} acceptedFields. Arrays names of fields for accept access.
+     * (e.g. this is keys in {Map<string, string>} - personal data).
+     *
+     * @returns {Promise<void>}
+     */
+    public shareDataForOffer(offerId: number, offerOwner: string, acceptedFields: Array<string>): Promise<void> {
+        return this.dataRequestRepository.shareDataForOffer(
+            offerId,
+            this.account.publicKey,
+            this.getEncryptedDataForFields(offerOwner, acceptedFields)
+        );
     }
 
     /**
@@ -87,6 +98,27 @@ export default class DataRequestManager {
             console.log(decrypted, e);
             return {};
         }
+    }
+
+    private getEncryptedDataForFields(senderPk: string, fields?: Array<string>): string {
+        let encryptedMessage = '';
+
+        if (fields != null && fields.length > 0) {
+            const resultMap: Map<string, string> = new Map();
+            fields.forEach(value => {
+                resultMap.set(value, this.encrypt.generatePasswordForFiled(value.toLowerCase()));
+            });
+
+            const jsonMap: any = JsonUtils.mapToJson(resultMap);
+            encryptedMessage = this.encrypt
+                .encryptMessage(senderPk, JSON.stringify(jsonMap));
+        }
+
+        return encryptedMessage;
+    }
+
+    private onChangeAccount(account: Account) {
+        this.account = account;
     }
 
 }

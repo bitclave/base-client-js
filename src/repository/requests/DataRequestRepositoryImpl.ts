@@ -3,6 +3,7 @@ import DataRequest from '../models/DataRequest';
 import { HttpTransport } from '../source/http/HttpTransport';
 import { HttpMethod } from '../source/http/HttpMethod';
 import { DataRequestState } from '../models/DataRequestState';
+import OfferShareData from '../models/OfferShareData';
 
 export default class DataRequestRepositoryImpl implements DataRequestRepository {
 
@@ -11,6 +12,7 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
     private readonly GET_DATA_REQUEST_TO: string = '/request/to/{toPk}/state/{state}/';
     private readonly GET_DATA_REQUEST_FROM_TO: string = '/request/from/{fromPk}/to/{toPk}/state/{state}/';
     private readonly RESPONSE_DATA_REQUEST: string = '/request/{id}/';
+    private readonly SHARE_DATA_FOR_OFFER: string = '/share/';
 
     private transport: HttpTransport;
 
@@ -60,6 +62,13 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
                 path,
                 HttpMethod.Get
             ).then((response) => Object.assign([], response.json));
+    }
+
+    shareDataForOffer(offerId: number, clientPk: string, encryptedClientResponse: string): Promise<void> {
+        const shareData = new OfferShareData(offerId, clientPk, encryptedClientResponse);
+        return this.transport
+            .sendRequest(this.SHARE_DATA_FOR_OFFER, HttpMethod.Post, shareData)
+            .then(() => {});
     }
 
     private isEmpty(value: string | null): boolean {
