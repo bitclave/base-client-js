@@ -19,7 +19,7 @@ export default class DataRequestManager {
      *
      * @returns {Promise<string>} Returns requestID upon successful request record creation.
      */
-    createRequest(recipientPk: string, fields: Array<string>): Promise<string>;
+    createRequest(recipientPk: string, fields: Array<string>): Promise<number>;
     /**
      * Creates a response to a previously submitted data access request.
      * @param {number} requestId ID of existed the request.
@@ -40,7 +40,16 @@ export default class DataRequestManager {
      */
     getRequests(fromPk: string | undefined, toPk: string | undefined, state: DataRequestState): Promise<Array<DataRequest>>;
     /**
-     * Share data for offer.
+     * Grant access data for client.
+     * @param {string} clientPk id of client.
+     * @param {Map<string, string>} acceptedFields. Arrays names of fields for accept access.
+     * (e.g. this is keys in {Map<string, string>} - personal data).
+     *
+     * @returns {Promise<void>}
+     */
+    grantAccessForClient(clientPk: string, acceptedFields: Array<string>): Promise<number>;
+    /**
+     * Grant access for offer.
      * @param {number} offerId id of Offer.
      * @param {string} offerOwner Public key of offer owner.
      * @param {Map<string, string>} acceptedFields. Arrays names of fields for accept access.
@@ -48,7 +57,7 @@ export default class DataRequestManager {
      *
      * @returns {Promise<void>}
      */
-    shareDataForOffer(offerId: number, offerOwner: string, acceptedFields: Array<string>): Promise<void>;
+    grantAccessForOffer(offerId: number, offerOwner: string, acceptedFields: Array<string>): Promise<void>;
     /**
      * Decodes a message that was encrypted by the owner of the private key that matches the provided public key.
      * @param {string} senderPk public key of the user that issued data access request.
@@ -57,6 +66,6 @@ export default class DataRequestManager {
      * @returns {object} object with data or empty object if was error.
      */
     decryptMessage(senderPk: string, encrypted: string): any;
-    private getEncryptedDataForFields(senderPk, fields?);
+    private getEncryptedDataForFields(recipientPk, fields?);
     private onChangeAccount(account);
 }
