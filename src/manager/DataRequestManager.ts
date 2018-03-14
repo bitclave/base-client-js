@@ -31,9 +31,9 @@ export default class DataRequestManager {
      * @param {Array<string>} fields Array of name identifiers for the requested data fields
      * (e.g. this is keys in {Map<string, string>}).
      *
-     * @returns {Promise<string>} Returns requestID upon successful request record creation.
+     * @returns {Promise<number>} Returns requestID upon successful request record creation.
      */
-    public createRequest(recipientPk: string, fields: Array<string>): Promise<string> {
+    public createRequest(recipientPk: string, fields: Array<string>): Promise<number> {
         const encrypted = this.encrypt
             .encryptMessage(recipientPk, JSON.stringify(fields).toLowerCase());
 
@@ -67,7 +67,23 @@ export default class DataRequestManager {
     }
 
     /**
-     * Share data for offer.
+     * Grant access data for client.
+     * @param {string} clientPk id of client.
+     * @param {Map<string, string>} acceptedFields. Arrays names of fields for accept access.
+     * (e.g. this is keys in {Map<string, string>} - personal data).
+     *
+     * @returns {Promise<number>}
+     */
+    public grantAccessForClient(clientPk: string, acceptedFields: Array<string>): Promise<number> {
+        return this.dataRequestRepository.grantAccessForClient(
+            clientPk,
+            this.account.publicKey,
+            this.getEncryptedDataForFields(clientPk, acceptedFields)
+        );
+    }
+
+    /**
+     * Grant access for offer.
      * @param {number} offerId id of Offer.
      * @param {string} offerOwner Public key of offer owner.
      * @param {Map<string, string>} acceptedFields. Arrays names of fields for accept access.
@@ -75,8 +91,8 @@ export default class DataRequestManager {
      *
      * @returns {Promise<void>}
      */
-    public shareDataForOffer(offerId: number, offerOwner: string, acceptedFields: Array<string>): Promise<void> {
-        return this.dataRequestRepository.shareDataForOffer(
+    public grantAccessForOffer(offerId: number, offerOwner: string, acceptedFields: Array<string>): Promise<void> {
+        return this.dataRequestRepository.grantAccessForOffer(
             offerId,
             this.account.publicKey,
             this.getEncryptedDataForFields(offerOwner, acceptedFields)
@@ -100,7 +116,7 @@ export default class DataRequestManager {
         }
     }
 
-    private getEncryptedDataForFields(senderPk: string, fields?: Array<string>): string {
+    private getEncryptedDataForFields(recipientPk: string, fields?: Array<string>): string {
         let encryptedMessage = '';
 
         if (fields != null && fields.length > 0) {
@@ -111,7 +127,7 @@ export default class DataRequestManager {
 
             const jsonMap: any = JsonUtils.mapToJson(resultMap);
             encryptedMessage = this.encrypt
-                .encryptMessage(senderPk, JSON.stringify(jsonMap));
+                .encryptMessage(recipientPk, JSON.stringify(jsonMap));
         }
 
         return encryptedMessage;
