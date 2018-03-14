@@ -73165,7 +73165,18 @@ var DataRequestManager = /** @class */ (function () {
         return this.dataRequestRepository.getRequests(fromPk, toPk, state);
     };
     /**
-     * Share data for offer.
+     * Grant access data for client.
+     * @param {string} clientPk id of client.
+     * @param {Map<string, string>} acceptedFields. Arrays names of fields for accept access.
+     * (e.g. this is keys in {Map<string, string>} - personal data).
+     *
+     * @returns {Promise<void>}
+     */
+    DataRequestManager.prototype.grantAccessForClient = function (clientPk, acceptedFields) {
+        return this.dataRequestRepository.grantAccessForClient(clientPk, this.account.publicKey, this.getEncryptedDataForFields(clientPk, acceptedFields));
+    };
+    /**
+     * Grant access for offer.
      * @param {number} offerId id of Offer.
      * @param {string} offerOwner Public key of offer owner.
      * @param {Map<string, string>} acceptedFields. Arrays names of fields for accept access.
@@ -73173,8 +73184,8 @@ var DataRequestManager = /** @class */ (function () {
      *
      * @returns {Promise<void>}
      */
-    DataRequestManager.prototype.shareDataForOffer = function (offerId, offerOwner, acceptedFields) {
-        return this.dataRequestRepository.shareDataForOffer(offerId, this.account.publicKey, this.getEncryptedDataForFields(offerOwner, acceptedFields));
+    DataRequestManager.prototype.grantAccessForOffer = function (offerId, offerOwner, acceptedFields) {
+        return this.dataRequestRepository.grantAccessForOffer(offerId, this.account.publicKey, this.getEncryptedDataForFields(offerOwner, acceptedFields));
     };
     /**
      * Decodes a message that was encrypted by the owner of the private key that matches the provided public key.
@@ -73193,7 +73204,7 @@ var DataRequestManager = /** @class */ (function () {
             return {};
         }
     };
-    DataRequestManager.prototype.getEncryptedDataForFields = function (senderPk, fields) {
+    DataRequestManager.prototype.getEncryptedDataForFields = function (recipientPk, fields) {
         var _this = this;
         var encryptedMessage = '';
         if (fields != null && fields.length > 0) {
@@ -73203,7 +73214,7 @@ var DataRequestManager = /** @class */ (function () {
             });
             var jsonMap = JsonUtils_1.default.mapToJson(resultMap_1);
             encryptedMessage = this.encrypt
-                .encryptMessage(senderPk, JSON.stringify(jsonMap));
+                .encryptMessage(recipientPk, JSON.stringify(jsonMap));
         }
         return encryptedMessage;
     };
@@ -73228,23 +73239,31 @@ var DataRequestState_1 = __webpack_require__(108);
 var OfferShareData_1 = __webpack_require__(608);
 var DataRequestRepositoryImpl = /** @class */ (function () {
     function DataRequestRepositoryImpl(transport) {
-        this.CREATE_DATA_REQUEST = '/request/';
-        this.GET_DATA_REQUEST_FORM = '/request/from/{fromPk}/state/{state}/';
-        this.GET_DATA_REQUEST_TO = '/request/to/{toPk}/state/{state}/';
-        this.GET_DATA_REQUEST_FROM_TO = '/request/from/{fromPk}/to/{toPk}/state/{state}/';
-        this.RESPONSE_DATA_REQUEST = '/request/{id}/';
-        this.SHARE_DATA_FOR_OFFER = '/share/';
+        this.CREATE_DATA_REQUEST = '/data/request/';
+        this.GET_DATA_REQUEST_FORM = '/data/request/from/{fromPk}/state/{state}/';
+        this.GET_DATA_REQUEST_TO = '/data/request/to/{toPk}/state/{state}/';
+        this.GET_DATA_REQUEST_FROM_TO = '/data/request/from/{fromPk}/to/{toPk}/state/{state}/';
+        this.RESPONSE_DATA_REQUEST = '/data/request/{id}/';
+        this.GRANT_ACCESS_FOR_CLIENT = '/data/grant/request/';
+        this.GRANT_ACCESS_FOR_OFFER = '/data/grant/offer';
         this.transport = transport;
     }
     DataRequestRepositoryImpl.prototype.createRequest = function (toPk, encryptedRequest) {
         var data = new DataRequest_1.default(toPk, encryptedRequest);
         return this.transport
-            .sendRequest(this.CREATE_DATA_REQUEST, HttpMethod_1.HttpMethod.Post, data).then(function (response) { return response.json.toString(); });
+            .sendRequest(this.CREATE_DATA_REQUEST, HttpMethod_1.HttpMethod.Post, data).then(function (response) { return parseInt(response.json.toString()); });
     };
     DataRequestRepositoryImpl.prototype.createResponse = function (requestId, encryptedResponse) {
         return this.transport
             .sendRequest(this.RESPONSE_DATA_REQUEST.replace('{id}', requestId.toString()), HttpMethod_1.HttpMethod.Patch, encryptedResponse || '')
             .then(function (response) { return DataRequestState_1.DataRequestState[response.json.toString()]; });
+    };
+    DataRequestRepositoryImpl.prototype.grantAccessForClient = function (fromPk, toPk, encryptedResponse) {
+        var data = new DataRequest_1.default(toPk, '');
+        data.responseData = encryptedResponse;
+        data.fromPk = fromPk;
+        return this.transport
+            .sendRequest(this.GRANT_ACCESS_FOR_CLIENT, HttpMethod_1.HttpMethod.Post, data).then(function (response) { return parseInt(response.json.toString()); });
     };
     DataRequestRepositoryImpl.prototype.getRequests = function (fromPk, toPk, state) {
         var path = '';
@@ -73263,10 +73282,10 @@ var DataRequestRepositoryImpl = /** @class */ (function () {
         return this.transport
             .sendRequest(path, HttpMethod_1.HttpMethod.Get).then(function (response) { return Object.assign([], response.json); });
     };
-    DataRequestRepositoryImpl.prototype.shareDataForOffer = function (offerId, clientPk, encryptedClientResponse) {
+    DataRequestRepositoryImpl.prototype.grantAccessForOffer = function (offerId, clientPk, encryptedClientResponse) {
         var shareData = new OfferShareData_1.default(offerId, clientPk, encryptedClientResponse);
         return this.transport
-            .sendRequest(this.SHARE_DATA_FOR_OFFER, HttpMethod_1.HttpMethod.Post, shareData)
+            .sendRequest(this.GRANT_ACCESS_FOR_OFFER, HttpMethod_1.HttpMethod.Post, shareData)
             .then(function () { });
     };
     DataRequestRepositoryImpl.prototype.isEmpty = function (value) {

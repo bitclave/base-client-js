@@ -94,7 +94,7 @@ export default class BaseManager {
         return this.base.profileManager.getAuthorizedData(recipientPk, encryptedData);
     }
 
-    createRequest(recipientPk: string, fields: Array<string>): Promise<string> {
+    createRequest(recipientPk: string, fields: Array<string>): Promise<number> {
         return this.base.dataRequestManager.createRequest(recipientPk, fields);
     }
 
@@ -112,7 +112,7 @@ export default class BaseManager {
             fields.push(key.toString().toLowerCase());
         });
 
-        return this.base.dataRequestManager.shareDataForOffer(offer.id, offer.owner, fields);
+        return this.base.dataRequestManager.grantAccessForOffer(offer.id, offer.owner, fields);
     }
 
     private prepareStartSyncState() {
