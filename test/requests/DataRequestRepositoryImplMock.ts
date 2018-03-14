@@ -21,7 +21,7 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
         this.toPk = toPk;
     }
 
-    createRequest(toPk: string, encryptedRequest: string): Promise<string> {
+    createRequest(toPk: string, encryptedRequest: string): Promise<number> {
         return new Promise<string>(resolve => {
             const request = new DataRequest(toPk, encryptedRequest);
             request.fromPk = this.fromPK;
@@ -30,7 +30,7 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
 
             this._data.push(request);
 
-            resolve(this._data.length.toString());
+            resolve(this._data.length);
         });
     }
 
@@ -53,6 +53,20 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
         });
     }
 
+    grantAccessForClient(fromPk: string, toPk: string, encryptedResponse: string): Promise<number> {
+        return new Promise<string>(resolve => {
+            const request = new DataRequest(toPk, "");
+            request.responseData = encryptedResponse;
+            request.fromPk = this.fromPK;
+            request.state = DataRequestState.ACCEPT;
+            request.id = this._data.length + 1;
+
+            this._data.push(request);
+
+            resolve(this._data.length);
+        });
+    }
+    
     getRequests(fromPk: string | any, toPk: string | any, state: DataRequestState): Promise<Array<DataRequest>> {
         return new Promise<Array<DataRequest>>(resolve => {
             const result: Array<DataRequest> = [];
@@ -69,7 +83,7 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
         });
     }
 
-    shareDataForOffer(offerId: number, clientPk: string, clientResponse: string): Promise<void> {
+    grantAccessForOffer(offerId: number, clientPk: string, clientResponse: string): Promise<void> {
         return new Promise<void>(resolve => {
             this._shareData.add(new OfferShareData(offerId, clientPk, clientResponse));
             resolve();

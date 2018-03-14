@@ -25,14 +25,14 @@ describe('Data Request Manager', async () => {
     keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
     keyPairHelperBob.createKeyPair(passPhraseBob);
 
-    const accountAlisa: Account = new Account(keyPairHelperAlisa.getPublicKey());
-    const authAccountBehaviorAlisa: BehaviorSubject<Account> = new BehaviorSubject<Account>(accountAlisa);
+    const accountBob: Account = new Account(keyPairHelperBob.getPublicKey());
+    const authAccountBehaviorBob: BehaviorSubject<Account> = new BehaviorSubject<Account>(accountBob);
 
     dataRepository.setPK(keyPairHelperAlisa.getPublicKey(), keyPairHelperBob.getPublicKey());
 
     const requestManager = new DataRequestManager(
         dataRepository,
-        authAccountBehaviorAlisa,
+        authAccountBehaviorBob,
         keyPairHelperAlisa,
         keyPairHelperAlisa
     );
@@ -98,8 +98,38 @@ describe('Data Request Manager', async () => {
 
     });
 
+    it('grant access for data client', async () => {
+        await requestManager.grantAccessForClient(keyPairHelperAlisa.getPublicKey(), bobsFields);
+        const requestsByFrom = await requestManager.getRequests(
+            keyPairHelperAlisa.getPublicKey(),
+            null,
+            DataRequestState.ACCEPT
+        );
+        const requestsByTo = await requestManager.getRequests(
+            null,
+            keyPairHelperBob.getPublicKey(),
+            DataRequestState.ACCEPT
+        );
+
+        requestsByFrom.should.be.deep.equal(requestsByTo);
+
+        requestsByFrom[0].responseData.should.be.not.equal(bobsFields);
+        const decryptedStr = keyPairHelperAlisa.decryptMessage(
+            keyPairHelperBob.getPublicKey(),
+            requestsByFrom[0].responseData
+        );
+        const resultMap: Map<string, string> = JsonUtils.jsonToMap(JSON.parse(decryptedStr));
+
+        bobsFields.length.should.be.equal(resultMap.size);
+
+        resultMap.forEach((value, key) => {
+            bobsFields.should.be.contain.deep(key);
+        });
+
+    });
+
     it('share data for offer', async () => {
-        await requestManager.shareDataForOffer(1, keyPairHelperBob.getPublicKey(), this.alisaFields)
+        await requestManager.grantAccessForOffer(1, keyPairHelperAlisa.getPublicKey(), bobsFields)
     });
 
 });
