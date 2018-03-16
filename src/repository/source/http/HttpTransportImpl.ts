@@ -13,7 +13,7 @@ if ((typeof window !== 'undefined' && (<any>window).XMLHttpRequest)) {
 
 export default class HttpTransportImpl implements HttpTransport {
 
-    private interceptors: Set<HttpInterceptor> = new Set<HttpInterceptor>();
+    private interceptors: Array<HttpInterceptor> = [];
 
     private headers: Map<string, string> = new Map<string, string>([
         ['Accept', 'application/json'], ['Content-Type', 'application/json']]);
@@ -25,8 +25,8 @@ export default class HttpTransportImpl implements HttpTransport {
     }
 
     addInterceptor(interceptor: HttpInterceptor): HttpTransport {
-        if (!this.interceptors.has(interceptor)) {
-            this.interceptors.add(interceptor);
+        if (this.interceptors.indexOf(interceptor) === -1) {
+            this.interceptors.push(interceptor);
         }
 
         return this;
@@ -34,14 +34,14 @@ export default class HttpTransportImpl implements HttpTransport {
 
     sendRequest(method: HttpMethod, data?: any): Promise<Response>
     sendRequest(path: string, method: HttpMethod, data?: any): Promise<Response> {
-        return new Promise<Response>((resolve, reject) => {
+        return new Promise<Response>(async (resolve, reject) => {
             try {
-                this.interceptors.forEach(interceptor => {
-                    interceptor.onIntercept(path, this.headers, data);
+                for (let interceptor of this.interceptors) {
+                    await interceptor.onIntercept(path, this.headers, data);
                     path = interceptor.getPath();
                     this.headers = interceptor.getHeaders();
                     data = interceptor.getData();
-                });
+                }
 
                 const url = path ? this.getHost() + path : this.getHost();
                 const request: XMLHttpRequest = new XMLHttpRequest();

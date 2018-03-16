@@ -26,9 +26,9 @@ export default class AccountManager {
      * @returns {Promise<Account>} {Account} after successful registration or http exception if fail.
      */
     public registration(mnemonicPhrase: string): Promise<Account> {
-        return this.generateKeyPair(mnemonicPhrase)
+        return this.keyPairCreator.createKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
-            .then((account) => this.accountRepository.registration(account))
+            .then((account: Account) => this.accountRepository.registration(account))
             .then(this.onGetAccount.bind(this));
     }
 
@@ -40,15 +40,9 @@ export default class AccountManager {
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
     public checkAccount(mnemonicPhrase: string): Promise<Account> {
-        return this.generateKeyPair(mnemonicPhrase)
+        return this.keyPairCreator.createKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
             .then(this.getAccount.bind(this));
-    }
-
-    private generateKeyPair(mnemonicPhrase: string): Promise<KeyPair> {
-        return new Promise<KeyPair>(resolve => {
-            resolve(this.keyPairCreator.createKeyPair(mnemonicPhrase));
-        });
     }
 
     private getAccount(account: Account): Promise<Account> {

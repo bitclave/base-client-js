@@ -28,12 +28,14 @@ import { SearchRequestRepository } from './repository/search/SearchRequestReposi
 import SearchRequestRepositoryImpl from './repository/search/SearchRequestRepositoryImpl';
 import SearchRequest from './repository/models/SearchRequest';
 import Offer from './repository/models/Offer';
+import { RpcTransport } from './repository/source/rpc/RpcTransport';
+import RpcTransportImpl from './repository/source/rpc/RpcTransportImpl';
 
 export { DataRequestState } from './repository/models/DataRequestState';
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
-export {SearchRequest}
-export {Offer}
+export { SearchRequest };
+export { Offer };
 
 export default class Base {
 
@@ -46,8 +48,10 @@ export default class Base {
     private _authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
     private _repositoryStrategyInterceptor: RepositoryStrategyInterceptor;
 
-    constructor(host: string) {
-        const keyPairHelper: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
+    constructor(host: string, signerHost: string) {
+        const rpcClient: RpcTransport = new RpcTransportImpl(signerHost);
+
+        const keyPairHelper: KeyPairHelper = KeyPairFactory.getRpcKeyPairCreator(rpcClient);
         const messageSigner: MessageSigner = keyPairHelper;
         const encryptMessage: MessageEncrypt = keyPairHelper;
         const decryptMessage: MessageDecrypt = keyPairHelper;

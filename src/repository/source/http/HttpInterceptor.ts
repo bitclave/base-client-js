@@ -1,6 +1,6 @@
 export interface HttpInterceptor {
 
-    onIntercept(path: string, headers: Map<string, string>, data: any): void
+    onIntercept(path: string, headers: Map<string, string>, data: any): Promise<void>
 
     getData(): any
 
