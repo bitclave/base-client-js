@@ -6,6 +6,8 @@ import ProfileManager from '../../src/manager/ProfileManager';
 import ClientDataRepositoryImplMock from './ClientDataRepositoryImplMock';
 import CryptoUtils from '../../src/utils/CryptoUtils';
 import JsonUtils from '../../src/utils/JsonUtils';
+import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
+import RpcTransportImpl from '../../src/repository/source/rpc/RpcTransportImpl';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
@@ -15,37 +17,52 @@ describe('Profile Manager', async () => {
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
 
-    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
-    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
+    const rpcClient: RpcTransport = new RpcTransportImpl('ws://localhost:3545');
+
+    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.getRpcKeyPairCreator(rpcClient);
+    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.getRpcKeyPairCreator(rpcClient);
     const clientRepository: ClientDataRepositoryImplMock = new ClientDataRepositoryImplMock();
 
-    keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
-    keyPairHelperBob.createKeyPair(passPhraseBob);
+    const accountAlisa: Account;
+    const authAccountBehaviorAlisa: BehaviorSubject<Account>;
 
-    const accountAlisa: Account = new Account(keyPairHelperAlisa.createKeyPair(passPhraseAlisa).publicKey);
-    const authAccountBehaviorAlisa: BehaviorSubject<Account> = new BehaviorSubject<Account>(accountAlisa);
+    const profileManager;
 
-    const profileManager = new ProfileManager(
-        clientRepository,
-        authAccountBehaviorAlisa,
-        keyPairHelperAlisa,
-        keyPairHelperAlisa
-    );
+    before(async () => {
+        await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
+        await keyPairHelperBob.createKeyPair(passPhraseBob);
+
+        accountAlisa = new Account((await keyPairHelperAlisa.createKeyPair(passPhraseAlisa)).publicKey);
+        authAccountBehaviorAlisa = new BehaviorSubject<Account>(accountAlisa);
+
+        profileManager = new ProfileManager(
+            clientRepository,
+            authAccountBehaviorAlisa,
+            keyPairHelperAlisa,
+            keyPairHelperAlisa
+        );
+    });
 
     beforeEach(function (done) {
         clientRepository.clearData();
         done();
     });
 
+    after(async() => {
+        rpcClient.disconnect();
+    })
+    
     it('get and decrypt encrypted data', async () => {
         const origMockData: Map<string, string> = new Map();
         const mockData: Map<string, string> = new Map();
 
         origMockData.set('name', 'my name');
-        origMockData.forEach((value, key) => {
-            const passForValue = keyPairHelperAlisa.generatePasswordForFiled(key);
+
+
+        for (let [key, value] of origMockData) {
+            const passForValue = await keyPairHelperAlisa.generatePasswordForField(key);
             mockData.set(key, CryptoUtils.encryptAes256(value, passForValue));
-        });
+        }
 
         clientRepository.setMockData(authAccountBehaviorAlisa.getValue().publicKey, mockData);
 
@@ -59,8 +76,8 @@ describe('Profile Manager', async () => {
         const mockData: Map<string, string> = new Map();
 
         origMockData.set('email', 'im@host.com');
-        origMockData.forEach((value, key) => {
-            const passForValue = keyPairHelperAlisa.generatePasswordForFiled(key);
+        origMockData.forEach(async (value, key) => {
+            const passForValue = await keyPairHelperAlisa.generatePasswordForField(key);
             mockData.set(key, CryptoUtils.encryptAes256(value, passForValue));
         });
 
@@ -79,13 +96,13 @@ describe('Profile Manager', async () => {
         const originMessage: Map<string, string> = new Map();
 
         origMockData.set('name', 'Bob');
-        origMockData.forEach((value, key) => {
-            const passForValue = keyPairHelperBob.generatePasswordForFiled(key);
+        for (let [key, value] of origMockData) {
+            const passForValue = await keyPairHelperBob.generatePasswordForField(key);
             mockData.set(key, CryptoUtils.encryptAes256(value, passForValue));
             originMessage.set(key, passForValue);
-        });
+        }
 
-        const encryptedMessage = keyPairHelperBob.encryptMessage(
+        const encryptedMessage = await keyPairHelperBob.encryptMessage(
             keyPairHelperAlisa.getPublicKey(),
             JSON.stringify(JsonUtils.mapToJson(originMessage))
         );
