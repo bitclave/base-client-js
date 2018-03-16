@@ -1,4 +1,4 @@
 export interface MessageSigner {
-    signMessage(data: any): string;
+    signMessage(data: string): Promise<string>;
     getPublicKey(): string;
 }

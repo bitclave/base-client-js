@@ -38,11 +38,11 @@ export default class SearchOfferMatch extends React.Component<Props, State> {
         this.baseManager
             .getOfferManager()
             .getAllOffers()
-            .then(this.onSyncOffers.bind(this));
+            .then(this.onSyncOffers.bind(this))
+            .then(() => this.baseManager
+                .getSearchRequestManager()
+                .getAllRequests())
 
-        this.baseManager
-            .getSearchRequestManager()
-            .getAllRequests()
             .then(this.onSyncSearchRequest.bind(this));
     }
 

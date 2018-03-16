@@ -3,11 +3,11 @@ import { injectable } from 'inversify';
 import { DataRequestState, default as Base, RepositoryStrategyType } from 'base';
 import 'reflect-metadata';
 import Account from 'base/repository/models/Account';
-import DataRequestManager from 'base/manager/DataRequestManager';
 import DataRequest from 'base/repository/models/DataRequest';
 import OfferManager from 'base/manager/OfferManager';
 import SearchRequestManager from 'base/manager/SearchRequestManager';
 import Offer from 'base/repository/models/Offer';
+import DataRequestManager from 'base/manager/DataRequestManager';
 
 export interface SyncDataListener {
 
@@ -25,7 +25,7 @@ export default class BaseManager {
     private cacheRequests: Array<DataRequest> = [];
 
     constructor() {
-        this.base = new Base(Config.getBaseEndPoint());
+        this.base = new Base(Config.getBaseEndPoint(), Config.getSignerEndPoint());
         this.changeStrategy(RepositoryStrategyType.Postgres);
     }
 
@@ -82,7 +82,7 @@ export default class BaseManager {
         this.listeners.delete(listener);
     }
 
-    decryptRequestFields(senderPk: string, encryptedData: string): Array<string> {
+    decryptRequestFields(senderPk: string, encryptedData: string): Promise<Array<string>> {
         return this.base.dataRequestManager.decryptMessage(senderPk, encryptedData);
     }
 

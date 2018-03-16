@@ -3,5 +3,5 @@ import { MessageSigner } from './MessageSigner';
 import { MessageEncrypt } from './MessageEncrypt';
 import { MessageDecrypt } from './MessageDecrypt';
 export interface KeyPairHelper extends MessageSigner, MessageEncrypt, MessageDecrypt {
-    createKeyPair(passPhrase: string): KeyPair;
+    createKeyPair(passPhrase: string): Promise<KeyPair>;
 }
