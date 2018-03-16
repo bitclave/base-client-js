@@ -54,6 +54,7 @@
     "bs58": "^4.0.1",
     "buffer-compare": "^1.1.1",
     "crypto-js": "^3.1.9-1",
+    "json-rpc-ws": "https://github.com/AndreyShashlov/json-rpc-ws/tarball/master",
     "rxjs": "^5.5.7"
   },
   "devDependencies": {
@@ -75,7 +76,7 @@
     "ts-node": "^4.1.0",
     "typedoc": "^0.9.0",
     "typedoc-webpack-plugin": "^1.1.4",
-    "typescript": "^2.7.1",
+    "typescript": "^2.7.2",
     "webpack": "^3.10.0",
     "xmlhttprequest": "^1.8.0"
   }
