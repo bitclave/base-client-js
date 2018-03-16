@@ -17,7 +17,7 @@ export default class DataRequestManager {
      * @param {Array<string>} fields Array of name identifiers for the requested data fields
      * (e.g. this is keys in {Map<string, string>}).
      *
-     * @returns {Promise<string>} Returns requestID upon successful request record creation.
+     * @returns {Promise<number>} Returns requestID upon successful request record creation.
      */
     createRequest(recipientPk: string, fields: Array<string>): Promise<number>;
     /**
@@ -45,7 +45,7 @@ export default class DataRequestManager {
      * @param {Map<string, string>} acceptedFields. Arrays names of fields for accept access.
      * (e.g. this is keys in {Map<string, string>} - personal data).
      *
-     * @returns {Promise<void>}
+     * @returns {Promise<number>}
      */
     grantAccessForClient(clientPk: string, acceptedFields: Array<string>): Promise<number>;
     /**
@@ -65,7 +65,7 @@ export default class DataRequestManager {
      *
      * @returns {object} object with data or empty object if was error.
      */
-    decryptMessage(senderPk: string, encrypted: string): any;
+    decryptMessage(senderPk: string, encrypted: string): Promise<any>;
     private getEncryptedDataForFields(recipientPk, fields?);
     private onChangeAccount(account);
 }
