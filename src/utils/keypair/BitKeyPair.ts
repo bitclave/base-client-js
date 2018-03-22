@@ -9,6 +9,7 @@ const ECIES = require('bitcore-ecies');
 export default class BitKeyPair implements KeyPairHelper {
 
     private privateKey: any;
+    private addr: any
     private publicKey: any;
 
     public createKeyPair(passPhrase: string): Promise<KeyPair> {
@@ -18,6 +19,20 @@ export default class BitKeyPair implements KeyPairHelper {
             const bn: any = bitcore.crypto.BN.fromBuffer(hash);
             this.privateKey = new bitcore.PrivateKey(bn);
             this.publicKey = this.privateKey.toPublicKey();
+            this.addr = this.privateKey.toAddress();
+
+            const privateKeyHex: string = this.privateKey.toString(16);
+            const publicKeyHex = this.publicKey.toString(16);
+
+            resolve(new KeyPair(privateKeyHex, publicKeyHex));
+        });
+    }
+
+    public initKeyPairFromPrvKey(prvKey: string): Promise<KeyPair> {
+        return new Promise<KeyPair>(resolve => {
+            this.privateKey = new bitcore.PrivateKey(bitcore.crypto.BN.fromString(prvKey,16));
+            this.publicKey = this.privateKey.toPublicKey();
+            this.addr = this.privateKey.toAddress();
 
             const privateKeyHex: string = this.privateKey.toString(16);
             const publicKeyHex = this.publicKey.toString(16);
@@ -36,6 +51,10 @@ export default class BitKeyPair implements KeyPairHelper {
 
     public getPublicKey(): string {
         return this.publicKey.toString(16);
+    }
+
+    public getAddr(): string {
+        return this.addr.toString(16);
     }
 
     public encryptMessage(recipientPk: string, message: string): Promise<string> {

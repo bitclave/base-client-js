@@ -5,6 +5,9 @@ import CryptoUtils from '../utils/CryptoUtils';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import JsonUtils from '../utils/JsonUtils';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
+import baseEthUitls from '../utils/BaseEthUtils';
+import {EthWalletVerificationStatus, EthWalletVerificationCodes} from "../utils/BaseEthUtils";
+
 
 export default class ProfileManager {
 
@@ -33,6 +36,23 @@ export default class ProfileManager {
         return this.getRawData(this.account.publicKey)
             .then(data => this.prepareData(data, false));
     }
+
+    public validateEthWallets(key: string, val: string, baseID: string): any {
+        var res : EthWalletVerificationStatus = new EthWalletVerificationStatus();
+
+        if (key!="eth_wallets")
+        {
+            res.err = "The \<key\> is expected to be \"eth_wallets\""
+            res.rc = EthWalletVerificationCodes.RC_GENERAL_ERROR;
+            return res;
+        }
+
+        res = baseEthUitls.verifyEthWalletsRecord(baseID, val);
+
+        return res;
+    }
+
+
 
     /**
      * Returns raw (encrypted) data of user with provided ID (Public Key).
