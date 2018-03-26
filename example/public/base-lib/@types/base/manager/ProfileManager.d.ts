@@ -3,6 +3,7 @@ import Account from '../repository/models/Account';
 import { ClientDataRepository } from '../repository/client/ClientDataRepository';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
+import { EthWalletVerificationStatus } from "../utils/BaseEthUtils";
 export default class ProfileManager {
     private clientDataRepository;
     private account;
@@ -15,6 +16,7 @@ export default class ProfileManager {
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
     getData(): Promise<Map<string, string>>;
+    validateEthWallets(key: string, val: string, baseID: string): EthWalletVerificationStatus;
     /**
      * Returns raw (encrypted) data of user with provided ID (Public Key).
      * @param {string} anyPublicKey Public key of client.

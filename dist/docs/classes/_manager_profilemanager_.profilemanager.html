@@ -92,6 +92,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_profilemanager_.profilemanager.html#getdata" class="tsd-kind-icon">get<wbr>Data</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_profilemanager_.profilemanager.html#getrawdata" class="tsd-kind-icon">get<wbr>Raw<wbr>Data</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_profilemanager_.profilemanager.html#updatedata" class="tsd-kind-icon">update<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_profilemanager_.profilemanager.html#validateethwallets" class="tsd-kind-icon">validate<wbr>Eth<wbr>Wallets</a></li>
 							</ul>
 						</section>
 					</div>
@@ -109,7 +110,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/4986b9a/src/manager/ProfileManager.ts#L14">manager/ProfileManager.ts:14</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/91da574/src/manager/ProfileManager.ts#L17">manager/ProfileManager.ts:17</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -144,7 +145,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/4986b9a/src/manager/ProfileManager.ts#L54">manager/ProfileManager.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/91da574/src/manager/ProfileManager.ts#L74">manager/ProfileManager.ts:74</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -182,7 +183,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/4986b9a/src/manager/ProfileManager.ts#L32">manager/ProfileManager.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/91da574/src/manager/ProfileManager.ts#L35">manager/ProfileManager.ts:35</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -205,7 +206,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/4986b9a/src/manager/ProfileManager.ts#L43">manager/ProfileManager.ts:43</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/91da574/src/manager/ProfileManager.ts#L63">manager/ProfileManager.ts:63</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -237,7 +238,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/4986b9a/src/manager/ProfileManager.ts#L86">manager/ProfileManager.ts:86</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/91da574/src/manager/ProfileManager.ts#L106">manager/ProfileManager.ts:106</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -256,6 +257,35 @@
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>Map with encrypted data.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="validateethwallets" class="tsd-anchor"></a>
+					<h3>validate<wbr>Eth<wbr>Wallets</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">validate<wbr>Eth<wbr>Wallets<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, val<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, baseID<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_utils_baseethutils_.ethwalletverificationstatus.html" class="tsd-signature-type">EthWalletVerificationStatus</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/91da574/src/manager/ProfileManager.ts#L40">manager/ProfileManager.ts:40</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>key: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>val: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>baseID: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_utils_baseethutils_.ethwalletverificationstatus.html" class="tsd-signature-type">EthWalletVerificationStatus</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -293,6 +323,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_manager_profilemanager_.profilemanager.html#updatedata" class="tsd-kind-icon">update<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_manager_profilemanager_.profilemanager.html#validateethwallets" class="tsd-kind-icon">validate<wbr>Eth<wbr>Wallets</a>
 							</li>
 						</ul>
 					</li>

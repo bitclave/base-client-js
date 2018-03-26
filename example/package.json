@@ -20,7 +20,9 @@
     "react-scripts-ts": "^2.13.0",
     "reactstrap": "^5.0.0-beta",
     "reflect-metadata": "^0.1.12",
-    "typescript": "^2.6.2"
+    "typescript": "^2.6.2",
+    "web3": "^1.0.0-beta.33",
+    "web3-typescript-typings": "^0.10.2"
   },
   "scripts": {
     "start": "react-scripts-ts start",
@@ -28,5 +30,8 @@
     "test": "react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "types-bn": "0.0.1",
+    "types-buffer": "0.0.2"
+  }
 }

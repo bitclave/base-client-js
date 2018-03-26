@@ -37,7 +37,7 @@ export default class ProfileManager {
             .then(data => this.prepareData(data, false));
     }
 
-    public validateEthWallets(key: string, val: string, baseID: string): any {
+    public validateEthWallets(key: string, val: string, baseID: string): EthWalletVerificationStatus {
         var res : EthWalletVerificationStatus = new EthWalletVerificationStatus();
 
         if (key!="eth_wallets")

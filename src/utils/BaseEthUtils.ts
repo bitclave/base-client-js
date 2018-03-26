@@ -32,7 +32,10 @@ export default class BaseEthUtils {
         try {
             if (!baseSchema.validateEthAddr(msg)) return EthWalletVerificationCodes.RC_ETH_ADDR_SCHEMA_MISSMATCH;
             if (!baseSchema.validateEthBaseAddrPair(JSON.parse(msg.data))) return EthWalletVerificationCodes.RC_ETH_ADDR_SCHEMA_MISSMATCH;
-            signerAddr = sigUtil.recoverPersonalSignature(msg)
+            if (msg.sig.length>0)
+                signerAddr = sigUtil.recoverPersonalSignature(msg)
+            else
+                return EthWalletVerificationCodes.RC_ETH_ADDR_NOT_VERIFIED;
         }
         catch(err) {
             // console.log(err)
@@ -139,9 +142,21 @@ export default class BaseEthUtils {
 
         // verify signature matches the baseID
         const baseAddr = new bitcore.PublicKey.fromString(basePubKey).toAddress().toString(16);
-        const sigCheck = Message(JSON.stringify(msg.data)).verify(baseAddr, msg.sig);
-        if (!sigCheck)
+        var sigCheck = false;
+
+        try {
+            if (msg.sig.length > 0) {
+                sigCheck = Message(JSON.stringify(msg.data)).verify(baseAddr, msg.sig);
+                if (!sigCheck)
+                    res.rc = EthWalletVerificationCodes.RC_ETH_ADDR_WRONG_SIGNATURE;
+            }
+            else
+                res.rc = EthWalletVerificationCodes.RC_ETH_ADDR_NOT_VERIFIED;
+        }
+        catch(err)
+        {
             res.rc = EthWalletVerificationCodes.RC_GENERAL_ERROR;
+        }
 
         return res;
     }

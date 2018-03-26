@@ -16,6 +16,8 @@ import Badge from 'reactstrap/lib/Badge';
 import DataRequest from 'base/repository/models/DataRequest';
 import { DataRequestState } from 'base';
 import Pair from '../models/Pair';
+import Web3 from 'web3'
+const ethUtil = require('ethereumjs-util');
 
 interface Props extends RouteComponentProps<{}> {
 }
@@ -23,9 +25,25 @@ interface Props extends RouteComponentProps<{}> {
 interface State {
     inputKey: string;
     inputValue: string;
+    ethAddress: string;
+    ethSignature: string;
     numberRequests: number;
     numberResponses: number;
 }
+
+var web3: Web3;
+
+window.addEventListener('load', function() {
+    if (typeof window.web3 !== 'undefined') {
+        // Use Mist/MetaMask's provider.
+        web3 = new Web3(window.web3.currentProvider)
+
+
+        console.log('Injected web3 detected.');
+    }
+});
+
+var g_Dashboard: any;
 
 export default class Dashboard extends React.Component<Props, State> implements SyncDataListener {
 
@@ -39,6 +57,8 @@ export default class Dashboard extends React.Component<Props, State> implements 
         this.state = {
             inputKey: '',
             inputValue: '',
+            ethAddress: '',
+            ethSignature: '',
             numberRequests: 0,
             numberResponses: 0,
         };
@@ -47,6 +67,8 @@ export default class Dashboard extends React.Component<Props, State> implements 
     componentDidMount() {
         this.baseManager.addSyncDataListener(this);
         this.getDataList();
+
+        g_Dashboard = this;
     }
 
     componentWillUnmount() {
@@ -86,6 +108,50 @@ export default class Dashboard extends React.Component<Props, State> implements 
                 <Container className="h-100 align-items-center">
                     <div className="row h-100 justify-content-center align-items-center">
                         <Form>
+                            <FormGroup>
+                                <Row>
+                                    <Col className="p-0" xs="1" sm="2">
+                                        <Input
+                                            value={'eth_address'} readOnly
+                                        />
+                                    </Col>
+                                    <Col className="p-0" xs="1" sm="5">
+                                        <Input
+                                            value={this.state.ethAddress || ''}
+                                            placeholder="eth address"
+                                            onChange={e => this.onChangeEthAddress(e.target.value)}
+                                        />
+                                    </Col>
+                                    <Col className="p-0" xs="1" sm="5">
+                                        <Input
+                                            value={this.state.ethSignature || ''}
+                                            placeholder="signature"
+                                            onChange={e => this.onChangeEthSignature(e.target.value)}
+                                        />
+                                    </Col>
+                                </Row>
+                                <Row> <p/> </Row>
+                                <Row>
+                                    <Col/>
+                                    <Col xs="3" sm="3">
+                                        <Button color="primary"  onClick={e => this.onSetEthAddress()}>
+                                            Set Single
+                                        </Button>
+                                    </Col>
+                                    <Col xs="3" sm="3">
+                                        <Button color="primary"  onClick={e => this.onSetEthSignature()}>
+                                            Sign w/Web3
+                                        </Button>
+                                    </Col>
+                                    <Col xs="3" sm="3">
+                                        <Button color="primary"  onClick={e => this.onVerifyWallets()}>
+                                            Verify
+                                        </Button>
+                                    </Col>
+                                </Row>
+                                <Row> <p/> </Row>
+                                <Row> <p/> </Row>
+                            </FormGroup>
                             <FormGroup>
                                 <Row>
                                     <Col className="p-0" xs="6" sm="4">
@@ -156,6 +222,14 @@ export default class Dashboard extends React.Component<Props, State> implements 
         this.setState({inputKey: key});
     }
 
+    private onChangeEthAddress(key: string) {
+        this.setState({ethAddress: key});
+    }
+
+    private onChangeEthSignature(key: string) {
+        this.setState({ethSignature: key});
+    }
+
     private onChangeValue(value: string) {
         this.setState({inputValue: value});
     }
@@ -204,7 +278,112 @@ export default class Dashboard extends React.Component<Props, State> implements 
 
         this.baseManager.saveData(map)
             .then(result => alert('data has been saved'))
-            .catch(e => alert('Something went wrong! data not saved! =('));
+            .catch(e => alert('Something went wrong! data not saved! =(') + e);
+    }
+
+    private onSetEthAddress() {
+        // alert('onSetEthAddress');
+        const {ethAddress, ethSignature} = this.state;
+        if (ethAddress == null
+            || ethAddress.trim().length === 0
+            || ethAddress == null
+            || ethAddress.trim().length === 0) {
+            alert('The ethAddress must not be empty');
+            return;
+        }
+        var pos = this.clientData.findIndex(model => model.key === 'eth_wallets');
+
+        var newAddr = {
+            'baseID' : this.baseManager.getId(),
+            'ethAddr': ethAddress
+        };
+        var newAddrRecord = {
+            'data' : JSON.stringify(newAddr),
+            'sig' : ethSignature
+        };
+        if (pos >= 0) {
+            var wallets = JSON.parse(this.clientData[pos].value);
+            wallets.data.push(newAddrRecord);
+            wallets.sig = '';
+            this.clientData[pos].value = JSON.stringify(wallets);
+        } else {
+            this.clientData.push(new Pair('eth_wallets', JSON.stringify(
+                {
+                    'data': [newAddrRecord],
+                    'sig' : ''
+                })));
+            pos = this.clientData.length - 1;
+        }
+
+        // var msg = JSON.parse(this.clientData[pos].value);
+        // var res = this.baseManager.getProfileManager().validateEthWallets(
+        //     this.clientData[pos].key, msg, this.baseManager.getId());
+        // alert(JSON.stringify(res));
+
+        this.setState({ethAddress: '', ethSignature: ''});
+    }
+
+    private onVerifyWallets(){
+        var pos = this.clientData.findIndex(model => model.key === 'eth_wallets');
+        if (pos>=0) {
+            var msg = JSON.parse(this.clientData[pos].value);
+            var res = this.baseManager.getProfileManager().validateEthWallets(
+                this.clientData[pos].key, msg, this.baseManager.getId());
+            alert(JSON.stringify(res));
+        }
+        else {
+            alert('no eth_wallets found');
+        }
+
+    }
+    private async onSetEthSignature()  {
+        var signingAddr : string;
+        await web3.eth.getAccounts((err, res) => {
+            console.log(res[0]);
+            signingAddr = res[0];
+        });
+
+        //always use lower casse for addresses
+        signingAddr = signingAddr.toLowerCase();
+
+        var thisMessage = JSON.stringify(
+            {
+                "baseID": this.baseManager.getId(),
+                "ethAddr" : signingAddr
+            }
+        );
+        var signedMessage = '';
+        if (typeof web3 != 'undefined')
+        {
+            // alert('onSetEthSignature');
+            var msg = ethUtil.bufferToHex(new Buffer(thisMessage, 'utf8'));
+
+            var params = [msg, signingAddr];
+            var method = 'personal_sign';
+            // alert("Sent message for signing via MetaMask / Mist.");
+
+            var sig: string;
+            await web3.currentProvider.sendAsync({
+                method,
+                params,
+                signingAddr,
+            }, function(err, result) {
+                // if (err) return $scope.notifier.danger(err)
+                // if (result.error) return $scope.notifier.danger(result.error)
+                sig = result.result;
+                signedMessage = JSON.stringify({
+                    address: signingAddr,
+                    msg: thisMessage,
+                    sig: sig,
+                    version: '3',
+                    signer: 'web3'
+                }, null, 2)
+                // alert('Successfully Signed Message with ' + signingAddr + signedMessage);
+                g_Dashboard.setState({ethSignature: sig});
+                g_Dashboard.setState({ethAddress: signingAddr})
+            })
+        }
+
     }
 
     private onSetClick() {

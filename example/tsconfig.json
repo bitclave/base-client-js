@@ -23,6 +23,10 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
+  "include": [
+    "./node_modules/types-bn/index.d.ts",
+    "./node_modules/types-buffer/index.d.ts"
+  ],
   "exclude": [
     "build",
     "public",
