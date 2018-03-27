@@ -8,7 +8,7 @@ module.exports = {
         fs: 'empty',
         child_process: 'empty'
     },
-    target: 'node',
+    target: 'web',
     module: {
         loaders: [
             { test: /\.ts(x?)$/, loader: "babel-loader?presets[]=preset-env!ts-loader" }
