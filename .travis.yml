@@ -9,7 +9,7 @@ install:
   - npm install
 
 before_script:
-  - node ./external/Signer.js
+  - node ./external/Signer.js &
   - sleep 2
 
 script:
