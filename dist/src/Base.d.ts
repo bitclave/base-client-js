@@ -12,6 +12,7 @@ export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
 export { SearchRequest };
 export { Offer };
+export { Base as NodeAPI };
 export default class Base {
     private _wallet;
     private _accountManager;
