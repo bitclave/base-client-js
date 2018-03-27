@@ -1,14 +1,30 @@
-
 window.addEventListener('load', async function() {
+    const api = new Base.NodeAPI('https://base2-bitclva-com.herokuapp.com');
+    api.changeStrategy(Base.RepositoryStrategyType.Postgres);
 
-    const Base = require('Base').default()
+    var alertResponseError = function (response) {
+        alert([
+            'Status: ' + response.status,
+            'Message: ' + response.json.message,
+        ].join('\n'));
+    };
 
-    const base = new Base('https://base2-bitclva-com.herokuapp.com');
-    base.changeStrategy(RepositoryStrategyType.Postgres);
+    var alertAccount = function (account) {
+        alert('Public key: ' + account.publicKey);
+    };
 
-    $('#signin').click(function(){
-    	const pass = $('#bitclavePassword').val();
-    	console.log(pass);
-    });
+    var parseMnemonic = function () {
+    	return $('#bitclavePassword').val();
+    };
 
+    var onClickSignin = function () {
+        api.accountManager.checkAccount(parseMnemonic()).then(alertAccount, alertResponseError);
+    };
+
+    var onClickSignup = function () {
+        api.accountManager.registration(parseMnemonic()).then(alertAccount, alertResponseError);
+    };
+
+    $('#signin').on('click', onClickSignin);
+    $('#signup').on('click', onClickSignup);
 });
