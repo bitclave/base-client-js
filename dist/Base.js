@@ -47999,6 +47999,229 @@ Script.prototype._getOutputAddressInfo = function() {
   }
   return info;
 };
+<<<<<<< HEAD
+=======
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseSchema_1 = __webpack_require__(654);
+var BitKeyPair_1 = __webpack_require__(126);
+var Message = __webpack_require__(143);
+var bitcore = __webpack_require__(32);
+var sigUtil = __webpack_require__(688);
+var baseSchema = BaseSchema_1.default.getSchema();
+var EthWalletVerificationCodes;
+(function (EthWalletVerificationCodes) {
+    EthWalletVerificationCodes[EthWalletVerificationCodes["RC_OK"] = 0] = "RC_OK";
+    EthWalletVerificationCodes[EthWalletVerificationCodes["RC_BASEID_MISSMATCH"] = -1] = "RC_BASEID_MISSMATCH";
+    EthWalletVerificationCodes[EthWalletVerificationCodes["RC_ETH_ADDR_NOT_VERIFIED"] = -2] = "RC_ETH_ADDR_NOT_VERIFIED";
+    EthWalletVerificationCodes[EthWalletVerificationCodes["RC_ETH_ADDR_WRONG_SIGNATURE"] = -3] = "RC_ETH_ADDR_WRONG_SIGNATURE";
+    EthWalletVerificationCodes[EthWalletVerificationCodes["RC_ETH_ADDR_SCHEMA_MISSMATCH"] = -4] = "RC_ETH_ADDR_SCHEMA_MISSMATCH";
+    EthWalletVerificationCodes[EthWalletVerificationCodes["RC_GENERAL_ERROR"] = -100] = "RC_GENERAL_ERROR";
+})(EthWalletVerificationCodes = exports.EthWalletVerificationCodes || (exports.EthWalletVerificationCodes = {}));
+var EthWalletVerificationStatus = /** @class */ (function () {
+    function EthWalletVerificationStatus() {
+        this.rc = EthWalletVerificationCodes.RC_OK;
+        this.err = "";
+        this.details = [];
+    }
+    return EthWalletVerificationStatus;
+}());
+exports.EthWalletVerificationStatus = EthWalletVerificationStatus;
+;
+var BaseEthUtils = /** @class */ (function () {
+    function BaseEthUtils() {
+    }
+    BaseEthUtils.verifyEthAddrRecord = function (msg) {
+        var signerAddr;
+        try {
+            if (!baseSchema.validateEthAddr(msg))
+                return EthWalletVerificationCodes.RC_ETH_ADDR_SCHEMA_MISSMATCH;
+            if (!baseSchema.validateEthBaseAddrPair(JSON.parse(msg.data)))
+                return EthWalletVerificationCodes.RC_ETH_ADDR_SCHEMA_MISSMATCH;
+            if (msg.sig.length > 0)
+                signerAddr = sigUtil.recoverPersonalSignature(msg);
+            else
+                return EthWalletVerificationCodes.RC_ETH_ADDR_NOT_VERIFIED;
+        }
+        catch (err) {
+            // console.log(err)
+            return EthWalletVerificationCodes.RC_GENERAL_ERROR;
+        }
+        return (signerAddr == JSON.parse(msg.data).ethAddr) ?
+            EthWalletVerificationCodes.RC_OK :
+            EthWalletVerificationCodes.RC_ETH_ADDR_WRONG_SIGNATURE;
+    };
+    BaseEthUtils.createEthAddrRecord = function (baseID, ethAddr, ethPrvKey) {
+        var msg = {
+            data: JSON.stringify({
+                baseID: baseID, ethAddr: ethAddr
+            }),
+            sig: ""
+        };
+        msg.sig = sigUtil.personalSign(Buffer.from(ethPrvKey, 'hex'), msg);
+        return msg;
+    };
+    BaseEthUtils.dbg_createEthWalletsRecord = function (baseID, signedEthRecords, prvKey) {
+        return __awaiter(this, void 0, void 0, function () {
+            var msgWallets, bitKeyPair, messageSigner, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        msgWallets = {
+                            data: signedEthRecords,
+                            sig: ""
+                        };
+                        bitKeyPair = new BitKeyPair_1.default();
+                        bitKeyPair.initKeyPairFromPrvKey(prvKey);
+                        messageSigner = bitKeyPair;
+                        _a = msgWallets;
+                        return [4 /*yield*/, messageSigner.signMessage(JSON.stringify(msgWallets.data))];
+                    case 1:
+                        _a.sig = _b.sent();
+                        return [2 /*return*/, msgWallets];
+                }
+            });
+        });
+    };
+    BaseEthUtils.createEthWalletsRecord2 = function (baseID, signedEthRecords, signer) {
+        return __awaiter(this, void 0, void 0, function () {
+            var signedEthRecords_1, signedEthRecords_1_1, msg, msgWallets, messageSigner, _a, e_1, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        try {
+                            for (signedEthRecords_1 = __values(signedEthRecords), signedEthRecords_1_1 = signedEthRecords_1.next(); !signedEthRecords_1_1.done; signedEthRecords_1_1 = signedEthRecords_1.next()) {
+                                msg = signedEthRecords_1_1.value;
+                                if ((this.verifyEthAddrRecord(msg) != EthWalletVerificationCodes.RC_OK) &&
+                                    (this.verifyEthAddrRecord(msg) != EthWalletVerificationCodes.RC_ETH_ADDR_NOT_VERIFIED))
+                                    throw "invalid eth record";
+                                if (baseID != JSON.parse(msg.data).baseID)
+                                    throw "baseID missmatch";
+                            }
+                        }
+                        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+                        finally {
+                            try {
+                                if (signedEthRecords_1_1 && !signedEthRecords_1_1.done && (_b = signedEthRecords_1.return)) _b.call(signedEthRecords_1);
+                            }
+                            finally { if (e_1) throw e_1.error; }
+                        }
+                        msgWallets = {
+                            data: signedEthRecords,
+                            sig: ""
+                        };
+                        // console.log(msgWallets);
+                        if (!baseSchema.validateEthWallets(msgWallets))
+                            throw "invalid wallets structure";
+                        messageSigner = signer;
+                        _a = msgWallets;
+                        return [4 /*yield*/, messageSigner.signMessage(JSON.stringify(msgWallets.data))];
+                    case 1:
+                        _a.sig = _c.sent();
+                        return [2 /*return*/, msgWallets];
+                }
+            });
+        });
+    };
+    BaseEthUtils.createEthWalletsRecord = function (baseID, signedEthRecords, prvKey) {
+        return __awaiter(this, void 0, void 0, function () {
+            var signedEthRecords_2, signedEthRecords_2_1, msg, msgWallets, bitKeyPair, messageSigner, _a, basePubKey, baseAddr, e_2, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        try {
+                            for (signedEthRecords_2 = __values(signedEthRecords), signedEthRecords_2_1 = signedEthRecords_2.next(); !signedEthRecords_2_1.done; signedEthRecords_2_1 = signedEthRecords_2.next()) {
+                                msg = signedEthRecords_2_1.value;
+                                if (this.verifyEthAddrRecord(msg) != EthWalletVerificationCodes.RC_OK)
+                                    throw "invalid eth record";
+                                if (baseID != JSON.parse(msg.data).baseID)
+                                    throw "baseID missmatch";
+                            }
+                        }
+                        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                        finally {
+                            try {
+                                if (signedEthRecords_2_1 && !signedEthRecords_2_1.done && (_b = signedEthRecords_2.return)) _b.call(signedEthRecords_2);
+                            }
+                            finally { if (e_2) throw e_2.error; }
+                        }
+                        msgWallets = {
+                            data: signedEthRecords,
+                            sig: ""
+                        };
+                        // console.log(msgWallets);
+                        if (!baseSchema.validateEthWallets(msgWallets))
+                            throw "invalid wallets structure";
+                        bitKeyPair = new BitKeyPair_1.default();
+                        bitKeyPair.initKeyPairFromPrvKey(prvKey);
+                        messageSigner = bitKeyPair;
+                        _a = msgWallets;
+                        return [4 /*yield*/, messageSigner.signMessage(JSON.stringify(msgWallets.data))];
+                    case 1:
+                        _a.sig = _c.sent();
+                        basePubKey = bitKeyPair.getPublicKey();
+                        baseAddr = bitKeyPair.getAddr();
+                        if (basePubKey != baseID)
+                            throw "baseID and basePubKey missmatch";
+                        if (!Message(JSON.stringify(msgWallets.data)).verify(baseAddr, msgWallets.sig))
+                            throw "BASE signature missmath";
+                        return [2 /*return*/, msgWallets];
+                }
+            });
+        });
+    };
+    BaseEthUtils.verifyEthWalletsRecord = function (baseID, msg) {
+        var rc;
+        var res = new EthWalletVerificationStatus();
+        res.rc = EthWalletVerificationCodes.RC_OK;
+        if (!baseSchema.validateEthWallets(msg)) {
+            res.rc = EthWalletVerificationCodes.RC_ETH_ADDR_SCHEMA_MISSMATCH;
+            return res;
+        }
+        var basePubKey = baseID;
+        try {
+            // verify all baseID keys are the same in ETH records
+            for (var _a = __values(msg.data), _b = _a.next(); !_b.done; _b = _a.next()) {
+                var e = _b.value;
+                var pubKey = JSON.parse(e.data).baseID;
+                if (pubKey != basePubKey) {
+                    res.details.push(EthWalletVerificationCodes.RC_BASEID_MISSMATCH);
+                }
+                else if ((rc = this.verifyEthAddrRecord(e)) != EthWalletVerificationCodes.RC_OK) {
+                    res.details.push(rc);
+                }
+                else
+                    res.details.push(EthWalletVerificationCodes.RC_OK);
+            }
+        }
+        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+        finally {
+            try {
+                if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
+            }
+            finally { if (e_3) throw e_3.error; }
+        }
+        // verify signature matches the baseID
+        var baseAddr = new bitcore.PublicKey.fromString(basePubKey).toAddress().toString(16);
+        var sigCheck = false;
+        try {
+            if (msg.sig.length > 0) {
+                sigCheck = Message(JSON.stringify(msg.data)).verify(baseAddr, msg.sig);
+                if (!sigCheck)
+                    res.rc = EthWalletVerificationCodes.RC_ETH_ADDR_WRONG_SIGNATURE;
+            }
+            else
+                res.rc = EthWalletVerificationCodes.RC_ETH_ADDR_NOT_VERIFIED;
+        }
+        catch (err) {
+            res.rc = EthWalletVerificationCodes.RC_GENERAL_ERROR;
+        }
+        return res;
+        var e_3, _c;
+    };
+    return BaseEthUtils;
+}());
+exports.default = BaseEthUtils;
+>>>>>>> b63a107... bug fixes, improvements
 
 /**
  * Will return the associated input scriptSig address information object
@@ -50581,6 +50804,7 @@ exports.AjaxTimeoutError = AjaxTimeoutError;
 
 "use strict";
 
+<<<<<<< HEAD
 var QueueAction_1 = __webpack_require__(519);
 var QueueScheduler_1 = __webpack_require__(520);
 /**
@@ -50646,6 +50870,111 @@ var QueueScheduler_1 = __webpack_require__(520);
  */
 exports.queue = new QueueScheduler_1.QueueScheduler(QueueAction_1.QueueAction);
 //# sourceMappingURL=queue.js.map
+=======
+Object.defineProperty(exports, "__esModule", { value: true });
+var HttpTransportImpl_1 = __webpack_require__(276);
+var AuthRepositoryImpl_1 = __webpack_require__(280);
+var ClientDataRepositoryImpl_1 = __webpack_require__(281);
+var Wallet_1 = __webpack_require__(282);
+var AccountManager_1 = __webpack_require__(283);
+var KeyPairFactory_1 = __webpack_require__(284);
+var Rx_1 = __webpack_require__(359);
+var ProfileManager_1 = __webpack_require__(653);
+var Account_1 = __webpack_require__(44);
+var SignInterceptor_1 = __webpack_require__(710);
+var DataRequestManager_1 = __webpack_require__(712);
+var DataRequestRepositoryImpl_1 = __webpack_require__(713);
+var RepositoryStrategyInterceptor_1 = __webpack_require__(716);
+var RepositoryStrategyType_1 = __webpack_require__(261);
+var OfferManager_1 = __webpack_require__(717);
+var OfferRepositoryImpl_1 = __webpack_require__(718);
+var SearchRequestManager_1 = __webpack_require__(719);
+var SearchRequestRepositoryImpl_1 = __webpack_require__(720);
+var SearchRequest_1 = __webpack_require__(264);
+exports.SearchRequest = SearchRequest_1.default;
+var Offer_1 = __webpack_require__(262);
+exports.Offer = Offer_1.default;
+var RpcTransportImpl_1 = __webpack_require__(721);
+var DataRequestState_1 = __webpack_require__(120);
+exports.DataRequestState = DataRequestState_1.DataRequestState;
+var RepositoryStrategyType_2 = __webpack_require__(261);
+exports.RepositoryStrategyType = RepositoryStrategyType_2.RepositoryStrategyType;
+var CompareAction_1 = __webpack_require__(263);
+exports.CompareAction = CompareAction_1.CompareAction;
+var Base = /** @class */ (function () {
+    function Base(host, signerHost) {
+        this._authAccountBehavior = new Rx_1.BehaviorSubject(new Account_1.default());
+        var rpcClient = new RpcTransportImpl_1.default(signerHost);
+        var keyPairHelper = KeyPairFactory_1.default.getRpcKeyPairCreator(rpcClient);
+        var messageSigner = keyPairHelper;
+        var encryptMessage = keyPairHelper;
+        var decryptMessage = keyPairHelper;
+        this._repositoryStrategyInterceptor = new RepositoryStrategyInterceptor_1.default(RepositoryStrategyType_1.RepositoryStrategyType.Postgres);
+        var transport = new HttpTransportImpl_1.default(host)
+            .addInterceptor(new SignInterceptor_1.default(messageSigner))
+            .addInterceptor(this._repositoryStrategyInterceptor);
+        var accountRepository = new AuthRepositoryImpl_1.default(transport);
+        var clientDataRepository = new ClientDataRepositoryImpl_1.default(transport);
+        var dataRequestRepository = new DataRequestRepositoryImpl_1.default(transport);
+        var offerRepository = new OfferRepositoryImpl_1.default(transport);
+        var searchRequestRepository = new SearchRequestRepositoryImpl_1.default(transport);
+        this._wallet = new Wallet_1.default();
+        this._accountManager = new AccountManager_1.default(accountRepository, keyPairHelper, this._authAccountBehavior);
+        this._profileManager = new ProfileManager_1.default(clientDataRepository, this._authAccountBehavior.asObservable(), encryptMessage, decryptMessage, messageSigner);
+        this._dataRequestManager = new DataRequestManager_1.default(dataRequestRepository, this._authAccountBehavior.asObservable(), encryptMessage, decryptMessage);
+        this._offerManager = new OfferManager_1.default(offerRepository, this._authAccountBehavior.asObservable());
+        this._searchRequestManager = new SearchRequestManager_1.default(searchRequestRepository, this._authAccountBehavior.asObservable());
+    }
+    Base.prototype.changeStrategy = function (strategy) {
+        this._repositoryStrategyInterceptor.changeStrategy(strategy);
+    };
+    Object.defineProperty(Base.prototype, "wallet", {
+        get: function () {
+            return this._wallet;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Base.prototype, "accountManager", {
+        get: function () {
+            return this._accountManager;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Base.prototype, "profileManager", {
+        get: function () {
+            return this._profileManager;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Base.prototype, "dataRequestManager", {
+        get: function () {
+            return this._dataRequestManager;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Base.prototype, "offerManager", {
+        get: function () {
+            return this._offerManager;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Base.prototype, "searchRequestManager", {
+        get: function () {
+            return this._searchRequestManager;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return Base;
+}());
+exports.default = Base;
+
+>>>>>>> b63a107... bug fixes, improvements
 
 /***/ }),
 /* 202 */
@@ -81698,6 +82027,28 @@ var WebSocketSubject = (function (_super) {
             }
             this.destination = new ReplaySubject_1.ReplaySubject();
         }
+<<<<<<< HEAD
+=======
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Account_1 = __webpack_require__(44);
+var CryptoUtils_1 = __webpack_require__(127);
+var JsonUtils_1 = __webpack_require__(51);
+var BaseEthUtils_1 = __webpack_require__(245);
+var BaseEthUtils_2 = __webpack_require__(245);
+var ProfileManager = /** @class */ (function () {
+    function ProfileManager(clientRepository, authAccountBehavior, encrypt, decrypt, signer) {
+        this.account = new Account_1.default();
+        this.clientDataRepository = clientRepository;
+        authAccountBehavior
+            .subscribe(this.onChangeAccount.bind(this));
+        this.encrypt = encrypt;
+        this.decrypt = decrypt;
+        this.signer = signer;
+>>>>>>> b63a107... bug fixes, improvements
     }
     WebSocketSubject.prototype.resultSelector = function (e) {
         return JSON.parse(e.data);
@@ -81755,6 +82106,7 @@ var WebSocketSubject = (function (_super) {
         }
         this._output = new Subject_1.Subject();
     };
+<<<<<<< HEAD
     // TODO: factor this out to be a proper Operator/Subscriber implementation and eliminate closures
     WebSocketSubject.prototype.multiplex = function (subMsg, unsubMsg, messageFilter) {
         var self = this;
@@ -81786,6 +82138,31 @@ var WebSocketSubject = (function (_super) {
                 subscription.unsubscribe();
             };
         });
+=======
+    ProfileManager.prototype.createEthWallets = function (wallets, baseID) {
+        return __awaiter(this, void 0, void 0, function () {
+            var res;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        res = new BaseEthUtils_2.EthWalletVerificationStatus();
+                        return [4 /*yield*/, BaseEthUtils_1.default.createEthWalletsRecord2(baseID, wallets, this.signer)];
+                    case 1:
+                        res = _a.sent();
+                        return [2 /*return*/, res];
+                }
+            });
+        });
+    };
+    /**
+     * Returns raw (encrypted) data of user with provided ID (Public Key).
+     * @param {string} anyPublicKey Public key of client.
+     *
+     * @returns {Promise<Map<string, string>>} Map key => value.
+     */
+    ProfileManager.prototype.getRawData = function (anyPublicKey) {
+        return this.clientDataRepository.getData(anyPublicKey);
+>>>>>>> b63a107... bug fixes, improvements
     };
     WebSocketSubject.prototype._connectSocket = function () {
         var _this = this;

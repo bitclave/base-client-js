@@ -88,6 +88,7 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_profilemanager_.profilemanager.html#createethwallets" class="tsd-kind-icon">create<wbr>Eth<wbr>Wallets</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_profilemanager_.profilemanager.html#getauthorizeddata" class="tsd-kind-icon">get<wbr>Authorized<wbr>Data</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_profilemanager_.profilemanager.html#getdata" class="tsd-kind-icon">get<wbr>Data</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_profilemanager_.profilemanager.html#getrawdata" class="tsd-kind-icon">get<wbr>Raw<wbr>Data</a></li>
@@ -103,13 +104,17 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Profile<wbr>Manager<span class="tsd-signature-symbol">(</span>clientRepository<span class="tsd-signature-symbol">: </span><a href="../interfaces/_repository_client_clientdatarepository_.clientdatarepository.html" class="tsd-signature-type">ClientDataRepository</a>, authAccountBehavior<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span>, encrypt<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_keypair_messageencrypt_.messageencrypt.html" class="tsd-signature-type">MessageEncrypt</a>, decrypt<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_keypair_messagedecrypt_.messagedecrypt.html" class="tsd-signature-type">MessageDecrypt</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_manager_profilemanager_.profilemanager.html" class="tsd-signature-type">ProfileManager</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Profile<wbr>Manager<span class="tsd-signature-symbol">(</span>clientRepository<span class="tsd-signature-symbol">: </span><a href="../interfaces/_repository_client_clientdatarepository_.clientdatarepository.html" class="tsd-signature-type">ClientDataRepository</a>, authAccountBehavior<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span>, encrypt<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_keypair_messageencrypt_.messageencrypt.html" class="tsd-signature-type">MessageEncrypt</a>, decrypt<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_keypair_messagedecrypt_.messagedecrypt.html" class="tsd-signature-type">MessageDecrypt</a>, signer<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_keypair_messagesigner_.messagesigner.html" class="tsd-signature-type">MessageSigner</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_manager_profilemanager_.profilemanager.html" class="tsd-signature-type">ProfileManager</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
+<<<<<<< HEAD
 									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c858c05/src/manager/ProfileManager.ts#L14">manager/ProfileManager.ts:14</a></li>
+=======
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/878c121/src/manager/ProfileManager.ts#L19">manager/ProfileManager.ts:19</a></li>
+>>>>>>> b63a107... bug fixes, improvements
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -126,6 +131,9 @@
 								<li>
 									<h5>decrypt: <a href="../interfaces/_utils_keypair_messagedecrypt_.messagedecrypt.html" class="tsd-signature-type">MessageDecrypt</a></h5>
 								</li>
+								<li>
+									<h5>signer: <a href="../interfaces/_utils_keypair_messagesigner_.messagesigner.html" class="tsd-signature-type">MessageSigner</a></h5>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_manager_profilemanager_.profilemanager.html" class="tsd-signature-type">ProfileManager</a></h4>
 						</li>
@@ -134,6 +142,32 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="createethwallets" class="tsd-anchor"></a>
+					<h3>create<wbr>Eth<wbr>Wallets</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Eth<wbr>Wallets<span class="tsd-signature-symbol">(</span>wallets<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, baseID<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_utils_baseethutils_.ethwalletverificationstatus.html" class="tsd-signature-type">EthWalletVerificationStatus</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/878c121/src/manager/ProfileManager.ts#L58">manager/ProfileManager.ts:58</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>wallets: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5>baseID: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_utils_baseethutils_.ethwalletverificationstatus.html" class="tsd-signature-type">EthWalletVerificationStatus</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="getauthorizeddata" class="tsd-anchor"></a>
 					<h3>get<wbr>Authorized<wbr>Data</h3>
@@ -144,7 +178,11 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
+<<<<<<< HEAD
 									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c858c05/src/manager/ProfileManager.ts#L54">manager/ProfileManager.ts:54</a></li>
+=======
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/878c121/src/manager/ProfileManager.ts#L84">manager/ProfileManager.ts:84</a></li>
+>>>>>>> b63a107... bug fixes, improvements
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -182,7 +220,11 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
+<<<<<<< HEAD
 									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c858c05/src/manager/ProfileManager.ts#L32">manager/ProfileManager.ts:32</a></li>
+=======
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/878c121/src/manager/ProfileManager.ts#L38">manager/ProfileManager.ts:38</a></li>
+>>>>>>> b63a107... bug fixes, improvements
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -205,7 +247,11 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
+<<<<<<< HEAD
 									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c858c05/src/manager/ProfileManager.ts#L43">manager/ProfileManager.ts:43</a></li>
+=======
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/878c121/src/manager/ProfileManager.ts#L73">manager/ProfileManager.ts:73</a></li>
+>>>>>>> b63a107... bug fixes, improvements
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -237,7 +283,11 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
+<<<<<<< HEAD
 									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c858c05/src/manager/ProfileManager.ts#L85">manager/ProfileManager.ts:85</a></li>
+=======
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/878c121/src/manager/ProfileManager.ts#L116">manager/ProfileManager.ts:116</a></li>
+>>>>>>> b63a107... bug fixes, improvements
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -259,6 +309,38 @@
 						</li>
 					</ul>
 				</section>
+<<<<<<< HEAD
+=======
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="validateethwallets" class="tsd-anchor"></a>
+					<h3>validate<wbr>Eth<wbr>Wallets</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">validate<wbr>Eth<wbr>Wallets<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, val<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, baseID<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_utils_baseethutils_.ethwalletverificationstatus.html" class="tsd-signature-type">EthWalletVerificationStatus</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/878c121/src/manager/ProfileManager.ts#L43">manager/ProfileManager.ts:43</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>key: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>val: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>baseID: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_utils_baseethutils_.ethwalletverificationstatus.html" class="tsd-signature-type">EthWalletVerificationStatus</a></h4>
+						</li>
+					</ul>
+				</section>
+>>>>>>> b63a107... bug fixes, improvements
 			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -281,6 +363,9 @@
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="_manager_profilemanager_.profilemanager.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_manager_profilemanager_.profilemanager.html#createethwallets" class="tsd-kind-icon">create<wbr>Eth<wbr>Wallets</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_manager_profilemanager_.profilemanager.html#getauthorizeddata" class="tsd-kind-icon">get<wbr>Authorized<wbr>Data</a>
