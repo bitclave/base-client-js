@@ -3,11 +3,12 @@ import { injectable } from 'inversify';
 import { DataRequestState, default as Base, RepositoryStrategyType } from 'base';
 import 'reflect-metadata';
 import Account from 'base/repository/models/Account';
-import DataRequestManager from 'base/manager/DataRequestManager';
 import DataRequest from 'base/repository/models/DataRequest';
 import OfferManager from 'base/manager/OfferManager';
+import ProfileManager from 'base/manager/ProfileManager';
 import SearchRequestManager from 'base/manager/SearchRequestManager';
 import Offer from 'base/repository/models/Offer';
+import DataRequestManager from 'base/manager/DataRequestManager';
 
 export interface SyncDataListener {
 
@@ -53,6 +54,10 @@ export default class BaseManager {
 
     getOfferManager(): OfferManager {
         return this.base.offerManager;
+    }
+
+    getProfileManager(): ProfileManager {
+        return this.base.profileManager;
     }
 
     getSearchRequestManager(): SearchRequestManager {

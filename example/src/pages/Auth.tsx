@@ -107,6 +107,10 @@ export default class Auth extends React.Component<Props, State> {
 
     private onSingIn() {
         const {history} = this.props;
+        if (this.state.mnemonicPhrase.length < 5) {
+            alert('Minimum 5 symbols!');
+            return;
+        }
         this.baseManager.signIn(this.state.mnemonicPhrase)
             .then(account => history.replace('dashboard'))
             .catch(response => {
