@@ -5,6 +5,7 @@ import CryptoUtils from '../utils/CryptoUtils';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import JsonUtils from '../utils/JsonUtils';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
+import { MessageSigner } from '../utils/keypair/MessageSigner';
 import baseEthUitls from '../utils/BaseEthUtils';
 import {EthWalletVerificationStatus, EthWalletVerificationCodes} from "../utils/BaseEthUtils";
 
@@ -15,9 +16,10 @@ export default class ProfileManager {
     private account: Account = new Account();
     private encrypt: MessageEncrypt;
     private decrypt: MessageDecrypt;
+    private signer: MessageSigner;
 
     constructor(clientRepository: ClientDataRepository, authAccountBehavior: Observable<Account>,
-                encrypt: MessageEncrypt, decrypt: MessageDecrypt) {
+                encrypt: MessageEncrypt, decrypt: MessageDecrypt, signer: MessageSigner) {
         this.clientDataRepository = clientRepository;
 
         authAccountBehavior
@@ -25,17 +27,9 @@ export default class ProfileManager {
 
         this.encrypt = encrypt;
         this.decrypt = decrypt;
+        this.signer = signer;
     }
 
-    /**
-     * Returns decrypted data of the authorized user.
-     *
-     * @returns {Promise<Map<string, string>>} Map key => value.
-     */
-    public getData(): Promise<Map<string, string>> {
-        return this.getRawData(this.account.publicKey)
-            .then(data => this.prepareData(data, false));
-    }
 
     public validateEthWallets(key: string, val: string, baseID: string): EthWalletVerificationStatus {
         var res : EthWalletVerificationStatus = new EthWalletVerificationStatus();
@@ -52,7 +46,24 @@ export default class ProfileManager {
         return res;
     }
 
+    public async createEthWallets(wallets: string[], baseID: string): Promise<EthWalletVerificationStatus> {
+        var res : EthWalletVerificationStatus = new EthWalletVerificationStatus();
 
+        res = await baseEthUitls.createEthWalletsRecord2(baseID, wallets, this.signer);
+
+        return res;
+    }
+
+
+    /**
+     * Returns decrypted data of the authorized user.
+     *
+     * @returns {Promise<Map<string, string>>} Map key => value.
+     */
+    public getData(): Promise<Map<string, string>> {
+        return this.getRawData(this.account.publicKey)
+            .then(data => this.prepareData(data, false));
+    }
 
     /**
      * Returns raw (encrypted) data of user with provided ID (Public Key).

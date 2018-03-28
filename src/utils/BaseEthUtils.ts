@@ -74,6 +74,37 @@ export default class BaseEthUtils {
         return msgWallets;
     }
 
+    public static async createEthWalletsRecord2(baseID: string, signedEthRecords : Array<any>, signer: MessageSigner) : Promise<any>
+    {
+        for (let msg of signedEthRecords)
+        {
+            if ((this.verifyEthAddrRecord(msg)!=EthWalletVerificationCodes.RC_OK) &&
+                (this.verifyEthAddrRecord(msg)!=EthWalletVerificationCodes.RC_ETH_ADDR_NOT_VERIFIED)) throw "invalid eth record";
+            if (baseID != JSON.parse(msg.data).baseID)  throw "baseID missmatch"
+        }
+
+        var msgWallets =
+            {
+                data: signedEthRecords,
+                sig: ""
+            };
+        // console.log(msgWallets);
+        if (!baseSchema.validateEthWallets(msgWallets)) throw "invalid wallets structure";
+
+        // eth style signing
+        // msgWallets.sig = sigUtil.personalSign(Buffer.from(prvKey, 'hex'), msgWallets);
+        // var signerAddr = sigUtil.recoverPersonalSignature(msgWallets)
+        // console.log(signerAddr);
+
+        // BASE Style signing
+        const messageSigner: MessageSigner = signer;
+        msgWallets.sig = await messageSigner.signMessage(JSON.stringify(msgWallets.data))
+
+
+        return msgWallets;
+
+    }
+
     public static async createEthWalletsRecord(baseID: string, signedEthRecords : Array<any>, prvKey: string) : Promise<any>
     {
         for (let msg of signedEthRecords)

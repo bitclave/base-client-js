@@ -80,7 +80,8 @@ export default class Base {
             clientDataRepository,
             this._authAccountBehavior.asObservable(),
             encryptMessage,
-            decryptMessage
+            decryptMessage,
+            messageSigner
         );
 
         this._dataRequestManager = new DataRequestManager(

@@ -29,6 +29,7 @@ interface State {
     ethSignature: string;
     numberRequests: number;
     numberResponses: number;
+    clientDataRefreshhTrigger: number;
 }
 
 var web3: Web3;
@@ -61,12 +62,14 @@ export default class Dashboard extends React.Component<Props, State> implements 
             ethSignature: '',
             numberRequests: 0,
             numberResponses: 0,
+            clientDataRefreshhTrigger: 0
         };
     }
 
     componentDidMount() {
         this.baseManager.addSyncDataListener(this);
         this.getDataList();
+        this.state.ethSignature = "aaa";
 
         g_Dashboard = this;
     }
@@ -132,7 +135,6 @@ export default class Dashboard extends React.Component<Props, State> implements 
                                 </Row>
                                 <Row> <p/> </Row>
                                 <Row>
-                                    <Col/>
                                     <Col xs="3" sm="3">
                                         <Button color="primary"  onClick={e => this.onSetEthAddress()}>
                                             Set Single
@@ -146,6 +148,11 @@ export default class Dashboard extends React.Component<Props, State> implements 
                                     <Col xs="3" sm="3">
                                         <Button color="primary"  onClick={e => this.onVerifyWallets()}>
                                             Verify
+                                        </Button>
+                                    </Col>
+                                    <Col xs="3" sm="3">
+                                        <Button color="primary"  onClick={e => this.onSignWallets()}>
+                                            SignWallets
                                         </Button>
                                     </Col>
                                 </Row>
@@ -215,6 +222,7 @@ export default class Dashboard extends React.Component<Props, State> implements 
                 data.forEach((value, key) => {
                     this.clientData.push(new Pair(key, value));
                 });
+                this.state.clientDataRefreshhTrigger=1;
             }).catch(response => console.log('message: ' + JSON.stringify(response)));
     }
 
@@ -334,8 +342,23 @@ export default class Dashboard extends React.Component<Props, State> implements 
         else {
             alert('no eth_wallets found');
         }
-
     }
+
+    private async onSignWallets(){
+        var pos = this.clientData.findIndex(model => model.key === 'eth_wallets');
+        if (pos>=0) {
+            var msg = JSON.parse(this.clientData[pos].value);
+            var res = await this.baseManager.getProfileManager().createEthWallets(
+                msg.data, this.baseManager.getId());
+            msg.sig = res.sig;
+            this.clientData[pos].value = JSON.stringify(msg);
+            alert('eth_wallets signed');
+        }
+        else {
+            alert('no eth_wallets found');
+        }
+    }
+
     private async onSetEthSignature()  {
         var signingAddr : string;
         await web3.eth.getAccounts((err, res) => {

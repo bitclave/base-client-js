@@ -1,3 +1,4 @@
+import { MessageSigner } from "./keypair/MessageSigner";
 export declare enum EthWalletVerificationCodes {
     RC_OK = 0,
     RC_BASEID_MISSMATCH = -1,
@@ -15,6 +16,7 @@ export default class BaseEthUtils {
     static verifyEthAddrRecord(msg: any): EthWalletVerificationCodes;
     static createEthAddrRecord(baseID: string, ethAddr: string, ethPrvKey: string): any;
     static dbg_createEthWalletsRecord(baseID: string, signedEthRecords: Array<any>, prvKey: string): Promise<any>;
+    static createEthWalletsRecord2(baseID: string, signedEthRecords: Array<any>, signer: MessageSigner): Promise<any>;
     static createEthWalletsRecord(baseID: string, signedEthRecords: Array<any>, prvKey: string): Promise<any>;
     static verifyEthWalletsRecord(baseID: string, msg: any): EthWalletVerificationStatus;
 }
