@@ -5,6 +5,9 @@ import CryptoUtils from '../utils/CryptoUtils';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import JsonUtils from '../utils/JsonUtils';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
+import { MessageSigner } from '../utils/keypair/MessageSigner';
+import baseEthUitls from '../utils/BaseEthUtils';
+import {EthWalletVerificationStatus, EthWalletVerificationCodes} from "../utils/BaseEthUtils";
 
 export default class ProfileManager {
 
@@ -12,9 +15,10 @@ export default class ProfileManager {
     private account: Account = new Account();
     private encrypt: MessageEncrypt;
     private decrypt: MessageDecrypt;
+    private signer: MessageSigner;
 
     constructor(clientRepository: ClientDataRepository, authAccountBehavior: Observable<Account>,
-                encrypt: MessageEncrypt, decrypt: MessageDecrypt) {
+                encrypt: MessageEncrypt, decrypt: MessageDecrypt, signer: MessageSigner) {
         this.clientDataRepository = clientRepository;
 
         authAccountBehavior
@@ -22,7 +26,33 @@ export default class ProfileManager {
 
         this.encrypt = encrypt;
         this.decrypt = decrypt;
+        this.signer = signer;
     }
+
+
+    public validateEthWallets(key: string, val: string, baseID: string): EthWalletVerificationStatus {
+        var res : EthWalletVerificationStatus = new EthWalletVerificationStatus();
+
+        if (key!="eth_wallets")
+        {
+            res.err = "The \<key\> is expected to be \"eth_wallets\""
+            res.rc = EthWalletVerificationCodes.RC_GENERAL_ERROR;
+            return res;
+        }
+
+        res = baseEthUitls.verifyEthWalletsRecord(baseID, val);
+
+        return res;
+    }
+
+    public async createEthWallets(wallets: string[], baseID: string): Promise<EthWalletVerificationStatus> {
+        var res : EthWalletVerificationStatus = new EthWalletVerificationStatus();
+
+        res = await baseEthUitls.createEthWalletsRecord2(baseID, wallets, this.signer);
+
+        return res;
+    }
+
 
     /**
      * Returns decrypted data of the authorized user.
@@ -52,28 +82,29 @@ export default class ProfileManager {
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
     public getAuthorizedData(recipientPk: string, encryptedData: string): Promise<Map<string, string>> {
-        return new Promise<Map<string, string>>(resolve => {
-            const strDecrypt = this.decrypt.decryptMessage(recipientPk, encryptedData);
-            const jsonDecrypt = JSON.parse(strDecrypt);
-            const arrayResponse: Map<string, string> = JsonUtils.jsonToMap(jsonDecrypt);
-            const result: Map<string, string> = new Map<string, string>();
+        return this.decrypt.decryptMessage(recipientPk, encryptedData)
+            .then(strDecrypt => new Promise<Map<string, string>>(resolve => {
+                const jsonDecrypt = JSON.parse(strDecrypt);
+                const arrayResponse: Map<string, string> = JsonUtils.jsonToMap(jsonDecrypt);
+                const result: Map<string, string> = new Map<string, string>();
 
-            this.getRawData(recipientPk).then((recipientData: Map<string, string>) => {
-                arrayResponse.forEach((value: string, key: string) => {
-                    if (recipientData.has(key)) {
-                        try {
-                            const data: string = recipientData.get(key) as string;
-                            const decryptedValue: string = CryptoUtils.decryptAes256(data, value);
-                            result.set(key, decryptedValue);
-                        } catch (e) {
-                            console.log('decryption error: ', key, ' => ', recipientData.get(key), e);
-                        }
-                    }
-                });
+                this.getRawData(recipientPk)
+                    .then((recipientData: Map<string, string>) => {
+                        arrayResponse.forEach((value: string, key: string) => {
+                            if (recipientData.has(key)) {
+                                try {
+                                    const data: string = recipientData.get(key) as string;
+                                    const decryptedValue: string = CryptoUtils.decryptAes256(data, value);
+                                    result.set(key, decryptedValue);
+                                } catch (e) {
+                                    console.log('decryption error: ', key, ' => ', recipientData.get(key), e);
+                                }
+                            }
+                        });
 
-                resolve(result);
-            });
-        });
+                        resolve(result);
+                    });
+            }));
     }
 
     /**

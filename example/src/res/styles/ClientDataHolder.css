@@ -4,4 +4,7 @@
     border: 1px solid #C9C1D5;
     color: #5F5F5F;
     text-align: start;
+    width: 120px;
+    overflow: hidden;
+    text-overflow: clip;
 }
