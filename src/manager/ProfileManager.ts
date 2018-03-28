@@ -82,29 +82,28 @@ export default class ProfileManager {
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
     public getAuthorizedData(recipientPk: string, encryptedData: string): Promise<Map<string, string>> {
-        return this.decrypt.decryptMessage(recipientPk, encryptedData)
-            .then(strDecrypt => new Promise<Map<string, string>>(resolve => {
-                const jsonDecrypt = JSON.parse(strDecrypt);
-                const arrayResponse: Map<string, string> = JsonUtils.jsonToMap(jsonDecrypt);
-                const result: Map<string, string> = new Map<string, string>();
+        return new Promise<Map<string, string>>(resolve => {
+            const strDecrypt = this.decrypt.decryptMessage(recipientPk, encryptedData);
+            const jsonDecrypt = JSON.parse(strDecrypt);
+            const arrayResponse: Map<string, string> = JsonUtils.jsonToMap(jsonDecrypt);
+            const result: Map<string, string> = new Map<string, string>();
 
-                this.getRawData(recipientPk)
-                    .then((recipientData: Map<string, string>) => {
-                        arrayResponse.forEach((value: string, key: string) => {
-                            if (recipientData.has(key)) {
-                                try {
-                                    const data: string = recipientData.get(key) as string;
-                                    const decryptedValue: string = CryptoUtils.decryptAes256(data, value);
-                                    result.set(key, decryptedValue);
-                                } catch (e) {
-                                    console.log('decryption error: ', key, ' => ', recipientData.get(key), e);
-                                }
-                            }
-                        });
+            this.getRawData(recipientPk).then((recipientData: Map<string, string>) => {
+                arrayResponse.forEach((value: string, key: string) => {
+                    if (recipientData.has(key)) {
+                        try {
+                            const data: string = recipientData.get(key) as string;
+                            const decryptedValue: string = CryptoUtils.decryptAes256(data, value);
+                            result.set(key, decryptedValue);
+                        } catch (e) {
+                            console.log('decryption error: ', key, ' => ', recipientData.get(key), e);
+                        }
+                    }
+                });
 
-                        resolve(result);
-                    });
-            }));
+                resolve(result);
+            });
+        });
     }
 
     /**
@@ -129,7 +128,7 @@ export default class ProfileManager {
             let changedValue;
 
             data.forEach((value, key) => {
-                pass = this.encrypt.generatePasswordForFiled(key);
+                pass = this.encrypt.generatePasswordForField(key);
                 changedValue = encrypt
                     ? CryptoUtils.encryptAes256(value, pass)
                     : CryptoUtils.decryptAes256(value, pass);

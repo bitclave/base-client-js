@@ -12,6 +12,7 @@ export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
 export { SearchRequest };
 export { Offer };
+export { Base as NodeAPI };
 export default class Base {
     private _wallet;
     private _accountManager;
@@ -21,7 +22,7 @@ export default class Base {
     private _searchRequestManager;
     private _authAccountBehavior;
     private _repositoryStrategyInterceptor;
-    constructor(host: string, signerHost: string);
+    constructor(host: string);
     changeStrategy(strategy: RepositoryStrategyType): void;
     readonly wallet: Wallet;
     readonly accountManager: AccountManager;

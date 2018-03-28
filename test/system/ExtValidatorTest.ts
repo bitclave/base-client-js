@@ -12,8 +12,8 @@ const should = require('chai')
 describe('BASE API test: External Validator', async () => {
     const passPhraseAlisa: string = 'Alice';
     const passPhraseValidator: string = 'Validator';
-    const baseAlice: Base = new Base(Config.getBaseEndPoint(), Config.getSignerEndPoint());
-    const baseValidator: Base = new Base(Config.getBaseEndPoint(), Config.getSignerEndPoint());
+    const baseAlice: Base = new Base(Config.getBaseEndPoint());
+    const baseValidator: Base = new Base(Config.getBaseEndPoint());
 
     var aliceAccount: Account = new Account();
     var validatorAccount: Account = new Account();

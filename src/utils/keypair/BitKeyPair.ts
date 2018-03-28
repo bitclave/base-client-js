@@ -10,7 +10,7 @@ export default class BitKeyPair implements KeyPairHelper {
 
     private privateKey: any;
     private publicKey: any;
-    private addr: any
+    private addr: any;
 
     public createKeyPair(passPhrase: string): KeyPair {
     const pbkdf2: string = CryptoUtils.PBKDF2(passPhrase, 256);
@@ -25,8 +25,6 @@ export default class BitKeyPair implements KeyPairHelper {
         
         return new KeyPair(privateKeyHex, publicKeyHex);
 
-
-    });
     }
 
     public initKeyPairFromPrvKey(prvKey: string): KeyPair {
@@ -39,8 +37,6 @@ export default class BitKeyPair implements KeyPairHelper {
             const publicKeyHex = this.publicKey.toString(16);
             
         return new KeyPair(privateKeyHex, publicKeyHex);
-
-    });
     }
 
     public signMessage(data: string): string {
@@ -57,7 +53,7 @@ export default class BitKeyPair implements KeyPairHelper {
         return this.addr.toString(16);
     }
 
-    encryptMessage(recipientPk: string, message: string): string {
+    public encryptMessage(recipientPk: string, message: string): string {
         const ecies: any = ECIES()
             .privateKey(this.privateKey)
             .publicKey(bitcore.PublicKey.fromString(recipientPk));
@@ -66,14 +62,14 @@ export default class BitKeyPair implements KeyPairHelper {
             .toString('base64');
     }
 
-    generatePasswordForFiled(fieldName: String): string {
+    public generatePasswordForField(fieldName: String): string {
         return CryptoUtils.PBKDF2(
             CryptoUtils.keccak256(this.privateKey.toString(16)) + fieldName.toLowerCase(),
             384
         );
     }
 
-    decryptMessage(senderPk: string, encrypted: string): string {
+    public decryptMessage(senderPk: string, encrypted: string): string {
         const ecies: any = ECIES()
             .privateKey(this.privateKey)
             .publicKey(bitcore.PublicKey.fromString(senderPk));

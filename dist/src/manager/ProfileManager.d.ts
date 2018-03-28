@@ -3,16 +3,8 @@ import Account from '../repository/models/Account';
 import { ClientDataRepository } from '../repository/client/ClientDataRepository';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 import { MessageSigner } from '../utils/keypair/MessageSigner';
 import { EthWalletVerificationStatus } from "../utils/BaseEthUtils";
->>>>>>> b63a107... bug fixes, improvements
-=======
-import { MessageSigner } from '../utils/keypair/MessageSigner';
-import { EthWalletVerificationStatus } from "../utils/BaseEthUtils";
->>>>>>> ms_eth_verifications
 export default class ProfileManager {
     private clientDataRepository;
     private account;
@@ -20,22 +12,14 @@ export default class ProfileManager {
     private decrypt;
     private signer;
     constructor(clientRepository: ClientDataRepository, authAccountBehavior: Observable<Account>, encrypt: MessageEncrypt, decrypt: MessageDecrypt, signer: MessageSigner);
+    validateEthWallets(key: string, val: string, baseID: string): EthWalletVerificationStatus;
+    createEthWallets(wallets: string[], baseID: string): Promise<EthWalletVerificationStatus>;
     /**
      * Returns decrypted data of the authorized user.
      *
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
     getData(): Promise<Map<string, string>>;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    validateEthWallets(key: string, val: string, baseID: string): EthWalletVerificationStatus;
-    createEthWallets(wallets: string[], baseID: string): Promise<EthWalletVerificationStatus>;
->>>>>>> b63a107... bug fixes, improvements
-=======
-    validateEthWallets(key: string, val: string, baseID: string): EthWalletVerificationStatus;
-    createEthWallets(wallets: string[], baseID: string): Promise<EthWalletVerificationStatus>;
->>>>>>> ms_eth_verifications
     /**
      * Returns raw (encrypted) data of user with provided ID (Public Key).
      * @param {string} anyPublicKey Public key of client.

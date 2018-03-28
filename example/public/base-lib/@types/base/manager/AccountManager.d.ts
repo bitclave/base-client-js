@@ -23,6 +23,7 @@ export default class AccountManager {
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
     checkAccount(mnemonicPhrase: string): Promise<Account>;
+    private generateKeyPair(mnemonicPhrase);
     private getAccount(account);
     private generateAccount(keyPair);
     private onGetAccount(account);

@@ -40,6 +40,7 @@ describe('Profile Manager', async () => {
             clientRepository,
             authAccountBehaviorAlisa,
             keyPairHelperAlisa,
+            keyPairHelperAlisa,
             keyPairHelperAlisa
     );
 
@@ -54,7 +55,7 @@ describe('Profile Manager', async () => {
 
         origMockData.set('name', 'my name');
         origMockData.forEach((value, key) => {
-            const passForValue = keyPairHelperAlisa.generatePasswordForFiled(key);
+            const passForValue = keyPairHelperAlisa.generatePasswordForField(key);
             mockData.set(key, CryptoUtils.encryptAes256(value, passForValue));
         });
 
@@ -71,7 +72,7 @@ describe('Profile Manager', async () => {
 
         origMockData.set('email', 'im@host.com');
         origMockData.forEach((value, key) => {
-            const passForValue = keyPairHelperAlisa.generatePasswordForFiled(key);
+            const passForValue = keyPairHelperAlisa.generatePasswordForField(key);
             mockData.set(key, CryptoUtils.encryptAes256(value, passForValue));
         });
 
@@ -91,7 +92,7 @@ describe('Profile Manager', async () => {
 
         origMockData.set('name', 'Bob');
         origMockData.forEach((value, key) => {
-            const passForValue = keyPairHelperBob.generatePasswordForFiled(key);
+            const passForValue = keyPairHelperBob.generatePasswordForField(key);
             mockData.set(key, CryptoUtils.encryptAes256(value, passForValue));
             originMessage.set(key, passForValue);
         });

@@ -122,7 +122,7 @@ export default class DataRequestManager {
         if (fields != null && fields.length > 0) {
             const resultMap: Map<string, string> = new Map();
             fields.forEach(value => {
-                resultMap.set(value, this.encrypt.generatePasswordForFiled(value.toLowerCase()));
+                resultMap.set(value, this.encrypt.generatePasswordForField(value.toLowerCase()));
             });
 
             const jsonMap: any = JsonUtils.mapToJson(resultMap);
