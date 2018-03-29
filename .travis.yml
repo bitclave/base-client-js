@@ -8,6 +8,12 @@ node_js:
 install:
   - npm install
 
+before_script:
+  - mkdir base-node
+  - cd base-node
+  - git clone git@github.com:bitclave/base-node.git
+  - ls
+
 
 script:
   - npm run coveralls
