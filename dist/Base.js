@@ -64185,6 +64185,7 @@ var AccountRepositoryImpl = /** @class */ (function () {
     function AccountRepositoryImpl(transport) {
         this.SIGN_UP = '/registration';
         this.SIGN_IN = '/exist';
+        this.DELETE = '/delete';
         this.transport = transport;
     }
     AccountRepositoryImpl.prototype.registration = function (account) {
@@ -64195,6 +64196,11 @@ var AccountRepositoryImpl = /** @class */ (function () {
     AccountRepositoryImpl.prototype.checkAccount = function (account) {
         return this.transport
             .sendRequest(this.SIGN_IN, HttpMethod_1.HttpMethod.Post, account)
+            .then(function (response) { return Object.assign(new Account_1.default(), response.json); });
+    };
+    AccountRepositoryImpl.prototype.unsubscribe = function (account) {
+        return this.transport
+            .sendRequest(this.DELETE, HttpMethod_1.HttpMethod.Delete, account)
             .then(function (response) { return Object.assign(new Account_1.default(), response.json); });
     };
     return AccountRepositoryImpl;
@@ -64290,6 +64296,19 @@ var AccountManager = /** @class */ (function () {
         return this.generateKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
             .then(this.getAccount.bind(this));
+    };
+    /**
+     * Allows user to unsubscribe from BASE. Delets all his data
+     * @param {string} mnemonicPhrase Mnemonic phrase for Public/Private key pair
+     * generation for asymmetric encryption scheme.
+     *
+     * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
+     */
+    AccountManager.prototype.unsubscribe = function (mnemonicPhrase) {
+        var _this = this;
+        return this.generateKeyPair(mnemonicPhrase)
+            .then(this.generateAccount)
+            .then(function (account) { return _this.accountRepository.unsubscribe(account); });
     };
     AccountManager.prototype.generateKeyPair = function (mnemonicPhrase) {
         var _this = this;

@@ -52,6 +52,15 @@ export default class BaseManager {
             });
     }
 
+    unsubscribe(mnemonicPhrase: string): Promise<Account> {
+        return this.base.accountManager.unsubscribe(mnemonicPhrase)
+            .then(account => {
+                this.account = account;
+                this.prepareStartSyncState();
+                return this.account;
+            });
+    }
+
     getOfferManager(): OfferManager {
         return this.base.offerManager;
     }
