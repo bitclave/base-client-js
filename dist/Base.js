@@ -59530,7 +59530,7 @@ var BaseEthUtils = /** @class */ (function () {
             });
         });
     };
-    BaseEthUtils.createEthWalletsRecord2 = function (baseID, signedEthRecords, signer) {
+    BaseEthUtils.createEthWalletsRecordWithSigner = function (baseID, signedEthRecords, signer) {
         return __awaiter(this, void 0, void 0, function () {
             var signedEthRecords_1, signedEthRecords_1_1, msg, msgWallets, messageSigner, _a, e_1, _b;
             return __generator(this, function (_c) {
@@ -59570,50 +59570,13 @@ var BaseEthUtils = /** @class */ (function () {
             });
         });
     };
-    BaseEthUtils.createEthWalletsRecord = function (baseID, signedEthRecords, prvKey) {
+    BaseEthUtils.createEthWalletsRecordWithPrvKey = function (baseID, signedEthRecords, prvKey) {
         return __awaiter(this, void 0, void 0, function () {
-            var signedEthRecords_2, signedEthRecords_2_1, msg, msgWallets, bitKeyPair, messageSigner, _a, basePubKey, baseAddr, e_2, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0:
-                        try {
-                            for (signedEthRecords_2 = __values(signedEthRecords), signedEthRecords_2_1 = signedEthRecords_2.next(); !signedEthRecords_2_1.done; signedEthRecords_2_1 = signedEthRecords_2.next()) {
-                                msg = signedEthRecords_2_1.value;
-                                if (this.verifyEthAddrRecord(msg) != EthWalletVerificationCodes.RC_OK)
-                                    throw "invalid eth record";
-                                if (baseID != JSON.parse(msg.data).baseID)
-                                    throw "baseID missmatch";
-                            }
-                        }
-                        catch (e_2_1) { e_2 = { error: e_2_1 }; }
-                        finally {
-                            try {
-                                if (signedEthRecords_2_1 && !signedEthRecords_2_1.done && (_b = signedEthRecords_2.return)) _b.call(signedEthRecords_2);
-                            }
-                            finally { if (e_2) throw e_2.error; }
-                        }
-                        msgWallets = {
-                            data: signedEthRecords,
-                            sig: ""
-                        };
-                        // console.log(msgWallets);
-                        if (!baseSchema.validateEthWallets(msgWallets))
-                            throw "invalid wallets structure";
-                        bitKeyPair = new BitKeyPair_1.default();
-                        bitKeyPair.initKeyPairFromPrvKey(prvKey);
-                        messageSigner = bitKeyPair;
-                        _a = msgWallets;
-                        return [4 /*yield*/, messageSigner.signMessage(JSON.stringify(msgWallets.data))];
-                    case 1:
-                        _a.sig = _c.sent();
-                        basePubKey = bitKeyPair.getPublicKey();
-                        baseAddr = bitKeyPair.getAddr();
-                        if (basePubKey != baseID)
-                            throw "baseID and basePubKey missmatch";
-                        if (!Message(JSON.stringify(msgWallets.data)).verify(baseAddr, msgWallets.sig))
-                            throw "BASE signature missmath";
-                        return [2 /*return*/, msgWallets];
-                }
+            var bitKeyPair;
+            return __generator(this, function (_a) {
+                bitKeyPair = new BitKeyPair_1.default();
+                bitKeyPair.initKeyPairFromPrvKey(prvKey);
+                return [2 /*return*/, this.createEthWalletsRecordWithSigner(baseID, signedEthRecords, bitKeyPair)];
             });
         });
     };
@@ -59641,12 +59604,12 @@ var BaseEthUtils = /** @class */ (function () {
                     res.details.push(EthWalletVerificationCodes.RC_OK);
             }
         }
-        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
         finally {
             try {
                 if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
             }
-            finally { if (e_3) throw e_3.error; }
+            finally { if (e_2) throw e_2.error; }
         }
         // verify signature matches the baseID
         var baseAddr = new bitcore.PublicKey.fromString(basePubKey).toAddress().toString(16);
@@ -59664,7 +59627,7 @@ var BaseEthUtils = /** @class */ (function () {
             res.rc = EthWalletVerificationCodes.RC_GENERAL_ERROR;
         }
         return res;
-        var e_3, _c;
+        var e_2, _c;
     };
     return BaseEthUtils;
 }());
@@ -91946,7 +91909,7 @@ var ProfileManager = /** @class */ (function () {
             var res;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, BaseEthUtils_1.default.createEthWalletsRecord2(baseID, wallets, this.signer)];
+                    case 0: return [4 /*yield*/, BaseEthUtils_1.default.createEthWalletsRecordWithSigner(baseID, wallets, this.signer)];
                     case 1:
                         res = _a.sent();
                         return [2 /*return*/, res];

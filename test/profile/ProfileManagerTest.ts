@@ -214,6 +214,25 @@ describe('Profile Manager', async () => {
         baseEthUitls.verifyEthAddrRecord(msg).should.be.equal(EthWalletVerificationCodes.RC_OK);
     });
 
+    it('verify signature by BASE interface', async () => {
+        const keyPairHelper: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
+
+        // create BASE user for tesing
+        const baseUser = await keyPairHelper.createKeyPair(passPhraseAlisa);
+
+        const baseUserAddr = new bitcore.PrivateKey
+            .fromString(baseUser.privateKey)
+            .toAddress()
+            .toString(16);
+
+        const finalMsg = {
+            data: { baseID: '123', addr1: '456', addr2: '789' },
+            sig: ""
+        }
+        finalMsg.sig = await profileManager.signMessage(JSON.stringify(finalMsg.data));
+        Message(JSON.stringify(finalMsg.data)).verify(baseUserAddr, finalMsg.sig).should.be.true;
+    });
+
     it('verify ETH address record by BASE interface', function ()  {
         /*
         here is the exact string for message - pay attention to " " and "\n"
