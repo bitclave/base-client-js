@@ -91956,6 +91956,9 @@ var ProfileManager = /** @class */ (function () {
             });
         });
     };
+    ProfileManager.prototype.signMessage = function (data) {
+        return this.signer.signMessage(data);
+    };
     /**
      * Returns decrypted data of the authorized user.
      *
@@ -91977,7 +91980,7 @@ var ProfileManager = /** @class */ (function () {
     };
     /**
      * Decrypts accepted personal data {@link DataRequest#responseData} when state is {@link DataRequestState#ACCEPT}.
-     * @param {string} recipientPk  Public key of the user that is expected to.
+     * @param {string} recipientPk  Public key of the user that shared the data
      * @param {string} encryptedData encrypted data {@link DataRequest#responseData}.
      *
      * @returns {Promise<Map<string, string>>} Map key => value.
@@ -91996,6 +91999,35 @@ var ProfileManager = /** @class */ (function () {
                             var data = recipientData.get(key);
                             var decryptedValue = CryptoUtils_1.default.decryptAes256(data, value);
                             result.set(key, decryptedValue);
+                        }
+                        catch (e) {
+                            console.log('decryption error: ', key, ' => ', recipientData.get(key), e);
+                        }
+                    }
+                });
+                resolve(result);
+            });
+        });
+    };
+    /**
+     * Returns decryption keys for approved personal data {@link DataRequest#responseData} when state is {@link DataRequestState#ACCEPT}.
+     * @param {string} recipientPk  Public key of the user that shared the data
+     * @param {string} encryptedData encrypted data {@link DataRequest#responseData}.
+     *
+     * @returns {Promise<Map<string, string>>} Map key => value.
+     */
+    ProfileManager.prototype.getAuthorizedEncryptionKeys = function (recipientPk, encryptedData) {
+        var _this = this;
+        return new Promise(function (resolve) {
+            var strDecrypt = _this.decrypt.decryptMessage(recipientPk, encryptedData);
+            var jsonDecrypt = JSON.parse(strDecrypt);
+            var arrayResponse = JsonUtils_1.default.jsonToMap(jsonDecrypt);
+            var result = new Map();
+            _this.getRawData(recipientPk).then(function (recipientData) {
+                arrayResponse.forEach(function (value, key) {
+                    if (recipientData.has(key)) {
+                        try {
+                            result.set(key, value);
                         }
                         catch (e) {
                             console.log('decryption error: ', key, ' => ', recipientData.get(key), e);

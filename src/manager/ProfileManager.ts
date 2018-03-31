@@ -53,6 +53,10 @@ export default class ProfileManager {
         return res;
     }
 
+    public signMessage(data: any): string
+    {
+        return this.signer.signMessage(data);
+    }
 
     /**
      * Returns decrypted data of the authorized user.
@@ -76,7 +80,7 @@ export default class ProfileManager {
 
     /**
      * Decrypts accepted personal data {@link DataRequest#responseData} when state is {@link DataRequestState#ACCEPT}.
-     * @param {string} recipientPk  Public key of the user that is expected to.
+     * @param {string} recipientPk  Public key of the user that shared the data
      * @param {string} encryptedData encrypted data {@link DataRequest#responseData}.
      *
      * @returns {Promise<Map<string, string>>} Map key => value.
@@ -95,6 +99,36 @@ export default class ProfileManager {
                             const data: string = recipientData.get(key) as string;
                             const decryptedValue: string = CryptoUtils.decryptAes256(data, value);
                             result.set(key, decryptedValue);
+                        } catch (e) {
+                            console.log('decryption error: ', key, ' => ', recipientData.get(key), e);
+                        }
+                    }
+                });
+
+                resolve(result);
+            });
+        });
+    }
+
+    /**
+     * Returns decryption keys for approved personal data {@link DataRequest#responseData} when state is {@link DataRequestState#ACCEPT}.
+     * @param {string} recipientPk  Public key of the user that shared the data
+     * @param {string} encryptedData encrypted data {@link DataRequest#responseData}.
+     *
+     * @returns {Promise<Map<string, string>>} Map key => value.
+     */
+    public getAuthorizedEncryptionKeys(recipientPk: string, encryptedData: string): Promise<Map<string, string>> {
+        return new Promise<Map<string, string>>(resolve => {
+            const strDecrypt = this.decrypt.decryptMessage(recipientPk, encryptedData);
+            const jsonDecrypt = JSON.parse(strDecrypt);
+            const arrayResponse: Map<string, string> = JsonUtils.jsonToMap(jsonDecrypt);
+            const result: Map<string, string> = new Map<string, string>();
+
+            this.getRawData(recipientPk).then((recipientData: Map<string, string>) => {
+                arrayResponse.forEach((value: string, key: string) => {
+                    if (recipientData.has(key)) {
+                        try {
+                            result.set(key, value);
                         } catch (e) {
                             console.log('decryption error: ', key, ' => ', recipientData.get(key), e);
                         }

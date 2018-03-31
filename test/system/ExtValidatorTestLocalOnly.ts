@@ -3,62 +3,50 @@ import Config from "../../example/src/Config";
 import Account from "../../src/repository/models/Account";
 import {DataRequestState} from "../../src/repository/models/DataRequestState";
 import JsonUtils from "../../src/utils/JsonUtils";
+import CryptoUtils from "../../src/utils/CryptoUtils";
 
 
 const should = require('chai')
     .use(require('chai-as-promised'))
     .should();
 
+async function createUser(user: Base, mnemonic: string) : Promise<Account> {
+    try { await user.accountManager.unsubscribe(mnemonic); } catch (e) {}
+    return  await user.accountManager.registration(mnemonic);
+}
+
 describe('BASE API test: External Validator', async () => {
     const passPhraseAlisa: string = 'Alice';
+    const passPhraseBob: string = 'Bobik';  // need 5 symbols
+    const passPhraseCarol: string = 'Carol';
+    const passPhraseDesearch: string = 'Desearch';
     const passPhraseValidator: string = 'Validator';
+
+
     const baseAlice: Base = new Base(Config.getBaseEndPoint());
+    const baseBob: Base = new Base(Config.getBaseEndPoint());
+    const baseCarol: Base = new Base(Config.getBaseEndPoint());
+    const baseDesearch: Base = new Base(Config.getBaseEndPoint());
     const baseValidator: Base = new Base(Config.getBaseEndPoint());
 
-    var aliceAccount: Account = new Account();
-    var validatorAccount: Account = new Account();
-
-    // baseAlice.profileManager.updateData()
+    var accAlice: Account;
+    var accBob: Account;
+    var accCarol: Account;
+    var accDesearch: Account;
+    var accValidator: Account;
 
     before(async () => {
-        // // init Alice
-        // try {
-        //     aliceAccount = await baseAlice.accountManager.checkAccount(passPhraseAlisa);
-        //     await baseAlice.accountManager.unsubscribe(passPhraseAlisa);
-        // }
-        // catch(e) {
-        // }
-        //
-        // aliceAccount = await baseAlice.accountManager.registration(passPhraseAlisa);
-        //
-        // JSON.stringify(aliceAccount).should.be.equal(
-        //     JSON.stringify({
-        //         "publicKey": "02fe55f705abc712a8a80c43442ebe19ab5e66e5b165a0619440438385bc08383a"
-        //     })
-        // );
-        //
-        // // init Valdiator
-        // try {
-        //     validatorAccount = await baseValidator.accountManager.checkAccount(passPhraseValidator);
-        //     await baseValidator.accountManager.unsubscribe(passPhraseValidator);
-        // }
-        // catch(e) {
-        // }
-        // validatorAccount = await baseValidator.accountManager.registration(passPhraseValidator);
-        //
-        // JSON.stringify(validatorAccount).should.be.equal(
-        //     JSON.stringify({
-        //         "publicKey": "027b4ac791802620d8896111ed5aba38004e740a296473ead603ae47da34147a81"
-        //     })
-        // );
+
 
     });
 
     beforeEach(async() => {
-        try { await baseAlice.accountManager.unsubscribe(passPhraseAlisa); } catch (e) {}
-        aliceAccount = await baseAlice.accountManager.registration(passPhraseAlisa);
-        try { await baseValidator.accountManager.unsubscribe(passPhraseValidator); } catch(e) {}
-        validatorAccount = await baseValidator.accountManager.registration(passPhraseValidator);
+
+        accAlice = await createUser(baseAlice, passPhraseAlisa);
+        accBob = await createUser(baseBob, passPhraseBob);
+        accCarol = await createUser(baseCarol, passPhraseCarol);
+        accDesearch = await createUser(baseDesearch, passPhraseDesearch);
+        accValidator = await createUser(baseValidator, passPhraseValidator);
     });
 
     after(async() => {
@@ -66,11 +54,14 @@ describe('BASE API test: External Validator', async () => {
     })
 
     it('get public ID', async () => {
-        aliceAccount.publicKey.should.be.equal('02fe55f705abc712a8a80c43442ebe19ab5e66e5b165a0619440438385bc08383a');
-        validatorAccount.publicKey.should.be.equal('027b4ac791802620d8896111ed5aba38004e740a296473ead603ae47da34147a81');
+        accAlice.publicKey.should.be.equal('02fe55f705abc712a8a80c43442ebe19ab5e66e5b165a0619440438385bc08383a');
+        accBob.publicKey.should.be.equal('0303247051dc50d32aaacd7b36c96792a8950a0fda1fdf5a41231e67224865f61f');
+        accCarol.publicKey.should.be.equal('02de5804b34c2f3b3d917de52c4768984e9200e799df9bd012cfd03fe428d8fafd');
+        accDesearch.publicKey.should.be.equal('03d3a075d33cf8b7870d87b0c2e80653f03c00c5966dd27bdc3abab53d928dcc87');
+        accValidator.publicKey.should.be.equal('027b4ac791802620d8896111ed5aba38004e740a296473ead603ae47da34147a81');
     });
-
-    it('grant access to validator', async () => {
+/**/
+    it('Alice grants access to validator', async () => {
 
         // NOTE: Grant is modeled, like if Validator asked for access and Alice granted - so in the repository
         // Validator is "from" and "Alice" is "to", even if Alice initiated the transaction (and she can be considered
@@ -78,51 +69,184 @@ describe('BASE API test: External Validator', async () => {
 
         // create wallets for Alice
         await baseAlice.profileManager.updateData(
-            new Map([['eth_wallets1', 'test eth wallets']]));
-
-        await baseAlice.dataRequestManager.grantAccessForClient(validatorAccount.publicKey, ["eth_wallets1"]);
-
-        // Validator retrieves the approval
-        const requestsByFrom = await baseValidator.dataRequestManager.getRequests(
-             validatorAccount.publicKey, '', DataRequestState.ACCEPT
-        );
-
-        // Validator decodes Alice's wallets
-        const decryptedObj: any = await baseValidator.profileManager.getAuthorizedData(
-            aliceAccount.publicKey,
-            requestsByFrom[0].responseData
-        );
-
-        // console.log(decryptedObj);
-        decryptedObj.get('eth_wallets1').should.be.equal('test eth wallets');
-
-    });
-
-    it('validator asks for access', async() => {
-        // create wallets for Alice
-        await baseAlice.profileManager.updateData(
             new Map([['eth_wallets', 'test eth wallets']]));
 
-        // Validator asks Alice to get access to eth_wallets
-        const id: number = await baseValidator.dataRequestManager.createRequest(aliceAccount.publicKey, ['eth_wallets']);
-
-        // Alice grants access to Validator
-        await baseAlice.dataRequestManager.responseToRequest(id, validatorAccount.publicKey, ['eth_wallets']);
+        await baseAlice.dataRequestManager.grantAccessForClient(accValidator.publicKey, ["eth_wallets"]);
 
         // Validator retrieves the approval
         const requestsByFrom = await baseValidator.dataRequestManager.getRequests(
-            validatorAccount.publicKey, '', DataRequestState.ACCEPT
+             accValidator.publicKey, '', DataRequestState.ACCEPT
         );
 
         // Validator decodes Alice's wallets
         const decryptedObj: any = await baseValidator.profileManager.getAuthorizedData(
-            aliceAccount.publicKey,
+            accAlice.publicKey,
             requestsByFrom[0].responseData
         );
 
         // console.log(decryptedObj);
         decryptedObj.get('eth_wallets').should.be.equal('test eth wallets');
 
+    });
+
+    it('Validator asks Alice for access', async() => {
+        // create wallets for Alice
+        await baseAlice.profileManager.updateData(
+            new Map([['eth_wallets', 'test eth wallets']]));
+
+        // Validator asks Alice to get access to eth_wallets
+        const id: number = await baseValidator.dataRequestManager.createRequest(accAlice.publicKey, ['eth_wallets']);
+
+        // Alice grants access to Validator
+        await baseAlice.dataRequestManager.responseToRequest(id, accValidator.publicKey, ['eth_wallets']);
+
+        // Validator retrieves the approval
+        const requestsByFrom = await baseValidator.dataRequestManager.getRequests(
+            accValidator.publicKey, '', DataRequestState.ACCEPT
+        );
+
+        // Validator decodes Alice's wallets
+        const decryptedObj: any = await baseValidator.profileManager.getAuthorizedData(
+            accAlice.publicKey,
+            requestsByFrom[0].responseData
+        );
+
+        // console.log(decryptedObj);
+        decryptedObj.get('eth_wallets').should.be.equal('test eth wallets');
+
+    });
+/**/
+    it('full flow with Alice, Bob, Carol, Desearch and Validator', async() => {
+        // to get this records, I used example application, created a wallet records and did copy&paste
+        var wallets = [
+            '{"data":[{"data":"{\\"baseID\\":\\"02fe55f705abc712a8a80c43442ebe19ab5e66e5b165a0619440438385bc08383a\\",\\"ethAddr\\":\\"0xa5f79860b160dee0943bd1f6a5713a61dc56f931\\"}","sig":"0x5227af80548be15c9d5f5d66fcf8459df7e4203bf4508497133c9e2054a6ed281dfbbc5fdb7f44801fe93da514613efba96efc8e52209c74bb2d1e1769f8ebba1b"}],"sig":"IIBNKCKMHVBq6LpneRJi9ZNia7U5KCHfJq4TotM65xmYSZ7uGH5V2onnvOwK+1/EZQEg6dRzuYgp3PTVRShA4Nc="}',
+            '{"data":[{"data":"{\\"baseID\\":\\"0303247051dc50d32aaacd7b36c96792a8950a0fda1fdf5a41231e67224865f61f\\",\\"ethAddr\\":\\"0xa5f79860b160dee0943bd1f6a5713a61dc56f931\\"}","sig":"0x55b61cea89a84722288807553ad35994bdb45813a6273dee35d5b33bc49cfaa879d8b2c5451ec191cdc6974ed3ad7e3050130d4498915134debb2ff977dd83e91c"}],"sig":"INzbg3aOjA4qc+PD9K787CEFUORJGw5iv/09rEZGR3mSdmaWpDe9OfLSLKBTbk9BI6ZCzm/k5To8/Sw4QrjV07k="}',
+            '{"data":[{"data":"{\\"baseID\\":\\"02de5804b34c2f3b3d917de52c4768984e9200e799df9bd012cfd03fe428d8fafd\\",\\"ethAddr\\":\\"0xa5f79860b160dee0943bd1f6a5713a61dc56f931\\"}","sig":"0x8ee4014de7b828adeede57f1abfa626d058f52881df4268d67439a11bcbe03f16aaa8e70e7f7f6bff2b7f8bb2714b4b0002e959be73f3f191e42a4b2f04668f31b"}],"sig":"IMmdINnrSQS6VaQOXqr2/BX/LlIFl34stcEOfl6kR9HRJl8BkkNbDWzYm+xI0jA6ZAdKT70TTXO6OX4ST8n2cHo="}'
+        ];
+        var accs = [
+            accAlice, accBob, accCarol
+        ];
+
+        // create wallets for Alice and grantt access for Validator
+        await baseAlice.profileManager.updateData(
+            new Map([['eth_wallets', wallets[0]]]));
+        await baseAlice.dataRequestManager.grantAccessForClient(accValidator.publicKey, ["eth_wallets"]);
+
+        // create wallets for Bob and grantt access for Validator
+        await baseBob.profileManager.updateData(
+            new Map([['eth_wallets', wallets[1]]]));
+        await baseBob.dataRequestManager.grantAccessForClient(accValidator.publicKey, ["eth_wallets"]);
+
+        // create wallets for Carol and grantt access for Validator
+        await baseCarol.profileManager.updateData(
+            new Map([['eth_wallets', wallets[2]]]));
+        await baseCarol.dataRequestManager.grantAccessForClient(accValidator.publicKey, ["eth_wallets"]);
+
+
+        // Validator retrieves the requests from Alice,Bob and Carol
+        const requestsByFrom = await baseValidator.dataRequestManager.getRequests(
+            accValidator.publicKey, '', DataRequestState.ACCEPT
+        );
+
+        // Validator decodes wallets for Alice, Bob and Carol
+        var wealthMap : Map<string, string> = new Map<string, string>();
+        for (var i=0; i<requestsByFrom.length; i++)
+        {
+            const decryptedObj: any = await baseValidator.profileManager.getAuthorizedData(
+                accs[i].publicKey,
+                requestsByFrom[i].responseData
+            );
+            decryptedObj.get('eth_wallets').should.be.equal(wallets[i]);
+
+            // validator verifies the ETH wallets
+            var res = baseValidator.profileManager.validateEthWallets(
+                'eth_wallets',
+                JSON.parse(wallets[i]),
+                accs[i].publicKey
+            )
+            JSON.stringify(res).should.be.equal(JSON.stringify({ rc: 0, err: '', details: [ 0 ] }));
+
+            // Here we simulate that Validator compute wealth for each requestor
+            var wealth = i.toString();
+            // ~compute wealth
+
+            // Validator adds all wealth values to map
+            wealthMap.set(accs[i].publicKey, JSON.stringify({
+                "data": wealth,
+                "sig" : baseValidator.profileManager.signMessage(wealth)
+            }));
+        }
+
+        // Validator writes wealth for all users to BASE
+        // Validator stores the data in <key, value> map, where key is the public key of the user that asked for verification
+        baseValidator.profileManager.updateData(wealthMap);
+
+        // Validator shares wealth records with the original owners of the wallets
+        for (var i=0; i<requestsByFrom.length; i++)
+        {
+            await baseValidator.dataRequestManager.grantAccessForClient(accs[i].publicKey, [accs[i].publicKey]);
+        }
+
+        // Alice reads the wealth record that Validator shared
+        const recordsFromValidator = await baseAlice.dataRequestManager.getRequests(
+            accAlice.publicKey, accValidator.publicKey, DataRequestState.ACCEPT
+        );
+        recordsFromValidator.length.should.equal(1);
+
+        // Alice gets the decryption keys for all records that Validator shared
+        const decryptionKeys : Map<string, string> = await baseAlice.profileManager.getAuthorizedEncryptionKeys(
+            accValidator.publicKey, recordsFromValidator[0].responseData);
+
+        // get decryption key for "wealth" record
+        const wealthDecKey : any = decryptionKeys.get(accAlice.publicKey);
+        // console.log("Alice's wealth decryption key:", wealthDecKey);
+
+        // decrypt wealth
+        const encryptedWealth : any = (await baseAlice.profileManager.getRawData(accValidator.publicKey)).get(accAlice.publicKey);
+        // const decodedWealth: string = CryptoUtils.decryptAes256(encryptedWealth, wealthDecKey);
+        // console.log(decodedWealth);
+
+        // Alice adds wealth record pointing to Validator's
+        var myData : Map<string, string> = await baseAlice.profileManager.getData();
+        myData.set("wealth", JSON.stringify(
+            {
+                "validator": accValidator.publicKey,
+                "decryptKey" : wealthDecKey
+            }
+        ))
+        // console.log(myData);
+        await baseAlice.profileManager.updateData(myData);
+
+        //Alice shares the data with desearch
+        await baseAlice.dataRequestManager.grantAccessForClient(accDesearch.publicKey, ['wealth']);
+
+        //### TB - replace with Desearch asks for access, instead of Alice grants access
+        //### TB - replace with Desearch asks for access, instead of Alice grants access
+        //### TB - replace with Desearch asks for access, instead of Alice grants access
+
+        //Desearch reads wealth record from Alice
+        const recordsForDesearch = await baseDesearch.dataRequestManager.getRequests(
+            accDesearch.publicKey, accAlice.publicKey, DataRequestState.ACCEPT
+        );
+        const wealthOfAlice : Map<string, string> = await baseDesearch.profileManager.getAuthorizedData(
+            accAlice.publicKey, recordsForDesearch[0].responseData);
+        const wealthRecord : any = wealthOfAlice.get('wealth');
+        const wealthRecordObject :any = JSON.parse(wealthRecord);
+        // console.log(wealthRecord);
+
+        // desearch reads Alice's wealth from Validator's storage
+        var encryptedAliceWealth : any = (await baseDesearch.profileManager.getRawData(wealthRecordObject.validator)).get(accAlice.publicKey);
+        // desearch decodes Alice's wealth
+        const decryptedAliceWealth : string = CryptoUtils.decryptAes256(encryptedAliceWealth, wealthRecordObject.decryptKey);
+        // console.log("Alice's wealth as is seen by Desearch", decryptedAliceWealth);
+
+        const decryptedAliceWealthObject : any = JSON.parse(decryptedAliceWealth);
+
+        // desearch verifies the signature of the wealth record
+        const Message = require('bitcore-message');
+        const bitcore = require('bitcore-lib');
+        const addrValidator = bitcore.Address(bitcore.PublicKey(wealthRecordObject.validator))
+        Message(decryptedAliceWealthObject.data).verify(addrValidator, decryptedAliceWealthObject.sig).should.be.true;
 
     });
 
