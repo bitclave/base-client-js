@@ -91946,9 +91946,7 @@ var ProfileManager = /** @class */ (function () {
             var res;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        res = new BaseEthUtils_2.EthWalletVerificationStatus();
-                        return [4 /*yield*/, BaseEthUtils_1.default.createEthWalletsRecord2(baseID, wallets, this.signer)];
+                    case 0: return [4 /*yield*/, BaseEthUtils_1.default.createEthWalletsRecord2(baseID, wallets, this.signer)];
                     case 1:
                         res = _a.sent();
                         return [2 /*return*/, res];

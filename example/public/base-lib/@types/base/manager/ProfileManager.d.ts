@@ -5,6 +5,7 @@ import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
 import { EthWalletVerificationStatus } from "../utils/BaseEthUtils";
+import * as BaseType from "../../src/utils/BaseTypes";
 export default class ProfileManager {
     private clientDataRepository;
     private account;
@@ -13,7 +14,7 @@ export default class ProfileManager {
     private signer;
     constructor(clientRepository: ClientDataRepository, authAccountBehavior: Observable<Account>, encrypt: MessageEncrypt, decrypt: MessageDecrypt, signer: MessageSigner);
     validateEthWallets(key: string, val: string, baseID: string): EthWalletVerificationStatus;
-    createEthWallets(wallets: string[], baseID: string): Promise<EthWalletVerificationStatus>;
+    createEthWallets(wallets: string[], baseID: string): Promise<BaseType.EthWallets>;
     signMessage(data: any): string;
     /**
      * Returns decrypted data of the authorized user.

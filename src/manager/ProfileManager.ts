@@ -8,6 +8,7 @@ import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
 import baseEthUitls from '../utils/BaseEthUtils';
 import {EthWalletVerificationStatus, EthWalletVerificationCodes} from "../utils/BaseEthUtils";
+import * as BaseType from "../../src/utils/BaseTypes";
 
 export default class ProfileManager {
 
@@ -45,8 +46,8 @@ export default class ProfileManager {
         return res;
     }
 
-    public async createEthWallets(wallets: string[], baseID: string): Promise<EthWalletVerificationStatus> {
-        var res : EthWalletVerificationStatus = new EthWalletVerificationStatus();
+    public async createEthWallets(wallets: string[], baseID: string): Promise<BaseType.EthWallets> {
+        var res : BaseType.EthWallets;
 
         res = await baseEthUitls.createEthWalletsRecord2(baseID, wallets, this.signer);
 

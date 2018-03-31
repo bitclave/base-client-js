@@ -249,7 +249,7 @@ describe('Profile Manager', async () => {
             '8ff8fdbfb47add1daf16ea856444ff1c76cc7a5617244acf6c103587e95fdf1e'
         );
 
-        var rc = baseEthUitls.verifyEthWalletsRecord(baseUser.publicKey, msg);
+        var rc = profileManager.validateEthWallets('eth_wallets', msg, baseUser.publicKey);
         JSON.stringify(rc).should.be.equal(JSON.stringify(
             {
                 rc: EthWalletVerificationCodes.RC_OK,
@@ -278,7 +278,7 @@ describe('Profile Manager', async () => {
             '8ff8fdbfb47add1daf16ea856444ff1c76cc7a5617244acf6c103587e95fdf1e'
         );
 
-        var rc = baseEthUitls.verifyEthWalletsRecord(baseUser.publicKey, msg);
+        var rc = profileManager.validateEthWallets('eth_wallets', msg, baseUser.publicKey);
         JSON.stringify(rc).should.be.equal(JSON.stringify(
             {
                 rc: EthWalletVerificationCodes.RC_OK,
@@ -288,62 +288,10 @@ describe('Profile Manager', async () => {
                     EthWalletVerificationCodes.RC_BASEID_MISSMATCH
                 ]
             }));
+
+        var rc = profileManager.validateEthWallets('error_eth_wallets', msg, baseUser.publicKey);
+        rc.rc.should.be.equal(EthWalletVerificationCodes.RC_GENERAL_ERROR);
+
     });
 
-
-    // it('verify BTC address', async () => {
-    //     var baseID = "aaa";
-    //     var eth_addr1 = "bbb";
-    //     var eth_addr2 = "ccc";
-    //
-    //     // sign string {baseID, eth_addr1, eth_addr2} with private keys for baseID, eth_addr1, eth_addr2
-    //     var msg = JSON.stringify({
-    //         "baseID" : baseID,
-    //         "addr1" : eth_addr1,
-    //         "addr2" : eth_addr2
-    //     });
-    //
-    //     console.log(msg);
-    //
-    //     const keyPairHelper: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
-    //     const messageSigner: MessageSigner = keyPairHelper;
-    //
-    //     const keyPairAlisa = await keyPairHelper.createKeyPair(passPhraseAlisa);
-    //
-    //     const addressAlisa = new bitcore.PrivateKey
-    //         .fromString(keyPairAlisa.privateKey)
-    //         .toAddress()
-    //         .toString(16);
-    //
-    //     const sig: string = await messageSigner.signMessage(msg);
-    //
-    //     sig.should.not.equal(passPhraseAlisa);
-    //
-    //     Message(msg).verify(addressAlisa, sig).should.be.true;
-    //
-    //     // verify signature based on PUBLIC baseID, eth_addr1, eth_addr2
-    //     var ethPubAddr = '0x54dbb737eac5007103e729e9ab7ce64a6850a310';
-    //     var ethPrvKey = '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c8299574436924d'
-    //
-    //     const msgParams = { data: msg, sig: "" };
-    //
-    //     msgParams.sig = sigUtil.personalSign(Buffer.from(ethPrvKey, 'hex'), msgParams);
-    //     var pub = sigUtil.recoverPersonalSignature(msgParams);
-    //
-    //     console.log(pub);
-    //
-    //
-    //     const bitKeyPair = new BitKeyPair();
-    //     bitKeyPair.initKeyPairFromPrvKey(ethPrvKey);
-    //
-    //     var pubKey = ethUtil.privateToPublic(Buffer.from(ethPrvKey, 'hex')).toString('hex');
-    //     console.log("public key by ETH:", pubKey);
-    //
-    //     console.log(bitKeyPair);
-    //
-    //     // const sig2 = await bitKeyPair.signMessage(msg);
-    //     // Message(msg).verify(addressAlisa, sig2).should.be.true;
-    //
-    //
-    // });
 });
