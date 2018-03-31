@@ -76,7 +76,7 @@ export default class BaseEthUtils {
         return msgWallets;
     }
 
-    public static async createEthWalletsRecord2(baseID: string, signedEthRecords : Array<any>, signer: MessageSigner) : Promise<any>
+    public static async createEthWalletsRecordWithSigner(baseID: string, signedEthRecords : Array<any>, signer: MessageSigner) : Promise<any>
     {
         for (let msg of signedEthRecords)
         {
@@ -107,39 +107,13 @@ export default class BaseEthUtils {
 
     }
 
-    public static async createEthWalletsRecord(baseID: string, signedEthRecords : Array<any>, prvKey: string) : Promise<any>
+    public static async createEthWalletsRecordWithPrvKey(baseID: string, signedEthRecords : Array<any>, prvKey: string) : Promise<any>
     {
-        for (let msg of signedEthRecords)
-        {
-            if (this.verifyEthAddrRecord(msg)!=EthWalletVerificationCodes.RC_OK) throw "invalid eth record";
-            if (baseID != JSON.parse(msg.data).baseID)  throw "baseID missmatch"
-        }
-
-        var msgWallets =
-        {
-            data: signedEthRecords,
-            sig: ""
-        }
-            // console.log(msgWallets);
-        if (!baseSchema.validateEthWallets(msgWallets)) throw "invalid wallets structure";
-
-        // eth style signing
-        // msgWallets.sig = sigUtil.personalSign(Buffer.from(prvKey, 'hex'), msgWallets);
-        // var signerAddr = sigUtil.recoverPersonalSignature(msgWallets)
-        // console.log(signerAddr);
-
         // BASE Style signing
-        const bitKeyPair = new BitKeyPair()
+        var bitKeyPair = new BitKeyPair();
         bitKeyPair.initKeyPairFromPrvKey(prvKey);
-        const messageSigner: MessageSigner = bitKeyPair;
-        msgWallets.sig = await messageSigner.signMessage(JSON.stringify(msgWallets.data))
 
-        const basePubKey = bitKeyPair.getPublicKey();
-        const baseAddr = bitKeyPair.getAddr();
-
-        if (basePubKey!=baseID) throw "baseID and basePubKey missmatch";
-        if (!Message(JSON.stringify(msgWallets.data)).verify(baseAddr, msgWallets.sig)) throw "BASE signature missmath";
-        return msgWallets;
+        return this.createEthWalletsRecordWithSigner(baseID, signedEthRecords, bitKeyPair);
     }
 
 

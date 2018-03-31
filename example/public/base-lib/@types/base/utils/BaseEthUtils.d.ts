@@ -17,7 +17,7 @@ export default class BaseEthUtils {
     static verifyEthAddrRecord(msg: BaseType.EthAddrRecord): EthWalletVerificationCodes;
     static createEthAddrRecord(baseID: string, ethAddr: string, ethPrvKey: string): BaseType.EthAddrRecord;
     static dbg_createEthWalletsRecord(baseID: string, signedEthRecords: Array<any>, prvKey: string): Promise<any>;
-    static createEthWalletsRecord2(baseID: string, signedEthRecords: Array<any>, signer: MessageSigner): Promise<any>;
-    static createEthWalletsRecord(baseID: string, signedEthRecords: Array<any>, prvKey: string): Promise<any>;
+    static createEthWalletsRecordWithSigner(baseID: string, signedEthRecords: Array<any>, signer: MessageSigner): Promise<any>;
+    static createEthWalletsRecordWithPrvKey(baseID: string, signedEthRecords: Array<any>, prvKey: string): Promise<any>;
     static verifyEthWalletsRecord(baseID: string, msg: any): EthWalletVerificationStatus;
 }

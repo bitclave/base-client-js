@@ -49,7 +49,7 @@ export default class ProfileManager {
     public async createEthWallets(wallets: string[], baseID: string): Promise<BaseType.EthWallets> {
         var res : BaseType.EthWallets;
 
-        res = await baseEthUitls.createEthWalletsRecord2(baseID, wallets, this.signer);
+        res = await baseEthUitls.createEthWalletsRecordWithSigner(baseID, wallets, this.signer);
 
         return res;
     }

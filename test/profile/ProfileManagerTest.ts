@@ -110,6 +110,32 @@ describe('Profile Manager', async () => {
         data.should.be.deep.equal(origMockData);
     });
 
+    it('should extract decryption key', async () => {
+        const origMockData: Map<string, string> = new Map();
+        const mockData: Map<string, string> = new Map();
+        const originMessage: Map<string, string> = new Map();
+        var encryptionKey: string = '';
+
+        origMockData.set('name', 'Bob');
+        origMockData.forEach((value, key) => {
+            const passForValue = keyPairHelperBob.generatePasswordForField(key);
+            mockData.set(key, CryptoUtils.encryptAes256(value, passForValue));
+            originMessage.set(key, passForValue);
+            encryptionKey = passForValue;
+        });
+
+        const encryptedMessage = keyPairHelperBob.encryptMessage(
+            keyPairHelperAlisa.getPublicKey(),
+            JSON.stringify(JsonUtils.mapToJson(originMessage))
+        );
+
+        clientRepository.setMockData(keyPairHelperBob.getPublicKey(), mockData);
+
+        const data: any = (await profileManager.getAuthorizedEncryptionKeys(keyPairHelperBob.getPublicKey(), encryptedMessage)).get('name');
+
+        data.should.be.equal(encryptionKey);
+    });
+
     it('verify ETH address low level', async () => {
 
         //BASE (BitCoin-like) signature verification
@@ -231,7 +257,7 @@ describe('Profile Manager', async () => {
         const baseUser = await KeyPairFactory.getDefaultKeyPairCreator().createKeyPair("mnemonic for BASE user for testing");
         baseUser.publicKey.should.be.equal('02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41');
 
-        var msg = await baseEthUitls.createEthWalletsRecord(
+        var msg = await baseEthUitls.createEthWalletsRecordWithPrvKey(
             '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
             [
                 baseEthUitls.createEthAddrRecord(
