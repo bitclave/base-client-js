@@ -4,6 +4,9 @@ import Account from "../../src/repository/models/Account";
 import {DataRequestState} from "../../src/repository/models/DataRequestState";
 import JsonUtils from "../../src/utils/JsonUtils";
 import CryptoUtils from "../../src/utils/CryptoUtils";
+import {EthWealthPtr} from "../../src/utils/BaseTypes";
+import * as BaseType from "../../src/utils/BaseTypes";
+import DataRequest from "../../src/repository/models/DataRequest";
 
 
 const should = require('chai')
@@ -172,7 +175,7 @@ describe('BASE API test: External Validator', async () => {
 
             // Validator adds all wealth values to map
             wealthMap.set(accs[i].publicKey, JSON.stringify({
-                "data": wealth,
+                "wealth": wealth,
                 "sig" : baseValidator.profileManager.signMessage(wealth)
             }));
         }
@@ -202,7 +205,7 @@ describe('BASE API test: External Validator', async () => {
         // console.log("Alice's wealth decryption key:", wealthDecKey);
 
         // decrypt wealth
-        const encryptedWealth : any = (await baseAlice.profileManager.getRawData(accValidator.publicKey)).get(accAlice.publicKey);
+        // const encryptedWealth : any = (await baseAlice.profileManager.getRawData(accValidator.publicKey)).get(accAlice.publicKey);
         // const decodedWealth: string = CryptoUtils.decryptAes256(encryptedWealth, wealthDecKey);
         // console.log(decodedWealth);
 
@@ -218,11 +221,23 @@ describe('BASE API test: External Validator', async () => {
         await baseAlice.profileManager.updateData(myData);
 
         //Alice shares the data with desearch
-        await baseAlice.dataRequestManager.grantAccessForClient(accDesearch.publicKey, ['wealth']);
+        // await baseAlice.dataRequestManager.grantAccessForClient(accDesearch.publicKey, ['wealth']);
+        //!Alice shares the data with desearch
 
-        //### TB - replace with Desearch asks for access, instead of Alice grants access
-        //### TB - replace with Desearch asks for access, instead of Alice grants access
-        //### TB - replace with Desearch asks for access, instead of Alice grants access
+        // Desearch asks Alice for access
+        /*const id: number = */
+        await baseDesearch.dataRequestManager.createRequest(accAlice.publicKey, ["wealth"]);
+
+        // Alice checks for outstanding requests to her from Desearch
+        const recordsForAliceToApprove: Array<DataRequest> = await baseAlice.dataRequestManager.getRequests(
+            accDesearch.publicKey, accAlice.publicKey, DataRequestState.AWAIT
+        );
+
+        recordsForAliceToApprove.length.should.be.equal(1);
+
+        // Alice approves the request
+        await baseAlice.dataRequestManager.responseToRequest(/* id */
+            recordsForAliceToApprove[0].id, accDesearch.publicKey, ['wealth']);
 
         //Desearch reads wealth record from Alice
         const recordsForDesearch = await baseDesearch.dataRequestManager.getRequests(
@@ -231,7 +246,7 @@ describe('BASE API test: External Validator', async () => {
         const wealthOfAlice : Map<string, string> = await baseDesearch.profileManager.getAuthorizedData(
             accAlice.publicKey, recordsForDesearch[0].responseData);
         const wealthRecord : any = wealthOfAlice.get('wealth');
-        const wealthRecordObject :any = JSON.parse(wealthRecord);
+        const wealthRecordObject : BaseType.EthWealthPtr = JSON.parse(wealthRecord);
         // console.log(wealthRecord);
 
         // desearch reads Alice's wealth from Validator's storage
@@ -240,13 +255,13 @@ describe('BASE API test: External Validator', async () => {
         const decryptedAliceWealth : string = CryptoUtils.decryptAes256(encryptedAliceWealth, wealthRecordObject.decryptKey);
         // console.log("Alice's wealth as is seen by Desearch", decryptedAliceWealth);
 
-        const decryptedAliceWealthObject : any = JSON.parse(decryptedAliceWealth);
+        const decryptedAliceWealthObject : BaseType.EthWealthRecord = JSON.parse(decryptedAliceWealth);
 
         // desearch verifies the signature of the wealth record
         const Message = require('bitcore-message');
         const bitcore = require('bitcore-lib');
         const addrValidator = bitcore.Address(bitcore.PublicKey(wealthRecordObject.validator))
-        Message(decryptedAliceWealthObject.data).verify(addrValidator, decryptedAliceWealthObject.sig).should.be.true;
+        Message(decryptedAliceWealthObject.wealth).verify(addrValidator, decryptedAliceWealthObject.sig).should.be.true;
 
     });
 

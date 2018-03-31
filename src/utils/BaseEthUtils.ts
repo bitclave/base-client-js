@@ -1,4 +1,6 @@
 import BaseSchema from "./BaseSchema";
+import * as BaseType from "../../src/utils/BaseTypes";
+
 // import {KeyPairHelper} from "./keypair/KeyPairHelper";
 // import KeyPairFactory from "./keypair/KeyPairFactory";
 import {MessageSigner} from "./keypair/MessageSigner";
@@ -27,7 +29,7 @@ export class EthWalletVerificationStatus
 };
 
 export default class BaseEthUtils {
-    public static verifyEthAddrRecord(msg: any): EthWalletVerificationCodes {
+    public static verifyEthAddrRecord(msg: BaseType.EthAddrRecord): EthWalletVerificationCodes {
         var signerAddr;
         try {
             if (!baseSchema.validateEthAddr(msg)) return EthWalletVerificationCodes.RC_ETH_ADDR_SCHEMA_MISSMATCH;
@@ -47,7 +49,7 @@ export default class BaseEthUtils {
             EthWalletVerificationCodes.RC_ETH_ADDR_WRONG_SIGNATURE;
     }
 
-    public static createEthAddrRecord(baseID: string, ethAddr:string, ethPrvKey: string) : any
+    public static createEthAddrRecord(baseID: string, ethAddr:string, ethPrvKey: string) : BaseType.EthAddrRecord
     {
         const msg = {
             data: JSON.stringify({

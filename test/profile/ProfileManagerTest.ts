@@ -11,6 +11,7 @@ import { MessageSigner } from '../../src/utils/keypair/MessageSigner';
 import { MessageDecrypt } from '../../src/utils/keypair/MessageDecrypt';
 import BitKeyPair from "../../src/utils/keypair/BitKeyPair";
 import baseEthUitls, {EthWalletVerificationCodes, EthWalletVerificationStatus} from '../../src/utils/BaseEthUtils';
+import * as BaseType from "../../src/utils/BaseTypes";
 
 const Message = require('bitcore-message');
 const bitcore = require('bitcore-lib');
@@ -109,83 +110,6 @@ describe('Profile Manager', async () => {
         data.should.be.deep.equal(origMockData);
     });
 
-    it('verify schema library test', function () {
-
-        var schema_eth_addr = {
-            "type": "object",
-            "properties":  {
-                "addr" : {
-                    "type" : "string"
-                },
-                "signature": {
-                    "type": "string"
-                },
-            },
-            "required": ["addr"],
-            "additionalProperties": false
-        }
-
-        var schema = {
-            "title": "Profile",
-            "definitions": {
-                "eth_address": schema_eth_addr
-            },
-
-            "type": "object",
-            "properties": {
-                "baseID" : {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "wealth": {
-                    "description": "wealth in USD",
-                    "type": "string"
-                },
-                "eth_wallets": {
-                    "description": "list of ETH wallets",
-                    "type": "array",
-                    "items": { "$ref": "#/definitions/eth_address" },
-                    "minItems": 1,
-                    "uniqueItems" : true
-                }
-            },
-            "required": ["baseID"],
-            "additionalProperties": false
-        };
-
-        var Ajv = require('ajv');
-        var ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
-        var validate = ajv.compile(schema);
-        var baseID = "123456";
-        var data1 = {
-            "baseID": baseID,
-            "email": "mark@bitclave.com",
-            "eth_wallets": [
-                {"addr": "0xaaa"},
-                {"addr": "0xbbb", "signature": "signature"}
-            ]
-        }
-        var data2 = {
-            "baseID": baseID,
-            "email": "mark@bitclave.com",
-            "eth_wallets": [
-                {"addr": "0xaaa"},
-                {"addr": "0xbbb", "signature1": "signature"}
-            ]
-        }
-        validate(data1).should.be.equal(true);
-        validate(data2).should.be.equal(false);
-
-        // var valid = validate(data);
-        // if (valid) console.log('Valid!');
-        // else console.log('Invalid: ' + ajv.errorsText(validate.errors));
-
-
-    });
-
-
     it('verify ETH address low level', async () => {
 
         //BASE (BitCoin-like) signature verification
@@ -203,7 +127,7 @@ describe('Profile Manager', async () => {
         var baseID = keyPairHelper.getPublicKey();
 
         // create ETH keys for testing
-            var ethPrvKey1 = '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
+        var ethPrvKey1 = '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
         // the matching addr1 for the above key is 0x42cb8ae103896daee71ebb5dca5367f16727164a
         var ethAddr1 = "0x"+ethUtil.privateToAddress(Buffer.from(ethPrvKey1, 'hex')).toString('hex')
 
@@ -252,13 +176,10 @@ describe('Profile Manager', async () => {
         Message(JSON.stringify(finalMsg.data)).verify(baseUserAddr, finalMsg.sig).should.be.true;
 
         // console.log(finalMsg);
-
-
-
     });
 
     it('create ETH address record by BASE interface', function ()  {
-        var msg = baseEthUitls.createEthAddrRecord(
+        var msg: BaseType.EthAddrRecord = baseEthUitls.createEthAddrRecord(
             '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
             '0x42cb8ae103896daee71ebb5dca5367f16727164a',
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
