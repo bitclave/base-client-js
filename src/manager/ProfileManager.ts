@@ -9,6 +9,8 @@ import { MessageSigner } from '../utils/keypair/MessageSigner';
 import baseEthUitls from '../utils/BaseEthUtils';
 import {EthWalletVerificationStatus, EthWalletVerificationCodes} from "../utils/BaseEthUtils";
 import * as BaseType from "../../src/utils/BaseTypes";
+import {DataRequestState} from "../repository/models/DataRequestState";
+import DataRequestManager from "./DataRequestManager";
 
 export default class ProfileManager {
 
@@ -17,9 +19,10 @@ export default class ProfileManager {
     private encrypt: MessageEncrypt;
     private decrypt: MessageDecrypt;
     private signer: MessageSigner;
+    private dataRequestManager: DataRequestManager;
 
     constructor(clientRepository: ClientDataRepository, authAccountBehavior: Observable<Account>,
-                encrypt: MessageEncrypt, decrypt: MessageDecrypt, signer: MessageSigner) {
+                encrypt: MessageEncrypt, decrypt: MessageDecrypt, signer: MessageSigner, dataRequestManager: DataRequestManager) {
         this.clientDataRepository = clientRepository;
 
         authAccountBehavior
@@ -28,6 +31,7 @@ export default class ProfileManager {
         this.encrypt = encrypt;
         this.decrypt = decrypt;
         this.signer = signer;
+        this.dataRequestManager = dataRequestManager;
     }
 
 
@@ -36,7 +40,7 @@ export default class ProfileManager {
 
         if (key!="eth_wallets")
         {
-            res.err = "The \<key\> is expected to be \"eth_wallets\""
+            res.err = "The \<key\> is expected to be \"eth_wallets\"";
             res.rc = EthWalletVerificationCodes.RC_GENERAL_ERROR;
             return res;
         }
@@ -59,6 +63,66 @@ export default class ProfileManager {
         return this.signer.signMessage(data);
     }
 
+    public async addEthWealthValidator(validatorPbKey: string)
+    {
+        // Alice adds wealth record pointing to Validator's
+        var myData : Map<string, string> = await this.getData();
+        myData.set('ethwealthvalidator', validatorPbKey);
+        // console.log(myData);
+        await this.updateData(myData);
+
+        await this.dataRequestManager.grantAccessForClient(validatorPbKey, ["eth_wallets"]);
+    }
+
+    public async refreshWealthPtr() : Promise<BaseType.EthWealthPtr>
+    {
+        const data : Map<string, string> = await this.getData();
+        var wealthPtr: any;
+
+        if (data.has('wealth'))
+            wealthPtr = data.get('wealth');
+        else if (data.has('ethwealthvalidator'))
+        {
+            const validatorPbKey : any = data.get('ethwealthvalidator');
+
+            // Alice reads the wealth record that Validator shared
+            const recordsFromValidator = await this.dataRequestManager.getRequests(
+                this.account.publicKey, validatorPbKey, DataRequestState.ACCEPT
+            );
+
+            // if validator already did one validation
+            if (recordsFromValidator.length>0) {
+                // Alice gets the decryption keys for all records that Validator shared
+                const decryptionKeys: Map<string, string> = await this.getAuthorizedEncryptionKeys(
+                    validatorPbKey, recordsFromValidator[0].responseData);
+
+                // get decryption key for "wealth" record
+                const wealthDecKey: any = decryptionKeys.get(this.account.publicKey);
+                // console.log("Alice's wealth decryption key:", wealthDecKey);
+
+                // Alice adds wealth record pointing to Validator's storage
+                wealthPtr = {
+                    "validator": validatorPbKey,
+                    "decryptKey" : wealthDecKey
+                };
+                data.set("wealth", JSON.stringify(wealthPtr));
+
+                // console.log(myData);
+                await this.updateData(data);
+            }
+            // validator did not verify anything yet
+            else
+            {
+                wealthPtr = undefined;
+            }
+        }
+        else
+        {
+            wealthPtr = undefined;
+        }
+
+        return wealthPtr;
+    }
     /**
      * Returns decrypted data of the authorized user.
      *
