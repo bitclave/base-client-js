@@ -6,16 +6,20 @@ import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
 import { EthWalletVerificationStatus } from "../utils/BaseEthUtils";
 import * as BaseType from "../../src/utils/BaseTypes";
+import DataRequestManager from "./DataRequestManager";
 export default class ProfileManager {
     private clientDataRepository;
     private account;
     private encrypt;
     private decrypt;
     private signer;
-    constructor(clientRepository: ClientDataRepository, authAccountBehavior: Observable<Account>, encrypt: MessageEncrypt, decrypt: MessageDecrypt, signer: MessageSigner);
+    private dataRequestManager;
+    constructor(clientRepository: ClientDataRepository, authAccountBehavior: Observable<Account>, encrypt: MessageEncrypt, decrypt: MessageDecrypt, signer: MessageSigner, dataRequestManager: DataRequestManager);
     validateEthWallets(key: string, val: string, baseID: string): EthWalletVerificationStatus;
     createEthWallets(wallets: string[], baseID: string): Promise<BaseType.EthWallets>;
     signMessage(data: any): string;
+    addEthWealthValidator(validatorPbKey: string): Promise<void>;
+    refreshWealthPtr(): Promise<BaseType.EthWealthPtr>;
     /**
      * Returns decrypted data of the authorized user.
      *

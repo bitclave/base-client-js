@@ -73,19 +73,20 @@ export default class Base {
             this._authAccountBehavior
         );
 
-        this._profileManager = new ProfileManager(
-            clientDataRepository,
-            this._authAccountBehavior.asObservable(),
-            encryptMessage,
-            decryptMessage,
-            messageSigner
-        );
-
         this._dataRequestManager = new DataRequestManager(
             dataRequestRepository,
             this._authAccountBehavior.asObservable(),
             encryptMessage,
             decryptMessage
+        );
+
+        this._profileManager = new ProfileManager(
+            clientDataRepository,
+            this._authAccountBehavior.asObservable(),
+            encryptMessage,
+            decryptMessage,
+            messageSigner,
+            this._dataRequestManager
         );
 
         this._offerManager = new OfferManager(offerRepository, this._authAccountBehavior.asObservable());

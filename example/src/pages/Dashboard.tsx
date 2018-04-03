@@ -360,11 +360,23 @@ export default class Dashboard extends React.Component<Props, State> implements 
     }
 
     private async onSetEthSignature()  {
-        var signingAddr : string;
+        var signingAddr : string = '';
+        if (typeof web3 == 'undefined')
+        {
+            alert('WEB3 is not detected')
+            return;
+        }
         await web3.eth.getAccounts((err, res) => {
             console.log(res[0]);
             signingAddr = res[0];
         });
+
+        if ( (signingAddr == '') || (signingAddr==undefined))
+        {
+            alert('Can not detect ETH address from WEB3 provider.\nPlease login')
+            return;
+        }
+
 
         //always use lower casse for addresses
         signingAddr = signingAddr.toLowerCase();

@@ -119,7 +119,51 @@ describe('BASE API test: External Validator', async () => {
 
     });
 /**/
+    it('Alice responds to refreshWealthPtr in all initialziatrion stages', async () => {
+
+        // API call before Alice registered with Validator
+        const check0 = await baseAlice.profileManager.refreshWealthPtr();
+        if (check0 != undefined)     Number(1).should.be.equal(0);
+        // ~API call before Alice registered with Validator
+
+        await baseAlice.profileManager.addEthWealthValidator(accValidator.publicKey);
+        /*
+        Assume here Alices registeres with Validator
+         */
+
+        // API call before validator computed the wealth and after Alice registered
+        const check1 = await baseAlice.profileManager.refreshWealthPtr();
+        if (check1 != undefined)     Number(1).should.be.equal(0);
+        // ~API call before validator computed the wealth
+
+        var wealthMap : Map<string, string> = new Map<string, string>();
+        var wealth = Number(18).toString();
+        // Validator adds all wealth values to map
+        wealthMap.set(accAlice.publicKey, JSON.stringify({
+            "wealth": wealth,
+            "sig" : baseValidator.profileManager.signMessage(wealth)
+        }));
+
+        baseValidator.profileManager.updateData(wealthMap);
+
+        // Alice tries to access wealth before it is shared
+        const check2 = await baseAlice.profileManager.refreshWealthPtr();
+        if (check2 != undefined)     Number(1).should.be.equal(0);
+        // ~Alice tries to access wealth before it is shared
+
+        // validator shares results with Alice
+        await baseValidator.dataRequestManager.grantAccessForClient(accAlice.publicKey, [accAlice.publicKey]);
+
+        // Alice tries to access wealth after it is shared
+        const check3: BaseType.EthWealthPtr = await baseAlice.profileManager.refreshWealthPtr();
+        check3.validator.should.be.equal(accValidator.publicKey);
+        // ~Alice tries to access wealth after it is shared
+
+    });
+
+
     it('full flow with Alice, Bob, Carol, Desearch and Validator', async() => {
+
         // to get this records, I used example application, created a wallet records and did copy&paste
         var wallets = [
             '{"data":[{"data":"{\\"baseID\\":\\"02fe55f705abc712a8a80c43442ebe19ab5e66e5b165a0619440438385bc08383a\\",\\"ethAddr\\":\\"0xa5f79860b160dee0943bd1f6a5713a61dc56f931\\"}","sig":"0x5227af80548be15c9d5f5d66fcf8459df7e4203bf4508497133c9e2054a6ed281dfbbc5fdb7f44801fe93da514613efba96efc8e52209c74bb2d1e1769f8ebba1b"}],"sig":"IIBNKCKMHVBq6LpneRJi9ZNia7U5KCHfJq4TotM65xmYSZ7uGH5V2onnvOwK+1/EZQEg6dRzuYgp3PTVRShA4Nc="}',
@@ -131,20 +175,16 @@ describe('BASE API test: External Validator', async () => {
         ];
 
         // create wallets for Alice and grantt access for Validator
-        await baseAlice.profileManager.updateData(
-            new Map([['eth_wallets', wallets[0]]]));
-        await baseAlice.dataRequestManager.grantAccessForClient(accValidator.publicKey, ["eth_wallets"]);
+        await baseAlice.profileManager.updateData(new Map([['eth_wallets', wallets[0]]]));
+        await baseAlice.profileManager.addEthWealthValidator(accValidator.publicKey);
 
         // create wallets for Bob and grantt access for Validator
-        await baseBob.profileManager.updateData(
-            new Map([['eth_wallets', wallets[1]]]));
-        await baseBob.dataRequestManager.grantAccessForClient(accValidator.publicKey, ["eth_wallets"]);
+        await baseBob.profileManager.updateData(new Map([['eth_wallets', wallets[1]]]));
+        await baseBob.profileManager.addEthWealthValidator(accValidator.publicKey);
 
         // create wallets for Carol and grantt access for Validator
-        await baseCarol.profileManager.updateData(
-            new Map([['eth_wallets', wallets[2]]]));
-        await baseCarol.dataRequestManager.grantAccessForClient(accValidator.publicKey, ["eth_wallets"]);
-
+        await baseCarol.profileManager.updateData(new Map([['eth_wallets', wallets[2]]]));
+        await baseCarol.profileManager.addEthWealthValidator(accValidator.publicKey);
 
         // Validator retrieves the requests from Alice,Bob and Carol
         const requestsByFrom = await baseValidator.dataRequestManager.getRequests(
@@ -190,6 +230,10 @@ describe('BASE API test: External Validator', async () => {
             await baseValidator.dataRequestManager.grantAccessForClient(accs[i].publicKey, [accs[i].publicKey]);
         }
 
+        // Alice updates her internal wealth ptr record
+        await baseAlice.profileManager.refreshWealthPtr();
+
+/** /
         // Alice reads the wealth record that Validator shared
         const recordsFromValidator = await baseAlice.dataRequestManager.getRequests(
             accAlice.publicKey, accValidator.publicKey, DataRequestState.ACCEPT
@@ -219,13 +263,14 @@ describe('BASE API test: External Validator', async () => {
         ))
         // console.log(myData);
         await baseAlice.profileManager.updateData(myData);
+/**/
 
         //Alice shares the data with desearch
         // await baseAlice.dataRequestManager.grantAccessForClient(accDesearch.publicKey, ['wealth']);
         //!Alice shares the data with desearch
 
         // Desearch asks Alice for access
-        /*const id: number = */
+        /* const id: number = */
         await baseDesearch.dataRequestManager.createRequest(accAlice.publicKey, ["wealth"]);
 
         // Alice checks for outstanding requests to her from Desearch
@@ -264,6 +309,6 @@ describe('BASE API test: External Validator', async () => {
         Message(decryptedAliceWealthObject.wealth).verify(addrValidator, decryptedAliceWealthObject.sig).should.be.true;
 
     });
-
+/**/
 
 });
