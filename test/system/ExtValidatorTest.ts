@@ -25,7 +25,6 @@ describe('BASE API test: External Validator', async () => {
     const passPhraseDesearch: string = 'Desearch';
     const passPhraseValidator: string = 'Validator';
 
-
     const baseAlice: Base = new Base(Config.getBaseEndPoint());
     const baseBob: Base = new Base(Config.getBaseEndPoint());
     const baseCarol: Base = new Base(Config.getBaseEndPoint());
@@ -39,7 +38,6 @@ describe('BASE API test: External Validator', async () => {
     var accValidator: Account;
 
     before(async () => {
-
 
     });
 
@@ -161,7 +159,6 @@ describe('BASE API test: External Validator', async () => {
 
     });
 
-
     it('full flow with Alice, Bob, Carol, Desearch and Validator', async() => {
 
         // to get this records, I used example application, created a wallet records and did copy&paste
@@ -233,38 +230,6 @@ describe('BASE API test: External Validator', async () => {
         // Alice updates her internal wealth ptr record
         await baseAlice.profileManager.refreshWealthPtr();
 
-/** /
-        // Alice reads the wealth record that Validator shared
-        const recordsFromValidator = await baseAlice.dataRequestManager.getRequests(
-            accAlice.publicKey, accValidator.publicKey, DataRequestState.ACCEPT
-        );
-        recordsFromValidator.length.should.equal(1);
-
-        // Alice gets the decryption keys for all records that Validator shared
-        const decryptionKeys : Map<string, string> = await baseAlice.profileManager.getAuthorizedEncryptionKeys(
-            accValidator.publicKey, recordsFromValidator[0].responseData);
-
-        // get decryption key for "wealth" record
-        const wealthDecKey : any = decryptionKeys.get(accAlice.publicKey);
-        // console.log("Alice's wealth decryption key:", wealthDecKey);
-
-        // decrypt wealth
-        // const encryptedWealth : any = (await baseAlice.profileManager.getRawData(accValidator.publicKey)).get(accAlice.publicKey);
-        // const decodedWealth: string = CryptoUtils.decryptAes256(encryptedWealth, wealthDecKey);
-        // console.log(decodedWealth);
-
-        // Alice adds wealth record pointing to Validator's
-        var myData : Map<string, string> = await baseAlice.profileManager.getData();
-        myData.set("wealth", JSON.stringify(
-            {
-                "validator": accValidator.publicKey,
-                "decryptKey" : wealthDecKey
-            }
-        ))
-        // console.log(myData);
-        await baseAlice.profileManager.updateData(myData);
-/**/
-
         //Alice shares the data with desearch
         // await baseAlice.dataRequestManager.grantAccessForClient(accDesearch.publicKey, ['wealth']);
         //!Alice shares the data with desearch
@@ -309,6 +274,5 @@ describe('BASE API test: External Validator', async () => {
         Message(decryptedAliceWealthObject.wealth).verify(addrValidator, decryptedAliceWealthObject.sig).should.be.true;
 
     });
-/**/
 
 });
