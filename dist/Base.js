@@ -29572,9 +29572,6 @@ var Account = /** @class */ (function () {
         this.publicKey = '';
         this.publicKey = publicKey;
     }
-    Account.prototype.isValid = function () {
-        return (this.publicKey !== null && this.publicKey.length == 66);
-    };
     return Account;
 }());
 exports.default = Account;
@@ -91936,6 +91933,9 @@ var ProfileManager = /** @class */ (function () {
                     case 2:
                         // console.log(myData);
                         _a.sent();
+                        return [4 /*yield*/, this.dataRequestManager.grantAccessForClient(validatorPbKey, ["eth_wallets"])];
+                    case 3:
+                        _a.sent();
                         return [2 /*return*/];
                 }
             });
@@ -91963,7 +91963,7 @@ var ProfileManager = /** @class */ (function () {
                     case 4:
                         decryptionKeys = _a.sent();
                         wealthDecKey = decryptionKeys.get(this.account.publicKey);
-                        console.log("Alice's wealth decryption key:", wealthDecKey);
+                        // console.log("Alice's wealth decryption key:", wealthDecKey);
                         // Alice adds wealth record pointing to Validator's storage
                         wealthPtr = {
                             "validator": validatorPbKey,
@@ -98968,12 +98968,13 @@ var DataRequestManager = /** @class */ (function () {
      * @returns {object} object with data or empty object if was error.
      */
     DataRequestManager.prototype.decryptMessage = function (senderPk, encrypted) {
-        var decrypted = this.decrypt.decryptMessage(senderPk, encrypted);
+        var decrypted;
         try {
+            decrypted = this.decrypt.decryptMessage(senderPk, encrypted);
             return JSON.parse(decrypted);
         }
         catch (e) {
-            console.log(decrypted, e);
+            // console.log(decrypted, e);
             return {};
         }
     };
