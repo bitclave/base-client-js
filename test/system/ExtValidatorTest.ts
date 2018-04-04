@@ -158,10 +158,21 @@ describe('BASE API test: External Validator', async () => {
         // validator shares results with Alice
         await baseValidator.dataRequestManager.grantAccessForClient(accAlice.publicKey, [accAlice.publicKey]);
 
-        // Alice tries to access wealth after it is shared
-        const ethWealthPtr: BaseType.EthWealthPtr = await refreshWealthPtrWithCheckError();
-        ethWealthPtr.validator.should.be.equal(accValidator.publicKey);
-        // ~Alice tries to access wealth after it is shared
+        {
+            // Alice tries to access wealth after it is shared
+            const ethWealthPtr: BaseType.EthWealthPtr = await refreshWealthPtrWithCheckError();
+            ethWealthPtr.validator.should.be.equal(accValidator.publicKey);
+            // ~Alice tries to access wealth after it is shared
+        }
+
+        {
+            // Alice tries to access wealth after it is already internally saved
+            const ethWealthPtr: BaseType.EthWealthPtr = await refreshWealthPtrWithCheckError();
+            ethWealthPtr.validator.should.be.equal(accValidator.publicKey);
+            // ~Alice tries to access wealth after it is already internally saved
+        }
+
+
     });
 
     private async function refreshWealthPtrWithCheckError(): Promise<BaseType.EthWealthPtr> {
