@@ -12,4 +12,28 @@ Once you receive data access request, you can decide to approve the request or d
 To support testing of this workflow we have bot with baseID at address 038d4a758b58137ee47993ca434c1b797096536ada167b942f7d251ed1fc50c1c1 that will respond to your data access requests.
 
 
+# User Guide
+
+## Login Screen
+![Alt text](https://github.com/bitclave/base-client-js/blob/develop/images/example_login.png)
+
+This screen is self-explanatory, allows for user to Sign Up, Sign In or Delete 
+- mnemonic phrase is any string 5+ characters. In future we'll make it more secure and will autogenerate it.
+
+## Dashboard
+![Alt text](https://github.com/bitclave/base-client-js/blob/develop/images/example_dashboard.png)
+
+This is the main dashboard.
+- the bottom part has a read-only section of all user data and is presented as <key,value> pairs
+- the middle part allows user to add new <key,value> pair or update previous <key> with new data
+- the top part allows to add new ETH wallets
+  - Sign w/Web3 - will popup a Metamask (or any Web3 wallet) and ask you to sign a special 
+  string. Once you sign the string, it will populate the eth_address and signature fields.
+  - Set Single - will add a new eth_address to the eth_wallets structure in the low section
+  - Verify - will verify the eth_wallets structure in the low section
+    - When eth_walelts structure is propery signed the response shall be something like
+    {"rc":0,"err":"","details":[0,0]}
+  - Sign Wallets - will sign the eth_wallets structure
+  
+
 
