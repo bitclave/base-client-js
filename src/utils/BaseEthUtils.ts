@@ -2,6 +2,7 @@ import BaseSchema from './BaseSchema';
 import * as BaseType from '../../src/utils/BaseTypes';
 import { MessageSigner } from './keypair/MessageSigner';
 import BitKeyPair from './keypair/BitKeyPair';
+import {EthAddrRecord} from "./BaseTypes";
 
 const Message = require('bitcore-message');
 const bitcore = require('bitcore-lib');
@@ -75,12 +76,12 @@ export default class BaseEthUtils {
         return msgWallets;
     }
 
-    public static async createEthWalletsRecordWithSigner(baseID: string, signedEthRecords: Array<BaseType.EthAddrRecord>,
+    public static async createEthWalletsRecordWithSigner(baseID: string, signedEthRecords: Array<EthAddrRecord>,
                                                          signer: MessageSigner): Promise<BaseType.EthWallets> {
         for (let msg of signedEthRecords) {
             if ((this.verifyEthAddrRecord(msg) != EthWalletVerificationCodes.RC_OK) &&
                 (this.verifyEthAddrRecord(msg) != EthWalletVerificationCodes.RC_ETH_ADDR_NOT_VERIFIED)) {
-                throw 'invalid eth record';
+                throw 'invalid eth record: ' + msg;
             }
 
             if (baseID != JSON.parse(msg.data).baseID) {

@@ -91707,16 +91707,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __values = (this && this.__values) || function (o) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
-    if (m) return m.call(o);
-    return {
-        next: function () {
-            if (o && i >= o.length) o = void 0;
-            return { value: o && o[i++], done: !o };
-        }
-    };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var Account_1 = __webpack_require__(47);
 var CryptoUtils_1 = __webpack_require__(154);
@@ -91746,26 +91736,17 @@ var ProfileManager = /** @class */ (function () {
     };
     ProfileManager.prototype.createEthWallets = function (wallets, baseID) {
         return __awaiter(this, void 0, void 0, function () {
-            var walletRecords, wallets_1, wallets_1_1, address, e_1, _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        walletRecords = [];
-                        try {
-                            for (wallets_1 = __values(wallets), wallets_1_1 = wallets_1.next(); !wallets_1_1.done; wallets_1_1 = wallets_1.next()) {
-                                address = wallets_1_1.value;
-                                walletRecords.push(new BaseType.EthAddrRecord(address));
-                            }
-                        }
-                        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-                        finally {
-                            try {
-                                if (wallets_1_1 && !wallets_1_1.done && (_a = wallets_1.return)) _a.call(wallets_1);
-                            }
-                            finally { if (e_1) throw e_1.error; }
-                        }
-                        return [4 /*yield*/, BaseEthUtils_1.default.createEthWalletsRecordWithSigner(baseID, walletRecords, this.signer)];
-                    case 1: return [2 /*return*/, _b.sent()];
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, BaseEthUtils_1.default.createEthWalletsRecordWithSigner(baseID, wallets, this.signer)];
+                    case 1: 
+                    // const walletRecords: Array<BaseType.EthAddrRecord> = [];
+                    // for (let ethAddrRecordAsString of wallets) {
+                    //     let ethAddrRecordAsObj: BaseType.EthAddrRecord = JSON.parse(ethAddrRecordAsString);
+                    //     walletRecords.push(ethAddrRecordAsObj);
+                    //     // walletRecords.push(new BaseType.EthAddrRecord(address));
+                    // }
+                    return [2 /*return*/, _a.sent()];
                 }
             });
         });
@@ -92085,7 +92066,7 @@ var BaseEthUtils = /** @class */ (function () {
                                 msg = signedEthRecords_1_1.value;
                                 if ((this.verifyEthAddrRecord(msg) != EthWalletVerificationCodes.RC_OK) &&
                                     (this.verifyEthAddrRecord(msg) != EthWalletVerificationCodes.RC_ETH_ADDR_NOT_VERIFIED)) {
-                                    throw 'invalid eth record';
+                                    throw 'invalid eth record: ' + msg;
                                 }
                                 if (baseID != JSON.parse(msg.data).baseID) {
                                     throw 'baseID missmatch';

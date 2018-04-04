@@ -340,12 +340,23 @@ describe('Profile Manager', async () => {
             );
             let sawException: boolean = false;
             try {
-                rc = await profileManager.createEthWallets([ethAddrRecord], "wrong key");
+                await profileManager.createEthWallets([ethAddrRecord], "wrong key");
             } catch (e) {
                 sawException = true;
             }
             sawException.should.be.equal(true);
-            sawException.should.be.equal(true);
+        }
+
+        {
+            let ethAddrRecord: BaseType.EthAddrRecord = baseEthUitls.createEthAddrRecord(
+                '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
+                '0x42cb8ae103896daee71ebb5dca5367f16727164a',
+                '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
+            );
+
+            let ethWallets: BaseType.EthWallets = await profileManager.createEthWallets([ethAddrRecord], "02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41");
+            ethWallets.data.length.should.be.equal(1);
+
         }
 
 

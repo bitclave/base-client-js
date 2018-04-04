@@ -10,6 +10,7 @@ import baseEthUitls, { EthWalletVerificationCodes, EthWalletVerificationStatus }
 import * as BaseType from '../../src/utils/BaseTypes';
 import { DataRequestState } from '../repository/models/DataRequestState';
 import DataRequestManager from './DataRequestManager';
+import {EthAddrRecord} from "../utils/BaseTypes";
 
 export default class ProfileManager {
 
@@ -51,12 +52,14 @@ export default class ProfileManager {
         return baseEthUitls.verifyEthWalletsRecord(baseID, val);
     }
 
-    public async createEthWallets(wallets: string[], baseID: string): Promise<BaseType.EthWallets> {
-        const walletRecords: Array<BaseType.EthAddrRecord> = [];
-        for (let address of wallets) {
-            walletRecords.push(new BaseType.EthAddrRecord(address));
-        }
-        return await baseEthUitls.createEthWalletsRecordWithSigner(baseID, walletRecords, this.signer);
+    public async createEthWallets(wallets: EthAddrRecord[], baseID: string): Promise<BaseType.EthWallets> {
+        // const walletRecords: Array<BaseType.EthAddrRecord> = [];
+        // for (let ethAddrRecordAsString of wallets) {
+        //     let ethAddrRecordAsObj: BaseType.EthAddrRecord = JSON.parse(ethAddrRecordAsString);
+        //     walletRecords.push(ethAddrRecordAsObj);
+        //     // walletRecords.push(new BaseType.EthAddrRecord(address));
+        // }
+        return await baseEthUitls.createEthWalletsRecordWithSigner(baseID, wallets, this.signer);
     }
 
     public signMessage(data: any): string {

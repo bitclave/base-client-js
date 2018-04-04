@@ -136,15 +136,16 @@ export default class Dashboard extends React.Component<Props, State> implements 
                                 <Row> <p/> </Row>
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button color="primary"  onClick={e => this.onSetEthAddress()}>
-                                            Set Single
-                                        </Button>
-                                    </Col>
-                                    <Col xs="3" sm="3">
                                         <Button color="primary"  onClick={e => this.onSetEthSignature()}>
                                             Sign w/Web3
                                         </Button>
                                     </Col>
+                                    <Col xs="3" sm="3">
+                                        <Button color="primary"  onClick={e => this.onSetEthAddress()}>
+                                            Set Single
+                                        </Button>
+                                    </Col>
+
                                     <Col xs="3" sm="3">
                                         <Button color="primary"  onClick={e => this.onVerifyWallets()}>
                                             Verify
@@ -152,7 +153,7 @@ export default class Dashboard extends React.Component<Props, State> implements 
                                     </Col>
                                     <Col xs="3" sm="3">
                                         <Button color="primary"  onClick={e => this.onSignWallets()}>
-                                            SignWallets
+                                            Sign Wallets
                                         </Button>
                                     </Col>
                                 </Row>
@@ -348,11 +349,16 @@ export default class Dashboard extends React.Component<Props, State> implements 
         var pos = this.clientData.findIndex(model => model.key === 'eth_wallets');
         if (pos>=0) {
             var msg = JSON.parse(this.clientData[pos].value);
-            var res = await this.baseManager.getProfileManager().createEthWallets(
-                msg.data, this.baseManager.getId());
-            msg.sig = res.sig;
-            this.clientData[pos].value = JSON.stringify(msg);
-            alert('eth_wallets signed');
+            try {
+                var res = await this.baseManager.getProfileManager().createEthWallets(
+                    msg.data, this.baseManager.getId());
+                msg.sig = res.sig;
+                this.clientData[pos].value = JSON.stringify(msg);
+                alert('eth_wallets signed');
+            } catch (err) {
+                alert('exception in onSignWallets: ' +  err);
+            }
+
         }
         else {
             alert('no eth_wallets found');
