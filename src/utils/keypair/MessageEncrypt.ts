@@ -1,6 +1,6 @@
 export interface MessageEncrypt {
 
-    encryptMessage(recipientPk: string, message: string) : string;
+    encryptMessage(recipientPk: string, message: string): string;
 
     generatePasswordForField(fieldName: String): string;
 

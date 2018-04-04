@@ -27,8 +27,7 @@ export default class AccountRepositoryImpl implements AccountRepository {
             .then((response) => Object.assign(new Account(), response.json));
     }
 
-    unsubscribe(account: Account): Promise<Account>
-    {
+    unsubscribe(account: Account): Promise<Account> {
         return this.transport
             .sendRequest(this.DELETE, HttpMethod.Delete, account)
             .then((response) => Object.assign(new Account(), response.json));

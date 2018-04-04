@@ -6,8 +6,4 @@ export default class Account {
         this.publicKey = publicKey;
     }
 
-    // isValid(): boolean {
-    //     return (this.publicKey !== null && this.publicKey.length == 66);
-    // }
-
 }

@@ -4,10 +4,13 @@ import { ClientDataRepository } from '../repository/client/ClientDataRepository'
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
-import { EthWalletVerificationStatus } from "../utils/BaseEthUtils";
-import * as BaseType from "../../src/utils/BaseTypes";
-import DataRequestManager from "./DataRequestManager";
+import { EthWalletVerificationStatus } from '../utils/BaseEthUtils';
+import * as BaseType from '../../src/utils/BaseTypes';
+import DataRequestManager from './DataRequestManager';
 export default class ProfileManager {
+    static DATA_KEY_ETH_WALLETS: string;
+    static DATA_KEY_ETH_WEALTH_VALIDATOR: string;
+    static DATA_KEY_WEALTH: string;
     private clientDataRepository;
     private account;
     private encrypt;

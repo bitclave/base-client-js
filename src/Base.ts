@@ -32,9 +32,18 @@ import Offer from './repository/models/Offer';
 export { DataRequestState } from './repository/models/DataRequestState';
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
-export {SearchRequest}
-export {Offer}
-export {Base as NodeAPI};
+export {
+    EthBaseAddrPair,
+    EthAddrRecord,
+    EthWallets,
+    EthWealthRecord,
+    EthWealthPtr,
+    ProfileUser,
+    ProfileEthWealthValidator
+} from './utils/BaseTypes';
+export { SearchRequest };
+export { Offer };
+export { Base as NodeAPI };
 
 export default class Base {
 

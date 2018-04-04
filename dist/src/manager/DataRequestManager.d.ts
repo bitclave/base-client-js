@@ -63,9 +63,9 @@ export default class DataRequestManager {
      * @param {string} senderPk public key of the user that issued data access request.
      * @param {string} encrypted encrypted data from {@link DataRequest#requestData} (ECIES).
      *
-     * @returns {object} object with data or empty object if was error.
+     * @returns {object | null} object with data or null if was error.
      */
-    decryptMessage(senderPk: string, encrypted: string): any;
+    decryptMessage(senderPk: string, encrypted: string): any | null;
     private getEncryptedDataForFields(recipientPk, fields?);
     private onChangeAccount(account);
 }
