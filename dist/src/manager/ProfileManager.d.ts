@@ -3,12 +3,23 @@ import Account from '../repository/models/Account';
 import { ClientDataRepository } from '../repository/client/ClientDataRepository';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
+import { MessageSigner } from '../utils/keypair/MessageSigner';
+import { EthWalletVerificationStatus } from "../utils/BaseEthUtils";
+import * as BaseType from "../../src/utils/BaseTypes";
+import DataRequestManager from "./DataRequestManager";
 export default class ProfileManager {
     private clientDataRepository;
     private account;
     private encrypt;
     private decrypt;
-    constructor(clientRepository: ClientDataRepository, authAccountBehavior: Observable<Account>, encrypt: MessageEncrypt, decrypt: MessageDecrypt);
+    private signer;
+    private dataRequestManager;
+    constructor(clientRepository: ClientDataRepository, authAccountBehavior: Observable<Account>, encrypt: MessageEncrypt, decrypt: MessageDecrypt, signer: MessageSigner, dataRequestManager: DataRequestManager);
+    validateEthWallets(key: string, val: string, baseID: string): EthWalletVerificationStatus;
+    createEthWallets(wallets: string[], baseID: string): Promise<BaseType.EthWallets>;
+    signMessage(data: any): string;
+    addEthWealthValidator(validatorPbKey: string): Promise<void>;
+    refreshWealthPtr(): Promise<BaseType.EthWealthPtr>;
     /**
      * Returns decrypted data of the authorized user.
      *
@@ -24,12 +35,20 @@ export default class ProfileManager {
     getRawData(anyPublicKey: string): Promise<Map<string, string>>;
     /**
      * Decrypts accepted personal data {@link DataRequest#responseData} when state is {@link DataRequestState#ACCEPT}.
-     * @param {string} recipientPk  Public key of the user that is expected to.
+     * @param {string} recipientPk  Public key of the user that shared the data
      * @param {string} encryptedData encrypted data {@link DataRequest#responseData}.
      *
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
     getAuthorizedData(recipientPk: string, encryptedData: string): Promise<Map<string, string>>;
+    /**
+     * Returns decryption keys for approved personal data {@link DataRequest#responseData} when state is {@link DataRequestState#ACCEPT}.
+     * @param {string} recipientPk  Public key of the user that shared the data
+     * @param {string} encryptedData encrypted data {@link DataRequest#responseData}.
+     *
+     * @returns {Promise<Map<string, string>>} Map key => value.
+     */
+    getAuthorizedEncryptionKeys(recipientPk: string, encryptedData: string): Promise<Map<string, string>>;
     /**
      * Encrypts and stores personal data in BASE.
      * @param {Map<string, string>} data not encrypted data e.g. Map {"name": "Adam"} etc.

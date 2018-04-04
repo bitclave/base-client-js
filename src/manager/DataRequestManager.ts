@@ -107,11 +107,12 @@ export default class DataRequestManager {
      * @returns {object} object with data or empty object if was error.
      */
     public decryptMessage(senderPk: string, encrypted: string): any {
-        const decrypted = this.decrypt.decryptMessage(senderPk, encrypted);
+        var decrypted;
         try {
+            decrypted = this.decrypt.decryptMessage(senderPk, encrypted);
             return JSON.parse(decrypted);
         } catch (e) {
-            console.log(decrypted, e);
+            // console.log(decrypted, e);
             return {};
         }
     }
@@ -122,7 +123,7 @@ export default class DataRequestManager {
         if (fields != null && fields.length > 0) {
             const resultMap: Map<string, string> = new Map();
             fields.forEach(value => {
-                resultMap.set(value, this.encrypt.generatePasswordForFiled(value.toLowerCase()));
+                resultMap.set(value, this.encrypt.generatePasswordForField(value.toLowerCase()));
             });
 
             const jsonMap: any = JsonUtils.mapToJson(resultMap);

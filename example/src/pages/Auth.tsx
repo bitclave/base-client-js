@@ -71,6 +71,11 @@ export default class Auth extends React.Component<Props, State> {
                             Sign In
                         </Button>
                     </FormGroup>
+                    <FormGroup>
+                        <Button block={true} size="lg" color="danger"  onClick={e => this.onDelete()}>
+                            Delete
+                        </Button>
+                    </FormGroup>
                 </Form>
             </div>
         );
@@ -107,8 +112,31 @@ export default class Auth extends React.Component<Props, State> {
 
     private onSingIn() {
         const {history} = this.props;
+        if (this.state.mnemonicPhrase.length < 5) {
+            alert('Minimum 5 symbols!');
+            return;
+        }
         this.baseManager.signIn(this.state.mnemonicPhrase)
             .then(account => history.replace('dashboard'))
+            .catch(response => {
+                if (response.json.status === 404) {
+                    alert('User not found');
+                } else {
+                    alert('message: ' + response.json.error);
+                }
+            });
+    }
+
+    private onDelete() {
+        if (this.state.mnemonicPhrase.length < 5) {
+            alert('Minimum 5 symbols!');
+            return;
+        }
+        this.baseManager.unsubscribe(this.state.mnemonicPhrase)
+            .then(account => {
+                alert('User deleted')
+                this.onChangeMnemonic('');
+            })
             .catch(response => {
                 if (response.json.status === 404) {
                     alert('User not found');

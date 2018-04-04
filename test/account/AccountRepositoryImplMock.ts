@@ -1,4 +1,5 @@
 import { AccountRepository } from '../../src/repository/account/AccountRepository';
+import Account from '../../src/repository/models/Account';
 
 export default class AccountRepositoryImplMock implements AccountRepository {
 

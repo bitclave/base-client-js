@@ -14,8 +14,8 @@ export default class PairItemHolder extends React.Component<Prop, {}> {
     render() {
         return (
             <Row>
-                <Col className="client-data-item-field" xs="6" sm="4">{this.props.name}</Col>
-                <Col className="client-data-item-field" xs="6" sm="4">{this.props.value}</Col>
+                <Col className="client-data-item-field" xs="6" sm="4" >{this.props.name}</Col>
+                <Col className="client-data-item-field" xs="6" sm="4" >{this.props.value}</Col>
                 <Col className="client-data-item-field" sm="4">{this.showDeleteButton()}</Col>
             </Row>
 

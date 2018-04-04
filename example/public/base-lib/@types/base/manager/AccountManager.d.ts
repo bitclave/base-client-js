@@ -23,6 +23,14 @@ export default class AccountManager {
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
     checkAccount(mnemonicPhrase: string): Promise<Account>;
+    /**
+     * Allows user to unsubscribe from BASE. Delets all his data
+     * @param {string} mnemonicPhrase Mnemonic phrase for Public/Private key pair
+     * generation for asymmetric encryption scheme.
+     *
+     * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
+     */
+    unsubscribe(mnemonicPhrase: string): Promise<Account>;
     private generateKeyPair(mnemonicPhrase);
     private getAccount(account);
     private generateAccount(keyPair);

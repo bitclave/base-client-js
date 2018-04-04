@@ -110,7 +110,8 @@ export default class CreateRequest extends React.Component<Props, State> {
 
         this.baseManager.createRequest(this.state.searchClientId.trim(), fields)
             .then(result => alert('Request has been created!'))
-            .catch(reason => alert('Something went wrong! =('));
+            .catch(reason =>
+                alert('Something went wrong! =(' + JSON.stringify(reason)));
 
         this.clientCheckedFields.clear();
         this.setState({searchClientId: '', clientFields: []});

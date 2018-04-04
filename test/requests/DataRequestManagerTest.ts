@@ -132,4 +132,15 @@ describe('Data Request Manager', async () => {
         await requestManager.grantAccessForOffer(1, keyPairHelperAlisa.getPublicKey(), bobsFields)
     });
 
+    it('decrypt invalid message', async () => {
+        try
+        {
+            await requestManager.decryptMessage(keyPairHelperAlisa.getPublicKey(), "invalid string");
+        }
+        catch(e)
+        {
+            // console.log(e);
+        }
+    });
+
 });
