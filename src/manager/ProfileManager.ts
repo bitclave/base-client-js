@@ -6,13 +6,16 @@ import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import JsonUtils from '../utils/JsonUtils';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
-import baseEthUitls from '../utils/BaseEthUtils';
-import {EthWalletVerificationStatus, EthWalletVerificationCodes} from "../utils/BaseEthUtils";
-import * as BaseType from "../../src/utils/BaseTypes";
-import {DataRequestState} from "../repository/models/DataRequestState";
-import DataRequestManager from "./DataRequestManager";
+import baseEthUitls, { EthWalletVerificationCodes, EthWalletVerificationStatus } from '../utils/BaseEthUtils';
+import * as BaseType from '../../src/utils/BaseTypes';
+import { DataRequestState } from '../repository/models/DataRequestState';
+import DataRequestManager from './DataRequestManager';
 
 export default class ProfileManager {
+
+    public static DATA_KEY_ETH_WALLETS: string = 'eth_wallets';
+    public static DATA_KEY_ETH_WEALTH_VALIDATOR: string = 'ethwealthvalidator';
+    public static DATA_KEY_WEALTH: string = 'wealth';
 
     private clientDataRepository: ClientDataRepository;
     private account: Account = new Account();
@@ -22,7 +25,8 @@ export default class ProfileManager {
     private dataRequestManager: DataRequestManager;
 
     constructor(clientRepository: ClientDataRepository, authAccountBehavior: Observable<Account>,
-                encrypt: MessageEncrypt, decrypt: MessageDecrypt, signer: MessageSigner, dataRequestManager: DataRequestManager) {
+                encrypt: MessageEncrypt, decrypt: MessageDecrypt, signer: MessageSigner,
+                dataRequestManager: DataRequestManager) {
         this.clientDataRepository = clientRepository;
 
         authAccountBehavior
@@ -34,95 +38,86 @@ export default class ProfileManager {
         this.dataRequestManager = dataRequestManager;
     }
 
-
     public validateEthWallets(key: string, val: string, baseID: string): EthWalletVerificationStatus {
-        var res : EthWalletVerificationStatus = new EthWalletVerificationStatus();
+        const result: EthWalletVerificationStatus = new EthWalletVerificationStatus();
 
-        if (key!="eth_wallets")
-        {
-            res.err = "The \<key\> is expected to be \"eth_wallets\"";
-            res.rc = EthWalletVerificationCodes.RC_GENERAL_ERROR;
-            return res;
+        if (key != ProfileManager.DATA_KEY_ETH_WALLETS) {
+            result.err = 'The \<key\> is expected to be "' + ProfileManager.DATA_KEY_ETH_WALLETS + '"';
+            result.rc = EthWalletVerificationCodes.RC_GENERAL_ERROR;
+
+            return result;
         }
 
-        res = baseEthUitls.verifyEthWalletsRecord(baseID, val);
-
-        return res;
+        return baseEthUitls.verifyEthWalletsRecord(baseID, val);
     }
 
     public async createEthWallets(wallets: string[], baseID: string): Promise<BaseType.EthWallets> {
-        var res : BaseType.EthWallets;
-
-        res = await baseEthUitls.createEthWalletsRecordWithSigner(baseID, wallets, this.signer);
-
-        return res;
+        const walletRecords: Array<BaseType.EthAddrRecord> = [];
+        for (let address of wallets) {
+            walletRecords.push(new BaseType.EthAddrRecord(address));
+        }
+        return await baseEthUitls.createEthWalletsRecordWithSigner(baseID, walletRecords, this.signer);
     }
 
-    public signMessage(data: any): string
-    {
+    public signMessage(data: any): string {
         return this.signer.signMessage(data);
     }
 
-    public async addEthWealthValidator(validatorPbKey: string)
-    {
+    public async addEthWealthValidator(validatorPbKey: string) {
         // Alice adds wealth record pointing to Validator's
-        var myData : Map<string, string> = await this.getData();
-        myData.set('ethwealthvalidator', validatorPbKey);
-        // console.log(myData);
+        const myData: Map<string, string> = await this.getData();
+        myData.set(ProfileManager.DATA_KEY_ETH_WEALTH_VALIDATOR, validatorPbKey);
         await this.updateData(myData);
 
-        await this.dataRequestManager.grantAccessForClient(validatorPbKey, ["eth_wallets"]);
+        await this.dataRequestManager.grantAccessForClient(validatorPbKey, [ProfileManager.DATA_KEY_ETH_WALLETS]);
     }
 
-    public async refreshWealthPtr() : Promise<BaseType.EthWealthPtr>
-    {
-        const data : Map<string, string> = await this.getData();
-        var wealthPtr: any;
+    public async refreshWealthPtr(): Promise<BaseType.EthWealthPtr> {
+        const data: Map<string, string> = await this.getData();
+        let wealthPtr: BaseType.EthWealthPtr;
 
-        if (data.has('wealth'))
-            wealthPtr = data.get('wealth');
-        else if (data.has('ethwealthvalidator'))
-        {
-            const validatorPbKey : any = data.get('ethwealthvalidator');
+        if (data.has(ProfileManager.DATA_KEY_WEALTH)) {
+            const wealth: string = data.get(ProfileManager.DATA_KEY_WEALTH) || '';
+            wealthPtr = Object.assign(new BaseType.EthWealthPtr(), JSON.parse(wealth));
+
+        } else if (data.has(ProfileManager.DATA_KEY_ETH_WEALTH_VALIDATOR)) {
+            const validatorPbKey: string = data.get(ProfileManager.DATA_KEY_ETH_WEALTH_VALIDATOR) || '';
 
             // Alice reads the wealth record that Validator shared
             const recordsFromValidator = await this.dataRequestManager.getRequests(
-                this.account.publicKey, validatorPbKey, DataRequestState.ACCEPT
+                this.account.publicKey,
+                validatorPbKey,
+                DataRequestState.ACCEPT
             );
 
             // if validator already did one validation
-            if (recordsFromValidator.length>0) {
+            if (recordsFromValidator.length > 0) {
                 // Alice gets the decryption keys for all records that Validator shared
                 const decryptionKeys: Map<string, string> = await this.getAuthorizedEncryptionKeys(
-                    validatorPbKey, recordsFromValidator[0].responseData);
+                    validatorPbKey,
+                    recordsFromValidator[0].responseData
+                );
 
                 // get decryption key for "wealth" record
-                const wealthDecKey: any = decryptionKeys.get(this.account.publicKey);
-                // console.log("Alice's wealth decryption key:", wealthDecKey);
+                const wealthDecKey: string = decryptionKeys.get(this.account.publicKey) || '';
 
                 // Alice adds wealth record pointing to Validator's storage
-                wealthPtr = {
-                    "validator": validatorPbKey,
-                    "decryptKey" : wealthDecKey
-                };
-                data.set("wealth", JSON.stringify(wealthPtr));
+                wealthPtr = new BaseType.EthWealthPtr(validatorPbKey, wealthDecKey);
+                data.set(ProfileManager.DATA_KEY_WEALTH, JSON.stringify(wealthPtr));
 
-                // console.log(myData);
                 await this.updateData(data);
+
+            } else {
+                throw 'validator did not verify anything yet';
             }
-            // validator did not verify anything yet
-            else
-            {
-                wealthPtr = undefined;
-            }
-        }
-        else
-        {
-            wealthPtr = undefined;
+
+        } else {
+            throw ProfileManager.DATA_KEY_ETH_WEALTH_VALIDATOR + ' data not exist!';
         }
 
         return wealthPtr;
     }
+
     /**
      * Returns decrypted data of the authorized user.
      *

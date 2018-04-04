@@ -13,29 +13,27 @@ export default class BitKeyPair implements KeyPairHelper {
     private addr: any;
 
     public createKeyPair(passPhrase: string): KeyPair {
-    const pbkdf2: string = CryptoUtils.PBKDF2(passPhrase, 256);
-            const hash: any = bitcore.crypto.Hash.sha256(new bitcore.deps.Buffer(pbkdf2));
-            const bn: any = bitcore.crypto.BN.fromBuffer(hash);
-            this.privateKey = new bitcore.PrivateKey(bn);
-            this.publicKey = this.privateKey.toPublicKey();
-            this.addr = this.privateKey.toAddress();
+        const pbkdf2: string = CryptoUtils.PBKDF2(passPhrase, 256);
+        const hash: any = bitcore.crypto.Hash.sha256(new bitcore.deps.Buffer(pbkdf2));
+        const bn: any = bitcore.crypto.BN.fromBuffer(hash);
+        this.privateKey = new bitcore.PrivateKey(bn);
+        this.publicKey = this.privateKey.toPublicKey();
+        this.addr = this.privateKey.toAddress();
 
-            const privateKeyHex: string = this.privateKey.toString(16);
-            const publicKeyHex = this.publicKey.toString(16);
-        
+        const privateKeyHex: string = this.privateKey.toString(16);
+        const publicKeyHex = this.publicKey.toString(16);
+
         return new KeyPair(privateKeyHex, publicKeyHex);
-
     }
 
     public initKeyPairFromPrvKey(prvKey: string): KeyPair {
-        
-            this.privateKey = new bitcore.PrivateKey(bitcore.crypto.BN.fromString(prvKey,16));
-            this.publicKey = this.privateKey.toPublicKey();
-            this.addr = this.privateKey.toAddress();
+        this.privateKey = new bitcore.PrivateKey(bitcore.crypto.BN.fromString(prvKey, 16));
+        this.publicKey = this.privateKey.toPublicKey();
+        this.addr = this.privateKey.toAddress();
 
-            const privateKeyHex: string = this.privateKey.toString(16);
-            const publicKeyHex = this.publicKey.toString(16);
-            
+        const privateKeyHex: string = this.privateKey.toString(16);
+        const publicKeyHex = this.publicKey.toString(16);
+
         return new KeyPair(privateKeyHex, publicKeyHex);
     }
 
@@ -44,7 +42,7 @@ export default class BitKeyPair implements KeyPairHelper {
 
         return message.sign(this.privateKey);
     }
-    
+
     public getPublicKey(): string {
         return this.publicKey.toString(16);
     }
@@ -78,6 +76,5 @@ export default class BitKeyPair implements KeyPairHelper {
             .decrypt(new Buffer(encrypted, 'base64'))
             .toString();
     }
-
 
 }

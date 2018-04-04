@@ -2,118 +2,112 @@ const Ajv = require('ajv');
 
 export default class BaseSchema {
 
-    private static _validateAll: any;
-    private static _validateEthAddr: any;
-    private static _validateEthBaseAddrPair: any;
-    private static _validateEthWallets: any;
-
-    private static isInitialized: boolean = false;
-    private static ajv: any;
+    private static instance: BaseSchema | null = null;
 
     public static EthBaseAddrPair = {
-        "type": "object",
-        "properties" : {
-            "baseID" : { "type": "string" },
-            "ethAddr": { "type" : "string" }
+        'type': 'object',
+        'properties': {
+            'baseID': {'type': 'string'},
+            'ethAddr': {'type': 'string'}
         },
-        "required": ["baseID", "ethAddr"],
-        "additionalProperties": false
-    }
+        'required': ['baseID', 'ethAddr'],
+        'additionalProperties': false
+    };
 
     public static EthAddrRecord = {
-        "type": "object",
-        "properties": {
-            "data": {"type": "string"},
-            "sig": {
-                "type": "string"
+        'type': 'object',
+        'properties': {
+            'data': {'type': 'string'},
+            'sig': {
+                'type': 'string'
             },
         },
-        "required": ["data"],
-        "additionalProperties": false
+        'required': ['data'],
+        'additionalProperties': false
     };
 
     public static EthWallets = {
-        "definitions": {
-            "eth_address": BaseSchema.EthAddrRecord
+        'definitions': {
+            'eth_address': BaseSchema.EthAddrRecord
         },
-        "description": "list of ETH wallets",
-        "type": "object",
-        "properties": {
-            "data": {
-                "type": "array",
-                "items": {"$ref": "#/definitions/eth_address"},
-                "minItems": 1,
-                "uniqueItems": true
+        'description': 'list of ETH wallets',
+        'type': 'object',
+        'properties': {
+            'data': {
+                'type': 'array',
+                'items': {'$ref': '#/definitions/eth_address'},
+                'minItems': 1,
+                'uniqueItems': true
             },
-            "sig": {
-                "type": "string"
+            'sig': {
+                'type': 'string'
             }
         }
     };
 
-    public static all = {
-        "title": "Profile",
-        "definitions": {
-            "eth_address": BaseSchema.EthAddrRecord,
-            "eth_wallets": BaseSchema.EthWallets
+    public static All = {
+        'title': 'Profile',
+        'definitions': {
+            'eth_address': BaseSchema.EthAddrRecord,
+            'eth_wallets': BaseSchema.EthWallets
         },
 
-        "type": "object",
-        "properties": {
-            "baseID": {
-                "type": "string"
+        'type': 'object',
+        'properties': {
+            'baseID': {
+                'type': 'string'
             },
-            "email": {
-                "type": "string"
+            'email': {
+                'type': 'string'
             },
-            "wealth": {
-                "description": "wealth in USD",
-                "type": "string"
+            'wealth': {
+                'description': 'wealth in USD',
+                'type': 'string'
             },
-            "eth_wallets": {"$ref": "#/definitions/eth_wallets"},
+            'eth_wallets': {'$ref': '#/definitions/eth_wallets'},
         },
-        "required": ["baseID"],
-        "additionalProperties": false
+        'required': ['baseID'],
+        'additionalProperties': false
     };
 
+    public static getInstance(): BaseSchema {
+        if (BaseSchema.instance == null) {
+            BaseSchema.instance = new BaseSchema();
+        }
 
-
-    public static getSchema(): any
-    {
-        BaseSchema.Init();
-        return this;
+        return BaseSchema.instance;
     }
 
-    public static Init()
-    {
-        if (BaseSchema.isInitialized) return;
-        BaseSchema.isInitialized = true;
+    private ajvValidateAll: Function;
+    private ajvValidateEthAddr: Function;
+    private ajvValidateEthBaseAddrPair: Function;
+    private ajvValidateEthWallets: Function;
 
-        BaseSchema.ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
+    private ajv: any;
 
-        BaseSchema._validateEthBaseAddrPair = BaseSchema.ajv.compile(BaseSchema.EthBaseAddrPair);
-        BaseSchema._validateEthAddr =  BaseSchema.ajv.compile(BaseSchema.EthAddrRecord);
-        BaseSchema._validateEthWallets = BaseSchema.ajv.compile(BaseSchema.EthWallets);
-        BaseSchema._validateAll = BaseSchema.ajv.compile(BaseSchema.all);
+    constructor() {
+        this.ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
+
+        this.ajvValidateEthBaseAddrPair = this.ajv.compile(BaseSchema.EthBaseAddrPair);
+        this.ajvValidateEthAddr = this.ajv.compile(BaseSchema.EthAddrRecord);
+        this.ajvValidateEthWallets = this.ajv.compile(BaseSchema.EthWallets);
+        this.ajvValidateAll = this.ajv.compile(BaseSchema.All);
     }
 
-    public static validateAll(s: any) : boolean
-    {
-        return BaseSchema._validateAll(s);
+    public validateEthAddr(s: any): boolean {
+        return this.ajvValidateEthAddr(s);
     }
-    public static validateEthAddr(s: any) : boolean
-    {
-        return BaseSchema._validateEthAddr(s);
+
+    public validateEthWallets(s: any): boolean {
+        return this.ajvValidateEthWallets(s);
     }
-    public static validateEthWallets(s: any) : boolean
-    {
-        return BaseSchema._validateEthWallets(s);
+
+    public validateEthBaseAddrPair(s: any): boolean {
+        return this.ajvValidateEthBaseAddrPair(s);
     }
-    public static validateEthBaseAddrPair(s: any) : boolean
-    {
-        var valid = BaseSchema._validateEthBaseAddrPair(s);
-        // if (valid) console.log('Valid!');
-        // else console.log('Invalid: ' + BaseSchema.ajv.errorsText(BaseSchema._validateEthBaseAddrPair.errors));
-        return valid;
+
+    public validateAll(s: any): boolean {
+        return this.ajvValidateAll(s);
     }
+
 }

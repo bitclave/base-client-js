@@ -16,7 +16,8 @@ export default class DataRequestManager {
 
     constructor(dataRequestRepository: DataRequestRepository,
                 authAccountBehavior: Observable<Account>,
-                encrypt: MessageEncrypt, decrypt: MessageDecrypt) {
+                encrypt: MessageEncrypt,
+                decrypt: MessageDecrypt) {
         this.dataRequestRepository = dataRequestRepository;
         this.encrypt = encrypt;
         this.decrypt = decrypt;
@@ -104,16 +105,14 @@ export default class DataRequestManager {
      * @param {string} senderPk public key of the user that issued data access request.
      * @param {string} encrypted encrypted data from {@link DataRequest#requestData} (ECIES).
      *
-     * @returns {object} object with data or empty object if was error.
+     * @returns {object | null} object with data or null if was error.
      */
-    public decryptMessage(senderPk: string, encrypted: string): any {
-        var decrypted;
+    public decryptMessage(senderPk: string, encrypted: string): any | null {
         try {
-            decrypted = this.decrypt.decryptMessage(senderPk, encrypted);
+            const decrypted = this.decrypt.decryptMessage(senderPk, encrypted);
             return JSON.parse(decrypted);
         } catch (e) {
-            // console.log(decrypted, e);
-            return {};
+            return null;
         }
     }
 

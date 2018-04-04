@@ -7,7 +7,7 @@ const Message = require('bitcore-message');
 const bitcore = require('bitcore-lib');
 
 const sigUtil = require('eth-sig-util');
-const baseSchema = BaseSchema.getSchema();
+const baseSchema = BaseSchema.getInstance();
 
 export enum EthWalletVerificationCodes {
     RC_OK = 0,
@@ -62,12 +62,10 @@ export default class BaseEthUtils {
         return record;
     }
 
-    public static async dbg_createEthWalletsRecord(baseID: string, signedEthRecords: Array<any>, prvKey: string): Promise<any> {
+    public static async createEthWalletsRecordDebug(baseID: string, signedEthRecords: Array<BaseType.EthAddrRecord>,
+                                                    prvKey: string): Promise<BaseType.EthWallets> {
         // no verification is performed here
-        const msgWallets = {
-            data: signedEthRecords,
-            sig: ''
-        };
+        const msgWallets: BaseType.EthWallets = new BaseType.EthWallets(signedEthRecords, '');
 
         const bitKeyPair = new BitKeyPair();
         bitKeyPair.initKeyPairFromPrvKey(prvKey);
@@ -77,7 +75,8 @@ export default class BaseEthUtils {
         return msgWallets;
     }
 
-    public static async createEthWalletsRecordWithSigner(baseID: string, signedEthRecords: Array<any>, signer: MessageSigner): Promise<any> {
+    public static async createEthWalletsRecordWithSigner(baseID: string, signedEthRecords: Array<BaseType.EthAddrRecord>,
+                                                         signer: MessageSigner): Promise<BaseType.EthWallets> {
         for (let msg of signedEthRecords) {
             if ((this.verifyEthAddrRecord(msg) != EthWalletVerificationCodes.RC_OK) &&
                 (this.verifyEthAddrRecord(msg) != EthWalletVerificationCodes.RC_ETH_ADDR_NOT_VERIFIED)) {
@@ -89,76 +88,74 @@ export default class BaseEthUtils {
             }
         }
 
-        var msgWallets = {
-            data: signedEthRecords,
-            sig: ''
-        };
-        // console.log(msgWallets);
-        if (!baseSchema.validateEthWallets(msgWallets)) throw 'invalid wallets structure';
+        const msgWallets: BaseType.EthWallets = new BaseType.EthWallets(signedEthRecords, '');
+
+        if (!baseSchema.validateEthWallets(msgWallets)) {
+            throw 'invalid wallets structure';
+        }
 
         // eth style signing
         // msgWallets.sig = sigUtil.personalSign(Buffer.from(prvKey, 'hex'), msgWallets);
         // var signerAddr = sigUtil.recoverPersonalSignature(msgWallets)
-        // console.log(signerAddr);
 
         // BASE Style signing
         msgWallets.sig = await signer.signMessage(JSON.stringify(msgWallets.data));
 
-
         return msgWallets;
     }
 
-    public static async createEthWalletsRecordWithPrvKey(baseID: string, signedEthRecords: Array<any>, prvKey: string): Promise<any> {
-        // BASE Style signing
+    public static async createEthWalletsRecordWithPrvKey(baseID: string,
+                                                         signedEthRecords: Array<BaseType.EthAddrRecord>,
+                                                         prvKey: string): Promise<BaseType.EthWallets> {
         const bitKeyPair = new BitKeyPair();
         bitKeyPair.initKeyPairFromPrvKey(prvKey);
 
         return this.createEthWalletsRecordWithSigner(baseID, signedEthRecords, bitKeyPair);
     }
 
-
     public static verifyEthWalletsRecord(baseID: string, msg: any): EthWalletVerificationStatus {
-        var rc: EthWalletVerificationCodes;
-        const res: EthWalletVerificationStatus = new EthWalletVerificationStatus();
-        res.rc = EthWalletVerificationCodes.RC_OK;
+        let resultCode: EthWalletVerificationCodes;
+        const status: EthWalletVerificationStatus = new EthWalletVerificationStatus();
+        status.rc = EthWalletVerificationCodes.RC_OK;
 
         if (!baseSchema.validateEthWallets(msg)) {
-            res.rc = EthWalletVerificationCodes.RC_ETH_ADDR_SCHEMA_MISSMATCH;
-            return res;
+            status.rc = EthWalletVerificationCodes.RC_ETH_ADDR_SCHEMA_MISSMATCH;
+            return status;
         }
 
         const basePubKey = baseID;
 
         // verify all baseID keys are the same in ETH records
-        for (let e of msg.data) {
-            const pubKey = JSON.parse(e.data).baseID;
+        for (let item of msg.data) {
+            const pubKey = JSON.parse(item.data).baseID;
             if (pubKey != basePubKey) {
-                res.details.push(EthWalletVerificationCodes.RC_BASEID_MISSMATCH);
+                status.details.push(EthWalletVerificationCodes.RC_BASEID_MISSMATCH);
+
+            } else if ((resultCode = this.verifyEthAddrRecord(item)) != EthWalletVerificationCodes.RC_OK) {
+                status.details.push(resultCode);
+
+            } else {
+                status.details.push(EthWalletVerificationCodes.RC_OK);
             }
-            else if ((rc = this.verifyEthAddrRecord(e)) != EthWalletVerificationCodes.RC_OK) {
-                res.details.push(rc);
-            }
-            else
-                res.details.push(EthWalletVerificationCodes.RC_OK);
         }
 
         // verify signature matches the baseID
         const baseAddr = new bitcore.PublicKey.fromString(basePubKey).toAddress().toString(16);
-        var sigCheck = false;
+        let sigCheck = false;
 
         try {
             if (msg.sig.length > 0) {
                 sigCheck = Message(JSON.stringify(msg.data)).verify(baseAddr, msg.sig);
                 if (!sigCheck)
-                    res.rc = EthWalletVerificationCodes.RC_ETH_ADDR_WRONG_SIGNATURE;
+                    status.rc = EthWalletVerificationCodes.RC_ETH_ADDR_WRONG_SIGNATURE;
+            } else {
+                status.rc = EthWalletVerificationCodes.RC_ETH_ADDR_NOT_VERIFIED;
             }
-            else
-                res.rc = EthWalletVerificationCodes.RC_ETH_ADDR_NOT_VERIFIED;
-        }
-        catch (err) {
-            res.rc = EthWalletVerificationCodes.RC_GENERAL_ERROR;
+        } catch (err) {
+            status.rc = EthWalletVerificationCodes.RC_GENERAL_ERROR;
         }
 
-        return res;
+        return status;
     }
+
 }

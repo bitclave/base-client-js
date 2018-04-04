@@ -44,6 +44,7 @@ export default class AccountManager {
             .then(this.generateAccount)
             .then(this.getAccount.bind(this));
     }
+
     /**
      * Allows user to unsubscribe from BASE. Delets all his data
      * @param {string} mnemonicPhrase Mnemonic phrase for Public/Private key pair
@@ -54,7 +55,7 @@ export default class AccountManager {
     public unsubscribe(mnemonicPhrase: string): Promise<Account> {
         return this.generateKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
-            .then((account) => this.accountRepository.unsubscribe(account))
+            .then((account) => this.accountRepository.unsubscribe(account));
     }
 
     private generateKeyPair(mnemonicPhrase: string): Promise<KeyPair> {

@@ -6,6 +6,7 @@ import { DataRequestState } from '../../src/repository/models/DataRequestState';
 import JsonUtils from '../../src/utils/JsonUtils';
 import { BehaviorSubject } from 'rxjs/Rx';
 import Account from '../../src/repository/models/Account';
+import * as assert from 'assert';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
@@ -129,18 +130,15 @@ describe('Data Request Manager', async () => {
     });
 
     it('share data for offer', async () => {
-        await requestManager.grantAccessForOffer(1, keyPairHelperAlisa.getPublicKey(), bobsFields)
+        await requestManager.grantAccessForOffer(1, keyPairHelperAlisa.getPublicKey(), bobsFields);
     });
 
     it('decrypt invalid message', async () => {
-        try
-        {
-            await requestManager.decryptMessage(keyPairHelperAlisa.getPublicKey(), "invalid string");
-        }
-        catch(e)
-        {
-            // console.log(e);
-        }
+        const result: any = await requestManager.decryptMessage(
+            keyPairHelperAlisa.getPublicKey(),
+            'invalid string'
+        );
+        assert.ok(result === null, "WTF?");
     });
 
 });
