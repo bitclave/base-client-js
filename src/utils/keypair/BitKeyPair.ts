@@ -5,6 +5,7 @@ import KeyPair from './KeyPair';
 const bitcore = require('bitcore-lib');
 const Message = require('bitcore-message');
 const ECIES = require('bitcore-ecies');
+const Mnemonic = require('bitcore-mnemonic');
 
 export default class BitKeyPair implements KeyPairHelper {
 
@@ -26,6 +27,10 @@ export default class BitKeyPair implements KeyPairHelper {
         return new KeyPair(privateKeyHex, publicKeyHex);
     }
 
+    public generateMnemonicPhrase(): string {
+        return new Mnemonic(Mnemonic.Words.ENGLISH).toString();
+    }
+
     public initKeyPairFromPrvKey(prvKey: string): KeyPair {
         this.privateKey = new bitcore.PrivateKey(bitcore.crypto.BN.fromString(prvKey, 16));
         this.publicKey = this.privateKey.toPublicKey();
@@ -41,6 +46,14 @@ export default class BitKeyPair implements KeyPairHelper {
         const message = new Message(data);
 
         return message.sign(this.privateKey);
+    }
+
+    public checkSig(data: any, sig: string): boolean {
+        try {
+            return Message(data).verify(this.privateKey.toAddress(), sig);
+        } catch (e) {
+            return false;
+        }
     }
 
     public getPublicKey(): string {

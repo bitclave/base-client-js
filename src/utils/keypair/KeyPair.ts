@@ -3,7 +3,6 @@ export default class KeyPair {
     private _privateKey: string;
     private _publicKey: string;
 
-
     constructor(privateKey: string, publicKey: string) {
         this._privateKey = privateKey;
         this._publicKey = publicKey;

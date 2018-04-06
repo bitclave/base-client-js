@@ -1,9 +1,16 @@
-export default class Account {
+import SimpleAccount from './SimpleAccount';
 
-    publicKey: string = '';
+export default class Account extends SimpleAccount {
+
+    message: string = '';
+    sig: string = '';
 
     constructor(publicKey: string = '') {
-        this.publicKey = publicKey;
+        super(publicKey);
+    }
+
+    public toSimpleAccount() {
+        return new SimpleAccount(this.publicKey);
     }
 
 }

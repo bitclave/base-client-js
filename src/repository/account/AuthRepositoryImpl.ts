@@ -17,19 +17,19 @@ export default class AccountRepositoryImpl implements AccountRepository {
 
     registration(account: Account): Promise<Account> {
         return this.transport
-            .sendRequest(this.SIGN_UP, HttpMethod.Post, account)
+            .sendRequest(this.SIGN_UP, HttpMethod.Post, account.toSimpleAccount())
             .then((response) => Object.assign(new Account(), response.json));
     }
 
     checkAccount(account: Account): Promise<Account> {
         return this.transport
-            .sendRequest(this.SIGN_IN, HttpMethod.Post, account)
+            .sendRequest(this.SIGN_IN, HttpMethod.Post, account.toSimpleAccount())
             .then((response) => Object.assign(new Account(), response.json));
     }
 
     unsubscribe(account: Account): Promise<Account> {
         return this.transport
-            .sendRequest(this.DELETE, HttpMethod.Delete, account)
+            .sendRequest(this.DELETE, HttpMethod.Delete, account.toSimpleAccount())
             .then((response) => Object.assign(new Account(), response.json));
     }
 

@@ -3,18 +3,22 @@ import Account from '../repository/models/Account';
 import KeyPair from '../utils/keypair/KeyPair';
 import { KeyPairHelper } from '../utils/keypair/KeyPairHelper';
 import { BehaviorSubject } from 'rxjs/Rx';
+import { MessageSigner } from '../utils/keypair/MessageSigner';
 
 export default class AccountManager {
 
     private accountRepository: AccountRepository;
     private keyPairCreator: KeyPairHelper;
+    private messageSigner: MessageSigner;
     private authAccountBehavior: BehaviorSubject<Account>;
 
     constructor(auth: AccountRepository,
                 keyPairCreator: KeyPairHelper,
+                messageSigner: MessageSigner,
                 authAccountBehavior: BehaviorSubject<Account>) {
         this.accountRepository = auth;
         this.keyPairCreator = keyPairCreator;
+        this.messageSigner = messageSigner;
         this.authAccountBehavior = authAccountBehavior;
     }
 
@@ -22,27 +26,29 @@ export default class AccountManager {
      * Registers a new user in the system.
      * @param {string} mnemonicPhrase Mnemonic phrase for Public/Private key pair
      * generation for asymmetric encryption scheme.
+     * @param {string} message on the basis of which a signature will be created to verify the public key
      *
      * @returns {Promise<Account>} {Account} after successful registration or http exception if fail.
      */
-    public registration(mnemonicPhrase: string): Promise<Account> {
+    public registration(mnemonicPhrase: string, message: string = ''): Promise<Account> {
         return this.generateKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
             .then((account) => this.accountRepository.registration(account))
-            .then(this.onGetAccount.bind(this));
+            .then(account => this.onGetAccount(account, message));
     }
 
     /**
      * Checks if user with provided mnemonic phrase is already registered in the system.
      * @param {string} mnemonicPhrase Mnemonic phrase for Public/Private key pair
      * generation for asymmetric encryption scheme.
+     * @param {string} message on the basis of which a signature will be created to verify the public key
      *
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
-    public checkAccount(mnemonicPhrase: string): Promise<Account> {
+    public checkAccount(mnemonicPhrase: string, message: string = ''): Promise<Account> {
         return this.generateKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
-            .then(this.getAccount.bind(this));
+            .then(account => this.getAccount(account, message));
     }
 
     /**
@@ -58,11 +64,8 @@ export default class AccountManager {
             .then((account) => this.accountRepository.unsubscribe(account));
     }
 
-    public getNewMnemonic(): string
-    {
-        var Mnemonic = require('bitcore-mnemonic');
-        var code = new Mnemonic(Mnemonic.Words.ENGLISH);
-        return code.toString();
+    public getNewMnemonic(): string {
+        return this.keyPairCreator.generateMnemonicPhrase();
     }
 
     private generateKeyPair(mnemonicPhrase: string): Promise<KeyPair> {
@@ -71,9 +74,9 @@ export default class AccountManager {
         });
     }
 
-    private getAccount(account: Account): Promise<Account> {
+    private getAccount(account: Account, message: string): Promise<Account> {
         return this.accountRepository.checkAccount(account)
-            .then(this.onGetAccount.bind(this));
+            .then(account => this.onGetAccount(account, message));
     }
 
     private generateAccount(keyPair: KeyPair): Promise<Account> {
@@ -82,10 +85,15 @@ export default class AccountManager {
         });
     }
 
-    private onGetAccount(account: Account): Account {
-        this.authAccountBehavior.next(account);
+    private onGetAccount(account: Account, message: string): Promise<Account> {
+        return new Promise<Account>(resolve => {
+            account.message = message;
+            account.sig = this.messageSigner.signMessage(message);
 
-        return account;
+            this.authAccountBehavior.next(account);
+
+            resolve(account);
+        });
     }
 
 }

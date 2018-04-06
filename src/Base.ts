@@ -79,6 +79,7 @@ export default class Base {
         this._accountManager = new AccountManager(
             accountRepository,
             keyPairHelper,
+            messageSigner,
             this._authAccountBehavior
         );
 
