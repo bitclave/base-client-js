@@ -72,4 +72,10 @@ describe('Account Manager', async () => {
             .equal(accountBob.publicKey);
     });
 
+    it('should check mnemonic phrase', function() {
+        const m1 = accountManager.getNewMnemonic();
+        const m2 = accountManager.getNewMnemonic();
+        m1.should.be.not.equal(m2);
+    });
+
 });
