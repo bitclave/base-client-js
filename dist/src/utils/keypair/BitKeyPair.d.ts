@@ -5,8 +5,10 @@ export default class BitKeyPair implements KeyPairHelper {
     private publicKey;
     private addr;
     createKeyPair(passPhrase: string): KeyPair;
+    generateMnemonicPhrase(): string;
     initKeyPairFromPrvKey(prvKey: string): KeyPair;
     signMessage(data: string): string;
+    checkSig(data: any, sig: string): boolean;
     getPublicKey(): string;
     getAddr(): string;
     encryptMessage(recipientPk: string, message: string): string;

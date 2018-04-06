@@ -1,4 +1,7 @@
-export default class Account {
-    publicKey: string;
+import SimpleAccount from './SimpleAccount';
+export default class Account extends SimpleAccount {
+    message: string;
+    sig: string;
     constructor(publicKey?: string);
+    toSimpleAccount(): SimpleAccount;
 }

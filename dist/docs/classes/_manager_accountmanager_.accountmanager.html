@@ -103,13 +103,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Account<wbr>Manager<span class="tsd-signature-symbol">(</span>auth<span class="tsd-signature-symbol">: </span><a href="../interfaces/_repository_account_accountrepository_.accountrepository.html" class="tsd-signature-type">AccountRepository</a>, keyPairCreator<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html" class="tsd-signature-type">KeyPairHelper</a>, authAccountBehavior<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">BehaviorSubject</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_manager_accountmanager_.accountmanager.html" class="tsd-signature-type">AccountManager</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Account<wbr>Manager<span class="tsd-signature-symbol">(</span>auth<span class="tsd-signature-symbol">: </span><a href="../interfaces/_repository_account_accountrepository_.accountrepository.html" class="tsd-signature-type">AccountRepository</a>, keyPairCreator<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html" class="tsd-signature-type">KeyPairHelper</a>, messageSigner<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_keypair_messagesigner_.messagesigner.html" class="tsd-signature-type">MessageSigner</a>, authAccountBehavior<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">BehaviorSubject</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_manager_accountmanager_.accountmanager.html" class="tsd-signature-type">AccountManager</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/4d2ba1e/src/manager/AccountManager.ts#L11">manager/AccountManager.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/124a962/src/manager/AccountManager.ts#L13">manager/AccountManager.ts:13</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -119,6 +119,9 @@
 								</li>
 								<li>
 									<h5>keyPairCreator: <a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html" class="tsd-signature-type">KeyPairHelper</a></h5>
+								</li>
+								<li>
+									<h5>messageSigner: <a href="../interfaces/_utils_keypair_messagesigner_.messagesigner.html" class="tsd-signature-type">MessageSigner</a></h5>
 								</li>
 								<li>
 									<h5>authAccountBehavior: <span class="tsd-signature-type">BehaviorSubject</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></h5>
@@ -135,13 +138,13 @@
 					<a name="checkaccount" class="tsd-anchor"></a>
 					<h3>check<wbr>Account</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">check<wbr>Account<span class="tsd-signature-symbol">(</span>mnemonicPhrase<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">check<wbr>Account<span class="tsd-signature-symbol">(</span>mnemonicPhrase<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, message<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/4d2ba1e/src/manager/AccountManager.ts#L42">manager/AccountManager.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/124a962/src/manager/AccountManager.ts#L48">manager/AccountManager.ts:48</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -156,6 +159,12 @@
 									<div class="tsd-comment tsd-typography">
 										<p>Mnemonic phrase for Public/Private key pair
 										generation for asymmetric encryption scheme.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> message: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>on the basis of which a signature will be created to verify the public key</p>
 									</div>
 								</li>
 							</ul>
@@ -174,7 +183,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/4d2ba1e/src/manager/AccountManager.ts#L61">manager/AccountManager.ts:61</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/124a962/src/manager/AccountManager.ts#L67">manager/AccountManager.ts:67</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -185,13 +194,13 @@
 					<a name="registration" class="tsd-anchor"></a>
 					<h3>registration</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">registration<span class="tsd-signature-symbol">(</span>mnemonicPhrase<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">registration<span class="tsd-signature-symbol">(</span>mnemonicPhrase<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, message<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/4d2ba1e/src/manager/AccountManager.ts#L28">manager/AccountManager.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/124a962/src/manager/AccountManager.ts#L33">manager/AccountManager.ts:33</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -206,6 +215,12 @@
 									<div class="tsd-comment tsd-typography">
 										<p>Mnemonic phrase for Public/Private key pair
 										generation for asymmetric encryption scheme.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> message: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>on the basis of which a signature will be created to verify the public key</p>
 									</div>
 								</li>
 							</ul>
@@ -224,7 +239,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/4d2ba1e/src/manager/AccountManager.ts#L55">manager/AccountManager.ts:55</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/124a962/src/manager/AccountManager.ts#L61">manager/AccountManager.ts:61</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
