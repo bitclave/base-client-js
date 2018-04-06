@@ -24,24 +24,63 @@ describe('Account Manager', async () => {
     const accountAlisa: Account = new Account(keyPairHelperAlisa.createKeyPair(passPhraseAlisa).publicKey);
     const accountBob: Account = new Account(keyPairHelperBob.createKeyPair(passPhraseBob).publicKey);
 
+    const messageForSigAlisa = 'some random message for Alisa';
+    const messageForSigBob = 'some random message for Bob';
+
     const accountManager = new AccountManager(
         accountRepository,
+        keyPairHelper,
         keyPairHelper,
         authAccountBehavior
     );
 
     it('should register same account and change it', async () => {
-        await accountManager.registration(passPhraseAlisa);
+        await accountManager.registration(passPhraseAlisa, messageForSigAlisa);
         authAccountBehavior.getValue().publicKey.should.be.equal(accountAlisa.publicKey);
     });
 
     it('should check account and change it', async () => {
-        await accountManager.checkAccount(passPhraseAlisa);
+        await accountManager.checkAccount(passPhraseAlisa, messageForSigAlisa);
         authAccountBehavior.getValue().publicKey.should.be.equal(accountAlisa.publicKey);
     });
 
+    it('should valid public key from sig in registration and check account', async () => {
+        await accountManager.registration(passPhraseAlisa, messageForSigAlisa);
+        const account = authAccountBehavior.getValue();
+        account.publicKey.should.be.equal(accountAlisa.publicKey);
+        account.message.should.be.equal(messageForSigAlisa);
+        keyPairHelperAlisa.checkSig(messageForSigAlisa, account.sig).should.be.true;
+        keyPairHelperAlisa.checkSig(messageForSigAlisa, 'some fake sig').should.be.false;
+        keyPairHelperAlisa.checkSig(messageForSigBob, account.sig).should.be.false;
+
+        await accountManager.checkAccount(passPhraseAlisa, messageForSigAlisa);
+        const account = authAccountBehavior.getValue();
+        account.publicKey.should.be.equal(accountAlisa.publicKey);
+        account.message.should.be.equal(messageForSigAlisa);
+        keyPairHelperAlisa.checkSig(messageForSigAlisa, account.sig).should.be.true;
+        keyPairHelperAlisa.checkSig(messageForSigAlisa, 'some fake sig').should.be.false;
+        keyPairHelperAlisa.checkSig(messageForSigBob, account.sig).should.be.false;
+    });
+
+    it('should valid public key from sig (with empty message) in registration and check account', async () => {
+        await accountManager.registration(passPhraseAlisa);
+        const account = authAccountBehavior.getValue();
+        account.message.should.be.equal('');
+        keyPairHelperAlisa.checkSig('', account.sig).should.be.true;
+        keyPairHelperAlisa.checkSig('', 'some fake sig').should.be.false;
+        keyPairHelperAlisa.checkSig(messageForSigBob, account.sig).should.be.false;
+
+        await accountManager.checkAccount(passPhraseAlisa);
+        const account = authAccountBehavior.getValue();
+        account.publicKey.should.be.equal(accountAlisa.publicKey);
+        account.message.should.be.equal('');
+        keyPairHelperAlisa.checkSig('', account.sig).should.be.true;
+        keyPairHelperAlisa.checkSig('', 'some fake sig').should.be.false;
+        keyPairHelperAlisa.checkSig(messageForSigBob, account.sig).should.be.false;
+    });
+
     it('should register different account and change it', async () => {
-        await accountManager.registration(passPhraseBob);
+        await accountManager.registration(passPhraseBob, messageForSigBob);
         authAccountBehavior.getValue()
             .publicKey
             .should
@@ -57,7 +96,7 @@ describe('Account Manager', async () => {
     });
 
     it('should check different account and change it', async () => {
-        await accountManager.checkAccount(passPhraseBob);
+        await accountManager.checkAccount(passPhraseBob, messageForSigBob);
         authAccountBehavior.getValue()
             .publicKey
             .should

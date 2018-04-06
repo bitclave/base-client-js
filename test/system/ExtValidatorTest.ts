@@ -45,7 +45,6 @@ describe('BASE API test: External Validator', async () => {
     });
 
     beforeEach(async () => {
-
         accAlice = await createUser(baseAlice, passPhraseAlisa);
         accBob = await createUser(baseBob, passPhraseBob);
         accCarol = await createUser(baseCarol, passPhraseCarol);
@@ -64,6 +63,7 @@ describe('BASE API test: External Validator', async () => {
         accDesearch.publicKey.should.be.equal('03d3a075d33cf8b7870d87b0c2e80653f03c00c5966dd27bdc3abab53d928dcc87');
         accValidator.publicKey.should.be.equal('027b4ac791802620d8896111ed5aba38004e740a296473ead603ae47da34147a81');
     });
+
     /**/
     it('Alice grants access to validator', async () => {
         // NOTE: Grant is modeled, like if Validator asked for access and Alice granted - so in the repository

@@ -16,6 +16,13 @@ describe('Key pair and cryptography', async () => {
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
 
+    it('should generate different mnemonic phrase', async () => {
+        const keyPairFirst = keyPairHelper.generateMnemonicPhrase();
+        const keyPairSecond = keyPairHelper.generateMnemonicPhrase();
+
+        keyPairFirst.should.be.not.equal(keyPairSecond);
+    });
+
     it('should generate the same pair', async () => {
         const keyPairFirst = keyPairHelper.createKeyPair(passPhraseAlisa);
         const keyPairSecond = keyPairHelper.createKeyPair(passPhraseAlisa);
