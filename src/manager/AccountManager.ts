@@ -58,6 +58,13 @@ export default class AccountManager {
             .then((account) => this.accountRepository.unsubscribe(account));
     }
 
+    public getNewMnemonic(): string
+    {
+        var Mnemonic = require('bitcore-mnemonic');
+        var code = new Mnemonic(Mnemonic.Words.ENGLISH);
+        return code.toString();
+    }
+
     private generateKeyPair(mnemonicPhrase: string): Promise<KeyPair> {
         return new Promise<KeyPair>(resolve => {
             resolve(this.keyPairCreator.createKeyPair(mnemonicPhrase));

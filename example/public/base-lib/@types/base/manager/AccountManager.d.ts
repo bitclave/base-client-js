@@ -31,6 +31,7 @@ export default class AccountManager {
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
     unsubscribe(mnemonicPhrase: string): Promise<Account>;
+    getNewMnemonic(): string;
     private generateKeyPair(mnemonicPhrase);
     private getAccount(account);
     private generateAccount(keyPair);

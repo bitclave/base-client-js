@@ -60,6 +60,9 @@ export default class Auth extends React.Component<Props, State> {
                             bsSize="lg"
                             placeholder={'Mnemonic phrase'}
                         />
+                        <Button size="sm" color="primary" onClick={e => this.onMnemonic()}>
+                            Seed Phrase
+                        </Button>
                     </FormGroup>
                     <FormGroup>
                         <Button block={true} size="lg" color="primary" onClick={e => this.onSingUp()}>
@@ -95,6 +98,10 @@ export default class Auth extends React.Component<Props, State> {
 
     private onChangeMnemonic(mnemonicPhrase: string) {
         this.setState({mnemonicPhrase: mnemonicPhrase});
+    }
+
+    private onMnemonic() {
+        this.setState({mnemonicPhrase: this.baseManager.getNewMnemonic()});
     }
 
     private onSingUp() {

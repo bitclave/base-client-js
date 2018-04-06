@@ -52,6 +52,10 @@ export default class BaseManager {
             });
     }
 
+    getNewMnemonic(): string
+    {
+        return this.base.accountManager.getNewMnemonic();
+    }
     unsubscribe(mnemonicPhrase: string): Promise<Account> {
         return this.base.accountManager.unsubscribe(mnemonicPhrase)
             .then(account => {
