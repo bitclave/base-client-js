@@ -4,14 +4,14 @@
   "description": "Base JS library for BASE-platform",
   "main": "Base.js",
   "scripts": {
-    "test": "npm run remove-bitcore-lib-dep && mocha --timeout 100000 --recursive --require ts-node/register \"./test/**/*Test.ts\"",
-    "testProfile": "npm run remove-bitcore-lib-dep && mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/profile/*Test.ts\"",
-    "testValidator": "npm run remove-bitcore-lib-dep && mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/system/ExtValidatorTest.ts\"",
-    "testRequest": "npm run remove-bitcore-lib-dep && mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/requests/*Test.ts\"",
+    "postinstall": "node remove-bitcore-lib-dep.js",
+    "test": "mocha --timeout 100000 --recursive --require ts-node/register \"./test/**/*Test.ts\"",
+    "testProfile": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/profile/*Test.ts\"",
+    "testValidator": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/system/ExtValidatorTest.ts\"",
+    "testRequest": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/requests/*Test.ts\"",
     "coverage": "nyc npm run test",
     "coveralls": "npm run coverage && cat coverage/lcov.info | coveralls",
-    "remove-bitcore-lib-dep": "node remove-bitcore-lib-dep.js",
-    "build": "npm run remove-bitcore-lib-dep && webpack"
+    "build": "webpack"
   },
   "nyc": {
     "extension": [
