@@ -83,7 +83,7 @@ describe('BASE API test: External Validator', async () => {
 
         // Validator decodes Alice's wallets
         const decryptedObj: any = await baseValidator.profileManager.getAuthorizedData(
-            accAlice.publicKey,
+            requestsByFrom[0].toPk,
             requestsByFrom[0].responseData
         );
 
@@ -116,7 +116,7 @@ describe('BASE API test: External Validator', async () => {
 
         // Validator decodes Alice's wallets
         const decryptedObj: any = await baseValidator.profileManager.getAuthorizedData(
-            accAlice.publicKey,
+            requestsByFrom[0].toPk,
             requestsByFrom[0].responseData
         );
 
@@ -221,7 +221,7 @@ describe('BASE API test: External Validator', async () => {
         var wealthMap: Map<string, string> = new Map<string, string>();
         for (var i = 0; i < requestsByFrom.length; i++) {
             const decryptedObj: any = await baseValidator.profileManager.getAuthorizedData(
-                accs[i].publicKey,
+                requestsByFrom[i].toPk,
                 requestsByFrom[i].responseData
             );
             decryptedObj.get('eth_wallets').should.be.equal(wallets[i]);
@@ -281,7 +281,7 @@ describe('BASE API test: External Validator', async () => {
             accDesearch.publicKey, accAlice.publicKey, DataRequestState.ACCEPT
         );
         const wealthOfAlice: Map<string, string> = await baseDesearch.profileManager.getAuthorizedData(
-            accAlice.publicKey, recordsForDesearch[0].responseData);
+            recordsForDesearch[0].toPk, recordsForDesearch[0].responseData);
         const wealthRecord: any = wealthOfAlice.get('wealth');
         const wealthRecordObject: BaseType.EthWealthPtr = JSON.parse(wealthRecord);
         // console.log(wealthRecord);
