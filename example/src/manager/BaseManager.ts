@@ -35,7 +35,9 @@ export default class BaseManager {
     }
 
     signUp(mnemonicPhrase: string): Promise<Account> {
-        return this.base.accountManager.registration(mnemonicPhrase)
+        return this.getUniqueMessageForSigFromServerSide()
+            .then(uniqueMessage => this.base.accountManager.registration(mnemonicPhrase, uniqueMessage))
+            .then(this.sendAccountToServerSide.bind(this))
             .then(account => {
                 this.account = account;
                 this.prepareStartSyncState();
@@ -44,12 +46,35 @@ export default class BaseManager {
     }
 
     signIn(mnemonicPhrase: string): Promise<Account> {
-        return this.base.accountManager.checkAccount(mnemonicPhrase)
+        return this.getUniqueMessageForSigFromServerSide()
+            .then(uniqueMessage => this.base.accountManager.checkAccount(mnemonicPhrase, uniqueMessage))
+            .then(this.sendAccountToServerSide.bind(this))
             .then(account => {
                 this.account = account;
                 this.prepareStartSyncState();
                 return this.account;
             });
+    }
+
+    private getUniqueMessageForSigFromServerSide(): Promise<string> {
+        return new Promise<string>(resolve => {
+            let text = '';
+            const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+            for (let i = 0; i < 64; i++) {
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
+
+            console.log('unique message from server side:', text);
+            resolve(text);
+        });
+    }
+
+    public sendAccountToServerSide(account: Account): Promise<Account> {
+        return new Promise<Account>(resolve => {
+            console.log('account for server side: ', account);
+            resolve(account);
+        });
     }
 
     getNewMnemonic(): string {
