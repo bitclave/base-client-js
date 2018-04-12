@@ -7,7 +7,7 @@ import { MessageSigner } from '../utils/keypair/MessageSigner';
 import { EthWalletVerificationStatus } from '../utils/BaseEthUtils';
 import * as BaseType from '../../src/utils/BaseTypes';
 import DataRequestManager from './DataRequestManager';
-import { EthAddrRecord } from "../utils/BaseTypes";
+import { EthAddrRecord } from '../utils/BaseTypes';
 export default class ProfileManager {
     static DATA_KEY_ETH_WALLETS: string;
     static DATA_KEY_ETH_WEALTH_VALIDATOR: string;
@@ -21,7 +21,7 @@ export default class ProfileManager {
     constructor(clientRepository: ClientDataRepository, authAccountBehavior: Observable<Account>, encrypt: MessageEncrypt, decrypt: MessageDecrypt, signer: MessageSigner, dataRequestManager: DataRequestManager);
     validateEthWallets(key: string, val: string, baseID: string): EthWalletVerificationStatus;
     createEthWallets(wallets: EthAddrRecord[], baseID: string): Promise<BaseType.EthWallets>;
-    signMessage(data: any): string;
+    signMessage(data: any): Promise<string>;
     addEthWealthValidator(validatorPbKey: string): Promise<void>;
     refreshWealthPtr(): Promise<BaseType.EthWealthPtr>;
     /**

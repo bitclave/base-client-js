@@ -65,7 +65,7 @@ export default class DataRequestManager {
      *
      * @returns {object | null} object with data or null if was error.
      */
-    decryptMessage(senderPk: string, encrypted: string): any | null;
+    decryptMessage(senderPk: string, encrypted: string): Promise<any>;
     private getEncryptedDataForFields(recipientPk, fields?);
     private onChangeAccount(account);
 }

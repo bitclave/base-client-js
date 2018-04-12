@@ -1,7 +1,6 @@
 import Wallet from './repository/wallet/Wallet';
 import AccountManager from './manager/AccountManager';
 import ProfileManager from './manager/ProfileManager';
-import Account from './repository/models/Account';
 import DataRequestManager from './manager/DataRequestManager';
 import { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 import OfferManager from './manager/OfferManager';
@@ -14,7 +13,6 @@ export { CompareAction } from './repository/models/CompareAction';
 export { EthBaseAddrPair, EthAddrRecord, EthWallets, EthWealthRecord, EthWealthPtr, ProfileUser, ProfileEthWealthValidator } from './utils/BaseTypes';
 export { SearchRequest };
 export { Offer };
-export { Account };
 export { Base as NodeAPI };
 export default class Base {
     private _wallet;
@@ -25,7 +23,7 @@ export default class Base {
     private _searchRequestManager;
     private _authAccountBehavior;
     private _repositoryStrategyInterceptor;
-    constructor(host: string);
+    constructor(host: string, signerHost: string);
     changeStrategy(strategy: RepositoryStrategyType): void;
     readonly wallet: Wallet;
     readonly accountManager: AccountManager;

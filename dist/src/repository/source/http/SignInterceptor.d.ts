@@ -1,13 +1,8 @@
 import { HttpInterceptor } from './HttpInterceptor';
 import { MessageSigner } from '../../../utils/keypair/MessageSigner';
+import InterceptorCortege from './InterceptorCortege';
 export default class SignInterceptor implements HttpInterceptor {
-    private data;
-    private path;
-    private headers;
     private messageSigner;
     constructor(messageSigner: MessageSigner);
-    onIntercept(path: string, headers: Map<string, string>, data: any): void;
-    getData(): any;
-    getPath(): string;
-    getHeaders(): Map<string, string>;
+    onIntercept(cortege: InterceptorCortege): Promise<InterceptorCortege>;
 }

@@ -90,6 +90,7 @@
 				<h3>Implemented by</h3>
 				<ul class="tsd-hierarchy">
 					<li><a href="../classes/_utils_keypair_bitkeypair_.bitkeypair.html" class="tsd-signature-type">BitKeyPair</a></li>
+					<li><a href="../classes/_utils_keypair_rpc_rpckeypair_.rpckeypair.html" class="tsd-signature-type">RpcKeyPair</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -118,26 +119,26 @@
 					<a name="checksig" class="tsd-anchor"></a>
 					<h3>check<wbr>Sig</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">check<wbr>Sig<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, sig<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">check<wbr>Sig<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, sig<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_utils_keypair_messagesigner_.messagesigner.html">MessageSigner</a>.<a href="_utils_keypair_messagesigner_.messagesigner.html#checksig">checkSig</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c347f4e/src/utils/keypair/MessageSigner.ts#L5">utils/keypair/MessageSigner.ts:5</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c75fa06/src/utils/keypair/MessageSigner.ts#L5">utils/keypair/MessageSigner.ts:5</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>data: <span class="tsd-signature-type">any</span></h5>
+									<h5>data: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
 									<h5>sig: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -145,13 +146,13 @@
 					<a name="createkeypair" class="tsd-anchor"></a>
 					<h3>create<wbr>Key<wbr>Pair</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Key<wbr>Pair<span class="tsd-signature-symbol">(</span>passPhrase<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_utils_keypair_keypair_.keypair.html" class="tsd-signature-type">KeyPair</a></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Key<wbr>Pair<span class="tsd-signature-symbol">(</span>passPhrase<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/_utils_keypair_keypair_.keypair.html" class="tsd-signature-type">KeyPair</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c347f4e/src/utils/keypair/KeyPairHelper.ts#L8">utils/keypair/KeyPairHelper.ts:8</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c75fa06/src/utils/keypair/KeyPairHelper.ts#L8">utils/keypair/KeyPairHelper.ts:8</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -160,7 +161,7 @@
 									<h5>passPhrase: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="../classes/_utils_keypair_keypair_.keypair.html" class="tsd-signature-type">KeyPair</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/_utils_keypair_keypair_.keypair.html" class="tsd-signature-type">KeyPair</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -168,14 +169,14 @@
 					<a name="decryptmessage" class="tsd-anchor"></a>
 					<h3>decrypt<wbr>Message</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">decrypt<wbr>Message<span class="tsd-signature-symbol">(</span>senderPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, encrypted<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">decrypt<wbr>Message<span class="tsd-signature-symbol">(</span>senderPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, encrypted<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_utils_keypair_messagedecrypt_.messagedecrypt.html">MessageDecrypt</a>.<a href="_utils_keypair_messagedecrypt_.messagedecrypt.html#decryptmessage">decryptMessage</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c347f4e/src/utils/keypair/MessageDecrypt.ts#L3">utils/keypair/MessageDecrypt.ts:3</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c75fa06/src/utils/keypair/MessageDecrypt.ts#L3">utils/keypair/MessageDecrypt.ts:3</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -187,7 +188,7 @@
 									<h5>encrypted: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -195,14 +196,14 @@
 					<a name="encryptmessage" class="tsd-anchor"></a>
 					<h3>encrypt<wbr>Message</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">encrypt<wbr>Message<span class="tsd-signature-symbol">(</span>recipientPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">encrypt<wbr>Message<span class="tsd-signature-symbol">(</span>recipientPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_utils_keypair_messageencrypt_.messageencrypt.html">MessageEncrypt</a>.<a href="_utils_keypair_messageencrypt_.messageencrypt.html#encryptmessage">encryptMessage</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c347f4e/src/utils/keypair/MessageEncrypt.ts#L3">utils/keypair/MessageEncrypt.ts:3</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c75fa06/src/utils/keypair/MessageEncrypt.ts#L3">utils/keypair/MessageEncrypt.ts:3</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -214,7 +215,7 @@
 									<h5>message: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -222,16 +223,16 @@
 					<a name="generatemnemonicphrase" class="tsd-anchor"></a>
 					<h3>generate<wbr>Mnemonic<wbr>Phrase</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">generate<wbr>Mnemonic<wbr>Phrase<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">generate<wbr>Mnemonic<wbr>Phrase<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c347f4e/src/utils/keypair/KeyPairHelper.ts#L10">utils/keypair/KeyPairHelper.ts:10</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c75fa06/src/utils/keypair/KeyPairHelper.ts#L10">utils/keypair/KeyPairHelper.ts:10</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -239,14 +240,14 @@
 					<a name="generatepasswordforfield" class="tsd-anchor"></a>
 					<h3>generate<wbr>Password<wbr>For<wbr>Field</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">generate<wbr>Password<wbr>For<wbr>Field<span class="tsd-signature-symbol">(</span>fieldName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">generate<wbr>Password<wbr>For<wbr>Field<span class="tsd-signature-symbol">(</span>fieldName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_utils_keypair_messageencrypt_.messageencrypt.html">MessageEncrypt</a>.<a href="_utils_keypair_messageencrypt_.messageencrypt.html#generatepasswordforfield">generatePasswordForField</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c347f4e/src/utils/keypair/MessageEncrypt.ts#L5">utils/keypair/MessageEncrypt.ts:5</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c75fa06/src/utils/keypair/MessageEncrypt.ts#L5">utils/keypair/MessageEncrypt.ts:5</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -255,7 +256,7 @@
 									<h5>fieldName: <span class="tsd-signature-type">String</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -270,7 +271,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_utils_keypair_messagesigner_.messagesigner.html">MessageSigner</a>.<a href="_utils_keypair_messagesigner_.messagesigner.html#getpublickey">getPublicKey</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c347f4e/src/utils/keypair/MessageSigner.ts#L7">utils/keypair/MessageSigner.ts:7</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c75fa06/src/utils/keypair/MessageSigner.ts#L7">utils/keypair/MessageSigner.ts:7</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -281,23 +282,23 @@
 					<a name="signmessage" class="tsd-anchor"></a>
 					<h3>sign<wbr>Message</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">sign<wbr>Message<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">sign<wbr>Message<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_utils_keypair_messagesigner_.messagesigner.html">MessageSigner</a>.<a href="_utils_keypair_messagesigner_.messagesigner.html#signmessage">signMessage</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c347f4e/src/utils/keypair/MessageSigner.ts#L3">utils/keypair/MessageSigner.ts:3</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c75fa06/src/utils/keypair/MessageSigner.ts#L3">utils/keypair/MessageSigner.ts:3</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>data: <span class="tsd-signature-type">any</span></h5>
+									<h5>data: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
