@@ -1,5 +1,4 @@
 export interface MessageSigner {
-    signMessage(data: any): string;
-    checkSig(data: any, sig: string): boolean;
+    signMessage(data: string): Promise<string>;
     getPublicKey(): string;
 }

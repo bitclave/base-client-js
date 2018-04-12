@@ -26,7 +26,7 @@ export default class BaseManager {
     private cacheRequests: Array<DataRequest> = [];
 
     constructor() {
-        this.base = new Base(Config.getBaseEndPoint());
+        this.base = new Base(Config.getBaseEndPoint(), Config.getSignerEndPoint());
         this.changeStrategy(RepositoryStrategyType.Postgres);
     }
 
@@ -125,7 +125,7 @@ export default class BaseManager {
         this.listeners.delete(listener);
     }
 
-    decryptRequestFields(senderPk: string, encryptedData: string): Array<string> {
+    decryptRequestFields(senderPk: string, encryptedData: string): Promise<Array<string>> {
         return this.base.dataRequestManager.decryptMessage(senderPk, encryptedData);
     }
 

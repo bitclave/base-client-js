@@ -1,9 +1,9 @@
 import { RpcTransport } from './RpcTransport';
+import { HttpTransport } from '../http/HttpTransport';
 export default class RpcTransportImpl implements RpcTransport {
-    private client;
-    private host;
-    constructor(host: string);
+    private transport;
+    private id;
+    constructor(httpTransport: HttpTransport);
     request(method: string, arg: any): Promise<any>;
     disconnect(): void;
-    private checkConnection();
 }

@@ -25,7 +25,7 @@ export default class Base {
     private _searchRequestManager;
     private _authAccountBehavior;
     private _repositoryStrategyInterceptor;
-    constructor(host: string);
+    constructor(host: string, signerHost: string);
     changeStrategy(strategy: RepositoryStrategyType): void;
     readonly wallet: Wallet;
     readonly accountManager: AccountManager;

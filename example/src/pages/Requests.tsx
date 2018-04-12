@@ -60,12 +60,12 @@ export default class Requests extends React.Component<Props, State> implements S
         const items: Array<RequestModel> = [];
         let fields: Array<string>;
 
-        result.forEach((item: DataRequest) => {
+        for (let item of result) {
             if (item.state === DataRequestState.AWAIT) {
-                fields = this.baseManager.decryptRequestFields(item.fromPk, item.requestData);
+                fields = await this.baseManager.decryptRequestFields(item.fromPk, item.requestData);
                 items.push(new RequestModel(item.id, item.fromPk, fields));
             }
-        });
+        }
 
         this.setState({requestData: items});
     }
