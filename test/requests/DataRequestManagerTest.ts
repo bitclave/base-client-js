@@ -6,6 +6,9 @@ import { DataRequestState } from '../../src/repository/models/DataRequestState';
 import JsonUtils from '../../src/utils/JsonUtils';
 import { BehaviorSubject } from 'rxjs/Rx';
 import Account from '../../src/repository/models/Account';
+import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
+import RpcTransportImpl from '../../src/repository/source/rpc/RpcTransportImpl';
+import HttpTransportImpl from '../../src/repository/source/http/HttpTransportImpl';
 import * as assert from 'assert';
 
 const should = require('chai')
@@ -16,33 +19,44 @@ describe('Data Request Manager', async () => {
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
 
-    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
-    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
+    const rpcClient: RpcTransport = new RpcTransportImpl(new HttpTransportImpl('http://localhost:3545'));
+
+    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.getRpcKeyPairCreator(rpcClient);
+    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.getRpcKeyPairCreator(rpcClient);
     const dataRepository: DataRequestRepositoryImplMock = new DataRequestRepositoryImplMock();
 
     const bobsFields = ['name', 'email'];
     const alisaFields = ['email'];
 
-    keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
-    keyPairHelperBob.createKeyPair(passPhraseBob);
+    const accountBob: Account;
+    const authAccountBehaviorBob: BehaviorSubject<Account>;
+    const requestManager: DataRequestManager;
 
-    const accountBob: Account = new Account(keyPairHelperBob.getPublicKey());
-    const authAccountBehaviorBob: BehaviorSubject<Account> = new BehaviorSubject<Account>(accountBob);
+    before(async () => {
+        await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
+        await keyPairHelperBob.createKeyPair(passPhraseBob);
+        accountBob = new Account(keyPairHelperBob.getPublicKey());
+        authAccountBehaviorBob = new BehaviorSubject<Account>(accountBob);
 
-    dataRepository.setPK(keyPairHelperAlisa.getPublicKey(), keyPairHelperBob.getPublicKey());
+        dataRepository.setPK(keyPairHelperAlisa.getPublicKey(), keyPairHelperBob.getPublicKey());
 
-    const requestManager = new DataRequestManager(
-        dataRepository,
-        authAccountBehaviorBob,
-        keyPairHelperAlisa,
-        keyPairHelperAlisa
-    );
+        requestManager = new DataRequestManager(
+            dataRepository,
+            authAccountBehaviorBob,
+            keyPairHelperAlisa,
+            keyPairHelperAlisa
+        );
+    });
 
-    beforeEach(function (done) {
+    beforeEach((done) => {
         dataRepository.clearData();
         done();
     });
 
+    after(async() => {
+        rpcClient.disconnect();
+    })
+    
     it('create request data', async () => {
         await requestManager.createRequest(keyPairHelperBob.getPublicKey(), bobsFields);
         const requestsByFrom = await requestManager.getRequests(
@@ -59,7 +73,7 @@ describe('Data Request Manager', async () => {
         requestsByFrom.should.be.deep.equal(requestsByTo);
 
         requestsByFrom[0].requestData.should.be.not.equal(bobsFields);
-        const decryptedStr = keyPairHelperBob.decryptMessage(
+        const decryptedStr = await keyPairHelperBob.decryptMessage(
             keyPairHelperAlisa.getPublicKey(),
             requestsByFrom[0].requestData
         );
@@ -84,7 +98,7 @@ describe('Data Request Manager', async () => {
         requestsByFrom.should.be.deep.equal(requestsByTo);
 
         requestsByFrom[0].responseData.should.be.not.equal(alisaFields);
-        const decryptedObj: any = requestManager.decryptMessage(
+        const decryptedObj: any = await requestManager.decryptMessage(
             keyPairHelperBob.getPublicKey(),
             requestsByFrom[0].responseData
         );
@@ -115,7 +129,7 @@ describe('Data Request Manager', async () => {
         requestsByFrom.should.be.deep.equal(requestsByTo);
 
         requestsByFrom[0].responseData.should.be.not.equal(bobsFields);
-        const decryptedStr = keyPairHelperAlisa.decryptMessage(
+        const decryptedStr = await keyPairHelperAlisa.decryptMessage(
             keyPairHelperBob.getPublicKey(),
             requestsByFrom[0].responseData
         );
@@ -134,11 +148,12 @@ describe('Data Request Manager', async () => {
     });
 
     it('decrypt invalid message', async () => {
+        const message: string = 'invalid string';
         const result: any = await requestManager.decryptMessage(
             keyPairHelperAlisa.getPublicKey(),
-            'invalid string'
+            message
         );
-        assert.ok(result === null, "WTF?");
+        assert.ok(result === message, "WTF?");
     });
 
 });

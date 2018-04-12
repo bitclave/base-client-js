@@ -35,10 +35,9 @@ export default class DataRequestManager {
      * @returns {Promise<number>} Returns requestID upon successful request record creation.
      */
     public createRequest(recipientPk: string, fields: Array<string>): Promise<number> {
-        const encrypted = this.encrypt
-            .encryptMessage(recipientPk, JSON.stringify(fields).toLowerCase());
-
-        return this.dataRequestRepository.createRequest(recipientPk, encrypted);
+        return this.encrypt
+            .encryptMessage(recipientPk, JSON.stringify(fields).toLowerCase())
+            .then((encrypted: string) => this.dataRequestRepository.createRequest(recipientPk, encrypted));
     }
 
     /**
@@ -52,7 +51,8 @@ export default class DataRequestManager {
      */
     public responseToRequest(requestId: number, senderPk: string,
                              fields?: Array<string>): Promise<DataRequestState> {
-        return this.dataRequestRepository.createResponse(requestId, this.getEncryptedDataForFields(senderPk, fields));
+        return this.getEncryptedDataForFields(senderPk, fields)
+            .then(encrypted => this.dataRequestRepository.createResponse(requestId, encrypted));
     }
 
     /**
@@ -76,11 +76,12 @@ export default class DataRequestManager {
      * @returns {Promise<number>}
      */
     public grantAccessForClient(clientPk: string, acceptedFields: Array<string>): Promise<number> {
-        return this.dataRequestRepository.grantAccessForClient(
-            clientPk,
-            this.account.publicKey,
-            this.getEncryptedDataForFields(clientPk, acceptedFields)
-        );
+        return this.getEncryptedDataForFields(clientPk, acceptedFields)
+            .then(encrypted => this.dataRequestRepository.grantAccessForClient(
+                clientPk,
+                this.account.publicKey,
+                encrypted
+            ));
     }
 
     /**
@@ -93,11 +94,12 @@ export default class DataRequestManager {
      * @returns {Promise<void>}
      */
     public grantAccessForOffer(offerId: number, offerOwner: string, acceptedFields: Array<string>): Promise<void> {
-        return this.dataRequestRepository.grantAccessForOffer(
-            offerId,
-            this.account.publicKey,
-            this.getEncryptedDataForFields(offerOwner, acceptedFields)
-        );
+        return this.getEncryptedDataForFields(offerOwner, acceptedFields)
+            .then(encrypted => this.dataRequestRepository.grantAccessForOffer(
+                offerId,
+                this.account.publicKey,
+                encrypted
+            ));
     }
 
     /**
@@ -107,30 +109,36 @@ export default class DataRequestManager {
      *
      * @returns {object | null} object with data or null if was error.
      */
-    public decryptMessage(senderPk: string, encrypted: string): any | null {
-        try {
-            const decrypted = this.decrypt.decryptMessage(senderPk, encrypted);
-            return JSON.parse(decrypted);
-        } catch (e) {
-            return null;
-        }
+    public decryptMessage(senderPk: string, encrypted: string): Promise<any> {
+        return this.decrypt.decryptMessage(senderPk, encrypted)
+            .then(decrypted => {
+                try {
+                    return JSON.parse(decrypted);
+                } catch (e) {
+                    return decrypted;
+                }
+            });
     }
 
-    private getEncryptedDataForFields(recipientPk: string, fields?: Array<string>): string {
-        let encryptedMessage = '';
+    private getEncryptedDataForFields(recipientPk: string, fields?: Array<string>): Promise<string> {
+        return new Promise<string>(async resolve => {
+            let encryptedMessage = '';
 
-        if (fields != null && fields.length > 0) {
-            const resultMap: Map<string, string> = new Map();
-            fields.forEach(value => {
-                resultMap.set(value, this.encrypt.generatePasswordForField(value.toLowerCase()));
-            });
+            if (fields != null && fields.length > 0) {
+                const resultMap: Map<string, string> = new Map();
 
-            const jsonMap: any = JsonUtils.mapToJson(resultMap);
-            encryptedMessage = this.encrypt
-                .encryptMessage(recipientPk, JSON.stringify(jsonMap));
-        }
+                for(let value of fields) {
+                    resultMap.set(value, await this.encrypt.generatePasswordForField(value.toLowerCase()));
+                }
 
-        return encryptedMessage;
+                const jsonMap: any = JsonUtils.mapToJson(resultMap);
+                encryptedMessage = await this.encrypt
+                    .encryptMessage(recipientPk, JSON.stringify(jsonMap));
+            }
+
+            resolve(encryptedMessage);
+        });
+
     }
 
     private onChangeAccount(account: Account) {

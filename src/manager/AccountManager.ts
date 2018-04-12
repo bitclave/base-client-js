@@ -31,7 +31,7 @@ export default class AccountManager {
      * @returns {Promise<Account>} {Account} after successful registration or http exception if fail.
      */
     public registration(mnemonicPhrase: string, message: string = ''): Promise<Account> {
-        return this.generateKeyPair(mnemonicPhrase)
+        return this.keyPairCreator.createKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
             .then((account) => this.accountRepository.registration(account))
             .then(account => this.onGetAccount(account, message));
@@ -46,7 +46,7 @@ export default class AccountManager {
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
     public checkAccount(mnemonicPhrase: string, message: string = ''): Promise<Account> {
-        return this.generateKeyPair(mnemonicPhrase)
+        return this.keyPairCreator.createKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
             .then(account => this.getAccount(account, message));
     }
@@ -59,19 +59,13 @@ export default class AccountManager {
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
     public unsubscribe(mnemonicPhrase: string): Promise<Account> {
-        return this.generateKeyPair(mnemonicPhrase)
+        return this.keyPairCreator.createKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
-            .then((account) => this.accountRepository.unsubscribe(account));
+            .then((account: Account) => this.accountRepository.unsubscribe(account));
     }
 
-    public getNewMnemonic(): string {
+    public getNewMnemonic(): Promise<string> {
         return this.keyPairCreator.generateMnemonicPhrase();
-    }
-
-    private generateKeyPair(mnemonicPhrase: string): Promise<KeyPair> {
-        return new Promise<KeyPair>(resolve => {
-            resolve(this.keyPairCreator.createKeyPair(mnemonicPhrase));
-        });
     }
 
     private getAccount(account: Account, message: string): Promise<Account> {
@@ -86,14 +80,15 @@ export default class AccountManager {
     }
 
     private onGetAccount(account: Account, message: string): Promise<Account> {
-        return new Promise<Account>(resolve => {
-            account.message = message;
-            account.sig = this.messageSigner.signMessage(message);
+        return this.messageSigner.signMessage(message)
+            .then(sig => new Promise<Account>(resolve => {
+                account.message = message;
+                account.sig = sig;
 
-            this.authAccountBehavior.next(account);
+                this.authAccountBehavior.next(account);
 
-            resolve(account);
-        });
+                resolve(account);
+            }));
     }
 
 }

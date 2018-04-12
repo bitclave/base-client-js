@@ -6,6 +6,9 @@ import ProfileManager from '../../src/manager/ProfileManager';
 import ClientDataRepositoryImplMock from './ClientDataRepositoryImplMock';
 import CryptoUtils from '../../src/utils/CryptoUtils';
 import JsonUtils from '../../src/utils/JsonUtils';
+import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
+import RpcTransportImpl from '../../src/repository/source/rpc/RpcTransportImpl';
+import HttpTransportImpl from '../../src/repository/source/http/HttpTransportImpl';
 
 import { MessageSigner } from '../../src/utils/keypair/MessageSigner';
 import baseEthUitls, { EthWalletVerificationCodes } from '../../src/utils/BaseEthUtils';
@@ -25,38 +28,52 @@ describe('Profile Manager', async () => {
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
 
-    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
-    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
+    const rpcClient: RpcTransport = new RpcTransportImpl(new HttpTransportImpl('http://localhost:3545'));
+
+    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.getRpcKeyPairCreator(rpcClient);
+    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.getRpcKeyPairCreator(rpcClient);
     const clientRepository: ClientDataRepositoryImplMock = new ClientDataRepositoryImplMock();
 
-    keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
-    keyPairHelperBob.createKeyPair(passPhraseBob);
+    const accountAlisa: Account;
+    const authAccountBehaviorAlisa: BehaviorSubject<Account>;
 
-    const accountAlisa: Account = new Account(keyPairHelperAlisa.createKeyPair(passPhraseAlisa).publicKey);
-    const authAccountBehaviorAlisa: BehaviorSubject<Account> = new BehaviorSubject<Account>(accountAlisa);
+    const profileManager;
 
-    const profileManager = new ProfileManager(
-        clientRepository,
-        authAccountBehaviorAlisa,
-        keyPairHelperAlisa,
-        keyPairHelperAlisa,
-        keyPairHelperAlisa
-    );
+    before(async () => {
+        await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
+        await keyPairHelperBob.createKeyPair(passPhraseBob);
+
+        accountAlisa = new Account((await keyPairHelperAlisa.createKeyPair(passPhraseAlisa)).publicKey);
+        authAccountBehaviorAlisa = new BehaviorSubject<Account>(accountAlisa);
+
+        profileManager = new ProfileManager(
+            clientRepository,
+            authAccountBehaviorAlisa,
+            keyPairHelperAlisa,
+            keyPairHelperAlisa,
+            keyPairHelperAlisa
+        );
+    });
 
     beforeEach(function (done) {
         clientRepository.clearData();
         done();
     });
 
+    after(async() => {
+        rpcClient.disconnect();
+    })
+    
     it('get and decrypt encrypted data', async () => {
         const origMockData: Map<string, string> = new Map();
         const mockData: Map<string, string> = new Map();
 
         origMockData.set('name', 'my name');
-        origMockData.forEach((value, key) => {
-            const passForValue = keyPairHelperAlisa.generatePasswordForField(key);
+        
+        for (let [key, value] of origMockData) {
+            const passForValue = await keyPairHelperAlisa.generatePasswordForField(key);
             mockData.set(key, CryptoUtils.encryptAes256(value, passForValue));
-        });
+        }
 
         clientRepository.setMockData(authAccountBehaviorAlisa.getValue().publicKey, mockData);
 
@@ -70,8 +87,8 @@ describe('Profile Manager', async () => {
         const mockData: Map<string, string> = new Map();
 
         origMockData.set('email', 'im@host.com');
-        origMockData.forEach((value, key) => {
-            const passForValue = keyPairHelperAlisa.generatePasswordForField(key);
+        origMockData.forEach(async (value, key) => {
+            const passForValue = await keyPairHelperAlisa.generatePasswordForField(key);
             mockData.set(key, CryptoUtils.encryptAes256(value, passForValue));
         });
 
@@ -90,13 +107,13 @@ describe('Profile Manager', async () => {
         const originMessage: Map<string, string> = new Map();
 
         origMockData.set('name', 'Bob');
-        origMockData.forEach((value, key) => {
-            const passForValue = keyPairHelperBob.generatePasswordForField(key);
+        for (let [key, value] of origMockData) {
+            const passForValue = await keyPairHelperBob.generatePasswordForField(key);
             mockData.set(key, CryptoUtils.encryptAes256(value, passForValue));
             originMessage.set(key, passForValue);
-        });
+        }
 
-        const encryptedMessage = keyPairHelperBob.encryptMessage(
+        const encryptedMessage = await keyPairHelperBob.encryptMessage(
             keyPairHelperAlisa.getPublicKey(),
             JSON.stringify(JsonUtils.mapToJson(originMessage))
         );
@@ -115,14 +132,14 @@ describe('Profile Manager', async () => {
         var encryptionKey: string = '';
 
         origMockData.set('name', 'Bob');
-        origMockData.forEach((value, key) => {
-            const passForValue = keyPairHelperBob.generatePasswordForField(key);
+        for (let [key, value] of origMockData) {
+            const passForValue = await keyPairHelperBob.generatePasswordForField(key);
             mockData.set(key, CryptoUtils.encryptAes256(value, passForValue));
             originMessage.set(key, passForValue);
             encryptionKey = passForValue;
-        });
+        }
 
-        const encryptedMessage = keyPairHelperBob.encryptMessage(
+        const encryptedMessage = await keyPairHelperBob.encryptMessage(
             keyPairHelperAlisa.getPublicKey(),
             JSON.stringify(JsonUtils.mapToJson(originMessage))
         );
@@ -135,7 +152,6 @@ describe('Profile Manager', async () => {
     });
 
     it('verify ETH address low level', async () => {
-
         //BASE (BitCoin-like) signature verification
         const keyPairHelper: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
         const messageSigner: MessageSigner = keyPairHelper;
@@ -210,26 +226,7 @@ describe('Profile Manager', async () => {
         );
         baseEthUitls.verifyEthAddrRecord(msg).should.be.equal(EthWalletVerificationCodes.RC_OK);
     });
-
-    it('verify signature by BASE interface', async () => {
-        const keyPairHelper: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
-
-        // create BASE user for tesing
-        const baseUser = await keyPairHelper.createKeyPair(passPhraseAlisa);
-
-        const baseUserAddr = new bitcore.PrivateKey
-            .fromString(baseUser.privateKey)
-            .toAddress()
-            .toString(16);
-
-        const finalMsg = {
-            data: {baseID: '123', addr1: '456', addr2: '789'},
-            sig: ''
-        };
-        finalMsg.sig = await profileManager.signMessage(JSON.stringify(finalMsg.data));
-        Message(JSON.stringify(finalMsg.data)).verify(baseUserAddr, finalMsg.sig).should.be.true;
-    });
-
+    
     it('verify ETH address record by BASE interface', function () {
         /*
         here is the exact string for message - pay attention to " " and "\n"
@@ -270,7 +267,9 @@ describe('Profile Manager', async () => {
     });
 
     it('create ETH Wallets record by BASE interface', async () => {
-        const baseUser = await KeyPairFactory.getDefaultKeyPairCreator().createKeyPair('mnemonic for BASE user for testing');
+        const baseUser = await KeyPairFactory.getDefaultKeyPairCreator(rpcClient)
+            .createKeyPair('mnemonic for BASE user for testing');
+
         baseUser.publicKey.should.be.equal('02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41');
 
         var msg = await baseEthUitls.createEthWalletsRecordWithPrvKey(

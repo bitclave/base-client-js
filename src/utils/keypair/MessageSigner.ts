@@ -1,8 +1,8 @@
 export interface MessageSigner {
 
-    signMessage(data: any): string
+    signMessage(data: string): Promise<string>
 
-    checkSig(data: any, sig: string): boolean
+    checkSig(data: string, sig: string): Promise<boolean>
 
     getPublicKey(): string
 
