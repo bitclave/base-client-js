@@ -1,16 +1,15 @@
 import { Observable } from 'rxjs/Rx';
 import Account from '../repository/models/Account';
 import { ClientDataRepository } from '../repository/client/ClientDataRepository';
-import CryptoUtils from '../utils/CryptoUtils';
+import { CryptoUtils } from '../utils/CryptoUtils';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
-import JsonUtils from '../utils/JsonUtils';
+import { JsonUtils } from '../utils/JsonUtils';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
-import baseEthUitls, { EthWalletVerificationCodes, EthWalletVerificationStatus } from '../utils/BaseEthUtils';
-import * as BaseType from '../../src/utils/BaseTypes';
+import BaseEthUitls, { EthWalletVerificationCodes, EthWalletVerificationStatus } from '../utils/types/BaseEthUtils';
 import { DataRequestState } from '../repository/models/DataRequestState';
 import DataRequestManager from './DataRequestManager';
-import { EthAddrRecord } from '../utils/BaseTypes';
+import { EthAddrRecord, EthWallets, EthWealthPtr } from '../utils/types/BaseTypes';
 
 export default class ProfileManager {
 
@@ -52,17 +51,17 @@ export default class ProfileManager {
             return result;
         }
 
-        return baseEthUitls.verifyEthWalletsRecord(baseID, val);
+        return BaseEthUitls.verifyEthWalletsRecord(baseID, val);
     }
 
-    public async createEthWallets(wallets: EthAddrRecord[], baseID: string): Promise<BaseType.EthWallets> {
-        // const walletRecords: Array<BaseType.EthAddrRecord> = [];
+    public async createEthWallets(wallets: EthAddrRecord[], baseID: string): Promise<EthWallets> {
+        // const walletRecords: Array<EthAddrRecord> = [];
         // for (let ethAddrRecordAsString of wallets) {
-        //     let ethAddrRecordAsObj: BaseType.EthAddrRecord = JSON.parse(ethAddrRecordAsString);
+        //     let ethAddrRecordAsObj: EthAddrRecord = JSON.parse(ethAddrRecordAsString);
         //     walletRecords.push(ethAddrRecordAsObj);
-        //     // walletRecords.push(new BaseType.EthAddrRecord(address));
+        //     // walletRecords.push(new EthAddrRecord(address));
         // }
-        return await baseEthUitls.createEthWalletsRecordWithSigner(baseID, wallets, this.signer);
+        return await BaseEthUitls.createEthWalletsRecordWithSigner(baseID, wallets, this.signer);
     }
 
     public signMessage(data: any): Promise<string> {
@@ -78,13 +77,13 @@ export default class ProfileManager {
         await this.dataRequestManager.grantAccessForClient(validatorPbKey, [ProfileManager.DATA_KEY_ETH_WALLETS]);
     }
 
-    public async refreshWealthPtr(): Promise<BaseType.EthWealthPtr> {
+    public async refreshWealthPtr(): Promise<EthWealthPtr> {
         const data: Map<string, string> = await this.getData();
-        let wealthPtr: BaseType.EthWealthPtr;
+        let wealthPtr: EthWealthPtr;
 
         if (data.has(ProfileManager.DATA_KEY_WEALTH)) {
             const wealth: string = data.get(ProfileManager.DATA_KEY_WEALTH) || '';
-            wealthPtr = Object.assign(new BaseType.EthWealthPtr(), JSON.parse(wealth));
+            wealthPtr = Object.assign(new EthWealthPtr(), JSON.parse(wealth));
 
         } else if (data.has(ProfileManager.DATA_KEY_ETH_WEALTH_VALIDATOR)) {
             const validatorPbKey: string = data.get(ProfileManager.DATA_KEY_ETH_WEALTH_VALIDATOR) || '';
@@ -108,7 +107,7 @@ export default class ProfileManager {
                 const wealthDecKey: string = decryptionKeys.get(this.account.publicKey) || '';
 
                 // Alice adds wealth record pointing to Validator's storage
-                wealthPtr = new BaseType.EthWealthPtr(validatorPbKey, wealthDecKey);
+                wealthPtr = new EthWealthPtr(validatorPbKey, wealthDecKey);
                 data.set(ProfileManager.DATA_KEY_WEALTH, JSON.stringify(wealthPtr));
 
                 await this.updateData(data);

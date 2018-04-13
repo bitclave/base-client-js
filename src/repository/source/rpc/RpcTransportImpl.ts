@@ -2,7 +2,7 @@ import { RpcTransport } from './RpcTransport';
 import { HttpTransport } from '../http/HttpTransport';
 import { HttpMethod } from '../http/HttpMethod';
 
-export default class RpcTransportImpl implements RpcTransport {
+export class RpcTransportImpl implements RpcTransport {
 
     private transport: HttpTransport;
     private id: number = 0;

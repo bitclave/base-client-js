@@ -1,8 +1,8 @@
 import { HttpMethod } from './HttpMethod';
 import { HttpTransport } from './HttpTransport';
-import Response from './Response';
+import { Response } from './Response';
 import { HttpInterceptor } from './HttpInterceptor';
-import InterceptorCortege from './InterceptorCortege';
+import { InterceptorCortege } from './InterceptorCortege';
 
 let XMLHttpRequest: any;
 
@@ -12,7 +12,7 @@ if ((typeof window !== 'undefined' && (<any>window).XMLHttpRequest)) {
     XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 }
 
-export default class HttpTransportImpl implements HttpTransport {
+export class HttpTransportImpl implements HttpTransport {
 
     private interceptors: Array<HttpInterceptor> = [];
 

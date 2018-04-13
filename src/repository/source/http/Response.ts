@@ -1,8 +1,7 @@
-export default class Response {
+export class Response {
 
     private _json: any;
     private _status: number;
-
 
     constructor(json: string, status: number) {
         try {

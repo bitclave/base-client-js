@@ -2,7 +2,7 @@ import { DataRequestRepository } from '../repository/requests/DataRequestReposit
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { DataRequestState } from '../repository/models/DataRequestState';
-import JsonUtils from '../utils/JsonUtils';
+import { JsonUtils } from '../utils/JsonUtils';
 import DataRequest from '../repository/models/DataRequest';
 import Account from '../repository/models/Account';
 import { Observable } from 'rxjs/Rx';
@@ -127,7 +127,7 @@ export default class DataRequestManager {
             if (fields != null && fields.length > 0) {
                 const resultMap: Map<string, string> = new Map();
 
-                for(let value of fields) {
+                for (let value of fields) {
                     resultMap.set(value, await this.encrypt.generatePasswordForField(value.toLowerCase()));
                 }
 

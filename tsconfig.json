@@ -3,14 +3,16 @@
     "outDir": "./",
     "module": "commonjs",
     "target": "es5",
-    "baseUrl": "http://localhost:8080",
+    "baseUrl": ".",
     "lib": [
       "es2016",
       "dom"
     ],
+    "diagnostics": true,
     "sourceMap": true,
     "moduleResolution": "node",
     "rootDir": "./",
+    "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "removeComments": false,
     "declaration": true,

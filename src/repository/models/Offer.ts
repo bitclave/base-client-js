@@ -1,5 +1,5 @@
 import { CompareAction } from './CompareAction';
-import JsonUtils from '../../utils/JsonUtils';
+import { JsonUtils } from '../../utils/JsonUtils';
 
 export default class Offer {
 

@@ -1,7 +1,7 @@
 import { ClientDataRepository } from './ClientDataRepository';
 import { HttpTransport } from '../source/http/HttpTransport';
 import { HttpMethod } from '../source/http/HttpMethod';
-import JsonUtils from '../../utils/JsonUtils';
+import { JsonUtils } from '../../utils/JsonUtils';
 
 export default class ClientDataRepositoryImpl implements ClientDataRepository {
 

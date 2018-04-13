@@ -1,8 +1,7 @@
-import BaseSchema from './BaseSchema';
-import * as BaseType from '../../src/utils/BaseTypes';
-import { MessageSigner } from './keypair/MessageSigner';
-import BitKeyPair from './keypair/BitKeyPair';
-import {EthAddrRecord} from "./BaseTypes";
+import { BaseSchema } from './BaseSchema';
+import { EthAddrRecord, EthBaseAddrPair, EthWallets } from './BaseTypes';
+import { BitKeyPair } from '../keypair/BitKeyPair';
+import { MessageSigner } from '../keypair/MessageSigner';
 
 const Message = require('bitcore-message');
 const bitcore = require('bitcore-lib');
@@ -27,7 +26,7 @@ export class EthWalletVerificationStatus {
 
 export default class BaseEthUtils {
 
-    public static verifyEthAddrRecord(msg: BaseType.EthAddrRecord): EthWalletVerificationCodes {
+    public static verifyEthAddrRecord(msg: EthAddrRecord): EthWalletVerificationCodes {
         let signerAddr;
         try {
             if (!baseSchema.validateEthAddr(msg)) {
@@ -53,9 +52,9 @@ export default class BaseEthUtils {
             : EthWalletVerificationCodes.RC_ETH_ADDR_WRONG_SIGNATURE;
     }
 
-    public static createEthAddrRecord(baseID: string, ethAddr: string, ethPrvKey: string): BaseType.EthAddrRecord {
-        const record: BaseType.EthAddrRecord = new BaseType.EthAddrRecord(
-            JSON.stringify(new BaseType.EthBaseAddrPair(baseID, ethAddr)),
+    public static createEthAddrRecord(baseID: string, ethAddr: string, ethPrvKey: string): EthAddrRecord {
+        const record: EthAddrRecord = new EthAddrRecord(
+            JSON.stringify(new EthBaseAddrPair(baseID, ethAddr)),
             ''
         );
         record.sig = sigUtil.personalSign(Buffer.from(ethPrvKey, 'hex'), record);
@@ -63,10 +62,10 @@ export default class BaseEthUtils {
         return record;
     }
 
-    public static async createEthWalletsRecordDebug(baseID: string, signedEthRecords: Array<BaseType.EthAddrRecord>,
-                                                    prvKey: string): Promise<BaseType.EthWallets> {
+    public static async createEthWalletsRecordDebug(baseID: string, signedEthRecords: Array<EthAddrRecord>,
+                                                    prvKey: string): Promise<EthWallets> {
         // no verification is performed here
-        const msgWallets: BaseType.EthWallets = new BaseType.EthWallets(signedEthRecords, '');
+        const msgWallets: EthWallets = new EthWallets(signedEthRecords, '');
 
         const bitKeyPair = new BitKeyPair();
         bitKeyPair.initKeyPairFromPrvKey(prvKey);
@@ -77,7 +76,7 @@ export default class BaseEthUtils {
     }
 
     public static async createEthWalletsRecordWithSigner(baseID: string, signedEthRecords: Array<EthAddrRecord>,
-                                                         signer: MessageSigner): Promise<BaseType.EthWallets> {
+                                                         signer: MessageSigner): Promise<EthWallets> {
         for (let msg of signedEthRecords) {
             if ((this.verifyEthAddrRecord(msg) != EthWalletVerificationCodes.RC_OK) &&
                 (this.verifyEthAddrRecord(msg) != EthWalletVerificationCodes.RC_ETH_ADDR_NOT_VERIFIED)) {
@@ -89,7 +88,7 @@ export default class BaseEthUtils {
             }
         }
 
-        const msgWallets: BaseType.EthWallets = new BaseType.EthWallets(signedEthRecords, '');
+        const msgWallets: EthWallets = new EthWallets(signedEthRecords, '');
 
         if (!baseSchema.validateEthWallets(msgWallets)) {
             throw 'invalid wallets structure';
@@ -106,8 +105,8 @@ export default class BaseEthUtils {
     }
 
     public static async createEthWalletsRecordWithPrvKey(baseID: string,
-                                                         signedEthRecords: Array<BaseType.EthAddrRecord>,
-                                                         prvKey: string): Promise<BaseType.EthWallets> {
+                                                         signedEthRecords: Array<EthAddrRecord>,
+                                                         prvKey: string): Promise<EthWallets> {
         const bitKeyPair = new BitKeyPair();
         bitKeyPair.initKeyPairFromPrvKey(prvKey);
 

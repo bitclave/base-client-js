@@ -1,8 +1,8 @@
 import { HttpInterceptor } from './HttpInterceptor';
 import { RepositoryStrategyType } from '../../RepositoryStrategyType';
-import InterceptorCortege from './InterceptorCortege';
+import { InterceptorCortege } from './InterceptorCortege';
 
-export default class RepositoryStrategyInterceptor implements HttpInterceptor {
+export class RepositoryStrategyInterceptor implements HttpInterceptor {
 
     private strategy: RepositoryStrategyType;
 

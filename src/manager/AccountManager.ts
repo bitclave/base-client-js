@@ -1,6 +1,6 @@
 import { AccountRepository } from '../repository/account/AccountRepository';
 import Account from '../repository/models/Account';
-import KeyPair from '../utils/keypair/KeyPair';
+import { KeyPair } from '../utils/keypair/KeyPair';
 import { KeyPairHelper } from '../utils/keypair/KeyPairHelper';
 import { BehaviorSubject } from 'rxjs/Rx';
 import { MessageSigner } from '../utils/keypair/MessageSigner';

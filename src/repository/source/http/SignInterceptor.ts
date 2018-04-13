@@ -1,7 +1,7 @@
 import { HttpInterceptor } from './HttpInterceptor';
 import SignedRequest from './SignedRequest';
 import { MessageSigner } from '../../../utils/keypair/MessageSigner';
-import InterceptorCortege from './InterceptorCortege';
+import { InterceptorCortege } from './InterceptorCortege';
 
 export default class SignInterceptor implements HttpInterceptor {
 

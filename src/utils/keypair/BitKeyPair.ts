@@ -1,13 +1,13 @@
 import { KeyPairHelper } from './KeyPairHelper';
-import CryptoUtils from '../CryptoUtils';
-import KeyPair from './KeyPair';
+import { CryptoUtils } from '../CryptoUtils';
+import { KeyPair } from './KeyPair';
 
 const bitcore = require('bitcore-lib');
 const Message = require('bitcore-message');
 const ECIES = require('bitcore-ecies');
 const Mnemonic = require('bitcore-mnemonic');
 
-export default class BitKeyPair implements KeyPairHelper {
+export class BitKeyPair implements KeyPairHelper {
 
     private privateKey: any;
     private publicKey: any;

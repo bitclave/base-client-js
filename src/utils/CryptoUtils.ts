@@ -1,6 +1,6 @@
 const CryptoJS = require('crypto-js');
 
-export default class CryptoUtils {
+export class CryptoUtils {
 
     public static keccak256(message: string): string {
         const array: any = CryptoJS.SHA3(message, {outputLength: 256});

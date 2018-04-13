@@ -1,6 +1,6 @@
 const Ajv = require('ajv');
 
-export default class BaseSchema {
+export class BaseSchema {
 
     private static instance: BaseSchema | null = null;
 

@@ -1,4 +1,3 @@
-import HttpTransportImpl from './repository/source/http/HttpTransportImpl';
 import { HttpTransport } from './repository/source/http/HttpTransport';
 import AccountRepositoryImpl from './repository/account/AuthRepositoryImpl';
 import { AccountRepository } from './repository/account/AccountRepository';
@@ -6,7 +5,6 @@ import ClientDataRepositoryImpl from './repository/client/ClientDataRepositoryIm
 import { ClientDataRepository } from './repository/client/ClientDataRepository';
 import Wallet from './repository/wallet/Wallet';
 import AccountManager from './manager/AccountManager';
-import KeyPairFactory from './utils/keypair/KeyPairFactory';
 import { BehaviorSubject } from 'rxjs/Rx';
 import ProfileManager from './manager/ProfileManager';
 import Account from './repository/models/Account';
@@ -18,7 +16,7 @@ import { DataRequestRepository } from './repository/requests/DataRequestReposito
 import { MessageEncrypt } from './utils/keypair/MessageEncrypt';
 import { MessageDecrypt } from './utils/keypair/MessageDecrypt';
 import { MessageSigner } from './utils/keypair/MessageSigner';
-import RepositoryStrategyInterceptor from './repository/source/http/RepositoryStrategyInterceptor';
+import { RepositoryStrategyInterceptor } from './repository/source/http/RepositoryStrategyInterceptor';
 import { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 import OfferManager from './manager/OfferManager';
 import { OfferRepository } from './repository/offer/OfferRepository';
@@ -28,12 +26,16 @@ import { SearchRequestRepository } from './repository/search/SearchRequestReposi
 import SearchRequestRepositoryImpl from './repository/search/SearchRequestRepositoryImpl';
 import SearchRequest from './repository/models/SearchRequest';
 import Offer from './repository/models/Offer';
-import { RpcTransport } from './repository/source/rpc/RpcTransport';
-import RpcTransportImpl from './repository/source/rpc/RpcTransportImpl';
 
 export { DataRequestState } from './repository/models/DataRequestState';
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
+export { RpcTransport } from './repository/source/rpc/RpcTransport';
+export { HttpTransport } from './repository/source/http/HttpTransport';
+export { HttpInterceptor } from './repository/source/http/HttpInterceptor';
+export { TransportFactory } from './repository/source/TransportFactory';
+export { KeyPairFactory } from './utils/keypair/KeyPairFactory';
+
 export {
     EthBaseAddrPair,
     EthAddrRecord,
@@ -42,10 +44,45 @@ export {
     EthWealthPtr,
     ProfileUser,
     ProfileEthWealthValidator
-} from './utils/BaseTypes';
-export { SearchRequest };
-export { Offer };
-export { Base as NodeAPI };
+} from './utils/types/BaseTypes';
+export { SearchRequest, Offer, Base as NodeAPI };
+
+export class Builder {
+    httpTransport: HttpTransport;
+    keyPairHelper: KeyPairHelper;
+    repositoryStrategyType: RepositoryStrategyType = RepositoryStrategyType.Postgres;
+
+    public setHttpTransport(httpTransport: HttpTransport): Builder {
+        this.httpTransport = httpTransport;
+
+        return this;
+    }
+
+    public setKeyParHelper(keyPairHelper: KeyPairHelper): Builder {
+        this.keyPairHelper = keyPairHelper;
+
+        return this;
+    }
+
+    public setRepositoryStrategy(strategy: RepositoryStrategyType): Builder {
+        this.repositoryStrategyType = strategy;
+
+        return this;
+    }
+
+    public build(): Base {
+        if (!this.httpTransport) {
+            throw 'need setup httpTransport. Call setHttpTransport method.';
+        }
+
+        if (!this.keyPairHelper) {
+            throw 'need setup keyPairHelper. Call setKeyParHelper method.';
+        }
+
+        return new Base(this);
+    }
+
+}
 
 export default class Base {
 
@@ -58,17 +95,15 @@ export default class Base {
     private _authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
     private _repositoryStrategyInterceptor: RepositoryStrategyInterceptor;
 
-    constructor(host: string, signerHost: string) {
-        const rpcClient: RpcTransport = new RpcTransportImpl(new HttpTransportImpl(signerHost));
-
-        const keyPairHelper: KeyPairHelper = KeyPairFactory.getRpcKeyPairCreator(rpcClient);
+    constructor(builder: Builder) {
+        const keyPairHelper: KeyPairHelper = builder.keyPairHelper;
         const messageSigner: MessageSigner = keyPairHelper;
         const encryptMessage: MessageEncrypt = keyPairHelper;
         const decryptMessage: MessageDecrypt = keyPairHelper;
 
-        this._repositoryStrategyInterceptor = new RepositoryStrategyInterceptor(RepositoryStrategyType.Postgres);
+        this._repositoryStrategyInterceptor = new RepositoryStrategyInterceptor(builder.repositoryStrategyType);
 
-        const transport: HttpTransport = new HttpTransportImpl(host)
+        const transport: HttpTransport = builder.httpTransport
             .addInterceptor(new SignInterceptor(messageSigner))
             .addInterceptor(this._repositoryStrategyInterceptor);
 
@@ -109,6 +144,10 @@ export default class Base {
             searchRequestRepository,
             this._authAccountBehavior.asObservable()
         );
+    }
+
+    public static Builder(): Builder {
+        return new Builder();
     }
 
     changeStrategy(strategy: RepositoryStrategyType) {
