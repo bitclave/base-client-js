@@ -23,7 +23,7 @@ module.exports = {
     },
     resolve: {
         modules: [Path.resolve('./node_modules'), Path.resolve('./src')],
-        extensions: ['.js', '.webpack.js', '.web.js', '.d.ts', '.ts', '.tsx']
+        extensions: ['.tsx', '.ts', '.js']
     },
     output: {
         filename: 'Bitclave-Base.js',
