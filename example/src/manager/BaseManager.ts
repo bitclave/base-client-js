@@ -1,14 +1,21 @@
+/// <reference types="bitclave-base" />
+
 import Config from '../Config';
 import { injectable } from 'inversify';
-import { DataRequestState, default as Base, RepositoryStrategyType } from 'base';
 import 'reflect-metadata';
-import Account from 'base/repository/models/Account';
-import DataRequest from 'base/repository/models/DataRequest';
-import OfferManager from 'base/manager/OfferManager';
-import ProfileManager from 'base/manager/ProfileManager';
-import SearchRequestManager from 'base/manager/SearchRequestManager';
-import Offer from 'base/repository/models/Offer';
-import DataRequestManager from 'base/manager/DataRequestManager';
+import DataRequest from 'bitclave-base/repository/models/DataRequest';
+import Base, {
+    DataRequestState,
+    HttpTransport,
+    KeyPairFactory,
+    RepositoryStrategyType,
+    TransportFactory
+} from 'bitclave-base';
+import OfferManager from 'bitclave-base/manager/OfferManager';
+import ProfileManager from 'bitclave-base/manager/ProfileManager';
+import SearchRequestManager from 'bitclave-base/manager/SearchRequestManager';
+import DataRequestManager from 'bitclave-base/manager/DataRequestManager';
+import { KeyPairHelper } from 'bitclave-base/utils/keypair/KeyPairHelper';
 
 export interface SyncDataListener {
 
@@ -26,8 +33,14 @@ export default class BaseManager {
     private cacheRequests: Array<DataRequest> = [];
 
     constructor() {
-        this.base = new Base(Config.getBaseEndPoint(), Config.getSignerEndPoint());
-        this.changeStrategy(RepositoryStrategyType.Postgres);
+        const httpTransport: HttpTransport = TransportFactory.createHttpTransport(Config.getBaseEndPoint());
+        const pairHelper: KeyPairHelper = KeyPairFactory.createDefaultKeyPair();
+
+        this.base = Base.Builder()
+            .setHttpTransport(httpTransport)
+            .setKeyParHelper(pairHelper)
+            .setRepositoryStrategy(RepositoryStrategyType.Postgres)
+            .build();
     }
 
     changeStrategy(strategy: RepositoryStrategyType) {

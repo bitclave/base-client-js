@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Col from 'reactstrap/lib/Col';
 import Row from 'reactstrap/lib/Row';
-import Offer from 'base/repository/models/Offer';
+import Offer from 'bitclave-base/repository/models/Offer';
 import AbstractHolder, { AbstractProperties, AbstractState } from './AbstractHolder';
 
 interface Properties extends AbstractProperties<Offer> {

@@ -3,7 +3,7 @@ import BaseManager, { SyncDataListener } from '../manager/BaseManager';
 import { lazyInject } from '../Injections';
 import { RouteComponentProps } from 'react-router';
 import { DataRequestState } from 'base';
-import DataRequest from 'base/repository/models/DataRequest';
+import DataRequest from 'bitclave-base/repository/models/DataRequest';
 import RequestModel from '../models/RequestModel';
 import RequestList from '../components/lists/RequestList';
 import Button from 'reactstrap/lib/Button';

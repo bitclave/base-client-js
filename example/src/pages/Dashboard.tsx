@@ -13,7 +13,7 @@ import ClientDataList from '../components/lists/SimplePairList';
 import { RouteComponentProps } from 'react-router';
 import ButtonGroup from 'reactstrap/lib/ButtonGroup';
 import Badge from 'reactstrap/lib/Badge';
-import DataRequest from 'base/repository/models/DataRequest';
+import DataRequest from 'bitclave-base/repository/models/DataRequest';
 import { DataRequestState } from 'base';
 import Pair from '../models/Pair';
 import Web3 from 'web3'
