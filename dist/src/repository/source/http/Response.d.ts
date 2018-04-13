@@ -1,4 +1,4 @@
-export default class Response {
+export declare class Response {
     private _json;
     private _status;
     constructor(json: string, status: number);

@@ -1,6 +1,6 @@
 import { RpcTransport } from './RpcTransport';
 import { HttpTransport } from '../http/HttpTransport';
-export default class RpcTransportImpl implements RpcTransport {
+export declare class RpcTransportImpl implements RpcTransport {
     private transport;
     private id;
     constructor(httpTransport: HttpTransport);

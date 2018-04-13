@@ -1,6 +1,6 @@
 import { KeyPairHelper } from './KeyPairHelper';
-import KeyPair from './KeyPair';
-export default class BitKeyPair implements KeyPairHelper {
+import { KeyPair } from './KeyPair';
+export declare class BitKeyPair implements KeyPairHelper {
     private privateKey;
     private publicKey;
     private addr;

@@ -1,5 +1,6 @@
 import { KeyPairHelper } from './KeyPairHelper';
-export default class KeyPairFactory {
-    static getDefaultKeyPairCreator(): KeyPairHelper;
-    static getRpcKeyPairCreator(client: any): KeyPairHelper;
+import { RpcTransport } from '../../repository/source/rpc/RpcTransport';
+export declare class KeyPairFactory {
+    static createDefaultKeyPair(): KeyPairHelper;
+    static createRpcKeyPair(rpcTransport: RpcTransport): KeyPairHelper;
 }

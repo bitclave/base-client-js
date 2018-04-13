@@ -1,5 +1,5 @@
 import { HttpMethod } from './HttpMethod';
-import Response from './Response';
+import { Response } from './Response';
 import { HttpInterceptor } from './HttpInterceptor';
 export interface HttpTransport {
     getHost(): string;

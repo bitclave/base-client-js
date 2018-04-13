@@ -1,4 +1,4 @@
-import KeyPair from './KeyPair';
+import { KeyPair } from './KeyPair';
 import { MessageSigner } from './MessageSigner';
 import { MessageEncrypt } from './MessageEncrypt';
 import { MessageDecrypt } from './MessageDecrypt';

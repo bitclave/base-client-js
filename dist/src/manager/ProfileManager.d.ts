@@ -4,10 +4,9 @@ import { ClientDataRepository } from '../repository/client/ClientDataRepository'
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
-import { EthWalletVerificationStatus } from '../utils/BaseEthUtils';
-import * as BaseType from '../../src/utils/BaseTypes';
+import { EthWalletVerificationStatus } from '../utils/types/BaseEthUtils';
 import DataRequestManager from './DataRequestManager';
-import { EthAddrRecord } from '../utils/BaseTypes';
+import { EthAddrRecord, EthWallets, EthWealthPtr } from '../utils/types/BaseTypes';
 export default class ProfileManager {
     static DATA_KEY_ETH_WALLETS: string;
     static DATA_KEY_ETH_WEALTH_VALIDATOR: string;
@@ -20,10 +19,10 @@ export default class ProfileManager {
     private dataRequestManager;
     constructor(clientRepository: ClientDataRepository, authAccountBehavior: Observable<Account>, encrypt: MessageEncrypt, decrypt: MessageDecrypt, signer: MessageSigner, dataRequestManager: DataRequestManager);
     validateEthWallets(key: string, val: string, baseID: string): EthWalletVerificationStatus;
-    createEthWallets(wallets: EthAddrRecord[], baseID: string): Promise<BaseType.EthWallets>;
+    createEthWallets(wallets: EthAddrRecord[], baseID: string): Promise<EthWallets>;
     signMessage(data: any): Promise<string>;
     addEthWealthValidator(validatorPbKey: string): Promise<void>;
-    refreshWealthPtr(): Promise<BaseType.EthWealthPtr>;
+    refreshWealthPtr(): Promise<EthWealthPtr>;
     /**
      * Returns decrypted data of the authorized user.
      *

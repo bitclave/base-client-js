@@ -1,6 +1,6 @@
 import * as BaseType from '../../src/utils/BaseTypes';
 import { MessageSigner } from './keypair/MessageSigner';
-import { EthAddrRecord } from "./BaseTypes";
+import { EthAddrRecord } from './BaseTypes';
 export declare enum EthWalletVerificationCodes {
     RC_OK = 0,
     RC_BASEID_MISSMATCH = -1,

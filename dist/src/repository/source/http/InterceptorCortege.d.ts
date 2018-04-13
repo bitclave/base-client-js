@@ -1,4 +1,4 @@
-export default class InterceptorCortege {
+export declare class InterceptorCortege {
     path: string;
     headers: Map<string, string>;
     data?: any;

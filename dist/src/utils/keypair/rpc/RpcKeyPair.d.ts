@@ -1,11 +1,11 @@
 import { KeyPairHelper } from '../KeyPairHelper';
-import KeyPair from '../KeyPair';
+import { KeyPair } from '../KeyPair';
 import { RpcTransport } from '../../../repository/source/rpc/RpcTransport';
-export default class RpcKeyPair implements KeyPairHelper {
-    private client;
+export declare class RpcKeyPair implements KeyPairHelper {
+    private rpcTransport;
     private auth;
     private publicKey;
-    constructor(client: RpcTransport);
+    constructor(rpcTransport: RpcTransport);
     createKeyPair(passPhrase: string): Promise<KeyPair>;
     generateMnemonicPhrase(): Promise<string>;
     signMessage(data: string): Promise<string>;
