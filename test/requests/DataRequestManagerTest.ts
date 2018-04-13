@@ -1,14 +1,14 @@
-import KeyPairFactory from '../../src/utils/keypair/KeyPairFactory';
+import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
 import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
 import DataRequestManager from '../../src/manager/DataRequestManager';
 import DataRequestRepositoryImplMock from './DataRequestRepositoryImplMock';
 import { DataRequestState } from '../../src/repository/models/DataRequestState';
-import JsonUtils from '../../src/utils/JsonUtils';
+import { JsonUtils } from '../../src/utils/JsonUtils';
 import { BehaviorSubject } from 'rxjs/Rx';
 import Account from '../../src/repository/models/Account';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
-import RpcTransportImpl from '../../src/repository/source/rpc/RpcTransportImpl';
-import HttpTransportImpl from '../../src/repository/source/http/HttpTransportImpl';
+import { RpcTransportImpl } from '../../src/repository/source/rpc/RpcTransportImpl';
+import { HttpTransportImpl } from '../../src/repository/source/http/HttpTransportImpl';
 import * as assert from 'assert';
 
 const should = require('chai')
@@ -21,8 +21,8 @@ describe('Data Request Manager', async () => {
 
     const rpcClient: RpcTransport = new RpcTransportImpl(new HttpTransportImpl('http://localhost:3545'));
 
-    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.getRpcKeyPairCreator(rpcClient);
-    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.getRpcKeyPairCreator(rpcClient);
+    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcClient);
+    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcClient);
     const dataRepository: DataRequestRepositoryImplMock = new DataRequestRepositoryImplMock();
 
     const bobsFields = ['name', 'email'];
@@ -53,10 +53,10 @@ describe('Data Request Manager', async () => {
         done();
     });
 
-    after(async() => {
+    after(async () => {
         rpcClient.disconnect();
-    })
-    
+    });
+
     it('create request data', async () => {
         await requestManager.createRequest(keyPairHelperBob.getPublicKey(), bobsFields);
         const requestsByFrom = await requestManager.getRequests(
@@ -153,7 +153,7 @@ describe('Data Request Manager', async () => {
             keyPairHelperAlisa.getPublicKey(),
             message
         );
-        assert.ok(result === message, "WTF?");
+        assert.ok(result === message, 'WTF?');
     });
 
 });
