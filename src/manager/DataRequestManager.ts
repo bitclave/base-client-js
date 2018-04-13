@@ -117,7 +117,7 @@ export default class DataRequestManager {
                 } catch (e) {
                     return decrypted;
                 }
-            });
+            }).catch(reason => encrypted);
     }
 
     private getEncryptedDataForFields(recipientPk: string, fields?: Array<string>): Promise<string> {
