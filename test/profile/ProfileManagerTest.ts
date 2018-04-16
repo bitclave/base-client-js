@@ -1,19 +1,19 @@
-import {KeyPairFactory} from '../../src/utils/keypair/KeyPairFactory';
+import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
 import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
 import { BehaviorSubject } from 'rxjs/Rx';
 import Account from '../../src/repository/models/Account';
 import ProfileManager from '../../src/manager/ProfileManager';
 import ClientDataRepositoryImplMock from './ClientDataRepositoryImplMock';
-import {CryptoUtils} from '../../src/utils/CryptoUtils';
-import {JsonUtils} from '../../src/utils/JsonUtils';
+import { CryptoUtils } from '../../src/utils/CryptoUtils';
+import { JsonUtils } from '../../src/utils/JsonUtils';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
-import {RpcTransportImpl} from '../../src/repository/source/rpc/RpcTransportImpl';
-import {HttpTransportImpl} from '../../src/repository/source/http/HttpTransportImpl';
 
 import { MessageSigner } from '../../src/utils/keypair/MessageSigner';
 import baseEthUitls, { EthWalletVerificationCodes } from '../../src/utils/types/BaseEthUtils';
 import { EthAddrRecord, EthWallets } from '../../src/utils/types/BaseTypes';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
+import RpcRegistrationHelper from '../RpcRegistrationHelper';
+import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
 
 const Message = require('bitcore-message');
 const bitcore = require('bitcore-lib');
@@ -29,10 +29,13 @@ describe('Profile Manager', async () => {
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
 
-    const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport('http://localhost:3545');
+    const rpcSignerHost: string = 'http://localhost:3545';
+
+    const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
 
     const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
     const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
+
     const clientRepository: ClientDataRepositoryImplMock = new ClientDataRepositoryImplMock();
 
     const accountAlisa: Account;
@@ -41,10 +44,16 @@ describe('Profile Manager', async () => {
     const profileManager;
 
     before(async () => {
-        await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
-        await keyPairHelperBob.createKeyPair(passPhraseBob);
+        const alisaAccessToken = await RpcRegistrationHelper.generateAccessToken(rpcSignerHost, passPhraseAlisa);
+        const bobAccessToken = await RpcRegistrationHelper.generateAccessToken(rpcSignerHost, passPhraseBob);
 
-        accountAlisa = new Account((await keyPairHelperAlisa.createKeyPair(passPhraseAlisa)).publicKey);
+        (keyPairHelperAlisa as RemoteSigner).setAccessToken(alisaAccessToken);
+        (keyPairHelperBob as RemoteSigner).setAccessToken(bobAccessToken);
+
+        await keyPairHelperAlisa.createKeyPair('');
+        await keyPairHelperBob.createKeyPair('');
+
+        accountAlisa = new Account((await keyPairHelperAlisa.createKeyPair('')).publicKey);
         authAccountBehaviorAlisa = new BehaviorSubject<Account>(accountAlisa);
 
         profileManager = new ProfileManager(
@@ -61,16 +70,16 @@ describe('Profile Manager', async () => {
         done();
     });
 
-    after(async() => {
+    after(async () => {
         rpcTransport.disconnect();
-    })
-    
+    });
+
     it('get and decrypt encrypted data', async () => {
         const origMockData: Map<string, string> = new Map();
         const mockData: Map<string, string> = new Map();
 
         origMockData.set('name', 'my name');
-        
+
         for (let [key, value] of origMockData) {
             const passForValue = await keyPairHelperAlisa.generatePasswordForField(key);
             mockData.set(key, CryptoUtils.encryptAes256(value, passForValue));
@@ -227,7 +236,7 @@ describe('Profile Manager', async () => {
         );
         baseEthUitls.verifyEthAddrRecord(msg).should.be.equal(EthWalletVerificationCodes.RC_OK);
     });
-    
+
     it('verify ETH address record by BASE interface', function () {
         /*
         here is the exact string for message - pay attention to " " and "\n"
@@ -268,10 +277,16 @@ describe('Profile Manager', async () => {
     });
 
     it('create ETH Wallets record by BASE interface', async () => {
-        const baseUser = await KeyPairFactory.createRpcKeyPair(rpcTransport)
-            .createKeyPair('mnemonic for BASE user for testing');
+        const baseUser = await KeyPairFactory.createRpcKeyPair(rpcTransport);
+        const baseUserAccessToken: string = await RpcRegistrationHelper.generateAccessToken(
+            rpcSignerHost,
+            'mnemonic for BASE user for testing'
+        );
 
-        baseUser.publicKey.should.be.equal('02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41');
+        baseUser.setAccessToken(baseUserAccessToken);
+        await baseUser.createKeyPair('');
+
+        baseUser.getPublicKey().should.be.equal('02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41');
 
         var msg = await baseEthUitls.createEthWalletsRecordWithPrvKey(
             '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
@@ -290,7 +305,7 @@ describe('Profile Manager', async () => {
             '8ff8fdbfb47add1daf16ea856444ff1c76cc7a5617244acf6c103587e95fdf1e'
         );
 
-        var rc = profileManager.validateEthWallets('eth_wallets', msg, baseUser.publicKey);
+        var rc = profileManager.validateEthWallets('eth_wallets', msg, baseUser.getPublicKey());
         JSON.stringify(rc).should.be.equal(JSON.stringify(
             {
                 rc: EthWalletVerificationCodes.RC_OK,
@@ -318,7 +333,7 @@ describe('Profile Manager', async () => {
             '8ff8fdbfb47add1daf16ea856444ff1c76cc7a5617244acf6c103587e95fdf1e'
         );
 
-        var rc = profileManager.validateEthWallets('eth_wallets', msg, baseUser.publicKey);
+        var rc = profileManager.validateEthWallets('eth_wallets', msg, baseUser.getPublicKey());
         JSON.stringify(rc).should.be.equal(JSON.stringify(
             {
                 rc: EthWalletVerificationCodes.RC_OK,
@@ -329,39 +344,31 @@ describe('Profile Manager', async () => {
                 ]
             }));
 
-        var rc = profileManager.validateEthWallets('error_eth_wallets', msg, baseUser.publicKey);
+        var rc = profileManager.validateEthWallets('error_eth_wallets', msg, baseUser.getPublicKey());
         rc.rc.should.be.equal(EthWalletVerificationCodes.RC_GENERAL_ERROR);
 
-        {
-            let ethAddrRecord: EthAddrRecord = baseEthUitls.createEthAddrRecord(
-                '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
-                '0x42cb8ae103896daee71ebb5dca5367f16727164a',
-                '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
-            );
-            let sawException: boolean = false;
-            try {
-                await profileManager.createEthWallets([ethAddrRecord], "wrong key");
-            } catch (e) {
-                sawException = true;
-            }
-            sawException.should.be.equal(true);
+        let ethAddrRecord: EthAddrRecord = baseEthUitls.createEthAddrRecord(
+            '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
+            '0x42cb8ae103896daee71ebb5dca5367f16727164a',
+            '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
+        );
+        let sawException: boolean = false;
+        try {
+            await profileManager.createEthWallets([ethAddrRecord], 'wrong key');
+        } catch (e) {
+            sawException = true;
         }
-
-        {
-            let ethAddrRecord: EthAddrRecord = baseEthUitls.createEthAddrRecord(
-                '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
-                '0x42cb8ae103896daee71ebb5dca5367f16727164a',
-                '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
-            );
-
-            let ethWallets: EthWallets = await profileManager.createEthWallets([ethAddrRecord], "02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41");
-            ethWallets.data.length.should.be.equal(1);
-
-        }
+        sawException.should.be.equal(true);
 
 
+        let ethAddrRecord: EthAddrRecord = baseEthUitls.createEthAddrRecord(
+            '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
+            '0x42cb8ae103896daee71ebb5dca5367f16727164a',
+            '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
+        );
 
-
+        let ethWallets: EthWallets = await profileManager.createEthWallets([ethAddrRecord], '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41');
+        ethWallets.data.length.should.be.equal(1);
     });
 
 });

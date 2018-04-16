@@ -1,27 +1,32 @@
 import Base from '../../src/Base';
-import Config from '../../example/src/Config';
 import Account from '../../src/repository/models/Account';
 import { DataRequestState } from '../../src/repository/models/DataRequestState';
-import {CryptoUtils} from '../../src/utils/CryptoUtils';
+import { CryptoUtils } from '../../src/utils/CryptoUtils';
 import DataRequest from '../../src/repository/models/DataRequest';
 import ProfileManager from '../../src/manager/ProfileManager';
 import { HttpTransport } from '../../src/repository/source/http/HttpTransport';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
 import { EthWealthPtr, EthWealthRecord } from '../../src/utils/types/BaseTypes';
+import RpcRegistrationHelper from '../RpcRegistrationHelper';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
     .should();
 
-async function createUser(user: Base, mnemonic: string): Promise<Account> {
+const rpcSignerHost: string = 'http://localhost:3545';
+
+async function createUser(user: Base, pass: string): Promise<Account> {
+    let accessToken: string = '';
     try {
-        await user.accountManager.unsubscribe(mnemonic);
+        accessToken = await RpcRegistrationHelper.generateAccessToken(rpcSignerHost, pass);
+        await user.accountManager.authenticationByAccessToken(accessToken);
+        await user.accountManager.unsubscribe();
     } catch (e) {
         //ignore error if user not exist
     }
 
-    return await user.accountManager.registration(mnemonic);
+    return await user.accountManager.registration(pass); // this method private.
 }
 
 describe('BASE API test: External Validator', async () => {
@@ -44,8 +49,8 @@ describe('BASE API test: External Validator', async () => {
     var accValidator: Account;
 
     private function createBase(): Base {
-        const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport('http://localhost:3545');
-        const httpTransport: HttpTransport = TransportFactory.createHttpTransport('https://base2-bitclva-com.herokuapp.com')
+        const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
+        const httpTransport: HttpTransport = TransportFactory.createHttpTransport('https://base2-bitclva-com.herokuapp.com');
 
         return Base.Builder()
             .setKeyParHelper(KeyPairFactory.createRpcKeyPair(rpcTransport))
@@ -292,7 +297,7 @@ describe('BASE API test: External Validator', async () => {
         // console.log(wealthRecord);
 
         // desearch reads Alice's wealth from Validator's storage
-        const rawData = await baseDesearch.profileManager.getRawData(wealthRecordObject.validator)
+        const rawData = await baseDesearch.profileManager.getRawData(wealthRecordObject.validator);
         var encryptedAliceWealth: any = rawData.get(accAlice.publicKey);
         // desearch decodes Alice's wealth
         const decryptedAliceWealth: string = CryptoUtils.decryptAes256(encryptedAliceWealth, wealthRecordObject.decryptKey);

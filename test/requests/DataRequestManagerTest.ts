@@ -10,6 +10,8 @@ import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { RpcTransportImpl } from '../../src/repository/source/rpc/RpcTransportImpl';
 import { HttpTransportImpl } from '../../src/repository/source/http/HttpTransportImpl';
 import * as assert from 'assert';
+import RpcRegistrationHelper from '../RpcRegistrationHelper';
+import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
@@ -19,7 +21,8 @@ describe('Data Request Manager', async () => {
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
 
-    const rpcClient: RpcTransport = new RpcTransportImpl(new HttpTransportImpl('http://localhost:3545'));
+    const rpcSignerHost: string = 'http://localhost:3545'
+    const rpcClient: RpcTransport = new RpcTransportImpl(new HttpTransportImpl(rpcSignerHost));
 
     const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcClient);
     const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcClient);
@@ -33,8 +36,15 @@ describe('Data Request Manager', async () => {
     const requestManager: DataRequestManager;
 
     before(async () => {
+        const alisaAccessToken = await RpcRegistrationHelper.generateAccessToken(rpcSignerHost, passPhraseAlisa);
+        const bobAccessToken = await RpcRegistrationHelper.generateAccessToken(rpcSignerHost, passPhraseBob);
+
+        (keyPairHelperAlisa as RemoteSigner).setAccessToken(alisaAccessToken);
+        (keyPairHelperBob as RemoteSigner).setAccessToken(bobAccessToken);
+
         await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
         await keyPairHelperBob.createKeyPair(passPhraseBob);
+        
         accountBob = new Account(keyPairHelperBob.getPublicKey());
         authAccountBehaviorBob = new BehaviorSubject<Account>(accountBob);
 

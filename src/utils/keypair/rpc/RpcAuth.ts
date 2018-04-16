@@ -6,7 +6,7 @@ export default class RpcAuth extends RpcToken {
     baseUrl: string;
     accessToken: string;
 
-    constructor(passPhrase: string, baseUrl: string, accessToken: string) {
+    constructor(passPhrase: string = '', baseUrl: string = '', accessToken: string = '') {
         super(accessToken);
         this.passPhrase = passPhrase;
         this.baseUrl = baseUrl;
