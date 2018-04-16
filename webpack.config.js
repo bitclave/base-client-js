@@ -11,7 +11,7 @@ module.exports = {
     target: 'node',
     module: {
         loaders: [
-            { test: /\.ts(x?)$/, loader: "babel-loader?presets[]=preset-env!ts-loader" }
+            {test: /\.ts(x?)$/, loader: "babel-loader?presets[]=preset-env!ts-loader"}
         ],
         rules: [
             {
@@ -26,9 +26,9 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js']
     },
     output: {
-        filename: 'Base.js',
+        filename: 'Bitclave-Base.js',
         path: Path.resolve(__dirname, 'dist'),
-        library: 'Base',
+        library: 'Bitclave-Base',
         libraryTarget: "umd2",
         umdNamedDefine: true
     },

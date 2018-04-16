@@ -1,34 +1,40 @@
 import { KeyPairHelper } from './KeyPairHelper';
-import CryptoUtils from '../CryptoUtils';
-import KeyPair from './KeyPair';
+import { CryptoUtils } from '../CryptoUtils';
+import { KeyPair } from './KeyPair';
 
 const bitcore = require('bitcore-lib');
 const Message = require('bitcore-message');
 const ECIES = require('bitcore-ecies');
 const Mnemonic = require('bitcore-mnemonic');
 
-export default class BitKeyPair implements KeyPairHelper {
+export class BitKeyPair implements KeyPairHelper {
 
     private privateKey: any;
     private publicKey: any;
     private addr: any;
 
-    public createKeyPair(passPhrase: string): KeyPair {
-        const pbkdf2: string = CryptoUtils.PBKDF2(passPhrase, 256);
-        const hash: any = bitcore.crypto.Hash.sha256(new bitcore.deps.Buffer(pbkdf2));
-        const bn: any = bitcore.crypto.BN.fromBuffer(hash);
-        this.privateKey = new bitcore.PrivateKey(bn);
-        this.publicKey = this.privateKey.toPublicKey();
-        this.addr = this.privateKey.toAddress();
+    public createKeyPair(passPhrase: string): Promise<KeyPair> {
+        return new Promise<KeyPair>(resolve => {
+            const pbkdf2: string = CryptoUtils.PBKDF2(passPhrase, 256);
+            const hash: any = bitcore.crypto.Hash.sha256(new bitcore.deps.Buffer(pbkdf2));
+            const bn: any = bitcore.crypto.BN.fromBuffer(hash);
+            this.privateKey = new bitcore.PrivateKey(bn);
+            this.publicKey = this.privateKey.toPublicKey();
+            this.addr = this.privateKey.toAddress();
 
-        const privateKeyHex: string = this.privateKey.toString(16);
-        const publicKeyHex = this.publicKey.toString(16);
+            const privateKeyHex: string = this.privateKey.toString(16);
+            const publicKeyHex = this.publicKey.toString(16);
 
-        return new KeyPair(privateKeyHex, publicKeyHex);
+            resolve(new KeyPair(privateKeyHex, publicKeyHex));
+        });
     }
 
-    public generateMnemonicPhrase(): string {
-        return new Mnemonic(Mnemonic.Words.ENGLISH).toString();
+    public generateMnemonicPhrase(): Promise<string> {
+        return new Promise<string>(resolve => {
+            const mnemonic: string = new Mnemonic(Mnemonic.Words.ENGLISH).toString();
+
+            resolve(mnemonic);
+        });
     }
 
     public initKeyPairFromPrvKey(prvKey: string): KeyPair {
@@ -42,18 +48,25 @@ export default class BitKeyPair implements KeyPairHelper {
         return new KeyPair(privateKeyHex, publicKeyHex);
     }
 
-    public signMessage(data: string): string {
-        const message = new Message(data);
+    public signMessage(data: string): Promise<string> {
+        return new Promise<string>(resolve => {
+            const message = new Message(data);
 
-        return message.sign(this.privateKey);
+            resolve(message.sign(this.privateKey));
+        });
     }
 
-    public checkSig(data: any, sig: string): boolean {
-        try {
-            return Message(data).verify(this.privateKey.toAddress(), sig);
-        } catch (e) {
-            return false;
-        }
+    public checkSig(data: string, sig: string): Promise<boolean> {
+        return new Promise<boolean>(resolve => {
+            let result: boolean;
+
+            try {
+                result = Message(data).verify(this.privateKey.toAddress(), sig);
+            } catch (e) {
+                result = false;
+            }
+            resolve(result);
+        });
     }
 
     public getPublicKey(): string {
@@ -64,30 +77,40 @@ export default class BitKeyPair implements KeyPairHelper {
         return this.addr.toString(16);
     }
 
-    public encryptMessage(recipientPk: string, message: string): string {
-        const ecies: any = ECIES()
-            .privateKey(this.privateKey)
-            .publicKey(bitcore.PublicKey.fromString(recipientPk));
+    public encryptMessage(recipientPk: string, message: string): Promise<string> {
+        return new Promise<string>(resolve => {
+            const ecies: any = ECIES()
+                .privateKey(this.privateKey)
+                .publicKey(bitcore.PublicKey.fromString(recipientPk));
 
-        return ecies.encrypt(message)
-            .toString('base64');
+            resolve(ecies.encrypt(message)
+                .toString('base64'));
+        });
     }
 
-    public generatePasswordForField(fieldName: String): string {
-        return CryptoUtils.PBKDF2(
-            CryptoUtils.keccak256(this.privateKey.toString(16)) + fieldName.toLowerCase(),
-            384
-        );
+    public generatePasswordForField(fieldName: String): Promise<string> {
+        return new Promise<string>(resolve => {
+            const result: string = CryptoUtils.PBKDF2(
+                CryptoUtils.keccak256(this.privateKey.toString(16)) + fieldName.toLowerCase(),
+                384
+            );
+
+            resolve(result);
+        });
     }
 
-    public decryptMessage(senderPk: string, encrypted: string): string {
-        const ecies: any = ECIES()
-            .privateKey(this.privateKey)
-            .publicKey(bitcore.PublicKey.fromString(senderPk));
+    decryptMessage(senderPk: string, encrypted: string): Promise<string> {
+        return new Promise<string>(resolve => {
+            const ecies: any = ECIES()
+                .privateKey(this.privateKey)
+                .publicKey(bitcore.PublicKey.fromString(senderPk));
 
-        return ecies
-            .decrypt(new Buffer(encrypted, 'base64'))
-            .toString();
+            const result: string = ecies
+                .decrypt(new Buffer(encrypted, 'base64'))
+                .toString();
+
+            resolve(result);
+        });
     }
 
 }

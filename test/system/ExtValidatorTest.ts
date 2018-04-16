@@ -1,24 +1,32 @@
 import Base from '../../src/Base';
-import Config from '../../example/src/Config';
 import Account from '../../src/repository/models/Account';
 import { DataRequestState } from '../../src/repository/models/DataRequestState';
-import CryptoUtils from '../../src/utils/CryptoUtils';
-import * as BaseType from '../../src/utils/BaseTypes';
+import { CryptoUtils } from '../../src/utils/CryptoUtils';
 import DataRequest from '../../src/repository/models/DataRequest';
 import ProfileManager from '../../src/manager/ProfileManager';
+import { HttpTransport } from '../../src/repository/source/http/HttpTransport';
+import { TransportFactory } from '../../src/repository/source/TransportFactory';
+import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
+import { EthWealthPtr, EthWealthRecord } from '../../src/utils/types/BaseTypes';
+import RpcRegistrationHelper from '../RpcRegistrationHelper';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
     .should();
 
-async function createUser(user: Base, mnemonic: string): Promise<Account> {
+const rpcSignerHost: string = 'http://localhost:3545';
+
+async function createUser(user: Base, pass: string): Promise<Account> {
+    let accessToken: string = '';
     try {
-        await user.accountManager.unsubscribe(mnemonic);
+        accessToken = await RpcRegistrationHelper.generateAccessToken(rpcSignerHost, pass);
+        await user.accountManager.authenticationByAccessToken(accessToken);
+        await user.accountManager.unsubscribe();
     } catch (e) {
         //ignore error if user not exist
     }
 
-    return await user.accountManager.registration(mnemonic);
+    return await user.accountManager.registration(pass); // this method private.
 }
 
 describe('BASE API test: External Validator', async () => {
@@ -28,17 +36,27 @@ describe('BASE API test: External Validator', async () => {
     const passPhraseDesearch: string = 'Desearch';
     const passPhraseValidator: string = 'Validator';
 
-    const baseAlice: Base = new Base(Config.getBaseEndPoint());
-    const baseBob: Base = new Base(Config.getBaseEndPoint());
-    const baseCarol: Base = new Base(Config.getBaseEndPoint());
-    const baseDesearch: Base = new Base(Config.getBaseEndPoint());
-    const baseValidator: Base = new Base(Config.getBaseEndPoint());
+    const baseAlice: Base = createBase();
+    const baseBob: Base = createBase();
+    const baseCarol: Base = createBase();
+    const baseDesearch: Base = createBase();
+    const baseValidator: Base = createBase();
 
     var accAlice: Account;
     var accBob: Account;
     var accCarol: Account;
     var accDesearch: Account;
     var accValidator: Account;
+
+    private function createBase(): Base {
+        const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
+        const httpTransport: HttpTransport = TransportFactory.createHttpTransport('https://base2-bitclva-com.herokuapp.com');
+
+        return Base.Builder()
+            .setKeyParHelper(KeyPairFactory.createRpcKeyPair(rpcTransport))
+            .setHttpTransport(httpTransport)
+            .build();
+    }
 
     before(async () => {
 
@@ -157,25 +175,18 @@ describe('BASE API test: External Validator', async () => {
 
         // validator shares results with Alice
         await baseValidator.dataRequestManager.grantAccessForClient(accAlice.publicKey, [accAlice.publicKey]);
+        // Alice tries to access wealth after it is shared
+        const ethWealthPtr: EthWealthPtr = await refreshWealthPtrWithCheckError();
+        ethWealthPtr.validator.should.be.equal(accValidator.publicKey);
+        // ~Alice tries to access wealth after it is shared
 
-        {
-            // Alice tries to access wealth after it is shared
-            const ethWealthPtr: BaseType.EthWealthPtr = await refreshWealthPtrWithCheckError();
-            ethWealthPtr.validator.should.be.equal(accValidator.publicKey);
-            // ~Alice tries to access wealth after it is shared
-        }
-
-        {
-            // Alice tries to access wealth after it is already internally saved
-            const ethWealthPtr: BaseType.EthWealthPtr = await refreshWealthPtrWithCheckError();
-            ethWealthPtr.validator.should.be.equal(accValidator.publicKey);
-            // ~Alice tries to access wealth after it is already internally saved
-        }
-
-
+        // Alice tries to access wealth after it is already internally saved
+        const ethWealthPtr: EthWealthPtr = await refreshWealthPtrWithCheckError();
+        ethWealthPtr.validator.should.be.equal(accValidator.publicKey);
+        // ~Alice tries to access wealth after it is already internally saved
     });
 
-    private async function refreshWealthPtrWithCheckError(): Promise<BaseType.EthWealthPtr> {
+    private async function refreshWealthPtrWithCheckError(): Promise<EthWealthPtr> {
         try {
             return await baseAlice.profileManager.refreshWealthPtr();
         } catch (e) {
@@ -189,7 +200,6 @@ describe('BASE API test: External Validator', async () => {
     }
 
     it('full flow with Alice, Bob, Carol, Desearch and Validator', async () => {
-
         // to get this records, I used example application, created a wallet records and did copy&paste
         var wallets = [
             '{"data":[{"data":"{\\"baseID\\":\\"02fe55f705abc712a8a80c43442ebe19ab5e66e5b165a0619440438385bc08383a\\",\\"ethAddr\\":\\"0xa5f79860b160dee0943bd1f6a5713a61dc56f931\\"}","sig":"0x5227af80548be15c9d5f5d66fcf8459df7e4203bf4508497133c9e2054a6ed281dfbbc5fdb7f44801fe93da514613efba96efc8e52209c74bb2d1e1769f8ebba1b"}],"sig":"IIBNKCKMHVBq6LpneRJi9ZNia7U5KCHfJq4TotM65xmYSZ7uGH5V2onnvOwK+1/EZQEg6dRzuYgp3PTVRShA4Nc="}',
@@ -218,17 +228,17 @@ describe('BASE API test: External Validator', async () => {
         );
 
         // Validator decodes wallets for Alice, Bob and Carol
-        var wealthMap: Map<string, string> = new Map<string, string>();
+        const wealthMap: Map<string, string> = new Map<string, string>();
         for (var i = 0; i < requestsByFrom.length; i++) {
             const decryptedObj: any = await baseValidator.profileManager.getAuthorizedData(
                 requestsByFrom[i].toPk,
                 requestsByFrom[i].responseData
             );
-            decryptedObj.get('eth_wallets').should.be.equal(wallets[i]);
+            decryptedObj.get(ProfileManager.DATA_KEY_ETH_WALLETS).should.be.equal(wallets[i]);
 
             // validator verifies the ETH wallets
             var res = baseValidator.profileManager.validateEthWallets(
-                'eth_wallets',
+                ProfileManager.DATA_KEY_ETH_WALLETS,
                 JSON.parse(wallets[i]),
                 accs[i].publicKey
             );
@@ -239,10 +249,10 @@ describe('BASE API test: External Validator', async () => {
             // ~compute wealth
 
             // Validator adds all wealth values to map
-            wealthMap.set(accs[i].publicKey, JSON.stringify({
-                'wealth': wealth,
-                'sig': baseValidator.profileManager.signMessage(wealth)
-            }));
+            const obj: any = {'sig': await baseValidator.profileManager.signMessage(wealth)};
+            obj[ProfileManager.DATA_KEY_WEALTH] = wealth;
+
+            wealthMap.set(accs[i].publicKey, JSON.stringify(obj));
         }
 
         // Validator writes wealth for all users to BASE
@@ -274,7 +284,7 @@ describe('BASE API test: External Validator', async () => {
 
         // Alice approves the request
         await baseAlice.dataRequestManager.responseToRequest(/* id */
-            recordsForAliceToApprove[0].id, accDesearch.publicKey, ['wealth']);
+            recordsForAliceToApprove[0].id, accDesearch.publicKey, [ProfileManager.DATA_KEY_WEALTH]);
 
         //Desearch reads wealth record from Alice
         const recordsForDesearch = await baseDesearch.dataRequestManager.getRequests(
@@ -282,17 +292,19 @@ describe('BASE API test: External Validator', async () => {
         );
         const wealthOfAlice: Map<string, string> = await baseDesearch.profileManager.getAuthorizedData(
             recordsForDesearch[0].toPk, recordsForDesearch[0].responseData);
-        const wealthRecord: any = wealthOfAlice.get('wealth');
-        const wealthRecordObject: BaseType.EthWealthPtr = JSON.parse(wealthRecord);
+        const wealthRecord: any = wealthOfAlice.get(ProfileManager.DATA_KEY_WEALTH);
+        const wealthRecordObject: EthWealthPtr = JSON.parse(wealthRecord);
+
         // console.log(wealthRecord);
 
         // desearch reads Alice's wealth from Validator's storage
-        var encryptedAliceWealth: any = (await baseDesearch.profileManager.getRawData(wealthRecordObject.validator)).get(accAlice.publicKey);
+        const rawData = await baseDesearch.profileManager.getRawData(wealthRecordObject.validator);
+        var encryptedAliceWealth: any = rawData.get(accAlice.publicKey);
         // desearch decodes Alice's wealth
         const decryptedAliceWealth: string = CryptoUtils.decryptAes256(encryptedAliceWealth, wealthRecordObject.decryptKey);
         // console.log("Alice's wealth as is seen by Desearch", decryptedAliceWealth);
 
-        const decryptedAliceWealthObject: BaseType.EthWealthRecord = JSON.parse(decryptedAliceWealth);
+        const decryptedAliceWealthObject: EthWealthRecord = JSON.parse(decryptedAliceWealth);
 
         // desearch verifies the signature of the wealth record
         const Message = require('bitcore-message');

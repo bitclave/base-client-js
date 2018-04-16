@@ -4,9 +4,9 @@ import { lazyInject } from '../Injections';
 import { RouteComponentProps } from 'react-router';
 import Button from 'reactstrap/lib/Button';
 import Container from 'reactstrap/lib/Container';
-import Offer from 'base/repository/models/Offer';
+import Offer from 'bitclave-base/repository/models/Offer';
 import OfferList from '../components/lists/OfferList';
-import SearchRequest from 'base/repository/models/SearchRequest';
+import SearchRequest from 'bitclave-base/repository/models/SearchRequest';
 import SearchRequestList from '../components/lists/SearchRequestList';
 
 interface Props extends RouteComponentProps<{}> {

@@ -1,4 +1,4 @@
-export default class KeyPair {
+export class KeyPair {
 
     private _privateKey: string;
     private _publicKey: string;

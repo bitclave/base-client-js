@@ -1,11 +1,7 @@
-export interface HttpInterceptor {
+import { InterceptorCortege } from './InterceptorCortege';
 
-    onIntercept(path: string, headers: Map<string, string>, data: any): void
+export declare interface HttpInterceptor {
 
-    getData(): any
-
-    getPath(): string
-
-    getHeaders(): Map<string, string>
+    onIntercept(cortege: InterceptorCortege): Promise<InterceptorCortege>
 
 }

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>base</title>
+	<title>bitclave-base</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">base</a>
+					<a href="index.html" class="title">bitclave-base</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -54,7 +54,7 @@
 					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1> base</h1>
+			<h1> bitclave-base</h1>
 		</div>
 	</div>
 </header>
@@ -72,13 +72,16 @@
 				<p><img src="https://github.com/bitclave/base-client-js/blob/develop/images/base_phase1_overview.png" alt="Alt text"></p>
 				<h1 id="how-to-run">How to run</h1>
 				<ul>
-					<li>from root directory run<pre><code>npm <span class="hljs-keyword">install</span>
-</code></pre></li>
-					<li>from example directory run<pre><code>npm install
-cp -rf public/base-<span class="hljs-class"><span class="hljs-keyword">lib</span>/* <span class="hljs-title">node_modules</span>/</span>
-npm start
-</code></pre></li>
+					<li>from root directory run
+						```
+						npm install
+					node ./external/Signer.js</li>
 				</ul>
+				<pre><code>- <span class="hljs-keyword">from</span> example directory <span class="hljs-keyword">run</span><span class="bash"></span>
+</code></pre><p>npm install
+					cp -rf public/base-lib/* node_modules/
+					npm start
+				```</p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -166,6 +169,9 @@ npm start
 						<a href="modules/_repository_search_searchrequestrepositoryimpl_.html">"repository/search/<wbr>Search<wbr>Request<wbr>Repository<wbr>Impl"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_transportfactory_.html">"repository/source/<wbr>Transport<wbr>Factory"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_repository_source_http_httpinterceptor_.html">"repository/source/http/<wbr>Http<wbr>Interceptor"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -176,6 +182,9 @@ npm start
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_repository_source_http_httptransportimpl_.html">"repository/source/http/<wbr>Http<wbr>Transport<wbr>Impl"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_http_interceptorcortege_.html">"repository/source/http/<wbr>Interceptor<wbr>Cortege"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_repository_source_http_repositorystrategyinterceptor_.html">"repository/source/http/<wbr>Repository<wbr>Strategy<wbr>Interceptor"</a>
@@ -190,6 +199,12 @@ npm start
 						<a href="modules/_repository_source_http_signedrequest_.html">"repository/source/http/<wbr>Signed<wbr>Request"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_rpc_rpctransport_.html">"repository/source/rpc/<wbr>Rpc<wbr>Transport"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_rpc_rpctransportimpl_.html">"repository/source/rpc/<wbr>Rpc<wbr>Transport<wbr>Impl"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_repository_source_storage_localstorageimpl_.html">"repository/source/storage/<wbr>Local<wbr>Storage<wbr>Impl"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -197,15 +212,6 @@ npm start
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_repository_wallet_wallet_.html">"repository/wallet/<wbr>Wallet"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_baseethutils_.html">"utils/<wbr>Base<wbr>Eth<wbr>Utils"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_baseschema_.html">"utils/<wbr>Base<wbr>Schema"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_basetypes_.html">"utils/<wbr>Base<wbr>Types"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_utils_cryptoutils_.html">"utils/<wbr>Crypto<wbr>Utils"</a>
@@ -233,6 +239,54 @@ npm start
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_utils_keypair_messagesigner_.html">"utils/keypair/<wbr>Message<wbr>Signer"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_remotesigner_.html">"utils/keypair/<wbr>Remote<wbr>Signer"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcaccessdata_.html">"utils/keypair/rpc/<wbr>Rpc<wbr>Access<wbr>Data"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcauth_.html">"utils/keypair/rpc/<wbr>Rpc<wbr>Auth"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcchecksignature_.html">"utils/keypair/rpc/<wbr>Rpc<wbr>Check<wbr>Signature"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcclientdata_.html">"utils/keypair/rpc/<wbr>Rpc<wbr>Client<wbr>Data"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcdecryptmessage_.html">"utils/keypair/rpc/<wbr>Rpc<wbr>Decrypt<wbr>Message"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcencryptmessage_.html">"utils/keypair/rpc/<wbr>Rpc<wbr>Encrypt<wbr>Message"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcfieldpassword_.html">"utils/keypair/rpc/<wbr>Rpc<wbr>Field<wbr>Password"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpckeypair_.html">"utils/keypair/rpc/<wbr>Rpc<wbr>Key<wbr>Pair"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcpassphrase_.html">"utils/keypair/rpc/<wbr>Rpc<wbr>Pass<wbr>Phrase"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcpermissions_.html">"utils/keypair/rpc/<wbr>Rpc<wbr>Permissions"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcsignmessage_.html">"utils/keypair/rpc/<wbr>Rpc<wbr>Sign<wbr>Message"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpctoken_.html">"utils/keypair/rpc/<wbr>Rpc<wbr>Token"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_baseethutils_.html">"utils/types/<wbr>Base<wbr>Eth<wbr>Utils"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_baseschema_.html">"utils/types/<wbr>Base<wbr>Schema"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_basetypes_.html">"utils/types/<wbr>Base<wbr>Types"</a>
 					</li>
 				</ul>
 			</nav>

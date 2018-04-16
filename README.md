@@ -16,6 +16,8 @@ The repository also includes an example application, demonstrating how to integr
 - from root directory run
 ```
 npm install
+node ./external/Signer.js
+
 ```
 - from example directory run
 ```
@@ -23,5 +25,3 @@ npm install
 cp -rf public/base-lib/* node_modules/
 npm start
 ```
-
-

@@ -3,6 +3,7 @@
     "outDir": "example/dist",
     "module": "esnext",
     "target": "es5",
+    "baseUrl": ".",
     "lib": [
       "es6",
       "dom"
@@ -17,6 +18,7 @@
     "noImplicitThis": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
+    "checkJs": true,
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
     "types": ["reflect-metadata"],

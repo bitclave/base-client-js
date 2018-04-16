@@ -3,7 +3,7 @@ import BaseManager, { SyncDataListener } from '../manager/BaseManager';
 import { lazyInject } from '../Injections';
 import { RouteComponentProps } from 'react-router';
 import { DataRequestState } from 'base';
-import DataRequest from 'base/repository/models/DataRequest';
+import DataRequest from 'bitclave-base/repository/models/DataRequest';
 import RequestModel from '../models/RequestModel';
 import RequestList from '../components/lists/RequestList';
 import Button from 'reactstrap/lib/Button';
@@ -60,12 +60,12 @@ export default class Requests extends React.Component<Props, State> implements S
         const items: Array<RequestModel> = [];
         let fields: Array<string>;
 
-        result.forEach((item: DataRequest) => {
+        for (let item of result) {
             if (item.state === DataRequestState.AWAIT) {
-                fields = this.baseManager.decryptRequestFields(item.fromPk, item.requestData);
+                fields = await this.baseManager.decryptRequestFields(item.fromPk, item.requestData);
                 items.push(new RequestModel(item.id, item.fromPk, fields));
             }
-        });
+        }
 
         this.setState({requestData: items});
     }

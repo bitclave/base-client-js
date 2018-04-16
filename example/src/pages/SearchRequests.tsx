@@ -5,7 +5,7 @@ import { RouteComponentProps } from 'react-router';
 import Button from 'reactstrap/lib/Button';
 import Container from 'reactstrap/lib/Container';
 import SearchRequestList from '../components/lists/SearchRequestList';
-import SearchRequest from 'base/repository/models/SearchRequest';
+import SearchRequest from 'bitclave-base/repository/models/SearchRequest';
 
 interface Props extends RouteComponentProps<{}> {
 }

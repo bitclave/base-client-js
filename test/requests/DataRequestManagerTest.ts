@@ -1,12 +1,17 @@
-import KeyPairFactory from '../../src/utils/keypair/KeyPairFactory';
+import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
 import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
 import DataRequestManager from '../../src/manager/DataRequestManager';
 import DataRequestRepositoryImplMock from './DataRequestRepositoryImplMock';
 import { DataRequestState } from '../../src/repository/models/DataRequestState';
-import JsonUtils from '../../src/utils/JsonUtils';
+import { JsonUtils } from '../../src/utils/JsonUtils';
 import { BehaviorSubject } from 'rxjs/Rx';
 import Account from '../../src/repository/models/Account';
+import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
+import { RpcTransportImpl } from '../../src/repository/source/rpc/RpcTransportImpl';
+import { HttpTransportImpl } from '../../src/repository/source/http/HttpTransportImpl';
 import * as assert from 'assert';
+import RpcRegistrationHelper from '../RpcRegistrationHelper';
+import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
@@ -16,31 +21,50 @@ describe('Data Request Manager', async () => {
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
 
-    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
-    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
+    const rpcSignerHost: string = 'http://localhost:3545'
+    const rpcClient: RpcTransport = new RpcTransportImpl(new HttpTransportImpl(rpcSignerHost));
+
+    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcClient);
+    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcClient);
     const dataRepository: DataRequestRepositoryImplMock = new DataRequestRepositoryImplMock();
 
     const bobsFields = ['name', 'email'];
     const alisaFields = ['email'];
 
-    keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
-    keyPairHelperBob.createKeyPair(passPhraseBob);
+    const accountBob: Account;
+    const authAccountBehaviorBob: BehaviorSubject<Account>;
+    const requestManager: DataRequestManager;
 
-    const accountBob: Account = new Account(keyPairHelperBob.getPublicKey());
-    const authAccountBehaviorBob: BehaviorSubject<Account> = new BehaviorSubject<Account>(accountBob);
+    before(async () => {
+        const alisaAccessToken = await RpcRegistrationHelper.generateAccessToken(rpcSignerHost, passPhraseAlisa);
+        const bobAccessToken = await RpcRegistrationHelper.generateAccessToken(rpcSignerHost, passPhraseBob);
 
-    dataRepository.setPK(keyPairHelperAlisa.getPublicKey(), keyPairHelperBob.getPublicKey());
+        (keyPairHelperAlisa as RemoteSigner).setAccessToken(alisaAccessToken);
+        (keyPairHelperBob as RemoteSigner).setAccessToken(bobAccessToken);
 
-    const requestManager = new DataRequestManager(
-        dataRepository,
-        authAccountBehaviorBob,
-        keyPairHelperAlisa,
-        keyPairHelperAlisa
-    );
+        await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
+        await keyPairHelperBob.createKeyPair(passPhraseBob);
+        
+        accountBob = new Account(keyPairHelperBob.getPublicKey());
+        authAccountBehaviorBob = new BehaviorSubject<Account>(accountBob);
 
-    beforeEach(function (done) {
+        dataRepository.setPK(keyPairHelperAlisa.getPublicKey(), keyPairHelperBob.getPublicKey());
+
+        requestManager = new DataRequestManager(
+            dataRepository,
+            authAccountBehaviorBob,
+            keyPairHelperAlisa,
+            keyPairHelperAlisa
+        );
+    });
+
+    beforeEach((done) => {
         dataRepository.clearData();
         done();
+    });
+
+    after(async () => {
+        rpcClient.disconnect();
     });
 
     it('create request data', async () => {
@@ -59,7 +83,7 @@ describe('Data Request Manager', async () => {
         requestsByFrom.should.be.deep.equal(requestsByTo);
 
         requestsByFrom[0].requestData.should.be.not.equal(bobsFields);
-        const decryptedStr = keyPairHelperBob.decryptMessage(
+        const decryptedStr = await keyPairHelperBob.decryptMessage(
             keyPairHelperAlisa.getPublicKey(),
             requestsByFrom[0].requestData
         );
@@ -84,7 +108,7 @@ describe('Data Request Manager', async () => {
         requestsByFrom.should.be.deep.equal(requestsByTo);
 
         requestsByFrom[0].responseData.should.be.not.equal(alisaFields);
-        const decryptedObj: any = requestManager.decryptMessage(
+        const decryptedObj: any = await requestManager.decryptMessage(
             keyPairHelperBob.getPublicKey(),
             requestsByFrom[0].responseData
         );
@@ -115,7 +139,7 @@ describe('Data Request Manager', async () => {
         requestsByFrom.should.be.deep.equal(requestsByTo);
 
         requestsByFrom[0].responseData.should.be.not.equal(bobsFields);
-        const decryptedStr = keyPairHelperAlisa.decryptMessage(
+        const decryptedStr = await keyPairHelperAlisa.decryptMessage(
             keyPairHelperBob.getPublicKey(),
             requestsByFrom[0].responseData
         );
@@ -134,11 +158,12 @@ describe('Data Request Manager', async () => {
     });
 
     it('decrypt invalid message', async () => {
+        const message: string = 'invalid string';
         const result: any = await requestManager.decryptMessage(
             keyPairHelperAlisa.getPublicKey(),
-            'invalid string'
+            message
         );
-        assert.ok(result === null, "WTF?");
+        assert.ok(result === message, 'WTF?');
     });
 
 });

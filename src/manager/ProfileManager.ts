@@ -1,16 +1,15 @@
 import { Observable } from 'rxjs/Rx';
 import Account from '../repository/models/Account';
 import { ClientDataRepository } from '../repository/client/ClientDataRepository';
-import CryptoUtils from '../utils/CryptoUtils';
+import { CryptoUtils } from '../utils/CryptoUtils';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
-import JsonUtils from '../utils/JsonUtils';
+import { JsonUtils } from '../utils/JsonUtils';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
-import baseEthUitls, { EthWalletVerificationCodes, EthWalletVerificationStatus } from '../utils/BaseEthUtils';
-import * as BaseType from '../../src/utils/BaseTypes';
+import BaseEthUitls, { EthWalletVerificationCodes, EthWalletVerificationStatus } from '../utils/types/BaseEthUtils';
 import { DataRequestState } from '../repository/models/DataRequestState';
 import DataRequestManager from './DataRequestManager';
-import {EthAddrRecord} from "../utils/BaseTypes";
+import { EthAddrRecord, EthWallets, EthWealthPtr } from '../utils/types/BaseTypes';
 
 export default class ProfileManager {
 
@@ -25,8 +24,11 @@ export default class ProfileManager {
     private signer: MessageSigner;
     private dataRequestManager: DataRequestManager;
 
-    constructor(clientRepository: ClientDataRepository, authAccountBehavior: Observable<Account>,
-                encrypt: MessageEncrypt, decrypt: MessageDecrypt, signer: MessageSigner,
+    constructor(clientRepository: ClientDataRepository,
+                authAccountBehavior: Observable<Account>,
+                encrypt: MessageEncrypt,
+                decrypt: MessageDecrypt,
+                signer: MessageSigner,
                 dataRequestManager: DataRequestManager) {
         this.clientDataRepository = clientRepository;
 
@@ -49,20 +51,20 @@ export default class ProfileManager {
             return result;
         }
 
-        return baseEthUitls.verifyEthWalletsRecord(baseID, val);
+        return BaseEthUitls.verifyEthWalletsRecord(baseID, val);
     }
 
-    public async createEthWallets(wallets: EthAddrRecord[], baseID: string): Promise<BaseType.EthWallets> {
-        // const walletRecords: Array<BaseType.EthAddrRecord> = [];
+    public async createEthWallets(wallets: EthAddrRecord[], baseID: string): Promise<EthWallets> {
+        // const walletRecords: Array<EthAddrRecord> = [];
         // for (let ethAddrRecordAsString of wallets) {
-        //     let ethAddrRecordAsObj: BaseType.EthAddrRecord = JSON.parse(ethAddrRecordAsString);
+        //     let ethAddrRecordAsObj: EthAddrRecord = JSON.parse(ethAddrRecordAsString);
         //     walletRecords.push(ethAddrRecordAsObj);
-        //     // walletRecords.push(new BaseType.EthAddrRecord(address));
+        //     // walletRecords.push(new EthAddrRecord(address));
         // }
-        return await baseEthUitls.createEthWalletsRecordWithSigner(baseID, wallets, this.signer);
+        return await BaseEthUitls.createEthWalletsRecordWithSigner(baseID, wallets, this.signer);
     }
 
-    public signMessage(data: any): string {
+    public signMessage(data: any): Promise<string> {
         return this.signer.signMessage(data);
     }
 
@@ -75,13 +77,13 @@ export default class ProfileManager {
         await this.dataRequestManager.grantAccessForClient(validatorPbKey, [ProfileManager.DATA_KEY_ETH_WALLETS]);
     }
 
-    public async refreshWealthPtr(): Promise<BaseType.EthWealthPtr> {
+    public async refreshWealthPtr(): Promise<EthWealthPtr> {
         const data: Map<string, string> = await this.getData();
-        let wealthPtr: BaseType.EthWealthPtr;
+        let wealthPtr: EthWealthPtr;
 
         if (data.has(ProfileManager.DATA_KEY_WEALTH)) {
             const wealth: string = data.get(ProfileManager.DATA_KEY_WEALTH) || '';
-            wealthPtr = Object.assign(new BaseType.EthWealthPtr(), JSON.parse(wealth));
+            wealthPtr = Object.assign(new EthWealthPtr(), JSON.parse(wealth));
 
         } else if (data.has(ProfileManager.DATA_KEY_ETH_WEALTH_VALIDATOR)) {
             const validatorPbKey: string = data.get(ProfileManager.DATA_KEY_ETH_WEALTH_VALIDATOR) || '';
@@ -105,7 +107,7 @@ export default class ProfileManager {
                 const wealthDecKey: string = decryptionKeys.get(this.account.publicKey) || '';
 
                 // Alice adds wealth record pointing to Validator's storage
-                wealthPtr = new BaseType.EthWealthPtr(validatorPbKey, wealthDecKey);
+                wealthPtr = new EthWealthPtr(validatorPbKey, wealthDecKey);
                 data.set(ProfileManager.DATA_KEY_WEALTH, JSON.stringify(wealthPtr));
 
                 await this.updateData(data);
@@ -149,28 +151,29 @@ export default class ProfileManager {
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
     public getAuthorizedData(recipientPk: string, encryptedData: string): Promise<Map<string, string>> {
-        return new Promise<Map<string, string>>(resolve => {
-            const strDecrypt = this.decrypt.decryptMessage(recipientPk, encryptedData);
-            const jsonDecrypt = JSON.parse(strDecrypt);
-            const arrayResponse: Map<string, string> = JsonUtils.jsonToMap(jsonDecrypt);
-            const result: Map<string, string> = new Map<string, string>();
+        return this.decrypt.decryptMessage(recipientPk, encryptedData)
+            .then(strDecrypt => new Promise<Map<string, string>>(resolve => {
+                const jsonDecrypt = JSON.parse(strDecrypt);
+                const arrayResponse: Map<string, string> = JsonUtils.jsonToMap(jsonDecrypt);
+                const result: Map<string, string> = new Map<string, string>();
 
-            this.getRawData(recipientPk).then((recipientData: Map<string, string>) => {
-                arrayResponse.forEach((value: string, key: string) => {
-                    if (recipientData.has(key)) {
-                        try {
-                            const data: string = recipientData.get(key) as string;
-                            const decryptedValue: string = CryptoUtils.decryptAes256(data, value);
-                            result.set(key, decryptedValue);
-                        } catch (e) {
-                            console.log('decryption error: ', key, ' => ', recipientData.get(key), e);
-                        }
-                    }
-                });
+                this.getRawData(recipientPk)
+                    .then((recipientData: Map<string, string>) => {
+                        arrayResponse.forEach((value: string, key: string) => {
+                            if (recipientData.has(key)) {
+                                try {
+                                    const data: string = recipientData.get(key) as string;
+                                    const decryptedValue: string = CryptoUtils.decryptAes256(data, value);
+                                    result.set(key, decryptedValue);
+                                } catch (e) {
+                                    console.log('decryption error: ', key, ' => ', recipientData.get(key), e);
+                                }
+                            }
+                        });
 
-                resolve(result);
-            });
-        });
+                        resolve(result);
+                    });
+            }));
     }
 
     /**
@@ -181,8 +184,8 @@ export default class ProfileManager {
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
     public getAuthorizedEncryptionKeys(recipientPk: string, encryptedData: string): Promise<Map<string, string>> {
-        return new Promise<Map<string, string>>(resolve => {
-            const strDecrypt = this.decrypt.decryptMessage(recipientPk, encryptedData);
+        return new Promise<Map<string, string>>(async (resolve) => {
+            const strDecrypt = await this.decrypt.decryptMessage(recipientPk, encryptedData);
             const jsonDecrypt = JSON.parse(strDecrypt);
             const arrayResponse: Map<string, string> = JsonUtils.jsonToMap(jsonDecrypt);
             const result: Map<string, string> = new Map<string, string>();
@@ -219,19 +222,21 @@ export default class ProfileManager {
     }
 
     private prepareData(data: Map<string, string>, encrypt: boolean): Promise<Map<string, string>> {
-        return new Promise<Map<string, string>>(resolve => {
+        return new Promise<Map<string, string>>(async resolve => {
             const result: Map<string, string> = new Map<string, string>();
-            let pass;
-            let changedValue;
+            let pass: string;
+            let changedValue: string;
 
-            data.forEach((value, key) => {
-                pass = this.encrypt.generatePasswordForField(key);
-                changedValue = encrypt
-                    ? CryptoUtils.encryptAes256(value, pass)
-                    : CryptoUtils.decryptAes256(value, pass);
+            for (let [key, value] of data.entries()) {
+                pass = await this.encrypt.generatePasswordForField(key);
+                if (pass != null && pass.length > 0) {
+                    changedValue = encrypt
+                        ? CryptoUtils.encryptAes256(value, pass)
+                        : CryptoUtils.decryptAes256(value, pass);
 
-                result.set(key.toLowerCase(), changedValue);
-            });
+                    result.set(key.toLowerCase(), changedValue);
+                }
+            }
 
             resolve(result);
         });

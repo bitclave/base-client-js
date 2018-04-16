@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Col from 'reactstrap/lib/Col';
 import Row from 'reactstrap/lib/Row';
-import SearchRequest from 'base/repository/models/SearchRequest';
+import SearchRequest from 'bitclave-base/repository/models/SearchRequest';
 import { default as AbstractHolder, AbstractProperties, AbstractState } from './AbstractHolder';
 
 interface Properties extends AbstractProperties<SearchRequest> {

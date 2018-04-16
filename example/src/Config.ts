@@ -6,4 +6,9 @@ export default class Config {
         return this.isDebug ? 'https://base2-bitclva-com.herokuapp.com' : '';
         // return this.isDebug ? 'http://localhost:8080' : '';
     }
+
+    public static getSignerEndPoint(): string {
+        return this.isDebug ? 'http://localhost:3545' : '';
+    }
+
 }

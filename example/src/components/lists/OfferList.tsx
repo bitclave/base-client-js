@@ -1,6 +1,6 @@
 import * as React from 'react';
 import AbstractList, { AbstractProperties } from './AbstractList';
-import Offer from 'base/repository/models/Offer';
+import Offer from 'bitclave-base/repository/models/Offer';
 import OfferHolder from '../holders/OfferHolder';
 
 interface Properties extends AbstractProperties<Offer> {
