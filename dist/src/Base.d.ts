@@ -17,6 +17,7 @@ export { HttpTransport } from './repository/source/http/HttpTransport';
 export { HttpInterceptor } from './repository/source/http/HttpInterceptor';
 export { TransportFactory } from './repository/source/TransportFactory';
 export { KeyPairFactory } from './utils/keypair/KeyPairFactory';
+export { RemoteSigner } from './utils/keypair/RemoteSigner';
 export { EthBaseAddrPair, EthAddrRecord, EthWallets, EthWealthRecord, EthWealthPtr, ProfileUser, ProfileEthWealthValidator } from './utils/types/BaseTypes';
 export { SearchRequest, Offer, Base as NodeAPI };
 export declare class Builder {
