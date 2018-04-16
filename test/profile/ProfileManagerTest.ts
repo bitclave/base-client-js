@@ -1,18 +1,19 @@
-import KeyPairFactory from '../../src/utils/keypair/KeyPairFactory';
+import {KeyPairFactory} from '../../src/utils/keypair/KeyPairFactory';
 import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
 import { BehaviorSubject } from 'rxjs/Rx';
 import Account from '../../src/repository/models/Account';
 import ProfileManager from '../../src/manager/ProfileManager';
 import ClientDataRepositoryImplMock from './ClientDataRepositoryImplMock';
-import CryptoUtils from '../../src/utils/CryptoUtils';
-import JsonUtils from '../../src/utils/JsonUtils';
+import {CryptoUtils} from '../../src/utils/CryptoUtils';
+import {JsonUtils} from '../../src/utils/JsonUtils';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
-import RpcTransportImpl from '../../src/repository/source/rpc/RpcTransportImpl';
-import HttpTransportImpl from '../../src/repository/source/http/HttpTransportImpl';
+import {RpcTransportImpl} from '../../src/repository/source/rpc/RpcTransportImpl';
+import {HttpTransportImpl} from '../../src/repository/source/http/HttpTransportImpl';
 
 import { MessageSigner } from '../../src/utils/keypair/MessageSigner';
-import baseEthUitls, { EthWalletVerificationCodes } from '../../src/utils/BaseEthUtils';
-import * as BaseType from '../../src/utils/BaseTypes';
+import baseEthUitls, { EthWalletVerificationCodes } from '../../src/utils/types/BaseEthUtils';
+import { EthAddrRecord, EthWallets } from '../../src/utils/types/BaseTypes';
+import { TransportFactory } from '../../src/repository/source/TransportFactory';
 
 const Message = require('bitcore-message');
 const bitcore = require('bitcore-lib');
@@ -28,10 +29,10 @@ describe('Profile Manager', async () => {
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
 
-    const rpcClient: RpcTransport = new RpcTransportImpl(new HttpTransportImpl('http://localhost:3545'));
+    const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport('http://localhost:3545');
 
-    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.getRpcKeyPairCreator(rpcClient);
-    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.getRpcKeyPairCreator(rpcClient);
+    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
+    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
     const clientRepository: ClientDataRepositoryImplMock = new ClientDataRepositoryImplMock();
 
     const accountAlisa: Account;
@@ -61,7 +62,7 @@ describe('Profile Manager', async () => {
     });
 
     after(async() => {
-        rpcClient.disconnect();
+        rpcTransport.disconnect();
     })
     
     it('get and decrypt encrypted data', async () => {
@@ -153,7 +154,7 @@ describe('Profile Manager', async () => {
 
     it('verify ETH address low level', async () => {
         //BASE (BitCoin-like) signature verification
-        const keyPairHelper: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
+        const keyPairHelper: KeyPairHelper = KeyPairFactory.createDefaultKeyPair();
         const messageSigner: MessageSigner = keyPairHelper;
 
         // create BASE user for tesing
@@ -219,7 +220,7 @@ describe('Profile Manager', async () => {
     });
 
     it('create ETH address record by BASE interface', function () {
-        var msg: BaseType.EthAddrRecord = baseEthUitls.createEthAddrRecord(
+        var msg: EthAddrRecord = baseEthUitls.createEthAddrRecord(
             '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
             '0x42cb8ae103896daee71ebb5dca5367f16727164a',
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
@@ -267,7 +268,7 @@ describe('Profile Manager', async () => {
     });
 
     it('create ETH Wallets record by BASE interface', async () => {
-        const baseUser = await KeyPairFactory.getDefaultKeyPairCreator(rpcClient)
+        const baseUser = await KeyPairFactory.createRpcKeyPair(rpcTransport)
             .createKeyPair('mnemonic for BASE user for testing');
 
         baseUser.publicKey.should.be.equal('02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41');
@@ -332,7 +333,7 @@ describe('Profile Manager', async () => {
         rc.rc.should.be.equal(EthWalletVerificationCodes.RC_GENERAL_ERROR);
 
         {
-            let ethAddrRecord: BaseType.EthAddrRecord = baseEthUitls.createEthAddrRecord(
+            let ethAddrRecord: EthAddrRecord = baseEthUitls.createEthAddrRecord(
                 '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
                 '0x42cb8ae103896daee71ebb5dca5367f16727164a',
                 '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
@@ -347,13 +348,13 @@ describe('Profile Manager', async () => {
         }
 
         {
-            let ethAddrRecord: BaseType.EthAddrRecord = baseEthUitls.createEthAddrRecord(
+            let ethAddrRecord: EthAddrRecord = baseEthUitls.createEthAddrRecord(
                 '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
                 '0x42cb8ae103896daee71ebb5dca5367f16727164a',
                 '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
             );
 
-            let ethWallets: BaseType.EthWallets = await profileManager.createEthWallets([ethAddrRecord], "02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41");
+            let ethWallets: EthWallets = await profileManager.createEthWallets([ethAddrRecord], "02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41");
             ethWallets.data.length.should.be.equal(1);
 
         }

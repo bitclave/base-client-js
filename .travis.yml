@@ -9,7 +9,7 @@ install:
   - npm install
 
 before_script:
-  - node ./external/Signer.js
+  - node ./external/Signer.js &
   - mkdir base-node
   - cd base-node
   - git clone https://github.com/bitclave/base-node.git

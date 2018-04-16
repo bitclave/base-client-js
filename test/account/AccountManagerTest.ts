@@ -1,4 +1,4 @@
-import KeyPairFactory from '../../src/utils/keypair/KeyPairFactory';
+import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
 import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
 import AccountManager from '../../src/manager/AccountManager';
 import { AccountRepository } from '../../src/repository/account/AccountRepository';
@@ -6,8 +6,7 @@ import AccountRepositoryImplMock from './AccountRepositoryImplMock';
 import { BehaviorSubject } from 'rxjs/Rx';
 import Account from '../../src/repository/models/Account';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
-import RpcTransportImpl from '../../src/repository/source/rpc/RpcTransportImpl';
-import HttpTransportImpl from '../../src/repository/source/http/HttpTransportImpl';
+import { TransportFactory } from '../../src/repository/source/TransportFactory';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
@@ -18,11 +17,11 @@ describe('Account Manager', async () => {
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
 
     const authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
-    const rpcClient: RpcTransport = new RpcTransportImpl(new HttpTransportImpl('http://localhost:3545'));
+    const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport('http://localhost:3545');
 
-    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.getRpcKeyPairCreator(rpcClient);
-    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.getRpcKeyPairCreator(rpcClient);
-    const keyPairHelper: KeyPairHelper = KeyPairFactory.getRpcKeyPairCreator(rpcClient);
+    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
+    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
+    const keyPairHelper: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
     const accountRepository: AccountRepository = new AccountRepositoryImplMock();
 
     const accountAlisa: Account;
@@ -46,9 +45,9 @@ describe('Account Manager', async () => {
     });
 
     after(async () => {
-        rpcClient.disconnect();
+        rpcTransport.disconnect();
     });
-    
+
     it('should register same account and change it', async () => {
         await accountManager.registration(passPhraseAlisa, messageForSigAlisa);
         authAccountBehavior.getValue().publicKey.should.be.equal(accountAlisa.publicKey);
@@ -126,7 +125,7 @@ describe('Account Manager', async () => {
             .equal(accountBob.publicKey);
     });
 
-    it('should check mnemonic phrase', function() {
+    it('should check mnemonic phrase', function () {
         const m1 = accountManager.getNewMnemonic();
         const m2 = accountManager.getNewMnemonic();
         m1.should.be.not.equal(m2);

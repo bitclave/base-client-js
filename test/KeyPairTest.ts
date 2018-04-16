@@ -1,4 +1,4 @@
-import KeyPairFactory from '../src/utils/keypair/KeyPairFactory';
+import { KeyPairFactory } from '../src/utils/keypair/KeyPairFactory';
 import { KeyPairHelper } from '../src/utils/keypair/KeyPairHelper';
 import { MessageSigner } from '../src/utils/keypair/MessageSigner';
 import { MessageDecrypt } from '../src/utils/keypair/MessageDecrypt';
@@ -10,7 +10,7 @@ const should = require('chai')
     .should();
 
 describe('Key pair and cryptography', async () => {
-    const keyPairHelper: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
+    const keyPairHelper: KeyPairHelper = KeyPairFactory.createDefaultKeyPair();
     const messageSigner: MessageSigner = keyPairHelper;
 
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
@@ -40,7 +40,7 @@ describe('Key pair and cryptography', async () => {
     });
 
     it('encrypt and decrypt message', async () => {
-        const keyPairHelperBob: KeyPairHelper = KeyPairFactory.getDefaultKeyPairCreator();
+        const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createDefaultKeyPair();
         const decryptMessageBob: MessageDecrypt = keyPairHelperBob;
 
         const keyPairAlisa = await keyPairHelper.createKeyPair(passPhraseAlisa);

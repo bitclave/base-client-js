@@ -2,10 +2,13 @@ import Base from '../../src/Base';
 import Config from '../../example/src/Config';
 import Account from '../../src/repository/models/Account';
 import { DataRequestState } from '../../src/repository/models/DataRequestState';
-import CryptoUtils from '../../src/utils/CryptoUtils';
-import * as BaseType from '../../src/utils/BaseTypes';
+import {CryptoUtils} from '../../src/utils/CryptoUtils';
 import DataRequest from '../../src/repository/models/DataRequest';
 import ProfileManager from '../../src/manager/ProfileManager';
+import { HttpTransport } from '../../src/repository/source/http/HttpTransport';
+import { TransportFactory } from '../../src/repository/source/TransportFactory';
+import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
+import { EthWealthPtr, EthWealthRecord } from '../../src/utils/types/BaseTypes';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
@@ -28,17 +31,27 @@ describe('BASE API test: External Validator', async () => {
     const passPhraseDesearch: string = 'Desearch';
     const passPhraseValidator: string = 'Validator';
 
-    const baseAlice: Base = new Base(Config.getBaseEndPoint(), Config.getSignerEndPoint());
-    const baseBob: Base = new Base(Config.getBaseEndPoint(), Config.getSignerEndPoint());
-    const baseCarol: Base = new Base(Config.getBaseEndPoint(), Config.getSignerEndPoint());
-    const baseDesearch: Base = new Base(Config.getBaseEndPoint(), Config.getSignerEndPoint());
-    const baseValidator: Base = new Base(Config.getBaseEndPoint(), Config.getSignerEndPoint());
+    const baseAlice: Base = createBase();
+    const baseBob: Base = createBase();
+    const baseCarol: Base = createBase();
+    const baseDesearch: Base = createBase();
+    const baseValidator: Base = createBase();
 
     var accAlice: Account;
     var accBob: Account;
     var accCarol: Account;
     var accDesearch: Account;
     var accValidator: Account;
+
+    private function createBase(): Base {
+        const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport('http://localhost:3545');
+        const httpTransport: HttpTransport = TransportFactory.createHttpTransport('https://base2-bitclva-com.herokuapp.com')
+
+        return Base.Builder()
+            .setKeyParHelper(KeyPairFactory.createRpcKeyPair(rpcTransport))
+            .setHttpTransport(httpTransport)
+            .build();
+    }
 
     before(async () => {
 
@@ -158,17 +171,17 @@ describe('BASE API test: External Validator', async () => {
         // validator shares results with Alice
         await baseValidator.dataRequestManager.grantAccessForClient(accAlice.publicKey, [accAlice.publicKey]);
         // Alice tries to access wealth after it is shared
-        const ethWealthPtr: BaseType.EthWealthPtr = await refreshWealthPtrWithCheckError();
+        const ethWealthPtr: EthWealthPtr = await refreshWealthPtrWithCheckError();
         ethWealthPtr.validator.should.be.equal(accValidator.publicKey);
         // ~Alice tries to access wealth after it is shared
 
         // Alice tries to access wealth after it is already internally saved
-        const ethWealthPtr: BaseType.EthWealthPtr = await refreshWealthPtrWithCheckError();
+        const ethWealthPtr: EthWealthPtr = await refreshWealthPtrWithCheckError();
         ethWealthPtr.validator.should.be.equal(accValidator.publicKey);
         // ~Alice tries to access wealth after it is already internally saved
     });
 
-    private async function refreshWealthPtrWithCheckError(): Promise<BaseType.EthWealthPtr> {
+    private async function refreshWealthPtrWithCheckError(): Promise<EthWealthPtr> {
         try {
             return await baseAlice.profileManager.refreshWealthPtr();
         } catch (e) {
@@ -275,7 +288,7 @@ describe('BASE API test: External Validator', async () => {
         const wealthOfAlice: Map<string, string> = await baseDesearch.profileManager.getAuthorizedData(
             accAlice.publicKey, recordsForDesearch[0].responseData);
         const wealthRecord: any = wealthOfAlice.get(ProfileManager.DATA_KEY_WEALTH);
-        const wealthRecordObject: BaseType.EthWealthPtr = JSON.parse(wealthRecord);
+        const wealthRecordObject: EthWealthPtr = JSON.parse(wealthRecord);
         // console.log(wealthRecord);
 
         // desearch reads Alice's wealth from Validator's storage
@@ -285,7 +298,7 @@ describe('BASE API test: External Validator', async () => {
         const decryptedAliceWealth: string = CryptoUtils.decryptAes256(encryptedAliceWealth, wealthRecordObject.decryptKey);
         // console.log("Alice's wealth as is seen by Desearch", decryptedAliceWealth);
 
-        const decryptedAliceWealthObject: BaseType.EthWealthRecord = JSON.parse(decryptedAliceWealth);
+        const decryptedAliceWealthObject: EthWealthRecord = JSON.parse(decryptedAliceWealth);
 
         // desearch verifies the signature of the wealth record
         const Message = require('bitcore-message');
