@@ -83578,7 +83578,7 @@ var SignInterceptor = /** @class */ (function () {
     }
     SignInterceptor.prototype.onIntercept = function (cortege) {
         var _this = this;
-        return (cortege.data === null)
+        return (cortege.data === null || cortege.data == undefined)
             ? Promise.resolve(cortege)
             : this.messageSigner.signMessage(JSON.stringify(cortege.data))
                 .then(function (sigResult) { return new Promise(function (resolve) {
