@@ -1,13 +1,13 @@
 import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
 import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
-import AccountManager from '../../src/manager/AccountManager';
+import { AccountManager } from '../../src/manager/AccountManager';
 import { AccountRepository } from '../../src/repository/account/AccountRepository';
 import AccountRepositoryImplMock from './AccountRepositoryImplMock';
 import { BehaviorSubject } from 'rxjs/Rx';
 import Account from '../../src/repository/models/Account';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
-import RpcRegistrationHelper from '../RpcRegistrationHelper';
+import AuthenticatorHelper from '../AuthenticatorHelper';
 import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
 
 const should = require('chai')
@@ -22,6 +22,7 @@ describe('Account Manager', async () => {
     const rpcSignerHost: string = 'http://localhost:3545';
 
     const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
+    const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
     const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
     const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
@@ -40,12 +41,12 @@ describe('Account Manager', async () => {
     let bobAccessToken: string;
 
     before(async () => {
-        alisaAccessToken = await RpcRegistrationHelper.generateAccessToken(rpcSignerHost, passPhraseAlisa);
-        bobAccessToken = await RpcRegistrationHelper.generateAccessToken(rpcSignerHost, passPhraseBob);
+        alisaAccessToken = await authenticatorHelper.generateAccessToken(passPhraseAlisa);
+        bobAccessToken = await authenticatorHelper.generateAccessToken(passPhraseBob);
 
         (keyPairHelperAlisa as RemoteSigner).setAccessToken(alisaAccessToken);
         (keyPairHelperBob as RemoteSigner).setAccessToken(bobAccessToken);
-
+        
         accountAlisa = new Account((await keyPairHelperAlisa.createKeyPair('')).publicKey);
         accountBob = new Account((await keyPairHelperBob.createKeyPair('')).publicKey);
         accountManager = new AccountManager(

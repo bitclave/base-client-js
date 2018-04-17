@@ -2,7 +2,7 @@ import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
 import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
 import { BehaviorSubject } from 'rxjs/Rx';
 import Account from '../../src/repository/models/Account';
-import ProfileManager from '../../src/manager/ProfileManager';
+import { ProfileManager } from '../../src/manager/ProfileManager';
 import ClientDataRepositoryImplMock from './ClientDataRepositoryImplMock';
 import { CryptoUtils } from '../../src/utils/CryptoUtils';
 import { JsonUtils } from '../../src/utils/JsonUtils';
@@ -12,7 +12,7 @@ import { MessageSigner } from '../../src/utils/keypair/MessageSigner';
 import baseEthUitls, { EthWalletVerificationCodes } from '../../src/utils/types/BaseEthUtils';
 import { EthAddrRecord, EthWallets } from '../../src/utils/types/BaseTypes';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
-import RpcRegistrationHelper from '../RpcRegistrationHelper';
+import AuthenticatorHelper from '../AuthenticatorHelper';
 import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
 
 const Message = require('bitcore-message');
@@ -32,6 +32,7 @@ describe('Profile Manager', async () => {
     const rpcSignerHost: string = 'http://localhost:3545';
 
     const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
+    const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
     const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
     const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
@@ -44,8 +45,8 @@ describe('Profile Manager', async () => {
     const profileManager;
 
     before(async () => {
-        const alisaAccessToken = await RpcRegistrationHelper.generateAccessToken(rpcSignerHost, passPhraseAlisa);
-        const bobAccessToken = await RpcRegistrationHelper.generateAccessToken(rpcSignerHost, passPhraseBob);
+        const alisaAccessToken = await authenticatorHelper.generateAccessToken(passPhraseAlisa);
+        const bobAccessToken = await authenticatorHelper.generateAccessToken(passPhraseBob);
 
         (keyPairHelperAlisa as RemoteSigner).setAccessToken(alisaAccessToken);
         (keyPairHelperBob as RemoteSigner).setAccessToken(bobAccessToken);
@@ -278,8 +279,7 @@ describe('Profile Manager', async () => {
 
     it('create ETH Wallets record by BASE interface', async () => {
         const baseUser = await KeyPairFactory.createRpcKeyPair(rpcTransport);
-        const baseUserAccessToken: string = await RpcRegistrationHelper.generateAccessToken(
-            rpcSignerHost,
+        const baseUserAccessToken: string = await authenticatorHelper.generateAccessToken(
             'mnemonic for BASE user for testing'
         );
 

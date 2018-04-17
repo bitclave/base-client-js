@@ -1,6 +1,6 @@
 import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
 import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
-import DataRequestManager from '../../src/manager/DataRequestManager';
+import { DataRequestManager } from '../../src/manager/DataRequestManager';
 import DataRequestRepositoryImplMock from './DataRequestRepositoryImplMock';
 import { DataRequestState } from '../../src/repository/models/DataRequestState';
 import { JsonUtils } from '../../src/utils/JsonUtils';
@@ -10,7 +10,7 @@ import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { RpcTransportImpl } from '../../src/repository/source/rpc/RpcTransportImpl';
 import { HttpTransportImpl } from '../../src/repository/source/http/HttpTransportImpl';
 import * as assert from 'assert';
-import RpcRegistrationHelper from '../RpcRegistrationHelper';
+import AuthenticatorHelper from '../AuthenticatorHelper';
 import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
 
 const should = require('chai')
@@ -21,11 +21,12 @@ describe('Data Request Manager', async () => {
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
 
-    const rpcSignerHost: string = 'http://localhost:3545'
-    const rpcClient: RpcTransport = new RpcTransportImpl(new HttpTransportImpl(rpcSignerHost));
+    const rpcSignerHost: string = 'http://localhost:3545';
+    const rpcTransport: RpcTransport = new RpcTransportImpl(new HttpTransportImpl(rpcSignerHost));
+    const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
-    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcClient);
-    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcClient);
+    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
+    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
     const dataRepository: DataRequestRepositoryImplMock = new DataRequestRepositoryImplMock();
 
     const bobsFields = ['name', 'email'];
@@ -36,15 +37,15 @@ describe('Data Request Manager', async () => {
     const requestManager: DataRequestManager;
 
     before(async () => {
-        const alisaAccessToken = await RpcRegistrationHelper.generateAccessToken(rpcSignerHost, passPhraseAlisa);
-        const bobAccessToken = await RpcRegistrationHelper.generateAccessToken(rpcSignerHost, passPhraseBob);
+        const alisaAccessToken = await authenticatorHelper.generateAccessToken(passPhraseAlisa);
+        const bobAccessToken = await authenticatorHelper.generateAccessToken(passPhraseBob);
 
         (keyPairHelperAlisa as RemoteSigner).setAccessToken(alisaAccessToken);
         (keyPairHelperBob as RemoteSigner).setAccessToken(bobAccessToken);
 
         await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
         await keyPairHelperBob.createKeyPair(passPhraseBob);
-        
+
         accountBob = new Account(keyPairHelperBob.getPublicKey());
         authAccountBehaviorBob = new BehaviorSubject<Account>(accountBob);
 
@@ -64,7 +65,7 @@ describe('Data Request Manager', async () => {
     });
 
     after(async () => {
-        rpcClient.disconnect();
+        rpcTransport.disconnect();
     });
 
     it('create request data', async () => {

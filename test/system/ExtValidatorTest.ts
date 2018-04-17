@@ -3,23 +3,25 @@ import Account from '../../src/repository/models/Account';
 import { DataRequestState } from '../../src/repository/models/DataRequestState';
 import { CryptoUtils } from '../../src/utils/CryptoUtils';
 import DataRequest from '../../src/repository/models/DataRequest';
-import ProfileManager from '../../src/manager/ProfileManager';
+import { ProfileManager } from '../../src/manager/ProfileManager';
 import { HttpTransport } from '../../src/repository/source/http/HttpTransport';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
 import { EthWealthPtr, EthWealthRecord } from '../../src/utils/types/BaseTypes';
-import RpcRegistrationHelper from '../RpcRegistrationHelper';
+import AuthenticatorHelper from '../AuthenticatorHelper';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
     .should();
 
 const rpcSignerHost: string = 'http://localhost:3545';
+const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
+const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
 async function createUser(user: Base, pass: string): Promise<Account> {
     let accessToken: string = '';
     try {
-        accessToken = await RpcRegistrationHelper.generateAccessToken(rpcSignerHost, pass);
+        accessToken = await authenticatorHelper.generateAccessToken(pass);
         await user.accountManager.authenticationByAccessToken(accessToken);
         await user.accountManager.unsubscribe();
     } catch (e) {
@@ -49,7 +51,6 @@ describe('BASE API test: External Validator', async () => {
     var accValidator: Account;
 
     private function createBase(): Base {
-        const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
         const httpTransport: HttpTransport = TransportFactory.createHttpTransport('https://base2-bitclva-com.herokuapp.com');
 
         return Base.Builder()
