@@ -3,7 +3,7 @@ import Account from '../repository/models/Account';
 import { OfferRepository } from '../repository/offer/OfferRepository';
 import Offer from '../repository/models/Offer';
 
-export default class OfferManager {
+export class OfferManager {
 
     private account: Account = new Account();
     private offerRepository: OfferRepository;

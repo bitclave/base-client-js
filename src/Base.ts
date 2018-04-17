@@ -4,13 +4,13 @@ import { AccountRepository } from './repository/account/AccountRepository';
 import ClientDataRepositoryImpl from './repository/client/ClientDataRepositoryImpl';
 import { ClientDataRepository } from './repository/client/ClientDataRepository';
 import Wallet from './repository/wallet/Wallet';
-import AccountManager from './manager/AccountManager';
+import { AccountManager } from './manager/AccountManager';
 import { BehaviorSubject } from 'rxjs/Rx';
-import ProfileManager from './manager/ProfileManager';
+import { ProfileManager } from './manager/ProfileManager';
 import Account from './repository/models/Account';
 import { KeyPairHelper } from './utils/keypair/KeyPairHelper';
 import SignInterceptor from './repository/source/http/SignInterceptor';
-import DataRequestManager from './manager/DataRequestManager';
+import { DataRequestManager } from './manager/DataRequestManager';
 import DataRequestRepositoryImpl from './repository/requests/DataRequestRepositoryImpl';
 import { DataRequestRepository } from './repository/requests/DataRequestRepository';
 import { MessageEncrypt } from './utils/keypair/MessageEncrypt';
@@ -18,10 +18,10 @@ import { MessageDecrypt } from './utils/keypair/MessageDecrypt';
 import { MessageSigner } from './utils/keypair/MessageSigner';
 import { RepositoryStrategyInterceptor } from './repository/source/http/RepositoryStrategyInterceptor';
 import { RepositoryStrategyType } from './repository/RepositoryStrategyType';
-import OfferManager from './manager/OfferManager';
+import { OfferManager } from './manager/OfferManager';
 import { OfferRepository } from './repository/offer/OfferRepository';
 import OfferRepositoryImpl from './repository/offer/OfferRepositoryImpl';
-import SearchRequestManager from './manager/SearchRequestManager';
+import { SearchRequestManager } from './manager/SearchRequestManager';
 import { SearchRequestRepository } from './repository/search/SearchRequestRepository';
 import SearchRequestRepositoryImpl from './repository/search/SearchRequestRepositoryImpl';
 import SearchRequest from './repository/models/SearchRequest';
@@ -46,7 +46,16 @@ export {
     ProfileUser,
     ProfileEthWealthValidator
 } from './utils/types/BaseTypes';
-export { SearchRequest, Offer, Base as NodeAPI };
+export {
+    AccountManager,
+    ProfileManager,
+    DataRequestManager,
+    OfferManager,
+    SearchRequestManager,
+    SearchRequest,
+    Offer,
+    Base as NodeAPI
+};
 
 export class Builder {
     httpTransport: HttpTransport;

@@ -7,7 +7,7 @@ import DataRequest from '../repository/models/DataRequest';
 import Account from '../repository/models/Account';
 import { Observable } from 'rxjs/Rx';
 
-export default class DataRequestManager {
+export class DataRequestManager {
 
     private account: Account;
     private dataRequestRepository: DataRequestRepository;

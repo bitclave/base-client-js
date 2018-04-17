@@ -8,10 +8,10 @@ import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
 import BaseEthUitls, { EthWalletVerificationCodes, EthWalletVerificationStatus } from '../utils/types/BaseEthUtils';
 import { DataRequestState } from '../repository/models/DataRequestState';
-import DataRequestManager from './DataRequestManager';
+import { DataRequestManager } from './DataRequestManager';
 import { EthAddrRecord, EthWallets, EthWealthPtr } from '../utils/types/BaseTypes';
 
-export default class ProfileManager {
+export class ProfileManager {
 
     public static DATA_KEY_ETH_WALLETS: string = 'eth_wallets';
     public static DATA_KEY_ETH_WEALTH_VALIDATOR: string = 'ethwealthvalidator';

@@ -7,7 +7,7 @@ import { MessageSigner } from '../utils/keypair/MessageSigner';
 import { RemoteSigner } from '../utils/keypair/RemoteSigner';
 import { RpcKeyPair } from '../utils/keypair/rpc/RpcKeyPair';
 
-export default class AccountManager {
+export class AccountManager {
 
     private accountRepository: AccountRepository;
     private keyPairCreator: KeyPairHelper;
