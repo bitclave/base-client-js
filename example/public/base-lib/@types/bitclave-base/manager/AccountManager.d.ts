@@ -3,7 +3,7 @@ import Account from '../repository/models/Account';
 import { KeyPairHelper } from '../utils/keypair/KeyPairHelper';
 import { BehaviorSubject } from 'rxjs/Rx';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
-export default class AccountManager {
+export declare class AccountManager {
     private accountRepository;
     private keyPairCreator;
     private messageSigner;

@@ -5,9 +5,9 @@ import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
 import { EthWalletVerificationStatus } from '../utils/types/BaseEthUtils';
-import DataRequestManager from './DataRequestManager';
+import { DataRequestManager } from './DataRequestManager';
 import { EthAddrRecord, EthWallets, EthWealthPtr } from '../utils/types/BaseTypes';
-export default class ProfileManager {
+export declare class ProfileManager {
     static DATA_KEY_ETH_WALLETS: string;
     static DATA_KEY_ETH_WEALTH_VALIDATOR: string;
     static DATA_KEY_WEALTH: string;

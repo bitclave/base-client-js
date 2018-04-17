@@ -1,12 +1,12 @@
 import { HttpTransport } from './repository/source/http/HttpTransport';
 import Wallet from './repository/wallet/Wallet';
-import AccountManager from './manager/AccountManager';
-import ProfileManager from './manager/ProfileManager';
+import { AccountManager } from './manager/AccountManager';
+import { ProfileManager } from './manager/ProfileManager';
 import { KeyPairHelper } from './utils/keypair/KeyPairHelper';
-import DataRequestManager from './manager/DataRequestManager';
+import { DataRequestManager } from './manager/DataRequestManager';
 import { RepositoryStrategyType } from './repository/RepositoryStrategyType';
-import OfferManager from './manager/OfferManager';
-import SearchRequestManager from './manager/SearchRequestManager';
+import { OfferManager } from './manager/OfferManager';
+import { SearchRequestManager } from './manager/SearchRequestManager';
 import SearchRequest from './repository/models/SearchRequest';
 import Offer from './repository/models/Offer';
 export { DataRequestState } from './repository/models/DataRequestState';
@@ -19,7 +19,7 @@ export { TransportFactory } from './repository/source/TransportFactory';
 export { KeyPairFactory } from './utils/keypair/KeyPairFactory';
 export { RemoteSigner } from './utils/keypair/RemoteSigner';
 export { EthBaseAddrPair, EthAddrRecord, EthWallets, EthWealthRecord, EthWealthPtr, ProfileUser, ProfileEthWealthValidator } from './utils/types/BaseTypes';
-export { SearchRequest, Offer, Base as NodeAPI };
+export { AccountManager, ProfileManager, DataRequestManager, OfferManager, SearchRequestManager, SearchRequest, Offer, Base as NodeAPI };
 export declare class Builder {
     httpTransport: HttpTransport;
     keyPairHelper: KeyPairHelper;

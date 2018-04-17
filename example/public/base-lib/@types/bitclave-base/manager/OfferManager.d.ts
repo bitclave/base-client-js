@@ -2,7 +2,7 @@ import { Observable } from 'rxjs/Rx';
 import Account from '../repository/models/Account';
 import { OfferRepository } from '../repository/offer/OfferRepository';
 import Offer from '../repository/models/Offer';
-export default class OfferManager {
+export declare class OfferManager {
     private account;
     private offerRepository;
     constructor(offerRepository: OfferRepository, authAccountBehavior: Observable<Account>);
