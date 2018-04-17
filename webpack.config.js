@@ -1,14 +1,13 @@
 const Path = require('path');
 const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
 
-module.exports = {
+const defaults = {
     entry: './src/Base.ts',
     devtool: 'source-map',
     node: {
         fs: 'empty',
         child_process: 'empty'
     },
-    target: 'node',
     module: {
         loaders: [
             {test: /\.ts(x?)$/, loader: "babel-loader?presets[]=preset-env!ts-loader"}
@@ -25,13 +24,6 @@ module.exports = {
         modules: [Path.resolve('./node_modules'), Path.resolve('./src')],
         extensions: ['.tsx', '.ts', '.js']
     },
-    output: {
-        filename: 'Bitclave-Base.js',
-        path: Path.resolve(__dirname, 'dist'),
-        library: 'Bitclave-Base',
-        libraryTarget: "umd2",
-        umdNamedDefine: true
-    },
     plugins: [
         new TypedocWebpackPlugin({
             out: './docs',
@@ -44,3 +36,32 @@ module.exports = {
         }, './src/')
     ]
 };
+
+module.exports = [
+    Object.assign(
+        {
+            target: 'web',
+            output: {
+                filename: 'Bitclave-Base.Web.js',
+                library: 'BitclaveBase',
+                path: Path.resolve(__dirname, 'dist'),
+                libraryTarget: "umd2",
+                umdNamedDefine: true
+            },
+        },
+        defaults
+    ),
+    Object.assign(
+        {
+            target: 'node',
+            output: {
+                filename: 'Bitclave-Base.Node.js',
+                library: 'Bitclave-Base',
+                path: Path.resolve(__dirname, 'dist'),
+                libraryTarget: "umd2",
+                umdNamedDefine: true
+            },
+        },
+        defaults
+    ),
+];
