@@ -93,9 +93,11 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite"><a href="_utils_keypair_rpc_rpcauth_.rpcauth.html#accesstoken" class="tsd-kind-icon">access<wbr>Token</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_utils_keypair_rpc_rpcauth_.rpcauth.html#baseurl" class="tsd-kind-icon">base<wbr>Url</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_utils_keypair_rpc_rpcauth_.rpcauth.html#accesstoken" class="tsd-kind-icon">access<wbr>Token</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_utils_keypair_rpc_rpcauth_.rpcauth.html#expiredate" class="tsd-kind-icon">expire<wbr>Date</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_utils_keypair_rpc_rpcauth_.rpcauth.html#origin" class="tsd-kind-icon">origin</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_utils_keypair_rpc_rpcauth_.rpcauth.html#passphrase" class="tsd-kind-icon">pass<wbr>Phrase</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_utils_keypair_rpc_rpcauth_.rpcauth.html#permissions" class="tsd-kind-icon">permissions</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-inherited">
@@ -114,26 +116,32 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Rpc<wbr>Auth<span class="tsd-signature-symbol">(</span>passPhrase<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, baseUrl<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, accessToken<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_utils_keypair_rpc_rpcauth_.rpcauth.html" class="tsd-signature-type">RpcAuth</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Rpc<wbr>Auth<span class="tsd-signature-symbol">(</span>accessToken<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, passPhrase<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, origin<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, expireDate<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, permissions<span class="tsd-signature-symbol">?: </span><a href="_utils_keypair_rpc_rpcpermissions_.rpcpermissions.html" class="tsd-signature-type">RpcPermissions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_utils_keypair_rpc_rpcauth_.rpcauth.html" class="tsd-signature-type">RpcAuth</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_utils_keypair_rpc_rpctoken_.rpctoken.html">RpcToken</a>.<a href="_utils_keypair_rpc_rpctoken_.rpctoken.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a4d3391/src/utils/keypair/rpc/RpcAuth.ts#L7">utils/keypair/rpc/RpcAuth.ts:7</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cf8d5fd/src/utils/keypair/rpc/RpcAuth.ts#L9">utils/keypair/rpc/RpcAuth.ts:9</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> accessToken: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></h5>
+								</li>
+								<li>
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> passPhrase: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> baseUrl: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> origin: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> accessToken: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> expireDate: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> permissions: <a href="_utils_keypair_rpc_rpcpermissions_.rpcpermissions.html" class="tsd-signature-type">RpcPermissions</a><span class="tsd-signature-symbol"> =&nbsp;new RpcPermissions([])</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_utils_keypair_rpc_rpcauth_.rpcauth.html" class="tsd-signature-type">RpcAuth</a></h4>
@@ -143,24 +151,34 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="accesstoken" class="tsd-anchor"></a>
 					<h3>access<wbr>Token</h3>
 					<div class="tsd-signature tsd-kind-icon">access<wbr>Token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Overrides <a href="_utils_keypair_rpc_rpctoken_.rpctoken.html">RpcToken</a>.<a href="_utils_keypair_rpc_rpctoken_.rpctoken.html#accesstoken">accessToken</a></p>
+						<p>Inherited from <a href="_utils_keypair_rpc_rpctoken_.rpctoken.html">RpcToken</a>.<a href="_utils_keypair_rpc_rpctoken_.rpctoken.html#accesstoken">accessToken</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a4d3391/src/utils/keypair/rpc/RpcAuth.ts#L7">utils/keypair/rpc/RpcAuth.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cf8d5fd/src/utils/keypair/rpc/RpcToken.ts#L3">utils/keypair/rpc/RpcToken.ts:3</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="baseurl" class="tsd-anchor"></a>
-					<h3>base<wbr>Url</h3>
-					<div class="tsd-signature tsd-kind-icon">base<wbr>Url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="expiredate" class="tsd-anchor"></a>
+					<h3>expire<wbr>Date</h3>
+					<div class="tsd-signature tsd-kind-icon">expire<wbr>Date<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a4d3391/src/utils/keypair/rpc/RpcAuth.ts#L6">utils/keypair/rpc/RpcAuth.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cf8d5fd/src/utils/keypair/rpc/RpcAuth.ts#L8">utils/keypair/rpc/RpcAuth.ts:8</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="origin" class="tsd-anchor"></a>
+					<h3>origin</h3>
+					<div class="tsd-signature tsd-kind-icon">origin<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cf8d5fd/src/utils/keypair/rpc/RpcAuth.ts#L7">utils/keypair/rpc/RpcAuth.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -170,7 +188,17 @@
 					<div class="tsd-signature tsd-kind-icon">pass<wbr>Phrase<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a4d3391/src/utils/keypair/rpc/RpcAuth.ts#L5">utils/keypair/rpc/RpcAuth.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cf8d5fd/src/utils/keypair/rpc/RpcAuth.ts#L6">utils/keypair/rpc/RpcAuth.ts:6</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="permissions" class="tsd-anchor"></a>
+					<h3>permissions</h3>
+					<div class="tsd-signature tsd-kind-icon">permissions<span class="tsd-signature-symbol">:</span> <a href="_utils_keypair_rpc_rpcpermissions_.rpcpermissions.html" class="tsd-signature-type">RpcPermissions</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cf8d5fd/src/utils/keypair/rpc/RpcAuth.ts#L9">utils/keypair/rpc/RpcAuth.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -188,7 +216,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_utils_keypair_rpc_rpctoken_.rpctoken.html">RpcToken</a>.<a href="_utils_keypair_rpc_rpctoken_.rpctoken.html#getaccesstokensig">getAccessTokenSig</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a4d3391/src/utils/keypair/rpc/RpcToken.ts#L9">utils/keypair/rpc/RpcToken.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cf8d5fd/src/utils/keypair/rpc/RpcToken.ts#L9">utils/keypair/rpc/RpcToken.ts:9</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -206,7 +234,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_utils_keypair_rpc_rpctoken_.rpctoken.html">RpcToken</a>.<a href="_utils_keypair_rpc_rpctoken_.rpctoken.html#getclearaccesstoken">getClearAccessToken</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a4d3391/src/utils/keypair/rpc/RpcToken.ts#L13">utils/keypair/rpc/RpcToken.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/cf8d5fd/src/utils/keypair/rpc/RpcToken.ts#L13">utils/keypair/rpc/RpcToken.ts:13</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -236,14 +264,20 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 								<a href="_utils_keypair_rpc_rpcauth_.rpcauth.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="_utils_keypair_rpc_rpcauth_.rpcauth.html#accesstoken" class="tsd-kind-icon">access<wbr>Token</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_utils_keypair_rpc_rpcauth_.rpcauth.html#baseurl" class="tsd-kind-icon">base<wbr>Url</a>
+								<a href="_utils_keypair_rpc_rpcauth_.rpcauth.html#expiredate" class="tsd-kind-icon">expire<wbr>Date</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_utils_keypair_rpc_rpcauth_.rpcauth.html#origin" class="tsd-kind-icon">origin</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_utils_keypair_rpc_rpcauth_.rpcauth.html#passphrase" class="tsd-kind-icon">pass<wbr>Phrase</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_utils_keypair_rpc_rpcauth_.rpcauth.html#permissions" class="tsd-kind-icon">permissions</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_utils_keypair_rpc_rpcauth_.rpcauth.html#getaccesstokensig" class="tsd-kind-icon">get<wbr>Access<wbr>Token<wbr>Sig</a>
