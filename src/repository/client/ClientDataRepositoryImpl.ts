@@ -18,7 +18,8 @@ export default class ClientDataRepositoryImpl implements ClientDataRepository {
         return this.transport
             .sendRequest(
                 this.CLIENT_GET_DATA.replace('{pk}', pk),
-                HttpMethod.Get
+                HttpMethod.Get,
+                ''
             )
             .then((response) => JsonUtils.jsonToMap<string, string>(response.json));
     }

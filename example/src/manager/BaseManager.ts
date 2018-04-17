@@ -90,8 +90,11 @@ export default class BaseManager {
         });
     }
 
-    getNewMnemonic(): string {
-        return this.base.accountManager.getNewMnemonic();
+    getNewMnemonic(): Promise<string> {
+        return this.base.accountManager.getNewMnemonic()
+            .then(phrase => {
+                return phrase;
+            });
     }
 
     unsubscribe(mnemonicPhrase: string): Promise<Account> {

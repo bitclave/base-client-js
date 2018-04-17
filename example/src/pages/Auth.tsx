@@ -101,7 +101,14 @@ export default class Auth extends React.Component<Props, State> {
     }
 
     private onMnemonic() {
-        this.setState({mnemonicPhrase: this.baseManager.getNewMnemonic()});
+        // this.setState({mnemonicPhrase: this.baseManager.getNewMnemonic()});
+        this.baseManager.getNewMnemonic()
+            .then(phrase => {
+                this.setState({mnemonicPhrase: phrase});
+            })
+            .catch(response => {
+                alert('message: ' + response.json.error);
+            })
     }
 
     private onSingUp() {
