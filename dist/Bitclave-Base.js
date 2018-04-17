@@ -51969,17 +51969,22 @@ var AuthRepositoryImpl_1 = __webpack_require__(265);
 var ClientDataRepositoryImpl_1 = __webpack_require__(267);
 var Wallet_1 = __webpack_require__(268);
 var AccountManager_1 = __webpack_require__(269);
+exports.AccountManager = AccountManager_1.AccountManager;
 var Rx_1 = __webpack_require__(325);
 var ProfileManager_1 = __webpack_require__(619);
+exports.ProfileManager = ProfileManager_1.ProfileManager;
 var Account_1 = __webpack_require__(44);
 var SignInterceptor_1 = __webpack_require__(715);
 var DataRequestManager_1 = __webpack_require__(717);
+exports.DataRequestManager = DataRequestManager_1.DataRequestManager;
 var DataRequestRepositoryImpl_1 = __webpack_require__(718);
 var RepositoryStrategyInterceptor_1 = __webpack_require__(721);
 var RepositoryStrategyType_1 = __webpack_require__(260);
 var OfferManager_1 = __webpack_require__(722);
+exports.OfferManager = OfferManager_1.OfferManager;
 var OfferRepositoryImpl_1 = __webpack_require__(723);
 var SearchRequestManager_1 = __webpack_require__(724);
+exports.SearchRequestManager = SearchRequestManager_1.SearchRequestManager;
 var SearchRequestRepositoryImpl_1 = __webpack_require__(725);
 var SearchRequest_1 = __webpack_require__(263);
 exports.SearchRequest = SearchRequest_1.default;
@@ -52048,11 +52053,11 @@ var Base = /** @class */ (function () {
         var offerRepository = new OfferRepositoryImpl_1.default(transport);
         var searchRequestRepository = new SearchRequestRepositoryImpl_1.default(transport);
         this._wallet = new Wallet_1.default();
-        this._accountManager = new AccountManager_1.default(accountRepository, keyPairHelper, messageSigner, this._authAccountBehavior);
-        this._dataRequestManager = new DataRequestManager_1.default(dataRequestRepository, this._authAccountBehavior.asObservable(), encryptMessage, decryptMessage);
-        this._profileManager = new ProfileManager_1.default(clientDataRepository, this._authAccountBehavior.asObservable(), encryptMessage, decryptMessage, messageSigner, this._dataRequestManager);
-        this._offerManager = new OfferManager_1.default(offerRepository, this._authAccountBehavior.asObservable());
-        this._searchRequestManager = new SearchRequestManager_1.default(searchRequestRepository, this._authAccountBehavior.asObservable());
+        this._accountManager = new AccountManager_1.AccountManager(accountRepository, keyPairHelper, messageSigner, this._authAccountBehavior);
+        this._dataRequestManager = new DataRequestManager_1.DataRequestManager(dataRequestRepository, this._authAccountBehavior.asObservable(), encryptMessage, decryptMessage);
+        this._profileManager = new ProfileManager_1.ProfileManager(clientDataRepository, this._authAccountBehavior.asObservable(), encryptMessage, decryptMessage, messageSigner, this._dataRequestManager);
+        this._offerManager = new OfferManager_1.OfferManager(offerRepository, this._authAccountBehavior.asObservable());
+        this._searchRequestManager = new SearchRequestManager_1.SearchRequestManager(searchRequestRepository, this._authAccountBehavior.asObservable());
     }
     Base.Builder = function () {
         return new Builder();
@@ -52329,7 +52334,7 @@ var AccountManager = /** @class */ (function () {
     };
     return AccountManager;
 }());
-exports.default = AccountManager;
+exports.AccountManager = AccountManager;
 
 
 /***/ }),
@@ -72072,7 +72077,7 @@ var ProfileManager = /** @class */ (function () {
     ProfileManager.DATA_KEY_WEALTH = 'wealth';
     return ProfileManager;
 }());
-exports.default = ProfileManager;
+exports.ProfileManager = ProfileManager;
 
 
 /***/ }),
@@ -83813,7 +83818,7 @@ var DataRequestManager = /** @class */ (function () {
     };
     return DataRequestManager;
 }());
-exports.default = DataRequestManager;
+exports.DataRequestManager = DataRequestManager;
 
 
 /***/ }),
@@ -84008,7 +84013,7 @@ var OfferManager = /** @class */ (function () {
     };
     return OfferManager;
 }());
-exports.default = OfferManager;
+exports.OfferManager = OfferManager;
 
 
 /***/ }),
@@ -84117,7 +84122,7 @@ var SearchRequestManager = /** @class */ (function () {
     };
     return SearchRequestManager;
 }());
-exports.default = SearchRequestManager;
+exports.SearchRequestManager = SearchRequestManager;
 
 
 /***/ }),
