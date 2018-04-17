@@ -2,7 +2,7 @@ import * as React from 'react';
 import Col from 'reactstrap/lib/Col';
 import Row from 'reactstrap/lib/Row';
 import ResponseModel from '../../models/ResponseModel';
-import { DataRequestState } from 'base';
+import { DataRequestState } from 'bitclave-base';
 
 interface Prop {
     model: ResponseModel;

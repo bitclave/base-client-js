@@ -11,7 +11,7 @@ import { lazyInject } from '../Injections';
 import BaseManager from '../manager/BaseManager';
 import { RouteComponentProps } from 'react-router';
 import Pair from '../models/Pair';
-import { CompareAction, Offer } from 'base';
+import { CompareAction, Offer } from 'bitclave-base';
 import SimplePairList from '../components/lists/SimplePairList';
 import SimplePairOptionsList from '../components/lists/SimplePairOptionsList';
 

@@ -74,8 +74,7 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
         return this.transport
             .sendRequest(
                 path,
-                HttpMethod.Get,
-                ''
+                HttpMethod.Get
             ).then((response) => Object.assign([], response.json));
     }
 

@@ -2,7 +2,7 @@ import * as React from 'react';
 import BaseManager, { SyncDataListener } from '../manager/BaseManager';
 import { lazyInject } from '../Injections';
 import { RouteComponentProps } from 'react-router';
-import { DataRequestState } from 'base';
+import { DataRequestState } from 'bitclave-base';
 import DataRequest from 'bitclave-base/repository/models/DataRequest';
 import Button from 'reactstrap/lib/Button';
 import Container from 'reactstrap/lib/Container';

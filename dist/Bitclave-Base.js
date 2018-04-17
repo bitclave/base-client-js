@@ -51637,7 +51637,7 @@ var ClientDataRepositoryImpl = /** @class */ (function () {
     }
     ClientDataRepositoryImpl.prototype.getData = function (pk) {
         return this.transport
-            .sendRequest(this.CLIENT_GET_DATA.replace('{pk}', pk), HttpMethod_1.HttpMethod.Get, '')
+            .sendRequest(this.CLIENT_GET_DATA.replace('{pk}', pk), HttpMethod_1.HttpMethod.Get)
             .then(function (response) { return JsonUtils_1.JsonUtils.jsonToMap(response.json); });
     };
     ClientDataRepositoryImpl.prototype.updateData = function (pk, data) {
@@ -83008,7 +83008,7 @@ var DataRequestRepositoryImpl = /** @class */ (function () {
             .replace('{toPk}', (toPk || ''))
             .replace('{state}', state);
         return this.transport
-            .sendRequest(path, HttpMethod_1.HttpMethod.Get, '').then(function (response) { return Object.assign([], response.json); });
+            .sendRequest(path, HttpMethod_1.HttpMethod.Get).then(function (response) { return Object.assign([], response.json); });
     };
     DataRequestRepositoryImpl.prototype.grantAccessForOffer = function (offerId, clientPk, encryptedClientResponse) {
         var shareData = new OfferShareData_1.default(offerId, clientPk, encryptedClientResponse);
