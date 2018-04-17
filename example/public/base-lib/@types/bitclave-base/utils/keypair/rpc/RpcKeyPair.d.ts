@@ -1,10 +1,11 @@
 import { KeyPairHelper } from '../KeyPairHelper';
 import { KeyPair } from '../KeyPair';
 import { RpcTransport } from '../../../repository/source/rpc/RpcTransport';
-export declare class RpcKeyPair implements KeyPairHelper {
+import { RemoteSigner } from '../RemoteSigner';
+export declare class RpcKeyPair implements KeyPairHelper, RemoteSigner {
     private rpcTransport;
-    private auth;
-    private publicKey;
+    private clientData;
+    private accessToken;
     constructor(rpcTransport: RpcTransport);
     createKeyPair(passPhrase: string): Promise<KeyPair>;
     generateMnemonicPhrase(): Promise<string>;
@@ -14,4 +15,6 @@ export declare class RpcKeyPair implements KeyPairHelper {
     encryptMessage(recipientPk: string, message: string): Promise<string>;
     generatePasswordForField(fieldName: string): Promise<string>;
     decryptMessage(senderPk: string, encrypted: string): Promise<string>;
+    setAccessToken(accessToken: string): void;
+    getAccessToken(): string;
 }
