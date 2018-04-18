@@ -5,7 +5,7 @@ import { HttpTransport } from '../source/http/HttpTransport';
 
 export default class OfferRepositoryImpl implements OfferRepository {
 
-    private readonly OFFER_API: string = '/client/{owner}/offer/{id}';
+    private readonly OFFER_API: string = '/v1/client/{owner}/offer/{id}';
 
     private transport: HttpTransport;
 

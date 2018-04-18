@@ -5,8 +5,8 @@ import { JsonUtils } from '../../utils/JsonUtils';
 
 export default class ClientDataRepositoryImpl implements ClientDataRepository {
 
-    private readonly CLIENT_GET_DATA: string = '/client/{pk}/';
-    private readonly CLIENT_SET_DATA: string = '/client/';
+    private readonly CLIENT_GET_DATA: string = '/v1/client/{pk}/';
+    private readonly CLIENT_SET_DATA: string = '/v1/client/';
 
     private transport: HttpTransport;
 

@@ -7,13 +7,13 @@ import OfferShareData from '../models/OfferShareData';
 
 export default class DataRequestRepositoryImpl implements DataRequestRepository {
 
-    private readonly CREATE_DATA_REQUEST: string = '/data/request/';
-    private readonly GET_DATA_REQUEST_FORM: string = '/data/request/from/{fromPk}/state/{state}/';
-    private readonly GET_DATA_REQUEST_TO: string = '/data/request/to/{toPk}/state/{state}/';
-    private readonly GET_DATA_REQUEST_FROM_TO: string = '/data/request/from/{fromPk}/to/{toPk}/state/{state}/';
-    private readonly RESPONSE_DATA_REQUEST: string = '/data/request/{id}/';
-    private readonly GRANT_ACCESS_FOR_CLIENT: string = '/data/grant/request/';
-    private readonly GRANT_ACCESS_FOR_OFFER: string = '/data/grant/offer';
+    private readonly CREATE_DATA_REQUEST: string = '/v1/data/request/';
+    private readonly GET_DATA_REQUEST_FORM: string = '/v1/data/request/from/{fromPk}/state/{state}/';
+    private readonly GET_DATA_REQUEST_TO: string = '/v1/data/request/to/{toPk}/state/{state}/';
+    private readonly GET_DATA_REQUEST_FROM_TO: string = '/v1/data/request/from/{fromPk}/to/{toPk}/state/{state}/';
+    private readonly RESPONSE_DATA_REQUEST: string = '/v1/data/request/{id}/';
+    private readonly GRANT_ACCESS_FOR_CLIENT: string = '/v1/data/grant/request/';
+    private readonly GRANT_ACCESS_FOR_OFFER: string = '/v1/data/grant/offer';
 
     private transport: HttpTransport;
 

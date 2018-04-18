@@ -5,9 +5,9 @@ import Account from '../models/Account';
 
 export default class AccountRepositoryImpl implements AccountRepository {
 
-    private readonly SIGN_UP: string = '/registration';
-    private readonly SIGN_IN: string = '/exist';
-    private readonly DELETE: string = '/delete';
+    private readonly SIGN_UP: string = '/v1/registration';
+    private readonly SIGN_IN: string = '/v1/exist';
+    private readonly DELETE: string = '/v1/delete';
 
     private transport: HttpTransport;
 
