@@ -1,4 +1,4 @@
-import { DataRequestState } from 'base';
+import { DataRequestState } from 'bitclave-base';
 
 export default class ResponseModel {
 
