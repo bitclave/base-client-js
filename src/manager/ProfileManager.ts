@@ -229,12 +229,15 @@ export class ProfileManager {
 
             for (let [key, value] of data.entries()) {
                 pass = await this.encrypt.generatePasswordForField(key);
-                if (pass != null && pass.length > 0) {
+                if (pass != null && pass != undefined && pass.length > 0) {
                     changedValue = encrypt
                         ? CryptoUtils.encryptAes256(value, pass)
                         : CryptoUtils.decryptAes256(value, pass);
 
                     result.set(key.toLowerCase(), changedValue);
+
+                } else {
+                    result.set(key.toLowerCase(), value);
                 }
             }
 

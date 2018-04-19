@@ -32,7 +32,9 @@ export class AccountManager {
      *
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
-    public authenticationByPassPhrase(passPhrase: string, message: string = ''): Promise<Account> {
+    public authenticationByPassPhrase(passPhrase: string, message: string): Promise<Account> {
+        this.checkSigMessage(message);
+
         if (!(this.keyPairCreator instanceof RpcKeyPair)) {
             return this.checkAccount(passPhrase, message)
                 .catch(reason => this.registration(passPhrase, message));
@@ -49,7 +51,9 @@ export class AccountManager {
      *
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
-    public authenticationByAccessToken(accessToken: string, message: string = ''): Promise<Account> {
+    public authenticationByAccessToken(accessToken: string, message: string): Promise<Account> {
+        this.checkSigMessage(message);
+
         if (this.keyPairCreator instanceof RpcKeyPair) {
             (this.keyPairCreator as RemoteSigner).setAccessToken(accessToken);
 
@@ -70,7 +74,9 @@ export class AccountManager {
      *
      * @returns {Promise<Account>} {Account} after successful registration or http exception if fail.
      */
-    private registration(mnemonicPhrase: string, message: string = ''): Promise<Account> {
+    private registration(mnemonicPhrase: string, message: string): Promise<Account> {
+        this.checkSigMessage(message);
+
         return this.keyPairCreator.createKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
             .then((account) => this.accountRepository.registration(account))
@@ -85,10 +91,18 @@ export class AccountManager {
      *
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
-    private checkAccount(mnemonicPhrase: string, message: string = ''): Promise<Account> {
+    private checkAccount(mnemonicPhrase: string, message: string): Promise<Account> {
+        this.checkSigMessage(message);
+
         return this.keyPairCreator.createKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
             .then(account => this.getAccount(account, message));
+    }
+
+    private checkSigMessage(message: string) {
+        if (message == null || message == undefined || message.length < 10) {
+            throw 'message for signature should be have min 10 symbols';
+        }
     }
 
     /**
