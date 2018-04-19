@@ -39,6 +39,12 @@
   },
   "description": "",
   "devDependencies": {},
+  "dependencies": {
+    "bitcore-ecies": "^1.0.3",
+    "bitcore-lib": "^0.15.0",
+    "bitcore-message": "^1.0.4",
+    "bitcore-mnemonic": "^1.5.0"
+  },
   "homepage": "",
   "keywords": [],
   "license": "MIT",

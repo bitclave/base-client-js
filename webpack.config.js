@@ -9,6 +9,12 @@ module.exports = {
         child_process: 'empty'
     },
     target: 'node',
+    externals: {
+        'bitcore-ecies': 'bitcore-ecies',
+        'bitcore-lib': 'bitcore-lib',
+        'bitcore-message': 'bitcore-message',
+        'bitcore-mnemonic': 'bitcore-mnemonic'
+    },
     module: {
         loaders: [
             {test: /\.ts(x?)$/, loader: "babel-loader?presets[]=preset-env!ts-loader"}
