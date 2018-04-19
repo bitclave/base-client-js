@@ -1,9 +1,9 @@
 import RpcToken from './RpcToken';
-import RpcPermissions from './RpcPermissions';
+import { Permissions } from '../Permissions';
 export default class RpcAuth extends RpcToken {
     passPhrase: string;
     origin: string;
     expireDate: string;
-    permissions: RpcPermissions;
-    constructor(accessToken?: string, passPhrase?: string, origin?: string, expireDate?: string, permissions?: RpcPermissions);
+    permissions: Permissions;
+    constructor(accessToken?: string, passPhrase?: string, origin?: string, expireDate?: string, permissions?: Permissions);
 }

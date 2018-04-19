@@ -1,5 +1,5 @@
 import AccessData from './RpcAccessData';
-import Permissions from './RpcPermissions';
+import { Permissions } from '../Permissions';
 
 export default class ClientData extends AccessData {
 

@@ -1,6 +1,7 @@
 import { KeyPairHelper } from './KeyPairHelper';
 import { CryptoUtils } from '../CryptoUtils';
 import { KeyPair } from './KeyPair';
+import { Permissions } from './Permissions';
 
 const bitcore = require('bitcore-lib');
 const Message = require('bitcore-message');
@@ -12,6 +13,11 @@ export class BitKeyPair implements KeyPairHelper {
     private privateKey: any;
     private publicKey: any;
     private addr: any;
+    private permissions: Permissions;
+
+    constructor(permissions: Permissions) {
+        this.permissions = permissions;
+    }
 
     public createKeyPair(passPhrase: string): Promise<KeyPair> {
         return new Promise<KeyPair>(resolve => {
@@ -88,15 +94,20 @@ export class BitKeyPair implements KeyPairHelper {
         });
     }
 
-    public generatePasswordForField(fieldName: String): Promise<string> {
-        return new Promise<string>(resolve => {
-            const result: string = CryptoUtils.PBKDF2(
-                CryptoUtils.keccak256(this.privateKey.toString(16)) + fieldName.toLowerCase(),
-                384
-            );
+    public generatePasswordForField(fieldName: string): Promise<string> {
+        const hasPermission = this.permissions.fields.indexOf(fieldName) > -1
+            || this.permissions.fields.indexOf('any') > -1;
 
-            resolve(result);
-        });
+        return hasPermission
+            ? new Promise<string>(resolve => {
+                const result: string = CryptoUtils.PBKDF2(
+                    CryptoUtils.keccak256(this.privateKey.toString(16)) + fieldName.toLowerCase(),
+                    384
+                );
+
+                resolve(result);
+            })
+            : Promise.resolve('');
     }
 
     decryptMessage(senderPk: string, encrypted: string): Promise<string> {

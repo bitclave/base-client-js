@@ -17,7 +17,7 @@ export declare class AccountManager {
      *
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
-    authenticationByPassPhrase(passPhrase: string, message?: string): Promise<Account>;
+    authenticationByPassPhrase(passPhrase: string, message: string): Promise<Account>;
     /**
      * Checks if user with provided access token is already registered in the system.
      * @param {string} accessToken token for authenticate on remote signer
@@ -27,7 +27,7 @@ export declare class AccountManager {
      *
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
-    authenticationByAccessToken(accessToken: string, message?: string): Promise<Account>;
+    authenticationByAccessToken(accessToken: string, message: string): Promise<Account>;
     /**
      * Registers a new user in the system.
      * @param {string} mnemonicPhrase Mnemonic phrase for Public/Private key pair
@@ -36,7 +36,7 @@ export declare class AccountManager {
      *
      * @returns {Promise<Account>} {Account} after successful registration or http exception if fail.
      */
-    private registration(mnemonicPhrase, message?);
+    private registration(mnemonicPhrase, message);
     /**
      * Checks if user with provided mnemonic phrase is already registered in the system.
      * @param {string} mnemonicPhrase Mnemonic phrase for Public/Private key pair
@@ -45,7 +45,8 @@ export declare class AccountManager {
      *
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
-    private checkAccount(mnemonicPhrase, message?);
+    private checkAccount(mnemonicPhrase, message);
+    private checkSigMessage(message);
     /**
      * Allows user to unsubscribe from BASE. Delets all his data
      *

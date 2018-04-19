@@ -10,11 +10,15 @@ import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
 
-const should = require('chai')
+const chai = require('chai');
+const expect = chai.expect;
+const should = chai
     .use(require('chai-as-promised'))
     .should();
 
 describe('Account Manager', async () => {
+    const someSigMessage = 'some unique message for signature';
+
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
 
@@ -46,7 +50,7 @@ describe('Account Manager', async () => {
 
         (keyPairHelperAlisa as RemoteSigner).setAccessToken(alisaAccessToken);
         (keyPairHelperBob as RemoteSigner).setAccessToken(bobAccessToken);
-        
+
         accountAlisa = new Account((await keyPairHelperAlisa.createKeyPair('')).publicKey);
         accountBob = new Account((await keyPairHelperBob.createKeyPair('')).publicKey);
         accountManager = new AccountManager(
@@ -77,12 +81,12 @@ describe('Account Manager', async () => {
     });
 
     it('should valid public key from sig (with empty message) in registration and check account', async () => {
-        await accountManager.authenticationByAccessToken(alisaAccessToken);
-        const account = authAccountBehavior.getValue();
-        account.message.should.be.equal('');
-        (await keyPairHelperAlisa.checkSig('', account.sig)).should.be.true;
-        (await keyPairHelperAlisa.checkSig('', 'some fake sig')).should.be.false;
-        (await keyPairHelperAlisa.checkSig(messageForSigBob, account.sig)).should.be.false;
+        try {
+           await accountManager.authenticationByAccessToken(alisaAccessToken, '');
+           throw 'message for signature should be have min 10 symbols'
+        } catch (e) {
+            e.should.be.equal('message for signature should be have min 10 symbols')
+        }
     });
 
     it('should register different account and change it', async () => {

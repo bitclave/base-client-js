@@ -1,4 +1,4 @@
-export default class RpcPermissions {
+export class Permissions {
 
     fields: Array<string>;
 

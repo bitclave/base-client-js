@@ -1,9 +1,12 @@
 import { KeyPairHelper } from './KeyPairHelper';
 import { KeyPair } from './KeyPair';
+import { Permissions } from './Permissions';
 export declare class BitKeyPair implements KeyPairHelper {
     private privateKey;
     private publicKey;
     private addr;
+    private permissions;
+    constructor(permissions: Permissions);
     createKeyPair(passPhrase: string): Promise<KeyPair>;
     generateMnemonicPhrase(): Promise<string>;
     initKeyPairFromPrvKey(prvKey: string): KeyPair;
@@ -12,6 +15,6 @@ export declare class BitKeyPair implements KeyPairHelper {
     getPublicKey(): string;
     getAddr(): string;
     encryptMessage(recipientPk: string, message: string): Promise<string>;
-    generatePasswordForField(fieldName: String): Promise<string>;
+    generatePasswordForField(fieldName: string): Promise<string>;
     decryptMessage(senderPk: string, encrypted: string): Promise<string>;
 }

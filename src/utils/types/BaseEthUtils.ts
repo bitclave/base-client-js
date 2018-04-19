@@ -2,6 +2,7 @@ import { BaseSchema } from './BaseSchema';
 import { EthAddrRecord, EthBaseAddrPair, EthWallets } from './BaseTypes';
 import { BitKeyPair } from '../keypair/BitKeyPair';
 import { MessageSigner } from '../keypair/MessageSigner';
+import { Permissions } from '../keypair/Permissions';
 
 const Message = require('bitcore-message');
 const bitcore = require('bitcore-lib');
@@ -67,7 +68,7 @@ export default class BaseEthUtils {
         // no verification is performed here
         const msgWallets: EthWallets = new EthWallets(signedEthRecords, '');
 
-        const bitKeyPair = new BitKeyPair();
+        const bitKeyPair = new BitKeyPair(new Permissions(['any']));
         bitKeyPair.initKeyPairFromPrvKey(prvKey);
 
         msgWallets.sig = await bitKeyPair.signMessage(JSON.stringify(msgWallets.data));
@@ -107,7 +108,7 @@ export default class BaseEthUtils {
     public static async createEthWalletsRecordWithPrvKey(baseID: string,
                                                          signedEthRecords: Array<EthAddrRecord>,
                                                          prvKey: string): Promise<EthWallets> {
-        const bitKeyPair = new BitKeyPair();
+        const bitKeyPair = new BitKeyPair(new Permissions(['any']));
         bitKeyPair.initKeyPairFromPrvKey(prvKey);
 
         return this.createEthWalletsRecordWithSigner(baseID, signedEthRecords, bitKeyPair);

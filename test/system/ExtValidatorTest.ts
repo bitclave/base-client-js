@@ -13,7 +13,7 @@ import AuthenticatorHelper from '../AuthenticatorHelper';
 const should = require('chai')
     .use(require('chai-as-promised'))
     .should();
-
+const someSigMessage = 'some unique message for signature';
 const rpcSignerHost: string = 'http://localhost:3545';
 const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
 const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
@@ -22,13 +22,13 @@ async function createUser(user: Base, pass: string): Promise<Account> {
     let accessToken: string = '';
     try {
         accessToken = await authenticatorHelper.generateAccessToken(pass);
-        await user.accountManager.authenticationByAccessToken(accessToken);
+        await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
         await user.accountManager.unsubscribe();
     } catch (e) {
         //ignore error if user not exist
     }
 
-    return await user.accountManager.registration(pass); // this method private.
+    return await user.accountManager.registration(pass, someSigMessage); // this method private.
 }
 
 describe('BASE API test: External Validator', async () => {

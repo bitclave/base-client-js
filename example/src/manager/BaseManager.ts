@@ -7,7 +7,7 @@ import DataRequest from 'bitclave-base/repository/models/DataRequest';
 import Base, {
     DataRequestState,
     HttpTransport,
-    KeyPairFactory,
+    KeyPairFactory, Permissions,
     RepositoryStrategyType,
     TransportFactory
 } from 'bitclave-base';
@@ -34,7 +34,7 @@ export default class BaseManager {
 
     constructor() {
         const httpTransport: HttpTransport = TransportFactory.createHttpTransport(Config.getBaseEndPoint());
-        const pairHelper: KeyPairHelper = KeyPairFactory.createDefaultKeyPair();
+        const pairHelper: KeyPairHelper = KeyPairFactory.createDefaultKeyPair(new Permissions(['any']));
 
         this.base = Base.Builder()
             .setHttpTransport(httpTransport)
