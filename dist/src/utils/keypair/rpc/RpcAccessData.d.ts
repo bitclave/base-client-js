@@ -1,4 +1,4 @@
-import Permissions from './RpcPermissions';
+import { Permissions } from '../Permissions';
 import RpcToken from './RpcToken';
 export default class AccessData extends RpcToken {
     origin: string;

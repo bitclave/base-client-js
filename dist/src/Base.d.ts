@@ -19,6 +19,7 @@ export { TransportFactory } from './repository/source/TransportFactory';
 export { KeyPairFactory } from './utils/keypair/KeyPairFactory';
 export { RemoteSigner } from './utils/keypair/RemoteSigner';
 export { CryptoUtils } from './utils/CryptoUtils';
+export { Permissions } from './utils/keypair/Permissions';
 export { EthBaseAddrPair, EthAddrRecord, EthWallets, EthWealthRecord, EthWealthPtr, ProfileUser, ProfileEthWealthValidator } from './utils/types/BaseTypes';
 export { AccountManager, ProfileManager, DataRequestManager, OfferManager, SearchRequestManager, SearchRequest, Offer, Base as NodeAPI };
 export declare class Builder {
