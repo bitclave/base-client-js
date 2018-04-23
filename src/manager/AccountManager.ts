@@ -74,7 +74,7 @@ export class AccountManager {
      *
      * @returns {Promise<Account>} {Account} after successful registration or http exception if fail.
      */
-    private registration(mnemonicPhrase: string, message: string): Promise<Account> {
+    public registration(mnemonicPhrase: string, message: string): Promise<Account> {
         this.checkSigMessage(message);
 
         return this.keyPairCreator.createKeyPair(mnemonicPhrase)
@@ -91,7 +91,7 @@ export class AccountManager {
      *
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
-    private checkAccount(mnemonicPhrase: string, message: string): Promise<Account> {
+    public checkAccount(mnemonicPhrase: string, message: string): Promise<Account> {
         this.checkSigMessage(message);
 
         return this.keyPairCreator.createKeyPair(mnemonicPhrase)
