@@ -90,7 +90,9 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_accountmanager_.accountmanager.html#authenticationbyaccesstoken" class="tsd-kind-icon">authentication<wbr>ByAccess<wbr>Token</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_accountmanager_.accountmanager.html#authenticationbypassphrase" class="tsd-kind-icon">authentication<wbr>ByPass<wbr>Phrase</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_accountmanager_.accountmanager.html#checkaccount" class="tsd-kind-icon">check<wbr>Account</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_accountmanager_.accountmanager.html#getnewmnemonic" class="tsd-kind-icon">get<wbr>New<wbr>Mnemonic</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_accountmanager_.accountmanager.html#registration" class="tsd-kind-icon">registration</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_accountmanager_.accountmanager.html#unsubscribe" class="tsd-kind-icon">unsubscribe</a></li>
 							</ul>
 						</section>
@@ -109,7 +111,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9308bee/src/manager/AccountManager.ts#L15">manager/AccountManager.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b5e8fd6/src/manager/AccountManager.ts#L15">manager/AccountManager.ts:15</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -144,7 +146,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9308bee/src/manager/AccountManager.ts#L54">manager/AccountManager.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b5e8fd6/src/manager/AccountManager.ts#L54">manager/AccountManager.ts:54</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -183,7 +185,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9308bee/src/manager/AccountManager.ts#L35">manager/AccountManager.ts:35</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b5e8fd6/src/manager/AccountManager.ts#L35">manager/AccountManager.ts:35</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -213,6 +215,45 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="checkaccount" class="tsd-anchor"></a>
+					<h3>check<wbr>Account</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">check<wbr>Account<span class="tsd-signature-symbol">(</span>mnemonicPhrase<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b5e8fd6/src/manager/AccountManager.ts#L94">manager/AccountManager.ts:94</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Checks if user with provided mnemonic phrase is already registered in the system.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>mnemonicPhrase: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Mnemonic phrase for Public/Private key pair
+										generation for asymmetric encryption scheme.</p>
+									</div>
+								</li>
+								<li>
+									<h5>message: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>on the basis of which a signature will be created to verify the public key</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>{Account} if client exist or http exception if fail.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="getnewmnemonic" class="tsd-anchor"></a>
 					<h3>get<wbr>New<wbr>Mnemonic</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -222,10 +263,49 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9308bee/src/manager/AccountManager.ts#L117">manager/AccountManager.ts:117</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b5e8fd6/src/manager/AccountManager.ts#L117">manager/AccountManager.ts:117</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="registration" class="tsd-anchor"></a>
+					<h3>registration</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">registration<span class="tsd-signature-symbol">(</span>mnemonicPhrase<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b5e8fd6/src/manager/AccountManager.ts#L77">manager/AccountManager.ts:77</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Registers a new user in the system.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>mnemonicPhrase: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Mnemonic phrase for Public/Private key pair
+										generation for asymmetric encryption scheme.</p>
+									</div>
+								</li>
+								<li>
+									<h5>message: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>on the basis of which a signature will be created to verify the public key</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>{Account} after successful registration or http exception if fail.</p>
 						</li>
 					</ul>
 				</section>
@@ -239,7 +319,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9308bee/src/manager/AccountManager.ts#L113">manager/AccountManager.ts:113</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b5e8fd6/src/manager/AccountManager.ts#L113">manager/AccountManager.ts:113</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -282,7 +362,13 @@
 								<a href="_manager_accountmanager_.accountmanager.html#authenticationbypassphrase" class="tsd-kind-icon">authentication<wbr>ByPass<wbr>Phrase</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_manager_accountmanager_.accountmanager.html#checkaccount" class="tsd-kind-icon">check<wbr>Account</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_manager_accountmanager_.accountmanager.html#getnewmnemonic" class="tsd-kind-icon">get<wbr>New<wbr>Mnemonic</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_manager_accountmanager_.accountmanager.html#registration" class="tsd-kind-icon">registration</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_manager_accountmanager_.accountmanager.html#unsubscribe" class="tsd-kind-icon">unsubscribe</a>

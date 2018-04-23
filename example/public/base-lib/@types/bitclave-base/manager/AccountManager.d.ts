@@ -36,7 +36,7 @@ export declare class AccountManager {
      *
      * @returns {Promise<Account>} {Account} after successful registration or http exception if fail.
      */
-    private registration(mnemonicPhrase, message);
+    registration(mnemonicPhrase: string, message: string): Promise<Account>;
     /**
      * Checks if user with provided mnemonic phrase is already registered in the system.
      * @param {string} mnemonicPhrase Mnemonic phrase for Public/Private key pair
@@ -45,7 +45,7 @@ export declare class AccountManager {
      *
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
-    private checkAccount(mnemonicPhrase, message);
+    checkAccount(mnemonicPhrase: string, message: string): Promise<Account>;
     private checkSigMessage(message);
     /**
      * Allows user to unsubscribe from BASE. Delets all his data
