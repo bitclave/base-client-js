@@ -94,6 +94,7 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_repository_models_account_.account.html#message" class="tsd-kind-icon">message</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_repository_models_account_.account.html#nonce" class="tsd-kind-icon">nonce</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_repository_models_account_.account.html#publickey" class="tsd-kind-icon">public<wbr>Key</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_repository_models_account_.account.html#sig" class="tsd-kind-icon">sig</a></li>
 							</ul>
@@ -113,20 +114,23 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Account<span class="tsd-signature-symbol">(</span>publicKey<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Account<span class="tsd-signature-symbol">(</span>publicKey<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, nonce<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_repository_models_simpleaccount_.simpleaccount.html">SimpleAccount</a>.<a href="_repository_models_simpleaccount_.simpleaccount.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b5e8fd6/src/repository/models/Account.ts#L6">repository/models/Account.ts:6</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/5fb6571/src/repository/models/Account.ts#L6">repository/models/Account.ts:6</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> publicKey: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> nonce: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a></h4>
@@ -142,7 +146,18 @@
 					<div class="tsd-signature tsd-kind-icon">message<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b5e8fd6/src/repository/models/Account.ts#L5">repository/models/Account.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/5fb6571/src/repository/models/Account.ts#L5">repository/models/Account.ts:5</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="nonce" class="tsd-anchor"></a>
+					<h3>nonce</h3>
+					<div class="tsd-signature tsd-kind-icon">nonce<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="_repository_models_simpleaccount_.simpleaccount.html">SimpleAccount</a>.<a href="_repository_models_simpleaccount_.simpleaccount.html#nonce">nonce</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/5fb6571/src/repository/models/SimpleAccount.ts#L4">repository/models/SimpleAccount.ts:4</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -153,7 +168,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_repository_models_simpleaccount_.simpleaccount.html">SimpleAccount</a>.<a href="_repository_models_simpleaccount_.simpleaccount.html#publickey">publicKey</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b5e8fd6/src/repository/models/SimpleAccount.ts#L3">repository/models/SimpleAccount.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/5fb6571/src/repository/models/SimpleAccount.ts#L3">repository/models/SimpleAccount.ts:3</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -163,7 +178,7 @@
 					<div class="tsd-signature tsd-kind-icon">sig<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b5e8fd6/src/repository/models/Account.ts#L6">repository/models/Account.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/5fb6571/src/repository/models/Account.ts#L6">repository/models/Account.ts:6</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -180,7 +195,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b5e8fd6/src/repository/models/Account.ts#L12">repository/models/Account.ts:12</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/5fb6571/src/repository/models/Account.ts#L12">repository/models/Account.ts:12</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="_repository_models_simpleaccount_.simpleaccount.html" class="tsd-signature-type">SimpleAccount</a></h4>
@@ -212,6 +227,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_repository_models_account_.account.html#message" class="tsd-kind-icon">message</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="_repository_models_account_.account.html#nonce" class="tsd-kind-icon">nonce</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="_repository_models_account_.account.html#publickey" class="tsd-kind-icon">public<wbr>Key</a>
