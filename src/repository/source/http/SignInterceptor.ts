@@ -20,7 +20,8 @@ export default class SignInterceptor implements HttpInterceptor {
                     cortege.data = new SignedRequest(
                         cortege.data,
                         this.messageSigner.getPublicKey(),
-                        sigResult
+                        sigResult,
+                        0
                     );
                     resolve(cortege);
                 }));

@@ -10,7 +10,7 @@ const should = require('chai')
     .should();
 
 describe('Key pair and cryptography', async () => {
-    const keyPairHelper: KeyPairHelper = KeyPairFactory.createDefaultKeyPair();
+    const keyPairHelper: KeyPairHelper = KeyPairFactory.createDefaultKeyPair(new Permissions(['any']));
     const messageSigner: MessageSigner = keyPairHelper;
 
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';

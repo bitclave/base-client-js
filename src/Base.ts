@@ -26,6 +26,10 @@ import { SearchRequestRepository } from './repository/search/SearchRequestReposi
 import SearchRequestRepositoryImpl from './repository/search/SearchRequestRepositoryImpl';
 import SearchRequest from './repository/models/SearchRequest';
 import Offer from './repository/models/Offer';
+import { NonceSource } from './repository/source/NonceSource';
+import NonceHelper from './utils/NonceHelper';
+import { HttpTransportImpl } from './repository/source/http/HttpTransportImpl';
+import NonceInterceptor from './repository/source/http/NonceInterceptor';
 
 export { DataRequestState } from './repository/models/DataRequestState';
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
@@ -115,8 +119,14 @@ export default class Base {
 
         this._repositoryStrategyInterceptor = new RepositoryStrategyInterceptor(builder.repositoryStrategyType);
 
+        const nonceHttpTransport: HttpTransport = new HttpTransportImpl(builder.httpTransport.getHost())
+            .addInterceptor(this._repositoryStrategyInterceptor);
+
+        const nonceHelper: NonceSource = new NonceHelper(nonceHttpTransport);
+
         const transport: HttpTransport = builder.httpTransport
             .addInterceptor(new SignInterceptor(messageSigner))
+            .addInterceptor(new NonceInterceptor(messageSigner, nonceHelper))
             .addInterceptor(this._repositoryStrategyInterceptor);
 
         const accountRepository: AccountRepository = new AccountRepositoryImpl(transport);

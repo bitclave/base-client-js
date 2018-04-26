@@ -13,7 +13,7 @@ export default class AuthenticatorHelper {
 
     constructor(rpcTransport: RpcTransport) {
         this.rpcTransport = rpcTransport;
-        this.keyHelper = KeyPairFactory.createDefaultKeyPair();
+        this.keyHelper = KeyPairFactory.createDefaultKeyPair(new Permissions(['any']));
     }
 
     public async generateAccessToken(passPhrase: string): Promise<string> {
