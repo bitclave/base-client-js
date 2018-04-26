@@ -2,6 +2,7 @@ import { KeyPairFactory } from '../src/utils/keypair/KeyPairFactory';
 import { KeyPairHelper } from '../src/utils/keypair/KeyPairHelper';
 import { MessageSigner } from '../src/utils/keypair/MessageSigner';
 import { MessageDecrypt } from '../src/utils/keypair/MessageDecrypt';
+import { Permissions } from '../src/utils/keypair/Permissions';
 
 const Message = require('bitcore-message');
 const bitcore = require('bitcore-lib');
