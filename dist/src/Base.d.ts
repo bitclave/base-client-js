@@ -1,5 +1,4 @@
 import { HttpTransport } from './repository/source/http/HttpTransport';
-import Wallet from './repository/wallet/Wallet';
 import { AccountManager } from './manager/AccountManager';
 import { ProfileManager } from './manager/ProfileManager';
 import { KeyPairHelper } from './utils/keypair/KeyPairHelper';
@@ -9,6 +8,7 @@ import { OfferManager } from './manager/OfferManager';
 import { SearchRequestManager } from './manager/SearchRequestManager';
 import SearchRequest from './repository/models/SearchRequest';
 import Offer from './repository/models/Offer';
+import WalletManager from './manager/WalletManager';
 export { DataRequestState } from './repository/models/DataRequestState';
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
@@ -20,7 +20,9 @@ export { KeyPairFactory } from './utils/keypair/KeyPairFactory';
 export { RemoteSigner } from './utils/keypair/RemoteSigner';
 export { CryptoUtils } from './utils/CryptoUtils';
 export { Permissions } from './utils/keypair/Permissions';
-export { EthBaseAddrPair, EthAddrRecord, EthWallets, EthWealthRecord, EthWealthPtr, ProfileUser, ProfileEthWealthValidator } from './utils/types/BaseTypes';
+export { WalletUtils } from './utils/WalletUtils';
+export { EthereumUtils } from './utils/EthereumUtils';
+export { BaseAddrPair, AddrRecord, WalletsRecords, WealthRecord, WealthPtr, ProfileUser, ProfileWealthValidator } from './utils/types/BaseTypes';
 export { AccountManager, ProfileManager, DataRequestManager, OfferManager, SearchRequestManager, SearchRequest, Offer, Base as NodeAPI };
 export declare class Builder {
     httpTransport: HttpTransport;
@@ -32,7 +34,7 @@ export declare class Builder {
     build(): Base;
 }
 export default class Base {
-    private _wallet;
+    private _walletManager;
     private _accountManager;
     private _profileManager;
     private _dataRequestManager;
@@ -43,7 +45,7 @@ export default class Base {
     constructor(builder: Builder);
     static Builder(): Builder;
     changeStrategy(strategy: RepositoryStrategyType): void;
-    readonly wallet: Wallet;
+    readonly walletManager: WalletManager;
     readonly accountManager: AccountManager;
     readonly profileManager: ProfileManager;
     readonly dataRequestManager: DataRequestManager;

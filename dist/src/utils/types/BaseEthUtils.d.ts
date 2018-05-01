@@ -16,8 +16,6 @@ export declare class EthWalletVerificationStatus {
 export default class BaseEthUtils {
     static verifyEthAddrRecord(msg: EthAddrRecord): EthWalletVerificationCodes;
     static createEthAddrRecord(baseID: string, ethAddr: string, ethPrvKey: string): EthAddrRecord;
-    static createEthWalletsRecordDebug(baseID: string, signedEthRecords: Array<EthAddrRecord>, prvKey: string): Promise<EthWallets>;
     static createEthWalletsRecordWithSigner(baseID: string, signedEthRecords: Array<EthAddrRecord>, signer: MessageSigner): Promise<EthWallets>;
-    static createEthWalletsRecordWithPrvKey(baseID: string, signedEthRecords: Array<EthAddrRecord>, prvKey: string): Promise<EthWallets>;
     static verifyEthWalletsRecord(baseID: string, msg: any): EthWalletVerificationStatus;
 }

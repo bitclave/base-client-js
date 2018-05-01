@@ -1,24 +1,24 @@
-declare class EthBaseAddrPair {
+declare class BaseAddrPair {
     baseID: string;
     ethAddr: string;
     constructor(baseID: string, ethAddr: string);
 }
-declare class EthAddrRecord {
+declare class AddrRecord {
     data: string;
     sig: string;
     constructor(data?: string, sig?: string);
 }
-declare class EthWallets {
-    data: Array<EthAddrRecord>;
+declare class WalletsRecords {
+    data: Array<AddrRecord>;
     sig: string;
-    constructor(data: Array<EthAddrRecord>, sig: string);
+    constructor(data: Array<AddrRecord>, sig: string);
 }
-declare class EthWealthRecord {
+declare class WealthRecord {
     wealth: string;
     sig: string;
     constructor(wealth: string, sig: string);
 }
-declare class EthWealthPtr {
+declare class WealthPtr {
     validator: string;
     decryptKey: string;
     constructor(validator?: string, decryptKey?: string);
@@ -26,11 +26,11 @@ declare class EthWealthPtr {
 declare class ProfileUser {
     baseID: string;
     email: string;
-    wealth: EthWealthPtr;
-    eth_wallets: EthWallets;
+    wealth: WealthPtr;
+    eth_wallets: WalletsRecords;
 }
-declare class ProfileEthWealthValidator {
+declare class ProfileWealthValidator {
     baseID: string;
-    wealth: Map<string, EthWealthRecord>;
+    wealth: Map<string, WealthRecord>;
 }
-export { EthBaseAddrPair, EthAddrRecord, EthWallets, EthWealthRecord, EthWealthPtr, ProfileUser, ProfileEthWealthValidator };
+export { BaseAddrPair, AddrRecord, WalletsRecords, WealthRecord, WealthPtr, ProfileUser, ProfileWealthValidator };

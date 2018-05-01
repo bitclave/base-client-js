@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>EthWealthRecord | bitclave-base</title>
+	<title>WalletVerificationStatus | bitclave-base</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,13 +54,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_utils_types_basetypes_.html">&quot;utils/types/BaseTypes&quot;</a>
+					<a href="../modules/_utils_walletutils_.html">&quot;utils/WalletUtils&quot;</a>
 				</li>
 				<li>
-					<a href="_utils_types_basetypes_.ethwealthrecord.html">EthWealthRecord</a>
+					<a href="_utils_walletutils_.walletverificationstatus.html">WalletVerificationStatus</a>
 				</li>
 			</ul>
-			<h1>Class EthWealthRecord</h1>
+			<h1>Class WalletVerificationStatus</h1>
 		</div>
 	</div>
 </header>
@@ -71,7 +71,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">EthWealthRecord</span>
+						<span class="target">WalletVerificationStatus</span>
 					</li>
 				</ul>
 			</section>
@@ -79,70 +79,46 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-not-exported">
-							<h3>Constructors</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-not-exported"><a href="_utils_types_basetypes_.ethwealthrecord.html#constructor" class="tsd-kind-icon">constructor</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section tsd-is-not-exported">
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-not-exported"><a href="_utils_types_basetypes_.ethwealthrecord.html#sig" class="tsd-kind-icon">sig</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-not-exported"><a href="_utils_types_basetypes_.ethwealthrecord.html#wealth" class="tsd-kind-icon">wealth</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_utils_walletutils_.walletverificationstatus.html#details" class="tsd-kind-icon">details</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_utils_walletutils_.walletverificationstatus.html#err" class="tsd-kind-icon">err</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_utils_walletutils_.walletverificationstatus.html#rc" class="tsd-kind-icon">rc</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
-				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-not-exported">
-					<a name="constructor" class="tsd-anchor"></a>
-					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Eth<wbr>Wealth<wbr>Record<span class="tsd-signature-symbol">(</span>wealth<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, sig<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_utils_types_basetypes_.ethwealthrecord.html" class="tsd-signature-type">EthWealthRecord</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/5fb6571/src/utils/types/BaseTypes.ts#L37">utils/types/BaseTypes.ts:37</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>wealth: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>sig: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_utils_types_basetypes_.ethwealthrecord.html" class="tsd-signature-type">EthWealthRecord</a></h4>
-						</li>
-					</ul>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-not-exported">
-					<a name="sig" class="tsd-anchor"></a>
-					<h3>sig</h3>
-					<div class="tsd-signature tsd-kind-icon">sig<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="details" class="tsd-anchor"></a>
+					<h3>details</h3>
+					<div class="tsd-signature tsd-kind-icon">details<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/5fb6571/src/utils/types/BaseTypes.ts#L37">utils/types/BaseTypes.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a683668/src/utils/WalletUtils.ts#L21">utils/WalletUtils.ts:21</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-not-exported">
-					<a name="wealth" class="tsd-anchor"></a>
-					<h3>wealth</h3>
-					<div class="tsd-signature tsd-kind-icon">wealth<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="err" class="tsd-anchor"></a>
+					<h3>err</h3>
+					<div class="tsd-signature tsd-kind-icon">err<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/5fb6571/src/utils/types/BaseTypes.ts#L36">utils/types/BaseTypes.ts:36</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a683668/src/utils/WalletUtils.ts#L20">utils/WalletUtils.ts:20</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="rc" class="tsd-anchor"></a>
+					<h3>rc</h3>
+					<div class="tsd-signature tsd-kind-icon">rc<span class="tsd-signature-symbol">:</span> <a href="../enums/_utils_walletutils_.walletverificationcodes.html" class="tsd-signature-type">WalletVerificationCodes</a><span class="tsd-signature-symbol"> =&nbsp;WalletVerificationCodes.RC_OK</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/a683668/src/utils/WalletUtils.ts#L19">utils/WalletUtils.ts:19</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -155,47 +131,41 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_utils_types_basetypes_.html">"utils/types/<wbr>Base<wbr>Types"</a>
+						<a href="../modules/_utils_walletutils_.html">"utils/<wbr>Wallet<wbr>Utils"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_utils_types_basetypes_.ethaddrrecord.html" class="tsd-kind-icon">Eth<wbr>Addr<wbr>Record</a>
+					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
+						<a href="../enums/_utils_walletutils_.walletverificationcodes.html" class="tsd-kind-icon">Wallet<wbr>Verification<wbr>Codes</a>
 					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_utils_types_basetypes_.ethbaseaddrpair.html" class="tsd-kind-icon">Eth<wbr>Base<wbr>Addr<wbr>Pair</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_utils_types_basetypes_.ethwallets.html" class="tsd-kind-icon">Eth<wbr>Wallets</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_utils_types_basetypes_.ethwealthptr.html" class="tsd-kind-icon">Eth<wbr>Wealth<wbr>Ptr</a>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_utils_walletutils_.walletutils.html" class="tsd-kind-icon">Wallet<wbr>Utils</a>
 					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_utils_types_basetypes_.ethwealthrecord.html" class="tsd-kind-icon">Eth<wbr>Wealth<wbr>Record</a>
+					<li class="current tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_utils_walletutils_.walletverificationstatus.html" class="tsd-kind-icon">Wallet<wbr>Verification<wbr>Status</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-not-exported">
-								<a href="_utils_types_basetypes_.ethwealthrecord.html#constructor" class="tsd-kind-icon">constructor</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_utils_walletutils_.walletverificationstatus.html#details" class="tsd-kind-icon">details</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-not-exported">
-								<a href="_utils_types_basetypes_.ethwealthrecord.html#sig" class="tsd-kind-icon">sig</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_utils_walletutils_.walletverificationstatus.html#err" class="tsd-kind-icon">err</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-not-exported">
-								<a href="_utils_types_basetypes_.ethwealthrecord.html#wealth" class="tsd-kind-icon">wealth</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_utils_walletutils_.walletverificationstatus.html#rc" class="tsd-kind-icon">rc</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_utils_types_basetypes_.profileethwealthvalidator.html" class="tsd-kind-icon">Profile<wbr>Eth<wbr>Wealth<wbr>Validator</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_utils_walletutils_.html#message" class="tsd-kind-icon">Message</a>
 					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_utils_types_basetypes_.profileuser.html" class="tsd-kind-icon">Profile<wbr>User</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_utils_walletutils_.html#bitcore" class="tsd-kind-icon">bitcore</a>
 					</li>
 				</ul>
 			</nav>
