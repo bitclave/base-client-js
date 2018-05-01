@@ -85,7 +85,7 @@ export class BitKeyPair implements KeyPairHelper {
 
     public encryptMessage(recipientPk: string, message: string): Promise<string> {
         return new Promise<string>(resolve => {
-            const ecies: any = ECIES({noKey: true})
+            const ecies: any = new ECIES({noKey: true})
                 .privateKey(this.privateKey)
                 .publicKey(bitcore.PublicKey.fromString(recipientPk));
 
@@ -112,7 +112,7 @@ export class BitKeyPair implements KeyPairHelper {
 
     decryptMessage(senderPk: string, encrypted: string): Promise<string> {
         return new Promise<string>(resolve => {
-            const ecies: any = ECIES({noKey: true})
+            const ecies: any = new ECIES({noKey: true})
                 .privateKey(this.privateKey)
                 .publicKey(bitcore.PublicKey.fromString(senderPk));
 
