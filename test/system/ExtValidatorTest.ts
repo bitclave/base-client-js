@@ -6,9 +6,10 @@ import DataRequest from '../../src/repository/models/DataRequest';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import { WealthPtr, WealthRecord } from '../../src/utils/types/BaseTypes';
 import AuthenticatorHelper from '../AuthenticatorHelper';
-import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
 import WalletManager from '../../src/manager/WalletManager';
 import { WalletUtils, WalletVerificationStatus } from '../../src/utils/WalletUtils';
+import { HttpTransport } from '../../src/repository/source/http/HttpTransport';
+import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
@@ -51,15 +52,12 @@ describe('BASE API test: External Validator', async () => {
     var accValidator: Account;
 
     private function createBase(): Base {
-        try {
-            return new Base(
-                'https://base2-bitclva-com.herokuapp.com',
-                RepositoryStrategyType.Postgres,
-                rpcSignerHost
-            );
-        } catch (e) {
-            console.log(e);
-        }
+        const httpTransport: HttpTransport = TransportFactory.createHttpTransport('https://base2-bitclva-com.herokuapp.com');
+
+        return Base.Builder()
+            .setKeyParHelper(KeyPairFactory.createRpcKeyPair(rpcTransport))
+            .setHttpTransport(httpTransport)
+            .build();
     }
 
     before(async () => {
@@ -233,7 +231,7 @@ describe('BASE API test: External Validator', async () => {
             accValidator.publicKey, '', DataRequestState.ACCEPT
         );
 
-        requestsByFrom.sort((a, b) => a.id > b.id)
+        requestsByFrom.sort((a, b) => a.id > b.id);
 
         // Validator decodes wallets for Alice, Bob and Carol
         const wealthMap: Map<string, string> = new Map<string, string>();
