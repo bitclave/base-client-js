@@ -3,7 +3,6 @@ import AccountRepositoryImpl from './repository/account/AuthRepositoryImpl';
 import { AccountRepository } from './repository/account/AccountRepository';
 import ClientDataRepositoryImpl from './repository/client/ClientDataRepositoryImpl';
 import { ClientDataRepository } from './repository/client/ClientDataRepository';
-import Wallet from './repository/wallet/Wallet';
 import { AccountManager } from './manager/AccountManager';
 import { BehaviorSubject } from 'rxjs/Rx';
 import { ProfileManager } from './manager/ProfileManager';
@@ -27,9 +26,11 @@ import SearchRequestRepositoryImpl from './repository/search/SearchRequestReposi
 import SearchRequest from './repository/models/SearchRequest';
 import Offer from './repository/models/Offer';
 import { NonceSource } from './repository/source/NonceSource';
-import NonceHelper from './utils/NonceHelper';
 import { HttpTransportImpl } from './repository/source/http/HttpTransportImpl';
 import NonceInterceptor from './repository/source/http/NonceInterceptor';
+import NonceHelper from './utils/NonceHelper';
+import WalletManager from './manager/WalletManager';
+import { BaseSchema } from './utils/types/BaseSchema';
 
 export { DataRequestState } from './repository/models/DataRequestState';
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
@@ -42,15 +43,17 @@ export { KeyPairFactory } from './utils/keypair/KeyPairFactory';
 export { RemoteSigner } from './utils/keypair/RemoteSigner';
 export { CryptoUtils } from './utils/CryptoUtils';
 export { Permissions } from './utils/keypair/Permissions';
+export { WalletUtils } from './utils/WalletUtils';
+export { EthereumUtils } from './utils/EthereumUtils';
 
 export {
-    EthBaseAddrPair,
-    EthAddrRecord,
-    EthWallets,
-    EthWealthRecord,
-    EthWealthPtr,
+    BaseAddrPair,
+    AddrRecord,
+    WalletsRecords,
+    WealthRecord,
+    WealthPtr,
     ProfileUser,
-    ProfileEthWealthValidator
+    ProfileWealthValidator
 } from './utils/types/BaseTypes';
 export {
     AccountManager,
@@ -102,7 +105,7 @@ export class Builder {
 
 export default class Base {
 
-    private _wallet: Wallet;
+    private _walletManager: WalletManager;
     private _accountManager: AccountManager;
     private _profileManager: ProfileManager;
     private _dataRequestManager: DataRequestManager;
@@ -135,8 +138,6 @@ export default class Base {
         const offerRepository: OfferRepository = new OfferRepositoryImpl(transport);
         const searchRequestRepository: SearchRequestRepository = new SearchRequestRepositoryImpl(transport);
 
-        this._wallet = new Wallet();
-
         this._accountManager = new AccountManager(
             accountRepository,
             keyPairHelper,
@@ -156,14 +157,21 @@ export default class Base {
             this._authAccountBehavior.asObservable(),
             encryptMessage,
             decryptMessage,
-            messageSigner,
-            this._dataRequestManager
+            messageSigner
         );
 
         this._offerManager = new OfferManager(offerRepository, this._authAccountBehavior.asObservable());
 
         this._searchRequestManager = new SearchRequestManager(
             searchRequestRepository,
+            this._authAccountBehavior.asObservable()
+        );
+
+        this._walletManager = new WalletManager(
+            this.profileManager,
+            this.dataRequestManager,
+            new BaseSchema(),
+            messageSigner,
             this._authAccountBehavior.asObservable()
         );
     }
@@ -176,8 +184,8 @@ export default class Base {
         this._repositoryStrategyInterceptor.changeStrategy(strategy);
     }
 
-    get wallet(): Wallet {
-        return this._wallet;
+    get walletManager(): WalletManager {
+        return this._walletManager;
     }
 
     get accountManager(): AccountManager {

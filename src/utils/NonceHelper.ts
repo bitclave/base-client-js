@@ -4,6 +4,8 @@ import { NonceSource } from '../repository/source/NonceSource';
 
 export default class NonceHelper implements NonceSource {
 
+    private readonly GET_NONCE: string = '/v1/nonce/';
+
     private httpTransport: HttpTransport;
 
     constructor(httpTransport: HttpTransport) {
@@ -12,7 +14,7 @@ export default class NonceHelper implements NonceSource {
 
     public getNonce(publicKey: string): Promise<number> {
         return this.httpTransport
-            .sendRequest('/v1/nonce/' + publicKey, HttpMethod.Get)
+            .sendRequest(this.GET_NONCE + publicKey, HttpMethod.Get)
             .then((response) => parseInt(response.json.toString()));
     }
 

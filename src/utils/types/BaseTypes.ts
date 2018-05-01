@@ -1,4 +1,4 @@
-class EthBaseAddrPair {
+class BaseAddrPair {
     baseID: string;
     ethAddr: string;
 
@@ -8,7 +8,7 @@ class EthBaseAddrPair {
     }
 }
 
-class EthAddrRecord {
+class AddrRecord {
     // this must be serialization of EthBaseAddrPair
     // to make sure this string exactly can be shared with external wallets for signing
     data: string;
@@ -21,18 +21,18 @@ class EthAddrRecord {
 
 }
 
-class EthWallets {
-    data: Array<EthAddrRecord>;
+class WalletsRecords {
+    data: Array<AddrRecord>;
     sig: string;
 
-    constructor(data: Array<EthAddrRecord>, sig: string) {
+    constructor(data: Array<AddrRecord>, sig: string) {
         this.data = data;
         this.sig = sig;
     }
 
 }
 
-class EthWealthRecord {
+class WealthRecord {
     wealth: string;
     sig: string;
 
@@ -43,7 +43,7 @@ class EthWealthRecord {
 
 }
 
-class EthWealthPtr {
+class WealthPtr {
     public validator: string;
     public decryptKey: string;
 
@@ -57,21 +57,21 @@ class EthWealthPtr {
 class ProfileUser {
     baseID: string;
     email: string;
-    wealth: EthWealthPtr;
-    eth_wallets: EthWallets;
+    wealth: WealthPtr;
+    eth_wallets: WalletsRecords;
 }
 
-class ProfileEthWealthValidator {
+class ProfileWealthValidator {
     baseID: string;
-    wealth: Map<string, EthWealthRecord>;
+    wealth: Map<string, WealthRecord>;
 }
 
 export {
-    EthBaseAddrPair,
-    EthAddrRecord,
-    EthWallets,
-    EthWealthRecord,
-    EthWealthPtr,
+    BaseAddrPair,
+    AddrRecord,
+    WalletsRecords,
+    WealthRecord,
+    WealthPtr,
     ProfileUser,
-    ProfileEthWealthValidator
+    ProfileWealthValidator
 };

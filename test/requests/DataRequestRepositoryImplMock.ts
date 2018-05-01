@@ -57,7 +57,7 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
         return new Promise<string>(resolve => {
             const request = new DataRequest(toPk, "");
             request.responseData = encryptedResponse;
-            request.fromPk = this.fromPK;
+            request.fromPk = fromPk;
             request.state = DataRequestState.ACCEPT;
             request.id = this._data.length + 1;
 
@@ -72,9 +72,7 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
             const result: Array<DataRequest> = [];
 
             this._data.forEach(item => {
-                if ((fromPk != null && fromPk == item.fromPk
-                        || toPk != null && toPk == item.toPk)
-                    && state == item.state) {
+                if ((fromPk != null || toPk != null) && state == item.state) {
                     result.push(Object.assign(new DataRequest(), item));
                 }
             });

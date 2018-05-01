@@ -6,35 +6,37 @@ import { Permissions } from '../src/utils/keypair/Permissions';
 
 const Message = require('bitcore-message');
 const bitcore = require('bitcore-lib');
+const ECIES = require('bitcore-ecies');
+
 const should = require('chai')
     .use(require('chai-as-promised'))
     .should();
 
 describe('Key pair and cryptography', async () => {
-    const keyPairHelper: KeyPairHelper = KeyPairFactory.createDefaultKeyPair(new Permissions(['any']));
-    const messageSigner: MessageSigner = keyPairHelper;
+    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.createDefaultKeyPair(new Permissions(['any']));
+    const messageSigner: MessageSigner = keyPairHelperAlisa;
 
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
 
     it('should generate different mnemonic phrase', async () => {
-        const keyPairFirst = keyPairHelper.generateMnemonicPhrase();
-        const keyPairSecond = keyPairHelper.generateMnemonicPhrase();
+        const keyPairFirst = keyPairHelperAlisa.generateMnemonicPhrase();
+        const keyPairSecond = keyPairHelperAlisa.generateMnemonicPhrase();
 
         keyPairFirst.should.be.not.equal(keyPairSecond);
     });
 
     it('should generate the same pair', async () => {
-        const keyPairFirst = await keyPairHelper.createKeyPair(passPhraseAlisa);
-        const keyPairSecond = await keyPairHelper.createKeyPair(passPhraseAlisa);
+        const keyPairFirst = await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
+        const keyPairSecond = await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
 
         keyPairFirst.publicKey.should.be.equal(keyPairSecond.publicKey);
         keyPairFirst.privateKey.should.be.equal(keyPairSecond.privateKey);
     });
 
     it('should generate the different pair', async () => {
-        const keyPairAlisa = await keyPairHelper.createKeyPair(passPhraseAlisa);
-        const keyPairBob = await keyPairHelper.createKeyPair(passPhraseBob);
+        const keyPairAlisa = await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
+        const keyPairBob = await keyPairHelperAlisa.createKeyPair(passPhraseBob);
 
         keyPairAlisa.publicKey.should.be.not.equal(keyPairBob.publicKey);
         keyPairAlisa.privateKey.should.be.not.equal(keyPairBob.privateKey);
@@ -44,9 +46,9 @@ describe('Key pair and cryptography', async () => {
         const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createDefaultKeyPair();
         const decryptMessageBob: MessageDecrypt = keyPairHelperBob;
 
-        const keyPairAlisa = await keyPairHelper.createKeyPair(passPhraseAlisa);
+        const keyPairAlisa = await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
         const keyPairBob = await keyPairHelperBob.createKeyPair(passPhraseBob);
-        const encryptedMessage = await keyPairHelper.encryptMessage(keyPairBob.publicKey.toString(16), passPhraseAlisa);
+        const encryptedMessage = await keyPairHelperAlisa.encryptMessage(keyPairBob.publicKey.toString(16), passPhraseAlisa);
 
         encryptedMessage.should.not.equal(passPhraseAlisa);
         const decryptedMessage = await decryptMessageBob.decryptMessage(
@@ -57,7 +59,7 @@ describe('Key pair and cryptography', async () => {
     });
 
     it('validate signature of signed message', async () => {
-        const keyPairAlisa = await keyPairHelper.createKeyPair(passPhraseAlisa);
+        const keyPairAlisa = await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
 
         const addressAlisa = new bitcore.PrivateKey
             .fromString(keyPairAlisa.privateKey)
@@ -69,6 +71,19 @@ describe('Key pair and cryptography', async () => {
         sig.should.not.equal(passPhraseAlisa);
 
         Message(passPhraseAlisa).verify(addressAlisa, sig).should.be.true;
+    });
+
+    it('Alisa decrypt message sended from Alisa', async () => {
+        const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createDefaultKeyPair();
+
+        const keyPairAlisa = await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
+        const keyPairBob = await keyPairHelperBob.createKeyPair(passPhraseBob);
+
+        const encryptedMessage = await keyPairHelperAlisa.encryptMessage(keyPairBob.publicKey, passPhraseAlisa);
+
+        const result = await keyPairHelperAlisa.decryptMessage(keyPairBob.publicKey, encryptedMessage);
+
+        passPhraseAlisa.should.be.equal(result);
     });
 
 });

@@ -32,9 +32,8 @@ describe('Data Request Manager', async () => {
     const bobsFields = ['name', 'email'];
     const alisaFields = ['email'];
 
-    const accountBob: Account;
-    const authAccountBehaviorBob: BehaviorSubject<Account>;
-    const requestManager: DataRequestManager;
+    const requestManagerAlisa: DataRequestManager;
+    const requestManagerBob: DataRequestManager;
 
     before(async () => {
         const alisaAccessToken = await authenticatorHelper.generateAccessToken(passPhraseAlisa);
@@ -46,16 +45,26 @@ describe('Data Request Manager', async () => {
         await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
         await keyPairHelperBob.createKeyPair(passPhraseBob);
 
-        accountBob = new Account(keyPairHelperBob.getPublicKey());
-        authAccountBehaviorBob = new BehaviorSubject<Account>(accountBob);
+        const accountAlisa: Account = new Account(keyPairHelperAlisa.getPublicKey());
+        const authAccountBehaviorAlisa: BehaviorSubject<Account> = new BehaviorSubject<Account>(accountAlisa);
+
+        const accountBob: Account = new Account(keyPairHelperBob.getPublicKey());
+        const authAccountBehaviorBob: BehaviorSubject<Account> = new BehaviorSubject<Account>(accountBob);
 
         dataRepository.setPK(keyPairHelperAlisa.getPublicKey(), keyPairHelperBob.getPublicKey());
 
-        requestManager = new DataRequestManager(
+        requestManagerAlisa = new DataRequestManager(
             dataRepository,
-            authAccountBehaviorBob,
+            authAccountBehaviorAlisa,
             keyPairHelperAlisa,
             keyPairHelperAlisa
+        );
+
+        requestManagerBob = new DataRequestManager(
+            dataRepository,
+            authAccountBehaviorBob,
+            keyPairHelperBob,
+            keyPairHelperBob
         );
     });
 
@@ -69,13 +78,13 @@ describe('Data Request Manager', async () => {
     });
 
     it('create request data', async () => {
-        await requestManager.createRequest(keyPairHelperBob.getPublicKey(), bobsFields);
-        const requestsByFrom = await requestManager.getRequests(
+        await requestManagerAlisa.createRequest(keyPairHelperBob.getPublicKey(), bobsFields);
+        const requestsByFrom = await requestManagerAlisa.getRequests(
             keyPairHelperAlisa.getPublicKey(),
             null,
             DataRequestState.AWAIT
         );
-        const requestsByTo = await requestManager.getRequests(
+        const requestsByTo = await requestManagerAlisa.getRequests(
             null,
             keyPairHelperBob.getPublicKey(),
             DataRequestState.AWAIT
@@ -84,6 +93,7 @@ describe('Data Request Manager', async () => {
         requestsByFrom.should.be.deep.equal(requestsByTo);
 
         requestsByFrom[0].requestData.should.be.not.equal(bobsFields);
+
         const decryptedStr = await keyPairHelperBob.decryptMessage(
             keyPairHelperAlisa.getPublicKey(),
             requestsByFrom[0].requestData
@@ -92,15 +102,16 @@ describe('Data Request Manager', async () => {
     });
 
     it('create response data', async () => {
-        const id: string = await requestManager.createRequest(keyPairHelperBob.getPublicKey(), bobsFields);
+        const id: string = await requestManagerAlisa.createRequest(keyPairHelperBob.getPublicKey(), bobsFields);
 
-        await requestManager.responseToRequest(parseInt(id), keyPairHelperAlisa.getPublicKey(), alisaFields);
-        const requestsByFrom = await requestManager.getRequests(
+        await requestManagerBob.responseToRequest(parseInt(id), keyPairHelperAlisa.getPublicKey(), bobsFields);
+
+        const requestsByFrom = await requestManagerAlisa.getRequests(
             keyPairHelperAlisa.getPublicKey(),
             null,
             DataRequestState.ACCEPT
         );
-        const requestsByTo = await requestManager.getRequests(
+        const requestsByTo = await requestManagerAlisa.getRequests(
             null,
             keyPairHelperBob.getPublicKey(),
             DataRequestState.ACCEPT
@@ -109,42 +120,12 @@ describe('Data Request Manager', async () => {
         requestsByFrom.should.be.deep.equal(requestsByTo);
 
         requestsByFrom[0].responseData.should.be.not.equal(alisaFields);
-        const decryptedObj: any = await requestManager.decryptMessage(
+        const decryptedObj: any = await requestManagerAlisa.decryptMessage(
             keyPairHelperBob.getPublicKey(),
             requestsByFrom[0].responseData
         );
 
         const resultMap: Map<string, string> = JsonUtils.jsonToMap(decryptedObj);
-
-        alisaFields.length.should.be.equal(resultMap.size);
-
-        resultMap.forEach((value, key) => {
-            alisaFields.should.be.contain.deep(key);
-        });
-
-    });
-
-    it('grant access for data client', async () => {
-        await requestManager.grantAccessForClient(keyPairHelperAlisa.getPublicKey(), bobsFields);
-        const requestsByFrom = await requestManager.getRequests(
-            keyPairHelperAlisa.getPublicKey(),
-            null,
-            DataRequestState.ACCEPT
-        );
-        const requestsByTo = await requestManager.getRequests(
-            null,
-            keyPairHelperBob.getPublicKey(),
-            DataRequestState.ACCEPT
-        );
-
-        requestsByFrom.should.be.deep.equal(requestsByTo);
-
-        requestsByFrom[0].responseData.should.be.not.equal(bobsFields);
-        const decryptedStr = await keyPairHelperAlisa.decryptMessage(
-            keyPairHelperBob.getPublicKey(),
-            requestsByFrom[0].responseData
-        );
-        const resultMap: Map<string, string> = JsonUtils.jsonToMap(JSON.parse(decryptedStr));
 
         bobsFields.length.should.be.equal(resultMap.size);
 
@@ -154,13 +135,45 @@ describe('Data Request Manager', async () => {
 
     });
 
+    it('grant access for data client', async () => {
+        await requestManagerAlisa.grantAccessForClient(keyPairHelperBob.getPublicKey(), alisaFields);
+        const requestsByFrom = await requestManagerAlisa.getRequests(
+            keyPairHelperAlisa.getPublicKey(),
+            null,
+            DataRequestState.ACCEPT
+        );
+
+        const requestsByTo = await requestManagerAlisa.getRequests(
+            null,
+            keyPairHelperBob.getPublicKey(),
+            DataRequestState.ACCEPT
+        );
+
+        requestsByFrom.should.be.deep.equal(requestsByTo);
+
+        requestsByFrom[0].responseData.should.be.not.equal(alisaFields);
+
+        const decryptedStr = await keyPairHelperBob.decryptMessage(
+            keyPairHelperAlisa.getPublicKey(),
+            requestsByFrom[0].responseData
+        );
+        const resultMap: Map<string, string> = JsonUtils.jsonToMap(JSON.parse(decryptedStr));
+
+        alisaFields.length.should.be.equal(resultMap.size);
+
+        resultMap.forEach((value, key) => {
+            bobsFields.should.be.contain.deep(key);
+        });
+
+    });
+
     it('share data for offer', async () => {
-        await requestManager.grantAccessForOffer(1, keyPairHelperAlisa.getPublicKey(), bobsFields);
+        await requestManagerAlisa.grantAccessForOffer(1, keyPairHelperAlisa.getPublicKey(), bobsFields);
     });
 
     it('decrypt invalid message', async () => {
         const message: string = 'invalid string';
-        const result: any = await requestManager.decryptMessage(
+        const result: any = await requestManagerAlisa.decryptMessage(
             keyPairHelperAlisa.getPublicKey(),
             message
         );

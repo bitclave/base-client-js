@@ -1,10 +1,9 @@
 const Ajv = require('ajv');
 
+// todo need refactor this class!!!!
 export class BaseSchema {
 
-    private static instance: BaseSchema | null = null;
-
-    public static EthBaseAddrPair = {
+    public static EthBaseAddrPair: any = {
         'type': 'object',
         'properties': {
             'baseID': {'type': 'string'},
@@ -14,7 +13,7 @@ export class BaseSchema {
         'additionalProperties': false
     };
 
-    public static EthAddrRecord = {
+    public static EthAddrRecord: any = {
         'type': 'object',
         'properties': {
             'data': {'type': 'string'},
@@ -26,7 +25,7 @@ export class BaseSchema {
         'additionalProperties': false
     };
 
-    public static EthWallets = {
+    public static EthWallets: any = {
         'definitions': {
             'eth_address': BaseSchema.EthAddrRecord
         },
@@ -45,7 +44,7 @@ export class BaseSchema {
         }
     };
 
-    public static All = {
+    public static All: any = {
         'title': 'Profile',
         'definitions': {
             'eth_address': BaseSchema.EthAddrRecord,
@@ -70,40 +69,32 @@ export class BaseSchema {
         'additionalProperties': false
     };
 
-    public static getInstance(): BaseSchema {
-        if (BaseSchema.instance == null) {
-            BaseSchema.instance = new BaseSchema();
-        }
-
-        return BaseSchema.instance;
-    }
-
     private ajvValidateAll: Function;
-    private ajvValidateEthAddr: Function;
-    private ajvValidateEthBaseAddrPair: Function;
-    private ajvValidateEthWallets: Function;
+    private ajvValidateAddr: Function;
+    private ajvValidateBaseAddrPair: Function;
+    private ajvValidateWallets: Function;
 
     private ajv: any;
 
     constructor() {
         this.ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
 
-        this.ajvValidateEthBaseAddrPair = this.ajv.compile(BaseSchema.EthBaseAddrPair);
-        this.ajvValidateEthAddr = this.ajv.compile(BaseSchema.EthAddrRecord);
-        this.ajvValidateEthWallets = this.ajv.compile(BaseSchema.EthWallets);
+        this.ajvValidateBaseAddrPair = this.ajv.compile(BaseSchema.EthBaseAddrPair);
+        this.ajvValidateAddr = this.ajv.compile(BaseSchema.EthAddrRecord);
+        this.ajvValidateWallets = this.ajv.compile(BaseSchema.EthWallets);
         this.ajvValidateAll = this.ajv.compile(BaseSchema.All);
     }
 
-    public validateEthAddr(s: any): boolean {
-        return this.ajvValidateEthAddr(s);
+    public validateAddr(s: any): boolean {
+        return this.ajvValidateAddr(s);
     }
 
-    public validateEthWallets(s: any): boolean {
-        return this.ajvValidateEthWallets(s);
+    public validateWallets(s: any): boolean {
+        return this.ajvValidateWallets(s);
     }
 
-    public validateEthBaseAddrPair(s: any): boolean {
-        return this.ajvValidateEthBaseAddrPair(s);
+    public validateBaseAddrPair(s: any): boolean {
+        return this.ajvValidateBaseAddrPair(s);
     }
 
     public validateAll(s: any): boolean {
