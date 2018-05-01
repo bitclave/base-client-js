@@ -3,12 +3,12 @@ import Account from '../../src/repository/models/Account';
 import { DataRequestState } from '../../src/repository/models/DataRequestState';
 import { CryptoUtils } from '../../src/utils/CryptoUtils';
 import DataRequest from '../../src/repository/models/DataRequest';
-import { ProfileManager } from '../../src/manager/ProfileManager';
-import { HttpTransport } from '../../src/repository/source/http/HttpTransport';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
-import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
-import { EthWealthPtr, EthWealthRecord } from '../../src/utils/types/BaseTypes';
+import { WealthPtr, WealthRecord } from '../../src/utils/types/BaseTypes';
 import AuthenticatorHelper from '../AuthenticatorHelper';
+import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
+import WalletManager from '../../src/manager/WalletManager';
+import { WalletUtils, WalletVerificationStatus } from '../../src/utils/WalletUtils';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
@@ -51,12 +51,15 @@ describe('BASE API test: External Validator', async () => {
     var accValidator: Account;
 
     private function createBase(): Base {
-        const httpTransport: HttpTransport = TransportFactory.createHttpTransport('https://base2-bitclva-com.herokuapp.com');
-
-        return Base.Builder()
-            .setKeyParHelper(KeyPairFactory.createRpcKeyPair(rpcTransport))
-            .setHttpTransport(httpTransport)
-            .build();
+        try {
+            return new Base(
+                'https://base2-bitclva-com.herokuapp.com',
+                RepositoryStrategyType.Postgres,
+                rpcSignerHost
+            );
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     before(async () => {
@@ -91,9 +94,9 @@ describe('BASE API test: External Validator', async () => {
 
         // create wallets for Alice
         await baseAlice.profileManager.updateData(
-            new Map([['eth_wallets', 'test eth wallets']]));
+            new Map([[WalletManager.DATA_KEY_ETH_WALLETS, 'test eth wallets']]));
 
-        await baseAlice.dataRequestManager.grantAccessForClient(accValidator.publicKey, ['eth_wallets']);
+        await baseAlice.dataRequestManager.grantAccessForClient(accValidator.publicKey, [WalletManager.DATA_KEY_ETH_WALLETS]);
 
         // Validator retrieves the approval
         const requestsByFrom = await baseValidator.dataRequestManager.getRequests(
@@ -108,26 +111,26 @@ describe('BASE API test: External Validator', async () => {
         );
 
         // console.log(decryptedObj);
-        decryptedObj.get('eth_wallets').should.be.equal('test eth wallets');
+        decryptedObj.get(WalletManager.DATA_KEY_ETH_WALLETS).should.be.equal('test eth wallets');
 
     });
 
     it('Validator asks Alice for access', async () => {
         // create wallets for Alice
         await baseAlice.profileManager.updateData(
-            new Map([[ProfileManager.DATA_KEY_ETH_WALLETS, 'test eth wallets']]));
+            new Map([[WalletManager.DATA_KEY_ETH_WALLETS, 'test eth wallets']]));
 
         // Validator asks Alice to get access to eth_wallets
         const id: number = await baseValidator.dataRequestManager.createRequest(
             accAlice.publicKey,
-            [ProfileManager.DATA_KEY_ETH_WALLETS]
+            [WalletManager.DATA_KEY_ETH_WALLETS]
         );
 
         // Alice grants access to Validator
         await baseAlice.dataRequestManager.responseToRequest(
             id,
             accValidator.publicKey,
-            [ProfileManager.DATA_KEY_ETH_WALLETS]);
+            [WalletManager.DATA_KEY_ETH_WALLETS]);
 
         // Validator retrieves the approval
         const requestsByFrom = await baseValidator.dataRequestManager.getRequests(
@@ -142,7 +145,7 @@ describe('BASE API test: External Validator', async () => {
         );
 
         // console.log(decryptedObj);
-        decryptedObj.get(ProfileManager.DATA_KEY_ETH_WALLETS).should.be.equal('test eth wallets');
+        decryptedObj.get(WalletManager.DATA_KEY_ETH_WALLETS).should.be.equal('test eth wallets');
     });
 
     /**/
@@ -152,7 +155,7 @@ describe('BASE API test: External Validator', async () => {
 
         // ~API call before Alice registered with Validator
 
-        await baseAlice.profileManager.addEthWealthValidator(accValidator.publicKey);
+        await baseAlice.walletManager.addWealthValidator(accValidator.publicKey);
         /*
         Assume here Alices registeres with Validator
          */
@@ -179,22 +182,22 @@ describe('BASE API test: External Validator', async () => {
         // validator shares results with Alice
         await baseValidator.dataRequestManager.grantAccessForClient(accAlice.publicKey, [accAlice.publicKey]);
         // Alice tries to access wealth after it is shared
-        const ethWealthPtr: EthWealthPtr = await refreshWealthPtrWithCheckError();
+        const ethWealthPtr: WealthPtr = await refreshWealthPtrWithCheckError();
         ethWealthPtr.validator.should.be.equal(accValidator.publicKey);
         // ~Alice tries to access wealth after it is shared
 
         // Alice tries to access wealth after it is already internally saved
-        const ethWealthPtr: EthWealthPtr = await refreshWealthPtrWithCheckError();
+        const ethWealthPtr: WealthPtr = await refreshWealthPtrWithCheckError();
         ethWealthPtr.validator.should.be.equal(accValidator.publicKey);
         // ~Alice tries to access wealth after it is already internally saved
     });
 
-    private async function refreshWealthPtrWithCheckError(): Promise<EthWealthPtr> {
+    private async function refreshWealthPtrWithCheckError(): Promise<WealthPtr> {
         try {
-            return await baseAlice.profileManager.refreshWealthPtr();
+            return await baseAlice.walletManager.refreshWealthPtr();
         } catch (e) {
             if (e === 'validator did not verify anything yet' ||
-                e === ProfileManager.DATA_KEY_ETH_WEALTH_VALIDATOR + ' data not exist!') {
+                e === WalletManager.DATA_KEY_ETH_WEALTH_VALIDATOR + ' data not exist!') {
                 //ignore error is normal
             } else {
                 throw e;
@@ -214,35 +217,37 @@ describe('BASE API test: External Validator', async () => {
         ];
 
         // create wallets for Alice and grantt access for Validator
-        await baseAlice.profileManager.updateData(new Map([['eth_wallets', wallets[0]]]));
-        await baseAlice.profileManager.addEthWealthValidator(accValidator.publicKey);
+        await baseAlice.profileManager.updateData(new Map([[WalletManager.DATA_KEY_ETH_WALLETS, wallets[0]]]));
+        await baseAlice.walletManager.addWealthValidator(accValidator.publicKey);
 
         // create wallets for Bob and grantt access for Validator
-        await baseBob.profileManager.updateData(new Map([['eth_wallets', wallets[1]]]));
-        await baseBob.profileManager.addEthWealthValidator(accValidator.publicKey);
+        await baseBob.profileManager.updateData(new Map([[WalletManager.DATA_KEY_ETH_WALLETS, wallets[1]]]));
+        await baseBob.walletManager.addWealthValidator(accValidator.publicKey);
 
         // create wallets for Carol and grantt access for Validator
-        await baseCarol.profileManager.updateData(new Map([['eth_wallets', wallets[2]]]));
-        await baseCarol.profileManager.addEthWealthValidator(accValidator.publicKey);
+        await baseCarol.profileManager.updateData(new Map([[WalletManager.DATA_KEY_ETH_WALLETS, wallets[2]]]));
+        await baseCarol.walletManager.addWealthValidator(accValidator.publicKey);
 
         // Validator retrieves the requests from Alice,Bob and Carol
-        const requestsByFrom = await baseValidator.dataRequestManager.getRequests(
+        const requestsByFrom: Array<DataRequest> = await baseValidator.dataRequestManager.getRequests(
             accValidator.publicKey, '', DataRequestState.ACCEPT
         );
+
+        requestsByFrom.sort((a, b) => a.id > b.id)
 
         // Validator decodes wallets for Alice, Bob and Carol
         const wealthMap: Map<string, string> = new Map<string, string>();
         for (var i = 0; i < requestsByFrom.length; i++) {
-            const decryptedObj: any = await baseValidator.profileManager.getAuthorizedData(
+            const decryptedObj: Map<string, string> = await baseValidator.profileManager.getAuthorizedData(
                 // accs[i].publicKey,
                 requestsByFrom[i].toPk,
                 requestsByFrom[i].responseData
             );
-            decryptedObj.get(ProfileManager.DATA_KEY_ETH_WALLETS).should.be.equal(wallets[i]);
+            decryptedObj.get(WalletManager.DATA_KEY_ETH_WALLETS).should.be.equal(wallets[i]);
 
             // validator verifies the ETH wallets
-            var res = baseValidator.profileManager.validateEthWallets(
-                ProfileManager.DATA_KEY_ETH_WALLETS,
+            var res: WalletVerificationStatus = WalletUtils.validateWallets(
+                WalletManager.DATA_KEY_ETH_WALLETS,
                 JSON.parse(wallets[i]),
                 accs[i].publicKey
             );
@@ -254,7 +259,7 @@ describe('BASE API test: External Validator', async () => {
 
             // Validator adds all wealth values to map
             const obj: any = {'sig': await baseValidator.profileManager.signMessage(wealth)};
-            obj[ProfileManager.DATA_KEY_WEALTH] = wealth;
+            obj[WalletManager.DATA_KEY_WEALTH] = wealth;
 
             wealthMap.set(accs[i].publicKey, JSON.stringify(obj));
         }
@@ -269,7 +274,7 @@ describe('BASE API test: External Validator', async () => {
         }
 
         // Alice updates her internal wealth ptr record
-        await baseAlice.profileManager.refreshWealthPtr();
+        await baseAlice.walletManager.refreshWealthPtr();
 
         //Alice shares the data with desearch
         // await baseAlice.dataRequestManager.grantAccessForClient(accDesearch.publicKey, ['wealth']);
@@ -277,7 +282,7 @@ describe('BASE API test: External Validator', async () => {
 
         // Desearch asks Alice for access
         /* const id: number = */
-        await baseDesearch.dataRequestManager.createRequest(accAlice.publicKey, ['wealth']);
+        await baseDesearch.dataRequestManager.createRequest(accAlice.publicKey, [WalletManager.DATA_KEY_WEALTH]);
 
         // Alice checks for outstanding requests to her from Desearch
         const recordsForAliceToApprove: Array<DataRequest> = await baseAlice.dataRequestManager.getRequests(
@@ -288,7 +293,7 @@ describe('BASE API test: External Validator', async () => {
 
         // Alice approves the request
         await baseAlice.dataRequestManager.responseToRequest(/* id */
-            recordsForAliceToApprove[0].id, accDesearch.publicKey, [ProfileManager.DATA_KEY_WEALTH]);
+            recordsForAliceToApprove[0].id, accDesearch.publicKey, [WalletManager.DATA_KEY_WEALTH]);
 
         //Desearch reads wealth record from Alice
         const recordsForDesearch = await baseDesearch.dataRequestManager.getRequests(
@@ -297,8 +302,8 @@ describe('BASE API test: External Validator', async () => {
         const wealthOfAlice: Map<string, string> = await baseDesearch.profileManager.getAuthorizedData(
             // accAlice.publicKey, recordsForDesearch[0].responseData);
             recordsForDesearch[0].toPk, recordsForDesearch[0].responseData);
-        const wealthRecord: any = wealthOfAlice.get(ProfileManager.DATA_KEY_WEALTH);
-        const wealthRecordObject: EthWealthPtr = JSON.parse(wealthRecord);
+        const wealthRecord: any = wealthOfAlice.get(WalletManager.DATA_KEY_WEALTH);
+        const wealthRecordObject: WealthPtr = JSON.parse(wealthRecord);
         // console.log(wealthRecord);
 
         // desearch reads Alice's wealth from Validator's storage
@@ -308,7 +313,7 @@ describe('BASE API test: External Validator', async () => {
         const decryptedAliceWealth: string = CryptoUtils.decryptAes256(encryptedAliceWealth, wealthRecordObject.decryptKey);
         // console.log("Alice's wealth as is seen by Desearch", decryptedAliceWealth);
 
-        const decryptedAliceWealthObject: EthWealthRecord = JSON.parse(decryptedAliceWealth);
+        const decryptedAliceWealthObject: WealthRecord = JSON.parse(decryptedAliceWealth);
 
         // desearch verifies the signature of the wealth record
         const Message = require('bitcore-message');
