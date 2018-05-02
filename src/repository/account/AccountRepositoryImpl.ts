@@ -8,6 +8,7 @@ export default class AccountRepositoryImpl implements AccountRepository {
     private readonly SIGN_UP: string = '/v1/registration';
     private readonly SIGN_IN: string = '/v1/exist';
     private readonly DELETE: string = '/v1/delete';
+    private readonly GET_NONCE: string = '/v1/nonce/';
 
     private transport: HttpTransport;
 
@@ -31,6 +32,12 @@ export default class AccountRepositoryImpl implements AccountRepository {
         return this.transport
             .sendRequest(this.DELETE, HttpMethod.Delete, account.toSimpleAccount())
             .then((response) => Object.assign(new Account(), response.json));
+    }
+
+    getNonce(account: Account): Promise<number> {
+        return this.transport
+            .sendRequest(this.GET_NONCE + account.publicKey, HttpMethod.Get)
+            .then((response) => parseInt(response.json.toString()));
     }
 
 }

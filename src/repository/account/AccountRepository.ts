@@ -8,4 +8,6 @@ export interface AccountRepository {
 
     unsubscribe(account: Account): Promise<Account>
 
+    getNonce(account: Account): Promise<number>
+
 }

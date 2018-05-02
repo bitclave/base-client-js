@@ -1,5 +1,5 @@
 import { HttpTransport } from './repository/source/http/HttpTransport';
-import AccountRepositoryImpl from './repository/account/AuthRepositoryImpl';
+import AccountRepositoryImpl from './repository/account/AccountRepositoryImpl';
 import { AccountRepository } from './repository/account/AccountRepository';
 import ClientDataRepositoryImpl from './repository/client/ClientDataRepositoryImpl';
 import { ClientDataRepository } from './repository/client/ClientDataRepository';
@@ -25,12 +25,17 @@ import { SearchRequestRepository } from './repository/search/SearchRequestReposi
 import SearchRequestRepositoryImpl from './repository/search/SearchRequestRepositoryImpl';
 import SearchRequest from './repository/models/SearchRequest';
 import Offer from './repository/models/Offer';
-import { NonceSource } from './repository/source/NonceSource';
 import { HttpTransportImpl } from './repository/source/http/HttpTransportImpl';
 import NonceInterceptor from './repository/source/http/NonceInterceptor';
-import NonceHelper from './utils/NonceHelper';
 import WalletManager from './manager/WalletManager';
 import { BaseSchema } from './utils/types/BaseSchema';
+import { AssistantNodeRepository } from './repository/assistant/AssistantNodeRepository';
+import { TransportFactory } from './repository/source/TransportFactory';
+import { PermissionsSource } from './repository/assistant/PermissionsSource';
+import { KeyPairFactory } from './utils/keypair/KeyPairFactory';
+import { SiteRepository } from './repository/site/SiteRepository';
+import { SiteRepositoryImpl } from './repository/site/SiteRepositoryImpl';
+import { SiteDataSource } from './repository/assistant/SiteDataSource';
 
 export { DataRequestState } from './repository/models/DataRequestState';
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
@@ -66,43 +71,6 @@ export {
     Base as NodeAPI
 };
 
-export class Builder {
-    httpTransport: HttpTransport;
-    keyPairHelper: KeyPairHelper;
-    repositoryStrategyType: RepositoryStrategyType = RepositoryStrategyType.Postgres;
-
-    public setHttpTransport(httpTransport: HttpTransport): Builder {
-        this.httpTransport = httpTransport;
-
-        return this;
-    }
-
-    public setKeyParHelper(keyPairHelper: KeyPairHelper): Builder {
-        this.keyPairHelper = keyPairHelper;
-
-        return this;
-    }
-
-    public setRepositoryStrategy(strategy: RepositoryStrategyType): Builder {
-        this.repositoryStrategyType = strategy;
-
-        return this;
-    }
-
-    public build(): Base {
-        if (!this.httpTransport) {
-            throw 'need setup httpTransport. Call setHttpTransport method.';
-        }
-
-        if (!this.keyPairHelper) {
-            throw 'need setup keyPairHelper. Call setKeyParHelper method.';
-        }
-
-        return new Base(this);
-    }
-
-}
-
 export default class Base {
 
     private _walletManager: WalletManager;
@@ -114,22 +82,28 @@ export default class Base {
     private _authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
     private _repositoryStrategyInterceptor: RepositoryStrategyInterceptor;
 
-    constructor(builder: Builder) {
-        const keyPairHelper: KeyPairHelper = builder.keyPairHelper;
+    constructor(nodeHost: string,
+                siteOrigin: string,
+                strategy: RepositoryStrategyType = RepositoryStrategyType.Postgres,
+                signerHost: string = '') {
+
+        this._repositoryStrategyInterceptor = new RepositoryStrategyInterceptor(strategy);
+
+        const assistantHttpTransport: HttpTransport = new HttpTransportImpl(nodeHost)
+            .addInterceptor(this._repositoryStrategyInterceptor);
+
+        const nodeAssistant: AssistantNodeRepository = this.createNodeAssistant(assistantHttpTransport);
+
+        const keyPairHelper: KeyPairHelper =
+            this.createKeyPairHelper(signerHost, nodeAssistant, nodeAssistant, siteOrigin);
+
         const messageSigner: MessageSigner = keyPairHelper;
         const encryptMessage: MessageEncrypt = keyPairHelper;
         const decryptMessage: MessageDecrypt = keyPairHelper;
 
-        this._repositoryStrategyInterceptor = new RepositoryStrategyInterceptor(builder.repositoryStrategyType);
-
-        const nonceHttpTransport: HttpTransport = new HttpTransportImpl(builder.httpTransport.getHost())
-            .addInterceptor(this._repositoryStrategyInterceptor);
-
-        const nonceHelper: NonceSource = new NonceHelper(nonceHttpTransport);
-
-        const transport: HttpTransport = builder.httpTransport
+        const transport: HttpTransport = TransportFactory.createHttpTransport(nodeHost)
             .addInterceptor(new SignInterceptor(messageSigner))
-            .addInterceptor(new NonceInterceptor(messageSigner, nonceHelper))
+            .addInterceptor(new NonceInterceptor(messageSigner, nodeAssistant))
             .addInterceptor(this._repositoryStrategyInterceptor);
 
         const accountRepository: AccountRepository = new AccountRepositoryImpl(transport);
@@ -176,10 +150,6 @@ export default class Base {
         );
     }
 
-    public static Builder(): Builder {
-        return new Builder();
-    }
-
     changeStrategy(strategy: RepositoryStrategyType) {
         this._repositoryStrategyInterceptor.changeStrategy(strategy);
     }
@@ -206,6 +176,23 @@ export default class Base {
 
     get searchRequestManager(): SearchRequestManager {
         return this._searchRequestManager;
+    }
+
+    private createNodeAssistant(httpTransport: HttpTransport): AssistantNodeRepository {
+        const accountRepository: AccountRepository = new AccountRepositoryImpl(httpTransport);
+        const dataRequestRepository: DataRequestRepository = new DataRequestRepositoryImpl(httpTransport);
+        const siteRepository: SiteRepository = new SiteRepositoryImpl(httpTransport);
+
+        return new AssistantNodeRepository(accountRepository, dataRequestRepository, siteRepository);
+    }
+
+    private createKeyPairHelper(signerHost: string,
+                                permissionSource: PermissionsSource,
+                                siteDataSource: SiteDataSource,
+                                siteOrigin: string): KeyPairHelper {
+        return (signerHost.length == 0)
+            ? KeyPairFactory.createDefaultKeyPair(permissionSource, siteDataSource, siteOrigin)
+            : KeyPairFactory.createRpcKeyPair(TransportFactory.createJsonRpcHttpTransport(signerHost));
     }
 
 }

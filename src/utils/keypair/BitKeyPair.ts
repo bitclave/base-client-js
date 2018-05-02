@@ -2,6 +2,11 @@ import { KeyPairHelper } from './KeyPairHelper';
 import { CryptoUtils } from '../CryptoUtils';
 import { KeyPair } from './KeyPair';
 import { Permissions } from './Permissions';
+import DataRequest from '../../repository/models/DataRequest';
+import { JsonUtils } from '../JsonUtils';
+import { PermissionsSource } from '../../repository/assistant/PermissionsSource';
+import { Site } from '../../repository/models/Site';
+import { SiteDataSource } from '../../repository/assistant/SiteDataSource';
 
 const bitcore = require('bitcore-lib');
 const Message = require('bitcore-message');
@@ -14,9 +19,15 @@ export class BitKeyPair implements KeyPairHelper {
     private publicKey: any;
     private addr: any;
     private permissions: Permissions;
+    private permissionsSource: PermissionsSource;
+    private siteDataSource: SiteDataSource;
+    private origin: string;
 
-    constructor(permissions: Permissions) {
-        this.permissions = permissions;
+    constructor(permissionsSource: PermissionsSource, siteDataSource: SiteDataSource, origin: string) {
+        this.permissions = new Permissions([]);
+        this.permissionsSource = permissionsSource;
+        this.siteDataSource = siteDataSource;
+        this.origin = origin;
     }
 
     public createKeyPair(passPhrase: string): Promise<KeyPair> {
@@ -41,17 +52,6 @@ export class BitKeyPair implements KeyPairHelper {
 
             resolve(mnemonic);
         });
-    }
-
-    public initKeyPairFromPrvKey(prvKey: string): KeyPair {
-        this.privateKey = new bitcore.PrivateKey(bitcore.crypto.BN.fromString(prvKey, 16));
-        this.publicKey = this.privateKey.toPublicKey();
-        this.addr = this.privateKey.toAddress();
-
-        const privateKeyHex: string = this.privateKey.toString(16);
-        const publicKeyHex = this.publicKey.toString(16);
-
-        return new KeyPair(privateKeyHex, publicKeyHex);
     }
 
     public signMessage(data: string): Promise<string> {
@@ -94,7 +94,26 @@ export class BitKeyPair implements KeyPairHelper {
         });
     }
 
-    public generatePasswordForField(fieldName: string): Promise<string> {
+    public async generatePasswordForField(fieldName: string): Promise<string> {
+        if (this.permissions.fields.length === 0) {
+            const site: Site = await this.siteDataSource.getSiteData(this.origin);
+            if (!site.confidential) {
+                const requests: Array<DataRequest> = await this.permissionsSource.getGrandAccessRecords(
+                    site.publicKey, this.getPublicKey()
+                );
+
+                for (let request of requests) {
+                    const strDecrypt: string = await this.decryptMessage(site.publicKey, request.responseData);
+                    const jsonDecrypt = JSON.parse(strDecrypt);
+                    const mapResponse: Map<string, string> = JsonUtils.jsonToMap(jsonDecrypt);
+                    this.permissions.fields = Array.from(mapResponse.keys());
+                }
+
+            } else {
+                this.permissions.fields = ['any'];
+            }
+        }
+
         const hasPermission = this.permissions.fields.indexOf(fieldName) > -1
             || this.permissions.fields.indexOf('any') > -1;
 
