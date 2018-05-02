@@ -53,7 +53,7 @@ describe('BASE API test: External Validator', async () => {
     private function createBase(): Base {
         return new Base(
             'https://base2-bitclva-com.herokuapp.com',
-            'http://localhost',
+            'localhost',
             RepositoryStrategyType.Postgres,
             rpcSignerHost
         );
