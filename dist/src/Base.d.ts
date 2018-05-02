@@ -1,7 +1,5 @@
-import { HttpTransport } from './repository/source/http/HttpTransport';
 import { AccountManager } from './manager/AccountManager';
 import { ProfileManager } from './manager/ProfileManager';
-import { KeyPairHelper } from './utils/keypair/KeyPairHelper';
 import { DataRequestManager } from './manager/DataRequestManager';
 import { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 import { OfferManager } from './manager/OfferManager';
@@ -24,15 +22,6 @@ export { WalletUtils } from './utils/WalletUtils';
 export { EthereumUtils } from './utils/EthereumUtils';
 export { BaseAddrPair, AddrRecord, WalletsRecords, WealthRecord, WealthPtr, ProfileUser, ProfileWealthValidator } from './utils/types/BaseTypes';
 export { AccountManager, ProfileManager, DataRequestManager, OfferManager, SearchRequestManager, SearchRequest, Offer, Base as NodeAPI };
-export declare class Builder {
-    httpTransport: HttpTransport;
-    keyPairHelper: KeyPairHelper;
-    repositoryStrategyType: RepositoryStrategyType;
-    setHttpTransport(httpTransport: HttpTransport): Builder;
-    setKeyParHelper(keyPairHelper: KeyPairHelper): Builder;
-    setRepositoryStrategy(strategy: RepositoryStrategyType): Builder;
-    build(): Base;
-}
 export default class Base {
     private _walletManager;
     private _accountManager;
@@ -42,8 +31,7 @@ export default class Base {
     private _searchRequestManager;
     private _authAccountBehavior;
     private _repositoryStrategyInterceptor;
-    constructor(builder: Builder);
-    static Builder(): Builder;
+    constructor(nodeHost: string, siteOrigin: string, strategy?: RepositoryStrategyType, signerHost?: string);
     changeStrategy(strategy: RepositoryStrategyType): void;
     readonly walletManager: WalletManager;
     readonly accountManager: AccountManager;
@@ -51,4 +39,6 @@ export default class Base {
     readonly dataRequestManager: DataRequestManager;
     readonly offerManager: OfferManager;
     readonly searchRequestManager: SearchRequestManager;
+    private createNodeAssistant(httpTransport);
+    private createKeyPairHelper(signerHost, permissionSource, siteDataSource, siteOrigin);
 }
