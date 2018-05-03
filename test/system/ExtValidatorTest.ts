@@ -204,119 +204,124 @@ describe('BASE API test: External Validator', async () => {
 
     it('full flow with Alice, Bob, Carol, Desearch and Validator', async () => {
         // to get this records, I used example application, created a wallet records and did copy&paste
-        var wallets = [
-            '{"data":[{"data":"{\\"baseID\\":\\"02fe55f705abc712a8a80c43442ebe19ab5e66e5b165a0619440438385bc08383a\\",\\"ethAddr\\":\\"0xa5f79860b160dee0943bd1f6a5713a61dc56f931\\"}","sig":"0x5227af80548be15c9d5f5d66fcf8459df7e4203bf4508497133c9e2054a6ed281dfbbc5fdb7f44801fe93da514613efba96efc8e52209c74bb2d1e1769f8ebba1b"}],"sig":"IIBNKCKMHVBq6LpneRJi9ZNia7U5KCHfJq4TotM65xmYSZ7uGH5V2onnvOwK+1/EZQEg6dRzuYgp3PTVRShA4Nc="}',
-            '{"data":[{"data":"{\\"baseID\\":\\"0303247051dc50d32aaacd7b36c96792a8950a0fda1fdf5a41231e67224865f61f\\",\\"ethAddr\\":\\"0xa5f79860b160dee0943bd1f6a5713a61dc56f931\\"}","sig":"0x55b61cea89a84722288807553ad35994bdb45813a6273dee35d5b33bc49cfaa879d8b2c5451ec191cdc6974ed3ad7e3050130d4498915134debb2ff977dd83e91c"}],"sig":"INzbg3aOjA4qc+PD9K787CEFUORJGw5iv/09rEZGR3mSdmaWpDe9OfLSLKBTbk9BI6ZCzm/k5To8/Sw4QrjV07k="}',
-            '{"data":[{"data":"{\\"baseID\\":\\"02de5804b34c2f3b3d917de52c4768984e9200e799df9bd012cfd03fe428d8fafd\\",\\"ethAddr\\":\\"0xa5f79860b160dee0943bd1f6a5713a61dc56f931\\"}","sig":"0x8ee4014de7b828adeede57f1abfa626d058f52881df4268d67439a11bcbe03f16aaa8e70e7f7f6bff2b7f8bb2714b4b0002e959be73f3f191e42a4b2f04668f31b"}],"sig":"IMmdINnrSQS6VaQOXqr2/BX/LlIFl34stcEOfl6kR9HRJl8BkkNbDWzYm+xI0jA6ZAdKT70TTXO6OX4ST8n2cHo="}'
-        ];
-        var accs = [
-            accAlice, accBob, accCarol
-        ];
+        try {
+            var wallets = [
+                '{"data":[{"data":"{\\"baseID\\":\\"02fe55f705abc712a8a80c43442ebe19ab5e66e5b165a0619440438385bc08383a\\",\\"ethAddr\\":\\"0xa5f79860b160dee0943bd1f6a5713a61dc56f931\\"}","sig":"0x5227af80548be15c9d5f5d66fcf8459df7e4203bf4508497133c9e2054a6ed281dfbbc5fdb7f44801fe93da514613efba96efc8e52209c74bb2d1e1769f8ebba1b"}],"sig":"IIBNKCKMHVBq6LpneRJi9ZNia7U5KCHfJq4TotM65xmYSZ7uGH5V2onnvOwK+1/EZQEg6dRzuYgp3PTVRShA4Nc="}',
+                '{"data":[{"data":"{\\"baseID\\":\\"0303247051dc50d32aaacd7b36c96792a8950a0fda1fdf5a41231e67224865f61f\\",\\"ethAddr\\":\\"0xa5f79860b160dee0943bd1f6a5713a61dc56f931\\"}","sig":"0x55b61cea89a84722288807553ad35994bdb45813a6273dee35d5b33bc49cfaa879d8b2c5451ec191cdc6974ed3ad7e3050130d4498915134debb2ff977dd83e91c"}],"sig":"INzbg3aOjA4qc+PD9K787CEFUORJGw5iv/09rEZGR3mSdmaWpDe9OfLSLKBTbk9BI6ZCzm/k5To8/Sw4QrjV07k="}',
+                '{"data":[{"data":"{\\"baseID\\":\\"02de5804b34c2f3b3d917de52c4768984e9200e799df9bd012cfd03fe428d8fafd\\",\\"ethAddr\\":\\"0xa5f79860b160dee0943bd1f6a5713a61dc56f931\\"}","sig":"0x8ee4014de7b828adeede57f1abfa626d058f52881df4268d67439a11bcbe03f16aaa8e70e7f7f6bff2b7f8bb2714b4b0002e959be73f3f191e42a4b2f04668f31b"}],"sig":"IMmdINnrSQS6VaQOXqr2/BX/LlIFl34stcEOfl6kR9HRJl8BkkNbDWzYm+xI0jA6ZAdKT70TTXO6OX4ST8n2cHo="}'
+            ];
+            var accs = [
+                accAlice, accBob, accCarol
+            ];
 
-        // create wallets for Alice and grantt access for Validator
-        await baseAlice.profileManager.updateData(new Map([[WalletManager.DATA_KEY_ETH_WALLETS, wallets[0]]]));
-        await baseAlice.walletManager.addWealthValidator(accValidator.publicKey);
+            // create wallets for Alice and grantt access for Validator
+            await baseAlice.profileManager.updateData(new Map([[WalletManager.DATA_KEY_ETH_WALLETS, wallets[0]]]));
+            await baseAlice.walletManager.addWealthValidator(accValidator.publicKey);
 
-        // create wallets for Bob and grantt access for Validator
-        await baseBob.profileManager.updateData(new Map([[WalletManager.DATA_KEY_ETH_WALLETS, wallets[1]]]));
-        await baseBob.walletManager.addWealthValidator(accValidator.publicKey);
+            // create wallets for Bob and grantt access for Validator
+            await baseBob.profileManager.updateData(new Map([[WalletManager.DATA_KEY_ETH_WALLETS, wallets[1]]]));
+            await baseBob.walletManager.addWealthValidator(accValidator.publicKey);
 
-        // create wallets for Carol and grantt access for Validator
-        await baseCarol.profileManager.updateData(new Map([[WalletManager.DATA_KEY_ETH_WALLETS, wallets[2]]]));
-        await baseCarol.walletManager.addWealthValidator(accValidator.publicKey);
+            // create wallets for Carol and grantt access for Validator
+            await baseCarol.profileManager.updateData(new Map([[WalletManager.DATA_KEY_ETH_WALLETS, wallets[2]]]));
+            await baseCarol.walletManager.addWealthValidator(accValidator.publicKey);
 
-        // Validator retrieves the requests from Alice,Bob and Carol
-        const requestsByFrom: Array<DataRequest> = await baseValidator.dataRequestManager.getRequests(
-            accValidator.publicKey, '', DataRequestState.ACCEPT
-        );
-
-        requestsByFrom.sort((a, b) => a.id > b.id)
-
-        // Validator decodes wallets for Alice, Bob and Carol
-        const wealthMap: Map<string, string> = new Map<string, string>();
-        for (var i = 0; i < requestsByFrom.length; i++) {
-            const decryptedObj: Map<string, string> = await baseValidator.profileManager.getAuthorizedData(
-                // accs[i].publicKey,
-                requestsByFrom[i].toPk,
-                requestsByFrom[i].responseData
+            // Validator retrieves the requests from Alice,Bob and Carol
+            const requestsByFrom: Array<DataRequest> = await baseValidator.dataRequestManager.getRequests(
+                accValidator.publicKey, '', DataRequestState.ACCEPT
             );
-            decryptedObj.get(WalletManager.DATA_KEY_ETH_WALLETS).should.be.equal(wallets[i]);
 
-            // validator verifies the ETH wallets
-            var res: WalletVerificationStatus = WalletUtils.validateWallets(
-                WalletManager.DATA_KEY_ETH_WALLETS,
-                JSON.parse(wallets[i]),
-                accs[i].publicKey
+            requestsByFrom.sort((a, b) => a.id > b.id);
+
+            // Validator decodes wallets for Alice, Bob and Carol
+            const wealthMap: Map<string, string> = new Map<string, string>();
+            for (var i = 0; i < requestsByFrom.length; i++) {
+                const decryptedObj: Map<string, string> = await baseValidator.profileManager.getAuthorizedData(
+                    // accs[i].publicKey,
+                    requestsByFrom[i].toPk,
+                    requestsByFrom[i].responseData
+                );
+                decryptedObj.get(WalletManager.DATA_KEY_ETH_WALLETS).should.be.equal(wallets[i]);
+
+                // validator verifies the ETH wallets
+                var res: WalletVerificationStatus = WalletUtils.validateWallets(
+                    WalletManager.DATA_KEY_ETH_WALLETS,
+                    JSON.parse(wallets[i]),
+                    accs[i].publicKey
+                );
+                JSON.stringify(res).should.be.equal(JSON.stringify({rc: 0, err: '', details: [0]}));
+
+                // Here we simulate that Validator compute wealth for each requestor
+                var wealth = i.toString();
+                // ~compute wealth
+
+                // Validator adds all wealth values to map
+                const obj: any = {'sig': await baseValidator.profileManager.signMessage(wealth)};
+                obj[WalletManager.DATA_KEY_WEALTH] = wealth;
+
+                wealthMap.set(accs[i].publicKey, JSON.stringify(obj));
+            }
+
+            // Validator writes wealth for all users to BASE
+            // Validator stores the data in <key, value> map, where key is the public key of the user that asked for verification
+            baseValidator.profileManager.updateData(wealthMap);
+
+            // Validator shares wealth records with the original owners of the wallets
+            for (var i = 0; i < requestsByFrom.length; i++) {
+                await baseValidator.dataRequestManager.grantAccessForClient(accs[i].publicKey, [accs[i].publicKey]);
+            }
+
+            // Alice updates her internal wealth ptr record
+            await baseAlice.walletManager.refreshWealthPtr();
+
+            //Alice shares the data with desearch
+            // await baseAlice.dataRequestManager.grantAccessForClient(accDesearch.publicKey, ['wealth']);
+            //!Alice shares the data with desearch
+
+            // Desearch asks Alice for access
+            /* const id: number = */
+            await baseDesearch.dataRequestManager.createRequest(accAlice.publicKey, [WalletManager.DATA_KEY_WEALTH]);
+
+            // Alice checks for outstanding requests to her from Desearch
+            const recordsForAliceToApprove: Array<DataRequest> = await baseAlice.dataRequestManager.getRequests(
+                accDesearch.publicKey, accAlice.publicKey, DataRequestState.AWAIT
             );
-            JSON.stringify(res).should.be.equal(JSON.stringify({rc: 0, err: '', details: [0]}));
 
-            // Here we simulate that Validator compute wealth for each requestor
-            var wealth = i.toString();
-            // ~compute wealth
+            recordsForAliceToApprove.length.should.be.equal(1);
 
-            // Validator adds all wealth values to map
-            const obj: any = {'sig': await baseValidator.profileManager.signMessage(wealth)};
-            obj[WalletManager.DATA_KEY_WEALTH] = wealth;
+            // Alice approves the request
+            await baseAlice.dataRequestManager.responseToRequest(/* id */
+                recordsForAliceToApprove[0].id, accDesearch.publicKey, [WalletManager.DATA_KEY_WEALTH]);
 
-            wealthMap.set(accs[i].publicKey, JSON.stringify(obj));
+            //Desearch reads wealth record from Alice
+            const recordsForDesearch = await baseDesearch.dataRequestManager.getRequests(
+                accDesearch.publicKey, accAlice.publicKey, DataRequestState.ACCEPT
+            );
+            const wealthOfAlice: Map<string, string> = await baseDesearch.profileManager.getAuthorizedData(
+                // accAlice.publicKey, recordsForDesearch[0].responseData);
+                recordsForDesearch[0].toPk, recordsForDesearch[0].responseData);
+            const wealthRecord: any = wealthOfAlice.get(WalletManager.DATA_KEY_WEALTH);
+            const wealthRecordObject: WealthPtr = JSON.parse(wealthRecord);
+            // console.log(wealthRecord);
+
+            // desearch reads Alice's wealth from Validator's storage
+            const rawData = await baseDesearch.profileManager.getRawData(wealthRecordObject.validator);
+            var encryptedAliceWealth: any = rawData.get(accAlice.publicKey);
+            // desearch decodes Alice's wealth
+            const decryptedAliceWealth: string = CryptoUtils.decryptAes256(encryptedAliceWealth, wealthRecordObject.decryptKey);
+            // console.log("Alice's wealth as is seen by Desearch", decryptedAliceWealth);
+
+            const decryptedAliceWealthObject: WealthRecord = JSON.parse(decryptedAliceWealth);
+
+            // desearch verifies the signature of the wealth record
+            const Message = require('bitcore-message');
+            const bitcore = require('bitcore-lib');
+            const addrValidator = bitcore.Address(bitcore.PublicKey(wealthRecordObject.validator));
+            Message(decryptedAliceWealthObject.wealth).verify(addrValidator, decryptedAliceWealthObject.sig).should.be.true;
+        } catch (e) {
+            console.log(e);
+            throw e;
         }
-
-        // Validator writes wealth for all users to BASE
-        // Validator stores the data in <key, value> map, where key is the public key of the user that asked for verification
-        baseValidator.profileManager.updateData(wealthMap);
-
-        // Validator shares wealth records with the original owners of the wallets
-        for (var i = 0; i < requestsByFrom.length; i++) {
-            await baseValidator.dataRequestManager.grantAccessForClient(accs[i].publicKey, [accs[i].publicKey]);
-        }
-
-        // Alice updates her internal wealth ptr record
-        await baseAlice.walletManager.refreshWealthPtr();
-
-        //Alice shares the data with desearch
-        // await baseAlice.dataRequestManager.grantAccessForClient(accDesearch.publicKey, ['wealth']);
-        //!Alice shares the data with desearch
-
-        // Desearch asks Alice for access
-        /* const id: number = */
-        await baseDesearch.dataRequestManager.createRequest(accAlice.publicKey, [WalletManager.DATA_KEY_WEALTH]);
-
-        // Alice checks for outstanding requests to her from Desearch
-        const recordsForAliceToApprove: Array<DataRequest> = await baseAlice.dataRequestManager.getRequests(
-            accDesearch.publicKey, accAlice.publicKey, DataRequestState.AWAIT
-        );
-
-        recordsForAliceToApprove.length.should.be.equal(1);
-
-        // Alice approves the request
-        await baseAlice.dataRequestManager.responseToRequest(/* id */
-            recordsForAliceToApprove[0].id, accDesearch.publicKey, [WalletManager.DATA_KEY_WEALTH]);
-
-        //Desearch reads wealth record from Alice
-        const recordsForDesearch = await baseDesearch.dataRequestManager.getRequests(
-            accDesearch.publicKey, accAlice.publicKey, DataRequestState.ACCEPT
-        );
-        const wealthOfAlice: Map<string, string> = await baseDesearch.profileManager.getAuthorizedData(
-            // accAlice.publicKey, recordsForDesearch[0].responseData);
-            recordsForDesearch[0].toPk, recordsForDesearch[0].responseData);
-        const wealthRecord: any = wealthOfAlice.get(WalletManager.DATA_KEY_WEALTH);
-        const wealthRecordObject: WealthPtr = JSON.parse(wealthRecord);
-        // console.log(wealthRecord);
-
-        // desearch reads Alice's wealth from Validator's storage
-        const rawData = await baseDesearch.profileManager.getRawData(wealthRecordObject.validator);
-        var encryptedAliceWealth: any = rawData.get(accAlice.publicKey);
-        // desearch decodes Alice's wealth
-        const decryptedAliceWealth: string = CryptoUtils.decryptAes256(encryptedAliceWealth, wealthRecordObject.decryptKey);
-        // console.log("Alice's wealth as is seen by Desearch", decryptedAliceWealth);
-
-        const decryptedAliceWealthObject: WealthRecord = JSON.parse(decryptedAliceWealth);
-
-        // desearch verifies the signature of the wealth record
-        const Message = require('bitcore-message');
-        const bitcore = require('bitcore-lib');
-        const addrValidator = bitcore.Address(bitcore.PublicKey(wealthRecordObject.validator));
-        Message(decryptedAliceWealthObject.wealth).verify(addrValidator, decryptedAliceWealthObject.sig).should.be.true;
     });
 
 });
