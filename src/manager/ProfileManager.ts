@@ -146,9 +146,6 @@ export class ProfileManager {
                         : CryptoUtils.decryptAes256(value, pass);
 
                     result.set(key.toLowerCase(), changedValue);
-
-                } else {
-                    result.set(key.toLowerCase(), value);
                 }
             }
 
