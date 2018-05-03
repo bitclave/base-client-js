@@ -38631,9 +38631,6 @@ var ProfileManager = /** @class */ (function () {
                                 : CryptoUtils_1.CryptoUtils.decryptAes256(value, pass);
                             result.set(key.toLowerCase(), changedValue);
                         }
-                        else {
-                            result.set(key.toLowerCase(), value);
-                        }
                         _e.label = 4;
                     case 4:
                         _b = _a.next();
