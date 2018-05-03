@@ -187,7 +187,7 @@ export default class Dashboard extends React.Component<Props, State> implements 
                             <PairItemHolder name="Key:" value="Value:" onDeleteClick={null}/>
                             <ClientDataList
                                 data={this.clientData}
-                                onDeleteClick={(key: string) => this.onDeleteClick(key)}
+                                onDeleteClick={null}
                             />
                             <Button color="primary" className="m-2 float-right" onClick={e => this.onSaveClick()}>
                                 Save

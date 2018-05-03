@@ -10,16 +10,23 @@ interface Properties extends AbstractProperties<Pair<string, string>> {
 export default class SimplePairList extends AbstractList<Properties, Pair<string, string>> {
 
     bindHolder(dataItem: Pair<string, string>, position: number): Object {
-        const {onDeleteClick} = this.props;
-
         return (
             <PairItemHolder
                 name={dataItem.key}
                 value={dataItem.value}
-                onDeleteClick={() => onDeleteClick(dataItem.key)}
+                onDeleteClick={this.getDeleteCallBack()}
                 key={position}
             />
         );
     }
 
+    private getDeleteCallBack(): Function | null {
+        const {onDeleteClick} = this.props;
+        if (onDeleteClick) {
+            return () => onDeleteClick(dataItem.key)
+        } else {
+            return null
+        }
+
+    }
 }
