@@ -1,7 +1,6 @@
 import { DataRequestRepository } from '../../src/repository/requests/DataRequestRepository';
 import DataRequest from '../../src/repository/models/DataRequest';
 import { DataRequestState } from '../../src/repository/models/DataRequestState';
-import { isNullOrUndefined } from 'util';
 import OfferShareData from '../../src/repository/models/OfferShareData';
 
 export default class DataRequestRepositoryImplMock implements DataRequestRepository {
@@ -21,64 +20,61 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
         this.toPk = toPk;
     }
 
-    createRequest(toPk: string, encryptedRequest: string): Promise<number> {
-        return new Promise<string>(resolve => {
-            const request = new DataRequest(toPk, encryptedRequest);
-            request.fromPk = this.fromPK;
-            request.state = DataRequestState.AWAIT;
-            request.id = this._data.length + 1;
+    async requestPermissions(toPk: string, encryptedRequest: string): Promise<number> {
+        const requests: Array<DataRequest> = await this.findRequest(this.fromPK, toPk, false);
+        const request = requests.length > 0 ? requests[0] : new DataRequest(toPk, encryptedRequest);
 
+        request.fromPk = this.fromPK;
+        request.requestData = encryptedRequest;
+        request.id = request.id > 0 ? request.id : this._data.length + 1;
+
+        if (requests.length === 0) {
             this._data.push(request);
+        }
 
-            resolve(this._data.length);
-        });
+        return this._data.length;
     }
 
-    createResponse(requestId: number, encryptedResponse: string | any): Promise<DataRequestState> {
-        return new Promise<DataRequestState>(resolve => {
+    async grantAccessForClient(fromPk: string, toPk: string, encryptedResponse: string): Promise<number> {
+        const requests: Array<DataRequest> = await this.findRequest(this.fromPK, toPk, false);
+        const request = requests.length > 0 ? requests[0] : new DataRequest(toPk, '');
 
-            const state: DataRequestState = (isNullOrUndefined(encryptedResponse) || encryptedResponse.trim().length == 0)
-                ? DataRequestState.REJECT
-                : DataRequestState.ACCEPT;
+        request.responseData = encryptedResponse;
+        request.fromPk = fromPk;
 
-            const request: DataRequest = this._data[requestId - 1];
+        request.id = request.id > 0 ? request.id : this._data.length + 1;
 
-            if (request.toPk !== this.toPk) {
-                throw 'different toPk!';
-            }
-            request.state = state;
-            request.responseData = encryptedResponse;
-
-            resolve(state);
-        });
-    }
-
-    grantAccessForClient(fromPk: string, toPk: string, encryptedResponse: string): Promise<number> {
-        return new Promise<string>(resolve => {
-            const request = new DataRequest(toPk, "");
-            request.responseData = encryptedResponse;
-            request.fromPk = fromPk;
-            request.state = DataRequestState.ACCEPT;
-            request.id = this._data.length + 1;
-
+        if (requests.length === 0) {
             this._data.push(request);
+        }
 
-            resolve(this._data.length);
-        });
+        return this._data.length;
     }
-    
-    getRequests(fromPk: string | any, toPk: string | any, state: DataRequestState): Promise<Array<DataRequest>> {
-        return new Promise<Array<DataRequest>>(resolve => {
-            const result: Array<DataRequest> = [];
 
-            this._data.forEach(item => {
-                if ((fromPk != null || toPk != null) && state == item.state) {
+    async getRequests(fromPk: string | null, toPk: string | null): Promise<Array<DataRequest>> {
+        return this.findRequest(fromPk, toPk);
+    }
+
+    private async findRequest(fromPk: string | null,
+                              toPk: string | null,
+                              makeUnique: boolean = true): Promise<Array<DataRequest>> {
+
+        const result: Array<DataRequest> = [];
+
+        this._data.forEach(item => {
+            if ((fromPk == null || fromPk == undefined) && item.toPk === toPk ||
+                (toPk == null || toPk == undefined) && item.fromPk === fromPk ||
+                (fromPk != null && fromPk != undefined && toPk != null && fromPk != undefined) &&
+                item.toPk === toPk && item.fromPk === fromPk)
+
+                if (makeUnique) {
                     result.push(Object.assign(new DataRequest(), item));
+                } else {
+                    result.push(item);
                 }
-            });
-
-            resolve(result);
         });
+
+        return result;
     }
 
     grantAccessForOffer(offerId: number, clientPk: string, clientResponse: string): Promise<void> {

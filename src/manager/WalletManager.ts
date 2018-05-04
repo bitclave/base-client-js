@@ -5,7 +5,6 @@ import { DataRequestManager } from './DataRequestManager';
 import { BaseSchema } from '../utils/types/BaseSchema';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
 import DataRequest from '../repository/models/DataRequest';
-import { DataRequestState } from '../repository/models/DataRequestState';
 import { Observable } from 'rxjs/Observable';
 import { WalletUtils, WalletVerificationCodes } from '../utils/WalletUtils';
 
@@ -91,8 +90,7 @@ export class WalletManager {
             // Alice reads the wealth record that Validator shared
             const recordsFromValidator: Array<DataRequest> = await this.dataRequestManager.getRequests(
                 this.account.publicKey,
-                validatorPbKey,
-                DataRequestState.ACCEPT
+                validatorPbKey
             );
 
             // if validator already did one validation

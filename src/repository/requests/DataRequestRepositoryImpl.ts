@@ -2,16 +2,14 @@ import { DataRequestRepository } from './DataRequestRepository';
 import DataRequest from '../models/DataRequest';
 import { HttpTransport } from '../source/http/HttpTransport';
 import { HttpMethod } from '../source/http/HttpMethod';
-import { DataRequestState } from '../models/DataRequestState';
 import OfferShareData from '../models/OfferShareData';
 
 export default class DataRequestRepositoryImpl implements DataRequestRepository {
 
     private readonly CREATE_DATA_REQUEST: string = '/v1/data/request/';
-    private readonly GET_DATA_REQUEST_FORM: string = '/v1/data/request/from/{fromPk}/state/{state}/';
-    private readonly GET_DATA_REQUEST_TO: string = '/v1/data/request/to/{toPk}/state/{state}/';
-    private readonly GET_DATA_REQUEST_FROM_TO: string = '/v1/data/request/from/{fromPk}/to/{toPk}/state/{state}/';
-    private readonly RESPONSE_DATA_REQUEST: string = '/v1/data/request/{id}/';
+    private readonly GET_DATA_REQUEST_FORM: string = '/v1/data/request/from/{fromPk}/';
+    private readonly GET_DATA_REQUEST_TO: string = '/v1/data/request/to/{toPk}/';
+    private readonly GET_DATA_REQUEST_FROM_TO: string = '/v1/data/request/from/{fromPk}/to/{toPk}/';
     private readonly GRANT_ACCESS_FOR_CLIENT: string = '/v1/data/grant/request/';
     private readonly GRANT_ACCESS_FOR_OFFER: string = '/v1/data/grant/offer';
 
@@ -21,7 +19,7 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
         this.transport = transport;
     }
 
-    createRequest(toPk: string, encryptedRequest: string): Promise<number> {
+    requestPermissions(toPk: string, encryptedRequest: string): Promise<number> {
         const data: DataRequest = new DataRequest(toPk, encryptedRequest);
         return this.transport
             .sendRequest(
@@ -29,16 +27,6 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
                 HttpMethod.Post,
                 data
             ).then((response) => parseInt(response.json.toString()));
-    }
-
-    createResponse(requestId: number, encryptedResponse: string | null): Promise<DataRequestState> {
-        return this.transport
-            .sendRequest(
-                this.RESPONSE_DATA_REQUEST.replace('{id}', requestId.toString()),
-                HttpMethod.Patch,
-                encryptedResponse || '',
-            )
-            .then((response) => DataRequestState[response.json.toString()]);
     }
 
     grantAccessForClient(fromPk: string, toPk: string, encryptedResponse: string): Promise<number> {
@@ -54,7 +42,7 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
             ).then((response) => parseInt(response.json.toString()));
     }
 
-    getRequests(fromPk: string | null, toPk: string | null, state: DataRequestState): Promise<Array<DataRequest>> {
+    getRequests(fromPk: string | null, toPk: string | null): Promise<Array<DataRequest>> {
         let path: string = '';
 
         if (!this.isEmpty(fromPk) && !this.isEmpty(toPk)) {
@@ -68,8 +56,7 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
         }
 
         path = path.replace('{fromPk}', (fromPk || ''))
-            .replace('{toPk}', (toPk || ''))
-            .replace('{state}', state);
+            .replace('{toPk}', (toPk || ''));
 
         return this.transport
             .sendRequest(
@@ -82,7 +69,8 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
         const shareData = new OfferShareData(offerId, clientPk, encryptedClientResponse);
         return this.transport
             .sendRequest(this.GRANT_ACCESS_FOR_OFFER, HttpMethod.Post, shareData)
-            .then(() => {});
+            .then(() => {
+            });
     }
 
     private isEmpty(value: string | null): boolean {

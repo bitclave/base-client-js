@@ -2,7 +2,6 @@ import { AccountRepository } from '../account/AccountRepository';
 import { DataRequestRepository } from '../requests/DataRequestRepository';
 import { PermissionsSource } from './PermissionsSource';
 import { NonceSource } from './NonceSource';
-import { DataRequestState } from '../models/DataRequestState';
 import DataRequest from '../models/DataRequest';
 import Account from '../models/Account';
 import { SiteDataSource } from './SiteDataSource';
@@ -26,7 +25,7 @@ export class AssistantNodeRepository implements PermissionsSource, NonceSource, 
     }
 
     public getGrandAccessRecords(publicKeyFrom: string, publicKeyTo: string): Promise<Array<DataRequest>> {
-        return this.dataRequestRepository.getRequests(publicKeyFrom, publicKeyTo, DataRequestState.ACCEPT);
+        return this.dataRequestRepository.getRequests(publicKeyFrom, publicKeyTo);
     }
 
     public getNonce(publicKey: string): Promise<number> {

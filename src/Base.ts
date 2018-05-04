@@ -37,7 +37,6 @@ import { SiteRepository } from './repository/site/SiteRepository';
 import { SiteRepositoryImpl } from './repository/site/SiteRepositoryImpl';
 import { SiteDataSource } from './repository/assistant/SiteDataSource';
 
-export { DataRequestState } from './repository/models/DataRequestState';
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
 export { RpcTransport } from './repository/source/rpc/RpcTransport';

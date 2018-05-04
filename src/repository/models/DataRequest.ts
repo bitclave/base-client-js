@@ -1,5 +1,3 @@
-import { DataRequestState } from './DataRequestState';
-
 export default class DataRequest {
 
     readonly id: number = 0;
@@ -7,8 +5,6 @@ export default class DataRequest {
     toPk: string = '';
     requestData: string = '';
     responseData: string = '';
-
-    state: DataRequestState = DataRequestState.UNDEFINED;
 
     constructor(toPk: string = '', requestData: string = '', responseData: string = '') {
         this.toPk = toPk;
