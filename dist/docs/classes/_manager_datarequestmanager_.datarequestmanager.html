@@ -88,12 +88,15 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_datarequestmanager_.datarequestmanager.html#createrequest" class="tsd-kind-icon">create<wbr>Request</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_datarequestmanager_.datarequestmanager.html#decryptmessage" class="tsd-kind-icon">decrypt<wbr>Message</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_datarequestmanager_.datarequestmanager.html#getgrantedpermissions" class="tsd-kind-icon">get<wbr>Granted<wbr>Permissions</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_datarequestmanager_.datarequestmanager.html#getgrantedpermissionstome" class="tsd-kind-icon">get<wbr>Granted<wbr>Permissions<wbr>ToMe</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_datarequestmanager_.datarequestmanager.html#getrequestedpermissions" class="tsd-kind-icon">get<wbr>Requested<wbr>Permissions</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_datarequestmanager_.datarequestmanager.html#getrequestedpermissionstome" class="tsd-kind-icon">get<wbr>Requested<wbr>Permissions<wbr>ToMe</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_datarequestmanager_.datarequestmanager.html#getrequests" class="tsd-kind-icon">get<wbr>Requests</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_datarequestmanager_.datarequestmanager.html#grantaccessforclient" class="tsd-kind-icon">grant<wbr>Access<wbr>For<wbr>Client</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_datarequestmanager_.datarequestmanager.html#grantaccessforoffer" class="tsd-kind-icon">grant<wbr>Access<wbr>For<wbr>Offer</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_datarequestmanager_.datarequestmanager.html#responsetorequest" class="tsd-kind-icon">response<wbr>ToRequest</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_datarequestmanager_.datarequestmanager.html#requestpermissions" class="tsd-kind-icon">request<wbr>Permissions</a></li>
 							</ul>
 						</section>
 					</div>
@@ -111,7 +114,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b2ea349/src/manager/DataRequestManager.ts#L15">manager/DataRequestManager.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L14">manager/DataRequestManager.ts:14</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -137,45 +140,6 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="createrequest" class="tsd-anchor"></a>
-					<h3>create<wbr>Request</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Request<span class="tsd-signature-symbol">(</span>recipientPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, fields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b2ea349/src/manager/DataRequestManager.ts#L37">manager/DataRequestManager.ts:37</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Creates data access request to a specific user for a specific personal data.</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>recipientPk: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Public Key of the user that the personal data is requested from.</p>
-									</div>
-								</li>
-								<li>
-									<h5>fields: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Array of name identifiers for the requested data fields
-										(e.g. this is keys in {Map<string, string>}).</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Returns requestID upon successful request record creation.</p>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="decryptmessage" class="tsd-anchor"></a>
 					<h3>decrypt<wbr>Message</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -185,7 +149,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b2ea349/src/manager/DataRequestManager.ts#L112">manager/DataRequestManager.ts:112</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L162">manager/DataRequestManager.ts:162</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -214,16 +178,144 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getrequests" class="tsd-anchor"></a>
-					<h3>get<wbr>Requests</h3>
+					<a name="getgrantedpermissions" class="tsd-anchor"></a>
+					<h3>get<wbr>Granted<wbr>Permissions</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Requests<span class="tsd-signature-symbol">(</span>fromPk<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, toPk<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, state<span class="tsd-signature-symbol">: </span><a href="../enums/_repository_models_datarequeststate_.datarequeststate.html" class="tsd-signature-type">DataRequestState</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_datarequest_.datarequest.html" class="tsd-signature-type">DataRequest</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Granted<wbr>Permissions<span class="tsd-signature-symbol">(</span>clientPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b2ea349/src/manager/DataRequestManager.ts#L66">manager/DataRequestManager.ts:66</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L106">manager/DataRequestManager.ts:106</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns the list of permissions granted to the client</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>clientPk: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the public key of the client that was given permission.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>list with names of fields.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getgrantedpermissionstome" class="tsd-anchor"></a>
+					<h3>get<wbr>Granted<wbr>Permissions<wbr>ToMe</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Granted<wbr>Permissions<wbr>ToMe<span class="tsd-signature-symbol">(</span>clientPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L124">manager/DataRequestManager.ts:124</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns the list of permissions granted to the client</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>clientPk: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the public key of the client that was given permission.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>list with names of fields.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getrequestedpermissions" class="tsd-anchor"></a>
+					<h3>get<wbr>Requested<wbr>Permissions</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Requested<wbr>Permissions<span class="tsd-signature-symbol">(</span>requestedFromPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L72">manager/DataRequestManager.ts:72</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns the list of permissions requested from the client</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>requestedFromPk: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The public key of the client whose permission is requested</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>list with names of fields.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getrequestedpermissionstome" class="tsd-anchor"></a>
+					<h3>get<wbr>Requested<wbr>Permissions<wbr>ToMe</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Requested<wbr>Permissions<wbr>ToMe<span class="tsd-signature-symbol">(</span>whoRequestedPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L89">manager/DataRequestManager.ts:89</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns the list of permissions requested from the client</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>whoRequestedPk: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The public key of the client whose permission is requested</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>list with names of fields.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getrequests" class="tsd-anchor"></a>
+					<h3>get<wbr>Requests</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Requests<span class="tsd-signature-symbol">(</span>fromPk<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, toPk<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_datarequest_.datarequest.html" class="tsd-signature-type">DataRequest</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L49">manager/DataRequestManager.ts:49</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -245,12 +337,6 @@
 										<p>(Optional if fromPk exist.) public key of the user that is expected to.</p>
 									</div>
 								</li>
-								<li>
-									<h5>state: <a href="../enums/_repository_models_datarequeststate_.datarequeststate.html" class="tsd-signature-type">DataRequestState</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>of request.</p>
-									</div>
-								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_datarequest_.datarequest.html" class="tsd-signature-type">DataRequest</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>List of <a href="_repository_models_datarequest_.datarequest.html">DataRequest</a>, or empty list</p>
@@ -267,7 +353,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b2ea349/src/manager/DataRequestManager.ts#L78">manager/DataRequestManager.ts:78</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L61">manager/DataRequestManager.ts:61</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -301,7 +387,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b2ea349/src/manager/DataRequestManager.ts#L96">manager/DataRequestManager.ts:96</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L146">manager/DataRequestManager.ts:146</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -332,47 +418,41 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="responsetorequest" class="tsd-anchor"></a>
-					<h3>response<wbr>ToRequest</h3>
+					<a name="requestpermissions" class="tsd-anchor"></a>
+					<h3>request<wbr>Permissions</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">response<wbr>ToRequest<span class="tsd-signature-symbol">(</span>requestId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, senderPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, fields<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../enums/_repository_models_datarequeststate_.datarequeststate.html" class="tsd-signature-type">DataRequestState</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">request<wbr>Permissions<span class="tsd-signature-symbol">(</span>recipientPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, fields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b2ea349/src/manager/DataRequestManager.ts#L52">manager/DataRequestManager.ts:52</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L36">manager/DataRequestManager.ts:36</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Creates a response to a previously submitted data access request.</p>
+									<p>Creates data access request to a specific user for a specific personal data.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>requestId: <span class="tsd-signature-type">number</span></h5>
+									<h5>recipientPk: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>ID of existed the request.</p>
+										<p>Public Key of the user that the personal data is requested from.</p>
 									</div>
 								</li>
 								<li>
-									<h5>senderPk: <span class="tsd-signature-type">string</span></h5>
+									<h5>fields: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Public key of the user that issued data access request.</p>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> fields: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>(Optional). null or empty for <a href="../enums/_repository_models_datarequeststate_.datarequeststate.html#reject">DataRequestState.REJECT</a>.
-										Arrays names of fields for accept access. (e.g. this is keys in {Map<string, string>} - personal data).</p>
+										<p>Array of name identifiers for the requested data fields
+										(e.g. this is keys in {Map<string, string>}).</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../enums/_repository_models_datarequeststate_.datarequeststate.html" class="tsd-signature-type">DataRequestState</a><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>state of request of data <a href="../enums/_repository_models_datarequeststate_.datarequeststate.html">DataRequestState</a>.</p>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Returns requestID upon successful request record creation.</p>
 						</li>
 					</ul>
 				</section>
@@ -400,10 +480,19 @@
 								<a href="_manager_datarequestmanager_.datarequestmanager.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_manager_datarequestmanager_.datarequestmanager.html#createrequest" class="tsd-kind-icon">create<wbr>Request</a>
+								<a href="_manager_datarequestmanager_.datarequestmanager.html#decryptmessage" class="tsd-kind-icon">decrypt<wbr>Message</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_manager_datarequestmanager_.datarequestmanager.html#decryptmessage" class="tsd-kind-icon">decrypt<wbr>Message</a>
+								<a href="_manager_datarequestmanager_.datarequestmanager.html#getgrantedpermissions" class="tsd-kind-icon">get<wbr>Granted<wbr>Permissions</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_manager_datarequestmanager_.datarequestmanager.html#getgrantedpermissionstome" class="tsd-kind-icon">get<wbr>Granted<wbr>Permissions<wbr>ToMe</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_manager_datarequestmanager_.datarequestmanager.html#getrequestedpermissions" class="tsd-kind-icon">get<wbr>Requested<wbr>Permissions</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_manager_datarequestmanager_.datarequestmanager.html#getrequestedpermissionstome" class="tsd-kind-icon">get<wbr>Requested<wbr>Permissions<wbr>ToMe</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_manager_datarequestmanager_.datarequestmanager.html#getrequests" class="tsd-kind-icon">get<wbr>Requests</a>
@@ -415,7 +504,7 @@
 								<a href="_manager_datarequestmanager_.datarequestmanager.html#grantaccessforoffer" class="tsd-kind-icon">grant<wbr>Access<wbr>For<wbr>Offer</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_manager_datarequestmanager_.datarequestmanager.html#responsetorequest" class="tsd-kind-icon">response<wbr>ToRequest</a>
+								<a href="_manager_datarequestmanager_.datarequestmanager.html#requestpermissions" class="tsd-kind-icon">request<wbr>Permissions</a>
 							</li>
 						</ul>
 					</li>

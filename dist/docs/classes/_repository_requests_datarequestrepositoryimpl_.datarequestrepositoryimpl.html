@@ -94,11 +94,10 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_requests_datarequestrepositoryimpl_.datarequestrepositoryimpl.html#createrequest" class="tsd-kind-icon">create<wbr>Request</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_requests_datarequestrepositoryimpl_.datarequestrepositoryimpl.html#createresponse" class="tsd-kind-icon">create<wbr>Response</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_requests_datarequestrepositoryimpl_.datarequestrepositoryimpl.html#getrequests" class="tsd-kind-icon">get<wbr>Requests</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_requests_datarequestrepositoryimpl_.datarequestrepositoryimpl.html#grantaccessforclient" class="tsd-kind-icon">grant<wbr>Access<wbr>For<wbr>Client</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_requests_datarequestrepositoryimpl_.datarequestrepositoryimpl.html#grantaccessforoffer" class="tsd-kind-icon">grant<wbr>Access<wbr>For<wbr>Offer</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_requests_datarequestrepositoryimpl_.datarequestrepositoryimpl.html#requestpermissions" class="tsd-kind-icon">request<wbr>Permissions</a></li>
 							</ul>
 						</section>
 					</div>
@@ -116,7 +115,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b2ea349/src/repository/requests/DataRequestRepositoryImpl.ts#L18">repository/requests/DataRequestRepositoryImpl.ts:18</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/repository/requests/DataRequestRepositoryImpl.ts#L16">repository/requests/DataRequestRepositoryImpl.ts:16</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -133,71 +132,17 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="createrequest" class="tsd-anchor"></a>
-					<h3>create<wbr>Request</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Request<span class="tsd-signature-symbol">(</span>toPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, encryptedRequest<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html">DataRequestRepository</a>.<a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html#createrequest">createRequest</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b2ea349/src/repository/requests/DataRequestRepositoryImpl.ts#L24">repository/requests/DataRequestRepositoryImpl.ts:24</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>toPk: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>encryptedRequest: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="createresponse" class="tsd-anchor"></a>
-					<h3>create<wbr>Response</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Response<span class="tsd-signature-symbol">(</span>requestId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, encryptedResponse<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../enums/_repository_models_datarequeststate_.datarequeststate.html" class="tsd-signature-type">DataRequestState</a><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html">DataRequestRepository</a>.<a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html#createresponse">createResponse</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b2ea349/src/repository/requests/DataRequestRepositoryImpl.ts#L34">repository/requests/DataRequestRepositoryImpl.ts:34</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>requestId: <span class="tsd-signature-type">number</span></h5>
-								</li>
-								<li>
-									<h5>encryptedResponse: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../enums/_repository_models_datarequeststate_.datarequeststate.html" class="tsd-signature-type">DataRequestState</a><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="getrequests" class="tsd-anchor"></a>
 					<h3>get<wbr>Requests</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Requests<span class="tsd-signature-symbol">(</span>fromPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span>, toPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span>, state<span class="tsd-signature-symbol">: </span><a href="../enums/_repository_models_datarequeststate_.datarequeststate.html" class="tsd-signature-type">DataRequestState</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_datarequest_.datarequest.html" class="tsd-signature-type">DataRequest</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Requests<span class="tsd-signature-symbol">(</span>fromPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span>, toPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_datarequest_.datarequest.html" class="tsd-signature-type">DataRequest</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html">DataRequestRepository</a>.<a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html#getrequests">getRequests</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b2ea349/src/repository/requests/DataRequestRepositoryImpl.ts#L57">repository/requests/DataRequestRepositoryImpl.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/repository/requests/DataRequestRepositoryImpl.ts#L45">repository/requests/DataRequestRepositoryImpl.ts:45</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -207,9 +152,6 @@
 								</li>
 								<li>
 									<h5>toPk: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
-								</li>
-								<li>
-									<h5>state: <a href="../enums/_repository_models_datarequeststate_.datarequeststate.html" class="tsd-signature-type">DataRequestState</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_datarequest_.datarequest.html" class="tsd-signature-type">DataRequest</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -227,7 +169,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html">DataRequestRepository</a>.<a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html#grantaccessforclient">grantAccessForClient</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b2ea349/src/repository/requests/DataRequestRepositoryImpl.ts#L44">repository/requests/DataRequestRepositoryImpl.ts:44</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/repository/requests/DataRequestRepositoryImpl.ts#L32">repository/requests/DataRequestRepositoryImpl.ts:32</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -257,7 +199,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html">DataRequestRepository</a>.<a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html#grantaccessforoffer">grantAccessForOffer</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/b2ea349/src/repository/requests/DataRequestRepositoryImpl.ts#L81">repository/requests/DataRequestRepositoryImpl.ts:81</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/repository/requests/DataRequestRepositoryImpl.ts#L68">repository/requests/DataRequestRepositoryImpl.ts:68</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -273,6 +215,33 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="requestpermissions" class="tsd-anchor"></a>
+					<h3>request<wbr>Permissions</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">request<wbr>Permissions<span class="tsd-signature-symbol">(</span>toPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, encryptedRequest<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html">DataRequestRepository</a>.<a href="../interfaces/_repository_requests_datarequestrepository_.datarequestrepository.html#requestpermissions">requestPermissions</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/repository/requests/DataRequestRepositoryImpl.ts#L22">repository/requests/DataRequestRepositoryImpl.ts:22</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>toPk: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>encryptedRequest: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -300,12 +269,6 @@
 								<a href="_repository_requests_datarequestrepositoryimpl_.datarequestrepositoryimpl.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_repository_requests_datarequestrepositoryimpl_.datarequestrepositoryimpl.html#createrequest" class="tsd-kind-icon">create<wbr>Request</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_repository_requests_datarequestrepositoryimpl_.datarequestrepositoryimpl.html#createresponse" class="tsd-kind-icon">create<wbr>Response</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_repository_requests_datarequestrepositoryimpl_.datarequestrepositoryimpl.html#getrequests" class="tsd-kind-icon">get<wbr>Requests</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -313,6 +276,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_repository_requests_datarequestrepositoryimpl_.datarequestrepositoryimpl.html#grantaccessforoffer" class="tsd-kind-icon">grant<wbr>Access<wbr>For<wbr>Offer</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_repository_requests_datarequestrepositoryimpl_.datarequestrepositoryimpl.html#requestpermissions" class="tsd-kind-icon">request<wbr>Permissions</a>
 							</li>
 						</ul>
 					</li>

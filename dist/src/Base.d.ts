@@ -7,7 +7,6 @@ import { SearchRequestManager } from './manager/SearchRequestManager';
 import SearchRequest from './repository/models/SearchRequest';
 import Offer from './repository/models/Offer';
 import { WalletManager } from './manager/WalletManager';
-export { DataRequestState } from './repository/models/DataRequestState';
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
 export { RpcTransport } from './repository/source/rpc/RpcTransport';
