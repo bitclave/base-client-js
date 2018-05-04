@@ -27,7 +27,7 @@ import SearchRequest from './repository/models/SearchRequest';
 import Offer from './repository/models/Offer';
 import { HttpTransportImpl } from './repository/source/http/HttpTransportImpl';
 import NonceInterceptor from './repository/source/http/NonceInterceptor';
-import WalletManager from './manager/WalletManager';
+import { WalletManager } from './manager/WalletManager';
 import { BaseSchema } from './utils/types/BaseSchema';
 import { AssistantNodeRepository } from './repository/assistant/AssistantNodeRepository';
 import { TransportFactory } from './repository/source/TransportFactory';
@@ -66,6 +66,7 @@ export {
     DataRequestManager,
     OfferManager,
     SearchRequestManager,
+    WalletManager,
     SearchRequest,
     Offer,
     Base as NodeAPI

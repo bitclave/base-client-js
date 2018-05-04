@@ -7,7 +7,7 @@ import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import { WealthPtr, WealthRecord } from '../../src/utils/types/BaseTypes';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
-import WalletManager from '../../src/manager/WalletManager';
+import { WalletManager } from '../../src/manager/WalletManager';
 import { WalletUtils, WalletVerificationStatus } from '../../src/utils/WalletUtils';
 
 const should = require('chai')

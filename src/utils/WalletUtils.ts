@@ -1,7 +1,7 @@
 import { BaseSchema } from './types/BaseSchema';
 import { AddrRecord, BaseAddrPair } from './types/BaseTypes';
 import { EthereumUtils } from './EthereumUtils';
-import WalletManager from '../manager/WalletManager';
+import { WalletManager } from '../manager/WalletManager';
 
 const bitcore = require('bitcore-lib');
 const Message = require('bitcore-message');

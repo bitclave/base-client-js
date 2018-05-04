@@ -9,7 +9,7 @@ import { DataRequestState } from '../repository/models/DataRequestState';
 import { Observable } from 'rxjs/Observable';
 import { WalletUtils, WalletVerificationCodes } from '../utils/WalletUtils';
 
-export default class WalletManager {
+export class WalletManager {
 
     public static DATA_KEY_ETH_WALLETS: string = 'eth_wallets';
     public static DATA_KEY_ETH_WEALTH_VALIDATOR: string = 'ethwealthvalidator';

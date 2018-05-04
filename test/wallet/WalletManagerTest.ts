@@ -14,7 +14,7 @@ import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
 import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
 import { MessageSigner } from '../../src/utils/keypair/MessageSigner';
 import { AddrRecord, WalletsRecords } from '../../src/utils/types/BaseTypes';
-import WalletManager from '../../src/manager/WalletManager';
+import { WalletManager } from '../../src/manager/WalletManager';
 import { DataRequestManager } from '../../src/manager/DataRequestManager';
 import { BaseSchema } from '../../src/utils/types/BaseSchema';
 import { WalletUtils, WalletVerificationCodes } from '../../src/utils/WalletUtils';
