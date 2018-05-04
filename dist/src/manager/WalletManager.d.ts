@@ -5,7 +5,7 @@ import { DataRequestManager } from './DataRequestManager';
 import { BaseSchema } from '../utils/types/BaseSchema';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
 import { Observable } from 'rxjs/Observable';
-export default class WalletManager {
+export declare class WalletManager {
     static DATA_KEY_ETH_WALLETS: string;
     static DATA_KEY_ETH_WEALTH_VALIDATOR: string;
     static DATA_KEY_WEALTH: string;

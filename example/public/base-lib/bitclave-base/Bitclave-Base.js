@@ -23973,7 +23973,7 @@ var WalletManager = /** @class */ (function () {
     WalletManager.DATA_KEY_WEALTH = 'wealth';
     return WalletManager;
 }());
-exports.default = WalletManager;
+exports.WalletManager = WalletManager;
 
 
 /***/ }),
@@ -24045,8 +24045,8 @@ var WalletUtils = /** @class */ (function () {
     };
     WalletUtils.validateWallets = function (key, val, baseID) {
         var result = new WalletVerificationStatus();
-        if (key != WalletManager_1.default.DATA_KEY_ETH_WALLETS) {
-            result.err = 'The \<key\> is expected to be "' + WalletManager_1.default.DATA_KEY_ETH_WALLETS + '"';
+        if (key != WalletManager_1.WalletManager.DATA_KEY_ETH_WALLETS) {
+            result.err = 'The \<key\> is expected to be "' + WalletManager_1.WalletManager.DATA_KEY_ETH_WALLETS + '"';
             result.rc = WalletVerificationCodes.RC_GENERAL_ERROR;
             return result;
         }
@@ -26904,6 +26904,7 @@ exports.Offer = Offer_1.default;
 var HttpTransportImpl_1 = __webpack_require__(198);
 var NonceInterceptor_1 = __webpack_require__(581);
 var WalletManager_1 = __webpack_require__(203);
+exports.WalletManager = WalletManager_1.WalletManager;
 var BaseSchema_1 = __webpack_require__(205);
 var AssistantNodeRepository_1 = __webpack_require__(668);
 var TransportFactory_1 = __webpack_require__(234);
@@ -26962,7 +26963,7 @@ var Base = /** @class */ (function () {
         this._profileManager = new ProfileManager_1.ProfileManager(clientDataRepository, this._authAccountBehavior.asObservable(), encryptMessage, decryptMessage, messageSigner);
         this._offerManager = new OfferManager_1.OfferManager(offerRepository, this._authAccountBehavior.asObservable());
         this._searchRequestManager = new SearchRequestManager_1.SearchRequestManager(searchRequestRepository, this._authAccountBehavior.asObservable());
-        this._walletManager = new WalletManager_1.default(this.profileManager, this.dataRequestManager, new BaseSchema_1.BaseSchema(), messageSigner, this._authAccountBehavior.asObservable());
+        this._walletManager = new WalletManager_1.WalletManager(this.profileManager, this.dataRequestManager, new BaseSchema_1.BaseSchema(), messageSigner, this._authAccountBehavior.asObservable());
     }
     Base.prototype.changeStrategy = function (strategy) {
         this._repositoryStrategyInterceptor.changeStrategy(strategy);
