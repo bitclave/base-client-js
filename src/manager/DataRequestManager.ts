@@ -51,10 +51,10 @@ export class DataRequestManager {
     }
 
     /**
-     * Grant access data for client.
-     * @param {string} clientPk id of client.
-     * @param {Map<string, string>} acceptedFields. Arrays names of fields for accept access.
-     * (e.g. this is keys in {Map<string, string>} - personal data).
+     * Grants access to specific fields of my data to a client.
+     * @param {string} clientPk id (baseID) of the client that is authorized for data access.
+     * @param {Map<string, string>} acceptedFields. Array of field names that are authorized for access
+     * (e.g. these are keys in {Map<string, string>} - personal data).
      *
      * @returns {Promise<number>}
      */
@@ -65,9 +65,9 @@ export class DataRequestManager {
     }
 
     /**
-     * Returns the list of permissions requested from the client
-     * @param {string} requestedFromPk The public key of the client whose permission is requested
-     * @returns {Promise<Array<string>>} list with names of fields.
+     * Returns list of fields requested for access by <me> from the client
+     * @param {string} requestedFromPk id (baseID) of the client whose permissions were requested
+     * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
     public async getRequestedPermissions(requestedFromPk: string): Promise<Array<string>> {
         const requests = await this.getRequests(this.account.publicKey, requestedFromPk);
@@ -82,9 +82,9 @@ export class DataRequestManager {
     }
 
     /**
-     * Returns the list of permissions requested from the client
-     * @param {string} whoRequestedPk The public key of the client whose permission is requested
-     * @returns {Promise<Array<string>>} list with names of fields.
+     * Returns list of fields requested for access by the client from <me>
+     * @param {string} whoRequestedPk id (baseID) of the client that asked for permission from <me>
+     * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
     public async getRequestedPermissionsToMe(whoRequestedPk: string): Promise<Array<string>> {
         const requests = await this.getRequests(whoRequestedPk, this.account.publicKey);
@@ -99,9 +99,9 @@ export class DataRequestManager {
     }
 
     /**
-     * Returns the list of permissions granted to the client
-     * @param {string} clientPk the public key of the client that was given permission.
-     * @returns {Promise<Array<string>>} list with names of fields.
+     * Returns list of fields that <client> authorized <me> to access
+     * @param {string} clientPk id (baseID) of the client that granted me permission.
+     * @returns {Promise<Array<string>>} Array of field names that were authorized for access
      */
     public async getGrantedPermissions(clientPk: string): Promise<Array<string>> {
         const requests = await this.getRequests(this.account.publicKey, clientPk);
@@ -117,9 +117,9 @@ export class DataRequestManager {
     }
 
     /**
-     * Returns the list of permissions granted to the client
-     * @param {string} clientPk the public key of the client that was given permission.
-     * @returns {Promise<Array<string>>} list with names of fields.
+     * Returns list of fields that <me> authorized <client> to access
+     * @param {string} clientPk id (baseID) of the client that received access permission from <me>
+     * @returns {Promise<Array<string>>} Array of field names that were authorized for access
      */
     public async getGrantedPermissionsToMe(clientPk: string): Promise<Array<string>> {
         const requests = await this.getRequests(clientPk, this.account.publicKey);
