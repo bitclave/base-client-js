@@ -48,6 +48,7 @@ export { RemoteSigner } from './utils/keypair/RemoteSigner';
 export { CryptoUtils } from './utils/CryptoUtils';
 export { Permissions } from './utils/keypair/Permissions';
 export { WalletUtils } from './utils/WalletUtils';
+export { JsonUtils } from './utils/JsonUtils';
 export { EthereumUtils } from './utils/EthereumUtils';
 
 export {
