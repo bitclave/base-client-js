@@ -1,7 +1,6 @@
 import { PermissionsSource } from '../../src/repository/assistant/PermissionsSource';
 import { SiteDataSource } from '../../src/repository/assistant/SiteDataSource';
 import { DataRequestRepository } from '../../src/repository/requests/DataRequestRepository';
-import { DataRequestState } from '../../src/repository/models/DataRequestState';
 import { Site } from '../../src/repository/models/Site';
 
 export class AssistantPermissions implements PermissionsSource, SiteDataSource {
@@ -15,7 +14,7 @@ export class AssistantPermissions implements PermissionsSource, SiteDataSource {
     }
 
     public getGrandAccessRecords(publicKeyFrom: string, publicKeyTo: string): Promise<Array<DataRequest>> {
-        return this.dataRequestRepository.getRequests(publicKeyFrom, publicKeyTo, DataRequestState.ACCEPT);
+        return this.dataRequestRepository.getRequests(publicKeyFrom, publicKeyTo);
     }
 
     public getSiteData(origin: string): Promise<Site> {

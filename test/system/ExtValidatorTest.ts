@@ -1,6 +1,5 @@
 import Base from '../../src/Base';
 import Account from '../../src/repository/models/Account';
-import { DataRequestState } from '../../src/repository/models/DataRequestState';
 import { CryptoUtils } from '../../src/utils/CryptoUtils';
 import DataRequest from '../../src/repository/models/DataRequest';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
@@ -97,7 +96,7 @@ describe('BASE API test: External Validator', async () => {
 
         // Validator retrieves the approval
         const requestsByFrom = await baseValidator.dataRequestManager.getRequests(
-            accValidator.publicKey, '', DataRequestState.ACCEPT
+            accValidator.publicKey, ''
         );
 
         // Validator decodes Alice's wallets
@@ -109,7 +108,6 @@ describe('BASE API test: External Validator', async () => {
 
         // console.log(decryptedObj);
         decryptedObj.get(WalletManager.DATA_KEY_ETH_WALLETS).should.be.equal('test eth wallets');
-
     });
 
     it('Validator asks Alice for access', async () => {
@@ -118,20 +116,19 @@ describe('BASE API test: External Validator', async () => {
             new Map([[WalletManager.DATA_KEY_ETH_WALLETS, 'test eth wallets']]));
 
         // Validator asks Alice to get access to eth_wallets
-        const id: number = await baseValidator.dataRequestManager.createRequest(
+        const id: number = await baseValidator.dataRequestManager.requestPermissions(
             accAlice.publicKey,
             [WalletManager.DATA_KEY_ETH_WALLETS]
         );
 
         // Alice grants access to Validator
-        await baseAlice.dataRequestManager.responseToRequest(
-            id,
+        await baseAlice.dataRequestManager.grantAccessForClient(
             accValidator.publicKey,
             [WalletManager.DATA_KEY_ETH_WALLETS]);
 
         // Validator retrieves the approval
         const requestsByFrom = await baseValidator.dataRequestManager.getRequests(
-            accValidator.publicKey, '', DataRequestState.ACCEPT
+            accValidator.publicKey, ''
         );
 
         // Validator decodes Alice's wallets
@@ -228,7 +225,7 @@ describe('BASE API test: External Validator', async () => {
 
             // Validator retrieves the requests from Alice,Bob and Carol
             const requestsByFrom: Array<DataRequest> = await baseValidator.dataRequestManager.getRequests(
-                accValidator.publicKey, '', DataRequestState.ACCEPT
+                accValidator.publicKey, ''
             );
 
             requestsByFrom.sort((a, b) => a.id > b.id);
@@ -280,22 +277,22 @@ describe('BASE API test: External Validator', async () => {
 
             // Desearch asks Alice for access
             /* const id: number = */
-            await baseDesearch.dataRequestManager.createRequest(accAlice.publicKey, [WalletManager.DATA_KEY_WEALTH]);
+            await baseDesearch.dataRequestManager.requestPermissions(accAlice.publicKey, [WalletManager.DATA_KEY_WEALTH]);
 
             // Alice checks for outstanding requests to her from Desearch
             const recordsForAliceToApprove: Array<DataRequest> = await baseAlice.dataRequestManager.getRequests(
-                accDesearch.publicKey, accAlice.publicKey, DataRequestState.AWAIT
+                accDesearch.publicKey, accAlice.publicKey
             );
 
             recordsForAliceToApprove.length.should.be.equal(1);
 
             // Alice approves the request
-            await baseAlice.dataRequestManager.responseToRequest(/* id */
-                recordsForAliceToApprove[0].id, accDesearch.publicKey, [WalletManager.DATA_KEY_WEALTH]);
+            await baseAlice.dataRequestManager.grantAccessForClient(/* id */
+                accDesearch.publicKey, [WalletManager.DATA_KEY_WEALTH]);
 
             //Desearch reads wealth record from Alice
             const recordsForDesearch = await baseDesearch.dataRequestManager.getRequests(
-                accDesearch.publicKey, accAlice.publicKey, DataRequestState.ACCEPT
+                accDesearch.publicKey, accAlice.publicKey
             );
             const wealthOfAlice: Map<string, string> = await baseDesearch.profileManager.getAuthorizedData(
                 // accAlice.publicKey, recordsForDesearch[0].responseData);

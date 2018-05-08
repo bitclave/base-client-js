@@ -71,14 +71,7 @@ export class DataRequestManager {
      */
     public async getRequestedPermissions(requestedFromPk: string): Promise<Array<string>> {
         const requests = await this.getRequests(this.account.publicKey, requestedFromPk);
-        if (requests.length > 0) {
-            const strDecrypt: string = await this.decrypt.decryptMessage(requestedFromPk, requests[0].requestData);
-
-            return JSON.parse(strDecrypt);
-
-        } else {
-            return [];
-        }
+        return await this.decodeRequestedPermissions(requests, requestedFromPk);
     }
 
     /**
@@ -88,14 +81,7 @@ export class DataRequestManager {
      */
     public async getRequestedPermissionsToMe(whoRequestedPk: string): Promise<Array<string>> {
         const requests = await this.getRequests(whoRequestedPk, this.account.publicKey);
-        if (requests.length > 0) {
-            const strDecrypt: string = await this.decrypt.decryptMessage(whoRequestedPk, requests[0].requestData);
-
-            return JSON.parse(strDecrypt);
-
-        } else {
-            return [];
-        }
+        return await this.decodeRequestedPermissions(requests, whoRequestedPk);
     }
 
     /**
@@ -105,15 +91,7 @@ export class DataRequestManager {
      */
     public async getGrantedPermissions(clientPk: string): Promise<Array<string>> {
         const requests = await this.getRequests(this.account.publicKey, clientPk);
-        if (requests.length > 0) {
-            const strDecrypt: string = await this.decrypt.decryptMessage(clientPk, requests[0].responseData);
-            const jsonDecrypt: any = JSON.parse(strDecrypt);
-            const mapResponse: Map<string, string> = JsonUtils.jsonToMap(jsonDecrypt);
-            return Array.from(mapResponse.keys());
-
-        } else {
-            return [];
-        }
+        return await this.getDecodeGrantPermissions(requests, clientPk);
     }
 
     /**
@@ -123,15 +101,7 @@ export class DataRequestManager {
      */
     public async getGrantedPermissionsToMe(clientPk: string): Promise<Array<string>> {
         const requests = await this.getRequests(clientPk, this.account.publicKey);
-        if (requests.length > 0) {
-            const strDecrypt: string = await this.decrypt.decryptMessage(clientPk, requests[0].responseData);
-            const jsonDecrypt: any = JSON.parse(strDecrypt);
-            const mapResponse: Map<string, string> = JsonUtils.jsonToMap(jsonDecrypt);
-            return Array.from(mapResponse.keys());
-
-        } else {
-            return [];
-        }
+        return await this.getDecodeGrantPermissions(requests, clientPk);
     }
 
     /**
@@ -168,6 +138,34 @@ export class DataRequestManager {
                     return decrypted;
                 }
             }).catch(reason => encrypted);
+    }
+
+    private async decodeRequestedPermissions(requests: Array<DataRequest>, clientPk: string): Promise<Array<string>> {
+        if (requests.length > 0 && requests[0].requestData.trim().length > 0) {
+            try {
+                const strDecrypt: string = await this.decrypt.decryptMessage(clientPk, requests[0].requestData);
+
+                return JSON.parse(strDecrypt);
+
+            } catch (e) {
+                return [];
+            }
+        } else {
+            return [];
+        }
+    }
+
+    private async getDecodeGrantPermissions(requests: Array<DataRequest>, clientPk: string): Promise<Array<string>> {
+        if (requests.length > 0 && requests[0].responseData.trim().length > 0) {
+            const strDecrypt: string = await this.decrypt.decryptMessage(clientPk, requests[0].responseData);
+            const jsonDecrypt: any = JSON.parse(strDecrypt);
+            const mapResponse: Map<string, string> = JsonUtils.jsonToMap(jsonDecrypt);
+
+            return Array.from(mapResponse.keys());
+
+        } else {
+            return [];
+        }
     }
 
     private async getEncryptedDataForFields(recipientPk: string, fields?: Array<string>): Promise<string> {
