@@ -1,27 +1,17 @@
 import Config from '../Config';
 import { injectable } from 'inversify';
 import 'reflect-metadata';
-import DataRequest from 'bitclave-base/repository/models/DataRequest';
-import Base, { DataRequestState, RepositoryStrategyType } from 'bitclave-base';
+import Base, { RepositoryStrategyType } from 'bitclave-base';
+import Account from 'bitclave-base/repository/models/Account';
 import OfferManager from 'bitclave-base/manager/OfferManager';
 import ProfileManager from 'bitclave-base/manager/ProfileManager';
 import SearchRequestManager from 'bitclave-base/manager/SearchRequestManager';
-import DataRequestManager from 'bitclave-base/manager/DataRequestManager';
-
-export interface SyncDataListener {
-
-    onSyncData(result: Array<DataRequest>): void;
-
-}
 
 @injectable()
 export default class BaseManager {
-    private readonly SYNC_DATA_INTERVAL_MS: number = 3000;
 
     private base: Base;
-    private listeners: Set<SyncDataListener> = new Set<SyncDataListener>();
-    private account: Account;
-    private cacheRequests: Array<DataRequest> = [];
+    public account: Account;
 
     constructor() {
         this.base = new Base(Config.getBaseEndPoint(), location.hostname);
@@ -36,22 +26,14 @@ export default class BaseManager {
         return this.getUniqueMessageForSigFromServerSide()
             .then(uniqueMessage => this.base.accountManager.registration(mnemonicPhrase, uniqueMessage))
             .then(this.sendAccountToServerSide.bind(this))
-            .then(account => {
-                this.account = account;
-                this.prepareStartSyncState();
-                return this.account;
-            });
+            .then(account => this.account = account);
     }
 
     signIn(mnemonicPhrase: string): Promise<Account> {
         return this.getUniqueMessageForSigFromServerSide()
             .then(uniqueMessage => this.base.accountManager.checkAccount(mnemonicPhrase, uniqueMessage))
             .then(this.sendAccountToServerSide.bind(this))
-            .then(account => {
-                this.account = account;
-                this.prepareStartSyncState();
-                return this.account;
-            });
+            .then(account => this.account = account);
     }
 
     private getUniqueMessageForSigFromServerSide(): Promise<string> {
@@ -77,18 +59,12 @@ export default class BaseManager {
 
     getNewMnemonic(): Promise<string> {
         return this.base.accountManager.getNewMnemonic()
-            .then(phrase => {
-                return phrase;
-            });
+            .then(phrase => phrase);
     }
 
     unsubscribe(mnemonicPhrase: string): Promise<Account> {
         return this.base.accountManager.unsubscribe(mnemonicPhrase)
-            .then(account => {
-                this.account = account;
-                this.prepareStartSyncState();
-                return this.account;
-            });
+            .then(account => this.account = account);
     }
 
     getOfferManager(): OfferManager {
@@ -115,18 +91,7 @@ export default class BaseManager {
         return this.base.profileManager.updateData(data);
     }
 
-    addSyncDataListener(listener: SyncDataListener) {
-        if (!this.listeners.has(listener)) {
-            this.listeners.add(listener);
-            listener.onSyncData(this.cacheRequests);
-        }
-    }
-
-    removeSyncDataListener(listener: SyncDataListener) {
-        this.listeners.delete(listener);
-    }
-
-    decryptRequestFields(senderPk: string, encryptedData: string): Promise<Array<string>> {
+    decryptRequestFields(senderPk: string, encryptedData: string): Promise<any> {
         return this.base.dataRequestManager.decryptMessage(senderPk, encryptedData);
     }
 
@@ -138,16 +103,12 @@ export default class BaseManager {
         return this.base.profileManager.getAuthorizedData(recipientPk, encryptedData);
     }
 
-    createRequest(recipientPk: string, fields: Array<string>): Promise<number> {
-        return this.base.dataRequestManager.createRequest(recipientPk, fields);
+    getAlreadyRequestedPermissions(recipientPk: string): Promise<Array<string>> {
+        return this.base.dataRequestManager.getRequestedPermissions(recipientPk);
     }
 
-    responseToRequest(requestId: number, senderPk: string, fields?: Array<string>): Promise<DataRequestState> {
-        return this.base.dataRequestManager.responseToRequest(requestId, senderPk, fields)
-            .then(state => {
-                this.cacheRequests = this.cacheRequests.filter(item => item.id !== requestId);
-                return state;
-            });
+    requestPermissions(recipientPk: string, fields: Array<string>): Promise<number> {
+        return this.base.dataRequestManager.requestPermissions(recipientPk, fields);
     }
 
     public shareDataForOffer(offer: Offer): Promise<void> {
@@ -159,40 +120,29 @@ export default class BaseManager {
         return this.base.dataRequestManager.grantAccessForOffer(offer.id, offer.owner, fields);
     }
 
-    private prepareStartSyncState() {
-        this.cacheRequests = [];
-        this.syncState();
+    async grandPermissions(from: string, fields: Array<string>): Promise<Array<string>> {
+        const grantedFields = fields;
+        //get old granted permissions
+        // const grantedFields = await this.base.dataRequestManager.getGrantedPermissionsToMe(from);
+        //
+        // fields.forEach(value => {
+        //     if (grantedFields.indexOf(value) === -1) {
+        //         grantedFields.push(value);
+        //     }
+        // });
+
+        console.log('new', grantedFields);
+        await this.base.dataRequestManager.grantAccessForClient(from, grantedFields);
+
+        return grantedFields;
     }
 
-    private startLoopSyncState() {
-        setTimeout(this.syncState.bind(this), this.SYNC_DATA_INTERVAL_MS);
+    getRequests(fromPk?: string, toPk?: string): Promise<Array<DataRequest>> {
+        return this.base.dataRequestManager.getRequests(fromPk, toPk);
     }
 
-    private syncState() {
-        let result: Array<DataRequest> = [];
-        const data: DataRequestManager = this.base.dataRequestManager;
-
-        if (this.account != null && this.account.publicKey != null) {
-
-            data.getRequests(this.account.publicKey, '', DataRequestState.ACCEPT)
-                .then(list => {
-                    result = result.concat(list);
-                    return data.getRequests(this.account.publicKey, '', DataRequestState.REJECT);
-                })
-                .then(list => {
-                    result = result.concat(list);
-                    return data.getRequests('', this.account.publicKey, DataRequestState.AWAIT);
-                })
-                .then(list => {
-                    result = result.concat(list);
-                    this.cacheRequests = result;
-                    this.listeners.forEach(listener => listener.onSyncData(result));
-                    this.startLoopSyncState();
-                });
-
-        } else {
-            this.startLoopSyncState();
-        }
+    logout() {
+        this.account = null;
     }
 
 }

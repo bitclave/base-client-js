@@ -1,5 +1,6 @@
 import { RouteComponentProps } from 'react-router';
 import * as React from 'react';
+import { FormEvent } from 'react';
 import Form from 'reactstrap/lib/Form';
 import InputGroup from 'reactstrap/lib/InputGroup';
 import InputGroupAddon from 'reactstrap/lib/InputGroupAddon';
@@ -9,14 +10,13 @@ import Input from 'reactstrap/lib/Input';
 import { lazyInject } from '../Injections';
 import BaseManager from '../manager/BaseManager';
 import Container from 'reactstrap/lib/Container';
-import { FormEvent } from 'react';
 
 interface Props extends RouteComponentProps<{}> {
 }
 
 interface State {
     searchClientId: string;
-    clientFields: Array<string>;
+    clientFields: Map<string, boolean>;
 }
 
 export default class CreateRequest extends React.Component<Props, State> {
@@ -24,14 +24,14 @@ export default class CreateRequest extends React.Component<Props, State> {
     @lazyInject(BaseManager)
     baseManager: BaseManager;
 
-    private clientCheckedFields: Set<number> = new Set<number>();
+    private clientCheckedFields: Set<string> = new Set<string>();
 
     constructor(props: Props) {
         super(props);
 
         this.state = {
             searchClientId: '',
-            clientFields: []
+            clientFields: new Map()
         };
     }
 
@@ -58,12 +58,12 @@ export default class CreateRequest extends React.Component<Props, State> {
 
                             <SimpleList
                                 data={this.state.clientFields}
-                                onCheck={(index: number, checked: boolean) => this.onCheckClientField(index, checked)}
+                                onCheck={(key: string, checked: boolean) => this.onCheckClientField(key, checked)}
                             />
 
                             <Button
                                 className="m-1"
-                                hidden={(this.state.clientFields.length === 0 || this.clientCheckedFields.size === 0)}
+                                hidden={(this.state.clientFields.size === 0 || this.clientCheckedFields.size === 0)}
                                 color="primary"
                                 onClick={e => this.onSendRequestClick()}
                             >
@@ -90,25 +90,29 @@ export default class CreateRequest extends React.Component<Props, State> {
         this.setState({searchClientId: value});
     }
 
-    private onCheckClientField(index: number, checked: boolean): void {
+    private onCheckClientField(key: string, checked: boolean): void {
         if (checked) {
-            this.clientCheckedFields.add(index);
+            this.clientCheckedFields.add(key);
 
         } else {
-            this.clientCheckedFields.delete(index);
+            this.clientCheckedFields.delete(key);
         }
 
-        this.setState({});
+        this.state.clientFields.set(key, checked);
+
+        this.setState({clientFields: this.state.clientFields});
     }
 
     private onSendRequestClick() {
         const fields: Array<string> = [];
 
-        this.clientCheckedFields.forEach(value => {
-            fields.push(this.state.clientFields[value]);
+        this.state.clientFields.forEach((value, key) => {
+            if (value) {
+                fields.push(key);
+            }
         });
 
-        this.baseManager.createRequest(this.state.searchClientId.trim(), fields)
+        this.baseManager.requestPermissions(this.state.searchClientId.trim(), fields)
             .then(result => alert('Request has been created!'))
             .catch(reason =>
                 alert('Something went wrong! =(' + JSON.stringify(reason)));
@@ -124,7 +128,28 @@ export default class CreateRequest extends React.Component<Props, State> {
         this.baseManager.getClientRawData(this.state.searchClientId.trim())
             .then((fields: Map<string, string>) => {
                 const keys: Array<string> = Array.from(fields.keys());
-                this.setState({clientFields: keys});
+                return this.mergePermissionsClientFields(this.state.searchClientId.trim(), keys);
+
+            }).then(result => this.setState({clientFields: result}))
+            .then(res => this.setState({}));
+    }
+
+    private mergePermissionsClientFields(clientId: string, clientFields: Array<string>): Promise<Map<string, boolean>> {
+        return this.baseManager.getAlreadyRequestedPermissions(clientId)
+            .then((permissions: Array<string>) => {
+                const result: Map<string, boolean> = new Map();
+
+
+                for (let clientField of clientFields) {
+                    const checked = permissions.indexOf(clientField) > -1;
+                    if (checked) {
+                        this.clientCheckedFields.add(clientField);
+                    }
+
+                    result.set(clientField, checked);
+                }
+
+                return result;
             });
     }
 

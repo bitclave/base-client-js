@@ -5,7 +5,7 @@ import Input from 'reactstrap/lib/Input';
 import Label from 'reactstrap/lib/Label';
 
 interface Properties {
-    data: Array<string>;
+    data: Map<string, boolean>;
     onCheck: Function;
 }
 
@@ -20,17 +20,19 @@ export default class SimpleList extends React.Component<Properties, {}> {
     }
 
     bindItems() {
-        const {data, onCheck} = this.props;
+        const data: Map<string, boolean> = this.props.data;
+        const onCheck = this.props.onCheck;
         const result: Array<Object> = [];
         let item: object;
 
-        data.forEach((value: string, index: number) => {
+        data.forEach((value: boolean, key: string) => {
             item = (
-                <ListGroupItem key={index}>
-                    <Label>{value}</Label>
+                <ListGroupItem key={key}>
+                    <Label>{key}</Label>
                     <Input
                         type="checkbox"
-                        onChange={e => onCheck(index, e.target.checked)}
+                        defaultChecked={value}
+                        onChange={e => onCheck(key, e.target.checked)}
                         className="checkbox-default"
                     />
                 </ListGroupItem>

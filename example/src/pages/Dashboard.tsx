@@ -12,11 +12,9 @@ import BaseManager, { SyncDataListener } from '../manager/BaseManager';
 import ClientDataList from '../components/lists/SimplePairList';
 import { RouteComponentProps } from 'react-router';
 import ButtonGroup from 'reactstrap/lib/ButtonGroup';
-import Badge from 'reactstrap/lib/Badge';
-import DataRequest from 'bitclave-base/repository/models/DataRequest';
-import { DataRequestState } from 'bitclave-base';
 import Pair from '../models/Pair';
-import Web3 from 'web3'
+import Web3 from 'web3';
+
 const ethUtil = require('ethereumjs-util');
 
 interface Props extends RouteComponentProps<{}> {
@@ -30,14 +28,15 @@ interface State {
     numberRequests: number;
     numberResponses: number;
     clientDataRefreshhTrigger: number;
+    clientData: Array<Pair<string, string>>;
 }
 
 var web3: Web3;
 
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     if (typeof window.web3 !== 'undefined') {
         // Use Mist/MetaMask's provider.
-        web3 = new Web3(window.web3.currentProvider)
+        web3 = new Web3(window.web3.currentProvider);
 
 
         console.log('Injected web3 detected.');
@@ -46,12 +45,10 @@ window.addEventListener('load', function() {
 
 var g_Dashboard: any;
 
-export default class Dashboard extends React.Component<Props, State> implements SyncDataListener {
+export default class Dashboard extends React.Component<Props, State> {
 
     @lazyInject(BaseManager)
     baseManager: BaseManager;
-
-    clientData: Array<Pair<string, string>> = [];
 
     constructor(props: Props) {
         super(props);
@@ -60,22 +57,16 @@ export default class Dashboard extends React.Component<Props, State> implements 
             inputValue: '',
             ethAddress: '',
             ethSignature: '',
-            numberRequests: 0,
-            numberResponses: 0,
-            clientDataRefreshhTrigger: 0
+            clientDataRefreshhTrigger: 0,
+            clientData: []
         };
     }
 
     componentDidMount() {
-        this.baseManager.addSyncDataListener(this);
         this.getDataList();
-        this.state.ethSignature = "aaa";
+        this.state.ethSignature = '';
 
         g_Dashboard = this;
-    }
-
-    componentWillUnmount() {
-        this.baseManager.removeSyncDataListener(this);
     }
 
     render() {
@@ -86,14 +77,11 @@ export default class Dashboard extends React.Component<Props, State> implements 
                 </Button>
 
                 <ButtonGroup className="m-2 btn-group-toggle justify-content-center">
-                    <Button color="primary" onClick={e => this.onRequestsClick()}>
-                        Requests <Badge color="secondary">{this.state.numberRequests}</Badge>
-                    </Button>{''}
-                    <Button color="primary" onClick={e => this.onResponsesClick()}>
-                        Responses <Badge color="secondary">{this.state.numberResponses}</Badge>
+                    <Button color="primary" onClick={e => this.onDataPermissionsClick()}>
+                        Data permissions
                     </Button>{''}
                     <Button color="primary" onClick={e => this.onCreateRequestClick()}>
-                        Create request
+                        Request permissions
                     </Button>
                     <Button color="primary" onClick={e => this.onSearchRequestsClick()}>
                         Search Requests
@@ -133,32 +121,32 @@ export default class Dashboard extends React.Component<Props, State> implements 
                                         />
                                     </Col>
                                 </Row>
-                                <Row> <p/> </Row>
+                                <Row><p/></Row>
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button color="primary"  onClick={e => this.onSetEthSignature()}>
+                                        <Button color="primary" onClick={e => this.onSetEthSignature()}>
                                             Sign w/Web3
                                         </Button>
                                     </Col>
                                     <Col xs="3" sm="3">
-                                        <Button color="primary"  onClick={e => this.onSetEthAddress()}>
+                                        <Button color="primary" onClick={e => this.onSetEthAddress()}>
                                             Set Single
                                         </Button>
                                     </Col>
 
                                     <Col xs="3" sm="3">
-                                        <Button color="primary"  onClick={e => this.onVerifyWallets()}>
+                                        <Button color="primary" onClick={e => this.onVerifyWallets()}>
                                             Verify
                                         </Button>
                                     </Col>
                                     <Col xs="3" sm="3">
-                                        <Button color="primary"  onClick={e => this.onSignWallets()}>
+                                        <Button color="primary" onClick={e => this.onSignWallets()}>
                                             Sign Wallets
                                         </Button>
                                     </Col>
                                 </Row>
-                                <Row> <p/> </Row>
-                                <Row> <p/> </Row>
+                                <Row><p/></Row>
+                                <Row><p/></Row>
                             </FormGroup>
                             <FormGroup>
                                 <Row>
@@ -186,7 +174,7 @@ export default class Dashboard extends React.Component<Props, State> implements 
 
                             <PairItemHolder name="Key:" value="Value:" onDeleteClick={null}/>
                             <ClientDataList
-                                data={this.clientData}
+                                data={this.state.clientData}
                                 onDeleteClick={null}
                             />
                             <Button color="primary" className="m-2 float-right" onClick={e => this.onSaveClick()}>
@@ -199,31 +187,19 @@ export default class Dashboard extends React.Component<Props, State> implements 
         );
     }
 
-    async onSyncData(result: Array<DataRequest>) {
-        let countRequests = 0;
-        let countResponses = 0;
-        result.forEach(item => {
-            if (item.state === DataRequestState.ACCEPT || item.state === DataRequestState.REJECT) {
-                countResponses++;
-            } else if (item.state === DataRequestState.AWAIT) {
-                countRequests++;
-            }
-        });
-
-        this.setState({
-            numberRequests: countRequests,
-            numberResponses: countResponses,
-        });
-    }
-
-    private async getDataList() {
-        return this.baseManager.loadClientData()
+    private getDataList() {
+        this.baseManager.loadClientData()
             .then(data => {
-                this.clientData = [];
-                data.forEach((value, key) => {
-                    this.clientData.push(new Pair(key, value));
-                });
-                this.state.clientDataRefreshhTrigger=1;
+                try {
+                    this.state.clientData = [];
+                    data.forEach((value, key) => {
+                        this.state.clientData.push(new Pair(key, value));
+                    });
+                    this.state.clientDataRefreshhTrigger = 1;
+                    this.setState({clientData: this.state.clientData});
+                } catch (e) {
+                    console.log(e);
+                }
             }).catch(response => console.log('message: ' + JSON.stringify(response)));
     }
 
@@ -244,13 +220,14 @@ export default class Dashboard extends React.Component<Props, State> implements 
     }
 
     private onLogoutClick() {
+        this.baseManager.logout();
         const {history} = this.props;
         history.replace('/');
     }
 
-    private onRequestsClick() {
+    private onDataPermissionsClick() {
         const {history} = this.props;
-        history.push('requests');
+        history.push('permissions');
     }
 
     private onResponsesClick() {
@@ -281,7 +258,7 @@ export default class Dashboard extends React.Component<Props, State> implements 
     private onSaveClick() {
         const map: Map<string, string> = new Map();
 
-        this.clientData.forEach(item => {
+        this.state.clientData.forEach(item => {
             map.set(item.key, item.value);
         });
 
@@ -300,44 +277,44 @@ export default class Dashboard extends React.Component<Props, State> implements 
             alert('The ethAddress must not be empty');
             return;
         }
-        var pos = this.clientData.findIndex(model => model.key === 'eth_wallets');
+        var pos = this.state.clientData.findIndex(model => model.key === 'eth_wallets');
 
         var newAddr = {
-            'baseID' : this.baseManager.getId(),
+            'baseID': this.baseManager.getId(),
             'ethAddr': ethAddress
         };
         var newAddrRecord = {
-            'data' : JSON.stringify(newAddr),
-            'sig' : ethSignature
+            'data': JSON.stringify(newAddr),
+            'sig': ethSignature
         };
         if (pos >= 0) {
-            var wallets = JSON.parse(this.clientData[pos].value);
+            var wallets = JSON.parse(this.state.clientData[pos].value);
             wallets.data.push(newAddrRecord);
             wallets.sig = '';
-            this.clientData[pos].value = JSON.stringify(wallets);
+            this.state.clientData[pos].value = JSON.stringify(wallets);
         } else {
-            this.clientData.push(new Pair('eth_wallets', JSON.stringify(
+            this.state.clientData.push(new Pair('eth_wallets', JSON.stringify(
                 {
                     'data': [newAddrRecord],
-                    'sig' : ''
+                    'sig': ''
                 })));
-            pos = this.clientData.length - 1;
+            pos = this.state.clientData.length - 1;
         }
 
-        // var msg = JSON.parse(this.clientData[pos].value);
+        // var msg = JSON.parse(this.state.clientData[pos].value);
         // var res = this.baseManager.getProfileManager().validateEthWallets(
-        //     this.clientData[pos].key, msg, this.baseManager.getId());
+        //     this.state.clientData[pos].key, msg, this.baseManager.getId());
         // alert(JSON.stringify(res));
 
         this.setState({ethAddress: '', ethSignature: ''});
     }
 
-    private onVerifyWallets(){
-        var pos = this.clientData.findIndex(model => model.key === 'eth_wallets');
-        if (pos>=0) {
-            var msg = JSON.parse(this.clientData[pos].value);
+    private onVerifyWallets() {
+        var pos = this.state.clientData.findIndex(model => model.key === 'eth_wallets');
+        if (pos >= 0) {
+            var msg = JSON.parse(this.state.clientData[pos].value);
             var res = this.baseManager.getProfileManager().validateEthWallets(
-                this.clientData[pos].key, msg, this.baseManager.getId());
+                this.state.clientData[pos].key, msg, this.baseManager.getId());
             alert(JSON.stringify(res));
         }
         else {
@@ -345,18 +322,18 @@ export default class Dashboard extends React.Component<Props, State> implements 
         }
     }
 
-    private async onSignWallets(){
-        var pos = this.clientData.findIndex(model => model.key === 'eth_wallets');
-        if (pos>=0) {
-            var msg = JSON.parse(this.clientData[pos].value);
+    private async onSignWallets() {
+        var pos = this.state.clientData.findIndex(model => model.key === 'eth_wallets');
+        if (pos >= 0) {
+            var msg = JSON.parse(this.state.clientData[pos].value);
             try {
                 var res = await this.baseManager.getProfileManager().createEthWallets(
                     msg.data, this.baseManager.getId());
                 msg.sig = res.sig;
-                this.clientData[pos].value = JSON.stringify(msg);
+                this.state.clientData[pos].value = JSON.stringify(msg);
                 alert('eth_wallets signed');
             } catch (err) {
-                alert('exception in onSignWallets: ' +  err);
+                alert('exception in onSignWallets: ' + err);
             }
 
         }
@@ -365,11 +342,10 @@ export default class Dashboard extends React.Component<Props, State> implements 
         }
     }
 
-    private async onSetEthSignature()  {
-        var signingAddr : string = '';
-        if (typeof web3 == 'undefined')
-        {
-            alert('WEB3 is not detected')
+    private async onSetEthSignature() {
+        var signingAddr: string = '';
+        if (typeof web3 == 'undefined') {
+            alert('WEB3 is not detected');
             return;
         }
         await web3.eth.getAccounts((err, res) => {
@@ -377,9 +353,8 @@ export default class Dashboard extends React.Component<Props, State> implements 
             signingAddr = res[0];
         });
 
-        if ( (signingAddr == '') || (signingAddr==undefined))
-        {
-            alert('Can not detect ETH address from WEB3 provider.\nPlease login')
+        if ((signingAddr == '') || (signingAddr == undefined)) {
+            alert('Can not detect ETH address from WEB3 provider.\nPlease login');
             return;
         }
 
@@ -389,13 +364,12 @@ export default class Dashboard extends React.Component<Props, State> implements 
 
         var thisMessage = JSON.stringify(
             {
-                "baseID": this.baseManager.getId(),
-                "ethAddr" : signingAddr
+                'baseID': this.baseManager.getId(),
+                'ethAddr': signingAddr
             }
         );
         var signedMessage = '';
-        if (typeof web3 != 'undefined')
-        {
+        if (typeof web3 != 'undefined') {
             // alert('onSetEthSignature');
             var msg = ethUtil.bufferToHex(new Buffer(thisMessage, 'utf8'));
 
@@ -408,7 +382,7 @@ export default class Dashboard extends React.Component<Props, State> implements 
                 method,
                 params,
                 signingAddr,
-            }, function(err, result) {
+            }, function (err, result) {
                 // if (err) return $scope.notifier.danger(err)
                 // if (result.error) return $scope.notifier.danger(result.error)
                 sig = result.result;
@@ -418,11 +392,11 @@ export default class Dashboard extends React.Component<Props, State> implements 
                     sig: sig,
                     version: '3',
                     signer: 'web3'
-                }, null, 2)
+                }, null, 2);
                 // alert('Successfully Signed Message with ' + signingAddr + signedMessage);
                 g_Dashboard.setState({ethSignature: sig});
-                g_Dashboard.setState({ethAddress: signingAddr})
-            })
+                g_Dashboard.setState({ethAddress: signingAddr});
+            });
         }
 
     }
@@ -436,19 +410,19 @@ export default class Dashboard extends React.Component<Props, State> implements 
             alert('The key and value must not be empty');
             return;
         }
-        const pos = this.clientData.findIndex(model => model.key === inputKey);
+        const pos = this.state.clientData.findIndex(model => model.key === inputKey);
 
         if (pos >= 0) {
-            this.clientData[pos].value = inputValue;
+            this.state.clientData[pos].value = inputValue;
         } else {
-            this.clientData.push(new Pair(inputKey, inputValue));
+            this.state.clientData.push(new Pair(inputKey, inputValue));
         }
 
         this.setState({inputKey: '', inputValue: ''});
     }
 
     private onDeleteClick(key: string) {
-        this.clientData = this.clientData.filter(model => model.key !== key);
+        this.state.clientData = this.state.clientData.filter(model => model.key !== key);
 
         this.setState({});
     }
