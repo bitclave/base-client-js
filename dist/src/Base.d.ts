@@ -18,6 +18,7 @@ export { RemoteSigner } from './utils/keypair/RemoteSigner';
 export { CryptoUtils } from './utils/CryptoUtils';
 export { Permissions } from './utils/keypair/Permissions';
 export { WalletUtils } from './utils/WalletUtils';
+export { JsonUtils } from './utils/JsonUtils';
 export { EthereumUtils } from './utils/EthereumUtils';
 export { BaseAddrPair, AddrRecord, WalletsRecords, WealthRecord, WealthPtr, ProfileUser, ProfileWealthValidator } from './utils/types/BaseTypes';
 export { AccountManager, ProfileManager, DataRequestManager, OfferManager, SearchRequestManager, WalletManager, SearchRequest, Offer, Base as NodeAPI };

@@ -1990,7 +1990,7 @@ exports.errorObject = { e: {} };
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(23));
+		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(24));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -6400,7 +6400,7 @@ exports.isArray = Array.isArray || (function (x) { return x && typeof x.length =
 "use strict";
 
 
-var assert = __webpack_require__(25);
+var assert = __webpack_require__(26);
 var inherits = __webpack_require__(30);
 
 exports.inherits = inherits;
@@ -6930,6 +6930,33 @@ exports.EmptyObservable = EmptyObservable;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var JsonUtils = /** @class */ (function () {
+    function JsonUtils() {
+    }
+    JsonUtils.jsonToMap = function (json) {
+        var map = new Map();
+        Object.keys(json).forEach(function (key) { return map.set(key, json[key]); });
+        return map;
+    };
+    JsonUtils.mapToJson = function (map) {
+        var result = {};
+        map.forEach(function (value, key) {
+            result[key] = value;
+        });
+        return result;
+    };
+    return JsonUtils;
+}());
+exports.JsonUtils = JsonUtils;
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 var RpcToken = /** @class */ (function () {
     function RpcToken(accessToken) {
         this.accessToken = accessToken;
@@ -6946,7 +6973,7 @@ exports.default = RpcToken;
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7011,7 +7038,7 @@ exports.MulticastOperator = MulticastOperator;
 //# sourceMappingURL=multicast.js.map
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 ;(function (root, factory, undef) {
@@ -7148,7 +7175,7 @@ exports.MulticastOperator = MulticastOperator;
 }));
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* eslint-disable node/no-deprecated-api */
@@ -7216,7 +7243,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports) {
 
 module.exports = assert;
@@ -7230,33 +7257,6 @@ assert.equal = function assertEqual(l, r, msg) {
   if (l != r)
     throw new Error(msg || ('Assertion failed: ' + l + ' != ' + r));
 };
-
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var JsonUtils = /** @class */ (function () {
-    function JsonUtils() {
-    }
-    JsonUtils.jsonToMap = function (json) {
-        var map = new Map();
-        Object.keys(json).forEach(function (key) { return map.set(key, json[key]); });
-        return map;
-    };
-    JsonUtils.mapToJson = function (map) {
-        var result = {};
-        map.forEach(function (value, key) {
-            result[key] = value;
-        });
-        return result;
-    };
-    return JsonUtils;
-}());
-exports.JsonUtils = JsonUtils;
 
 
 /***/ }),
@@ -9308,7 +9308,7 @@ function unescapeComponent(str, options) {
 
 
 var utils = __webpack_require__(16);
-var assert = __webpack_require__(25);
+var assert = __webpack_require__(26);
 
 function BlockHash() {
   this.pending = null;
@@ -13283,7 +13283,7 @@ var RpcEncryptMessage_1 = __webpack_require__(243);
 var RpcFieldPassword_1 = __webpack_require__(244);
 var RpcDecryptMessage_1 = __webpack_require__(245);
 var RpcCheckSignature_1 = __webpack_require__(246);
-var RpcToken_1 = __webpack_require__(21);
+var RpcToken_1 = __webpack_require__(22);
 var Mnemonic = __webpack_require__(88);
 var RpcKeyPair = /** @class */ (function () {
     function RpcKeyPair(rpcTransport) {
@@ -18824,7 +18824,7 @@ function plucker(props, length) {
 "use strict";
 
 var Subject_1 = __webpack_require__(7);
-var multicast_1 = __webpack_require__(22);
+var multicast_1 = __webpack_require__(23);
 /* tslint:enable:max-line-length */
 /**
  * Returns a ConnectableObservable, which is a variety of Observable that waits until its connect method is called
@@ -18854,7 +18854,7 @@ exports.publish = publish;
 "use strict";
 
 var BehaviorSubject_1 = __webpack_require__(147);
-var multicast_1 = __webpack_require__(22);
+var multicast_1 = __webpack_require__(23);
 /**
  * @param value
  * @return {ConnectableObservable<T>}
@@ -18929,7 +18929,7 @@ exports.BehaviorSubject = BehaviorSubject;
 "use strict";
 
 var ReplaySubject_1 = __webpack_require__(55);
-var multicast_1 = __webpack_require__(22);
+var multicast_1 = __webpack_require__(23);
 /* tslint:enable:max-line-length */
 function publishReplay(bufferSize, windowTime, selectorOrScheduler, scheduler) {
     if (selectorOrScheduler && typeof selectorOrScheduler !== 'function') {
@@ -18949,7 +18949,7 @@ exports.publishReplay = publishReplay;
 "use strict";
 
 var AsyncSubject_1 = __webpack_require__(48);
-var multicast_1 = __webpack_require__(22);
+var multicast_1 = __webpack_require__(23);
 function publishLast() {
     return function (source) { return multicast_1.multicast(new AsyncSubject_1.AsyncSubject())(source); };
 }
@@ -19727,7 +19727,7 @@ var SequenceEqualCompareToSubscriber = (function (_super) {
 
 "use strict";
 
-var multicast_1 = __webpack_require__(22);
+var multicast_1 = __webpack_require__(23);
 var refCount_1 = __webpack_require__(74);
 var Subject_1 = __webpack_require__(7);
 function shareSubjectFactory() {
@@ -22913,7 +22913,7 @@ var RepositoryStrategyType;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var CompareAction_1 = __webpack_require__(195);
-var JsonUtils_1 = __webpack_require__(26);
+var JsonUtils_1 = __webpack_require__(21);
 var Offer = /** @class */ (function () {
     function Offer(description, title, imageUrl, tags, compare, rules) {
         if (description === void 0) { description = ''; }
@@ -22981,7 +22981,7 @@ var CompareAction;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var JsonUtils_1 = __webpack_require__(26);
+var JsonUtils_1 = __webpack_require__(21);
 var SearchRequest = /** @class */ (function () {
     function SearchRequest(tags) {
         if (tags === void 0) { tags = new Map(); }
@@ -25260,7 +25260,7 @@ var assert = __webpack_require__(229);
 var rlp = __webpack_require__(662);
 var BN = __webpack_require__(12);
 var createHash = __webpack_require__(223);
-var Buffer = __webpack_require__(24).Buffer;
+var Buffer = __webpack_require__(25).Buffer;
 Object.assign(exports, __webpack_require__(663));
 
 /**
@@ -26330,7 +26330,7 @@ exports.g1_256 = g1_256;
 var utils = __webpack_require__(16);
 var common = __webpack_require__(42);
 var shaCommon = __webpack_require__(226);
-var assert = __webpack_require__(25);
+var assert = __webpack_require__(26);
 
 var sum32 = utils.sum32;
 var sum32_4 = utils.sum32_4;
@@ -26441,7 +26441,7 @@ SHA256.prototype._digest = function digest(enc) {
 
 var utils = __webpack_require__(16);
 var common = __webpack_require__(42);
-var assert = __webpack_require__(25);
+var assert = __webpack_require__(26);
 
 var rotr64_hi = utils.rotr64_hi;
 var rotr64_lo = utils.rotr64_lo;
@@ -26907,6 +26907,8 @@ var Permissions_1 = __webpack_require__(43);
 exports.Permissions = Permissions_1.Permissions;
 var WalletUtils_1 = __webpack_require__(203);
 exports.WalletUtils = WalletUtils_1.WalletUtils;
+var JsonUtils_1 = __webpack_require__(21);
+exports.JsonUtils = JsonUtils_1.JsonUtils;
 var EthereumUtils_1 = __webpack_require__(215);
 exports.EthereumUtils = EthereumUtils_1.EthereumUtils;
 var BaseTypes_1 = __webpack_require__(80);
@@ -27079,7 +27081,7 @@ exports.default = SimpleAccount;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var HttpMethod_1 = __webpack_require__(17);
-var JsonUtils_1 = __webpack_require__(26);
+var JsonUtils_1 = __webpack_require__(21);
 var ClientDataRepositoryImpl = /** @class */ (function () {
     function ClientDataRepositoryImpl(transport) {
         this.CLIENT_GET_DATA = '/v1/client/{pk}/';
@@ -27281,7 +27283,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var Permissions_1 = __webpack_require__(43);
-var RpcToken_1 = __webpack_require__(21);
+var RpcToken_1 = __webpack_require__(22);
 var AccessData = /** @class */ (function (_super) {
     __extends(AccessData, _super);
     function AccessData(accessToken, origin, expireDate, permissions) {
@@ -27317,7 +27319,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var RpcToken_1 = __webpack_require__(21);
+var RpcToken_1 = __webpack_require__(22);
 var RpcSignMessage = /** @class */ (function (_super) {
     __extends(RpcSignMessage, _super);
     function RpcSignMessage(message, accessToken) {
@@ -27347,7 +27349,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var RpcToken_1 = __webpack_require__(21);
+var RpcToken_1 = __webpack_require__(22);
 var RpcEncryptMessage = /** @class */ (function (_super) {
     __extends(RpcEncryptMessage, _super);
     function RpcEncryptMessage(accessToken, recipientPk, message) {
@@ -27378,7 +27380,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var RpcToken_1 = __webpack_require__(21);
+var RpcToken_1 = __webpack_require__(22);
 var RpcFieldPassword = /** @class */ (function (_super) {
     __extends(RpcFieldPassword, _super);
     function RpcFieldPassword(accessToken, fieldName) {
@@ -27408,7 +27410,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var RpcToken_1 = __webpack_require__(21);
+var RpcToken_1 = __webpack_require__(22);
 var RpcDecryptMessage = /** @class */ (function (_super) {
     __extends(RpcDecryptMessage, _super);
     function RpcDecryptMessage(accessToken, senderPk, encrypted) {
@@ -27439,7 +27441,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var RpcToken_1 = __webpack_require__(21);
+var RpcToken_1 = __webpack_require__(22);
 var RpcCheckSignature = /** @class */ (function (_super) {
     __extends(RpcCheckSignature, _super);
     function RpcCheckSignature(msg, sig, accessToken) {
@@ -34506,7 +34508,7 @@ Observable_1.Observable.prototype.multicast = multicast_1.multicast;
 
 "use strict";
 
-var multicast_1 = __webpack_require__(22);
+var multicast_1 = __webpack_require__(23);
 /* tslint:enable:max-line-length */
 /**
  * Allows source Observable to be subscribed only once with a Subject of choice,
@@ -38289,7 +38291,7 @@ var mergeScan_1 = __webpack_require__(139);
 exports.mergeScan = mergeScan_1.mergeScan;
 var min_1 = __webpack_require__(140);
 exports.min = min_1.min;
-var multicast_1 = __webpack_require__(22);
+var multicast_1 = __webpack_require__(23);
 exports.multicast = multicast_1.multicast;
 var observeOn_1 = __webpack_require__(50);
 exports.observeOn = observeOn_1.observeOn;
@@ -38472,7 +38474,7 @@ var __read = (this && this.__read) || function (o, n) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Account_1 = __webpack_require__(18);
 var CryptoUtils_1 = __webpack_require__(77);
-var JsonUtils_1 = __webpack_require__(26);
+var JsonUtils_1 = __webpack_require__(21);
 var ProfileManager = /** @class */ (function () {
     function ProfileManager(clientRepository, authAccountBehavior, encrypt, decrypt, signer) {
         this.account = new Account_1.default();
@@ -38647,7 +38649,7 @@ exports.ProfileManager = ProfileManager;
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(58), __webpack_require__(543), __webpack_require__(544), __webpack_require__(27), __webpack_require__(28), __webpack_require__(78), __webpack_require__(190), __webpack_require__(545), __webpack_require__(191), __webpack_require__(546), __webpack_require__(547), __webpack_require__(548), __webpack_require__(79), __webpack_require__(549), __webpack_require__(23), __webpack_require__(9), __webpack_require__(550), __webpack_require__(551), __webpack_require__(552), __webpack_require__(553), __webpack_require__(554), __webpack_require__(555), __webpack_require__(556), __webpack_require__(557), __webpack_require__(558), __webpack_require__(559), __webpack_require__(560), __webpack_require__(561), __webpack_require__(562), __webpack_require__(563), __webpack_require__(564), __webpack_require__(565));
+		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(58), __webpack_require__(543), __webpack_require__(544), __webpack_require__(27), __webpack_require__(28), __webpack_require__(78), __webpack_require__(190), __webpack_require__(545), __webpack_require__(191), __webpack_require__(546), __webpack_require__(547), __webpack_require__(548), __webpack_require__(79), __webpack_require__(549), __webpack_require__(24), __webpack_require__(9), __webpack_require__(550), __webpack_require__(551), __webpack_require__(552), __webpack_require__(553), __webpack_require__(554), __webpack_require__(555), __webpack_require__(556), __webpack_require__(557), __webpack_require__(558), __webpack_require__(559), __webpack_require__(560), __webpack_require__(561), __webpack_require__(562), __webpack_require__(563), __webpack_require__(564), __webpack_require__(565));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -40503,7 +40505,7 @@ exports.ProfileManager = ProfileManager;
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(27), __webpack_require__(28), __webpack_require__(23), __webpack_require__(9));
+		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(27), __webpack_require__(28), __webpack_require__(24), __webpack_require__(9));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -40740,7 +40742,7 @@ exports.ProfileManager = ProfileManager;
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(27), __webpack_require__(28), __webpack_require__(23), __webpack_require__(9));
+		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(27), __webpack_require__(28), __webpack_require__(24), __webpack_require__(9));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -41515,7 +41517,7 @@ exports.ProfileManager = ProfileManager;
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(27), __webpack_require__(28), __webpack_require__(23), __webpack_require__(9));
+		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(27), __webpack_require__(28), __webpack_require__(24), __webpack_require__(9));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -41659,7 +41661,7 @@ exports.ProfileManager = ProfileManager;
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(27), __webpack_require__(28), __webpack_require__(23), __webpack_require__(9));
+		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(27), __webpack_require__(28), __webpack_require__(24), __webpack_require__(9));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -41856,7 +41858,7 @@ exports.ProfileManager = ProfileManager;
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(27), __webpack_require__(28), __webpack_require__(23), __webpack_require__(9));
+		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(27), __webpack_require__(28), __webpack_require__(24), __webpack_require__(9));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -42123,7 +42125,7 @@ var __values = (this && this.__values) || function (o) {
     };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var JsonUtils_1 = __webpack_require__(26);
+var JsonUtils_1 = __webpack_require__(21);
 var DataRequestManager = /** @class */ (function () {
     function DataRequestManager(dataRequestRepository, authAccountBehavior, encrypt, decrypt) {
         this.dataRequestRepository = dataRequestRepository;
@@ -42163,10 +42165,10 @@ var DataRequestManager = /** @class */ (function () {
         return this.dataRequestRepository.getRequests(fromPk, toPk);
     };
     /**
-     * Grant access data for client.
-     * @param {string} clientPk id of client.
-     * @param {Map<string, string>} acceptedFields. Arrays names of fields for accept access.
-     * (e.g. this is keys in {Map<string, string>} - personal data).
+     * Grants access to specific fields of my data to a client.
+     * @param {string} clientPk id (baseID) of the client that is authorized for data access.
+     * @param {Map<string, string>} acceptedFields. Array of field names that are authorized for access
+     * (e.g. these are keys in {Map<string, string>} - personal data).
      *
      * @returns {Promise<number>}
      */
@@ -42185,97 +42187,77 @@ var DataRequestManager = /** @class */ (function () {
         });
     };
     /**
-     * Returns the list of permissions requested from the client
-     * @param {string} requestedFromPk The public key of the client whose permission is requested
-     * @returns {Promise<Array<string>>} list with names of fields.
+     * Returns list of fields requested for access by <me> from the client
+     * @param {string} requestedFromPk id (baseID) of the client whose permissions were requested
+     * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
     DataRequestManager.prototype.getRequestedPermissions = function (requestedFromPk) {
         return __awaiter(this, void 0, void 0, function () {
-            var requests, strDecrypt;
+            var requests;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.getRequests(this.account.publicKey, requestedFromPk)];
                     case 1:
                         requests = _a.sent();
-                        if (!(requests.length > 0)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.decrypt.decryptMessage(requestedFromPk, requests[0].requestData)];
-                    case 2:
-                        strDecrypt = _a.sent();
-                        return [2 /*return*/, JSON.parse(strDecrypt)];
-                    case 3: return [2 /*return*/, []];
+                        return [4 /*yield*/, this.decodeRequestedPermissions(requests, requestedFromPk)];
+                    case 2: return [2 /*return*/, _a.sent()];
                 }
             });
         });
     };
     /**
-     * Returns the list of permissions requested from the client
-     * @param {string} whoRequestedPk The public key of the client whose permission is requested
-     * @returns {Promise<Array<string>>} list with names of fields.
+     * Returns list of fields requested for access by the client from <me>
+     * @param {string} whoRequestedPk id (baseID) of the client that asked for permission from <me>
+     * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
     DataRequestManager.prototype.getRequestedPermissionsToMe = function (whoRequestedPk) {
         return __awaiter(this, void 0, void 0, function () {
-            var requests, strDecrypt;
+            var requests;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.getRequests(whoRequestedPk, this.account.publicKey)];
                     case 1:
                         requests = _a.sent();
-                        if (!(requests.length > 0)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.decrypt.decryptMessage(whoRequestedPk, requests[0].requestData)];
-                    case 2:
-                        strDecrypt = _a.sent();
-                        return [2 /*return*/, JSON.parse(strDecrypt)];
-                    case 3: return [2 /*return*/, []];
+                        return [4 /*yield*/, this.decodeRequestedPermissions(requests, whoRequestedPk)];
+                    case 2: return [2 /*return*/, _a.sent()];
                 }
             });
         });
     };
     /**
-     * Returns the list of permissions granted to the client
-     * @param {string} clientPk the public key of the client that was given permission.
-     * @returns {Promise<Array<string>>} list with names of fields.
+     * Returns list of fields that <client> authorized <me> to access
+     * @param {string} clientPk id (baseID) of the client that granted me permission.
+     * @returns {Promise<Array<string>>} Array of field names that were authorized for access
      */
     DataRequestManager.prototype.getGrantedPermissions = function (clientPk) {
         return __awaiter(this, void 0, void 0, function () {
-            var requests, strDecrypt, jsonDecrypt, mapResponse;
+            var requests;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.getRequests(this.account.publicKey, clientPk)];
                     case 1:
                         requests = _a.sent();
-                        if (!(requests.length > 0)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.decrypt.decryptMessage(clientPk, requests[0].responseData)];
-                    case 2:
-                        strDecrypt = _a.sent();
-                        jsonDecrypt = JSON.parse(strDecrypt);
-                        mapResponse = JsonUtils_1.JsonUtils.jsonToMap(jsonDecrypt);
-                        return [2 /*return*/, Array.from(mapResponse.keys())];
-                    case 3: return [2 /*return*/, []];
+                        return [4 /*yield*/, this.getDecodeGrantPermissions(requests, clientPk)];
+                    case 2: return [2 /*return*/, _a.sent()];
                 }
             });
         });
     };
     /**
-     * Returns the list of permissions granted to the client
-     * @param {string} clientPk the public key of the client that was given permission.
-     * @returns {Promise<Array<string>>} list with names of fields.
+     * Returns list of fields that <me> authorized <client> to access
+     * @param {string} clientPk id (baseID) of the client that received access permission from <me>
+     * @returns {Promise<Array<string>>} Array of field names that were authorized for access
      */
     DataRequestManager.prototype.getGrantedPermissionsToMe = function (clientPk) {
         return __awaiter(this, void 0, void 0, function () {
-            var requests, strDecrypt, jsonDecrypt, mapResponse;
+            var requests;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.getRequests(clientPk, this.account.publicKey)];
                     case 1:
                         requests = _a.sent();
-                        if (!(requests.length > 0)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.decrypt.decryptMessage(clientPk, requests[0].responseData)];
-                    case 2:
-                        strDecrypt = _a.sent();
-                        jsonDecrypt = JSON.parse(strDecrypt);
-                        mapResponse = JsonUtils_1.JsonUtils.jsonToMap(jsonDecrypt);
-                        return [2 /*return*/, Array.from(mapResponse.keys())];
-                    case 3: return [2 /*return*/, []];
+                        return [4 /*yield*/, this.getDecodeGrantPermissions(requests, clientPk)];
+                    case 2: return [2 /*return*/, _a.sent()];
                 }
             });
         });
@@ -42312,9 +42294,51 @@ var DataRequestManager = /** @class */ (function () {
             }
         }).catch(function (reason) { return encrypted; });
     };
+    DataRequestManager.prototype.decodeRequestedPermissions = function (requests, clientPk) {
+        return __awaiter(this, void 0, void 0, function () {
+            var strDecrypt, e_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!(requests.length > 0 && requests[0].requestData.trim().length > 0)) return [3 /*break*/, 5];
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, this.decrypt.decryptMessage(clientPk, requests[0].requestData)];
+                    case 2:
+                        strDecrypt = _a.sent();
+                        return [2 /*return*/, JSON.parse(strDecrypt)];
+                    case 3:
+                        e_1 = _a.sent();
+                        return [2 /*return*/, []];
+                    case 4: return [3 /*break*/, 6];
+                    case 5: return [2 /*return*/, []];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    DataRequestManager.prototype.getDecodeGrantPermissions = function (requests, clientPk) {
+        return __awaiter(this, void 0, void 0, function () {
+            var strDecrypt, jsonDecrypt, mapResponse;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!(requests.length > 0 && requests[0].responseData.trim().length > 0)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.decrypt.decryptMessage(clientPk, requests[0].responseData)];
+                    case 1:
+                        strDecrypt = _a.sent();
+                        jsonDecrypt = JSON.parse(strDecrypt);
+                        mapResponse = JsonUtils_1.JsonUtils.jsonToMap(jsonDecrypt);
+                        return [2 /*return*/, Array.from(mapResponse.keys())];
+                    case 2: return [2 /*return*/, []];
+                }
+            });
+        });
+    };
     DataRequestManager.prototype.getEncryptedDataForFields = function (recipientPk, fields) {
         return __awaiter(this, void 0, void 0, function () {
-            var encryptedMessage, resultMap, fields_1, fields_1_1, value, _a, _b, _c, e_1_1, jsonMap, e_1, _d;
+            var encryptedMessage, resultMap, fields_1, fields_1_1, value, _a, _b, _c, e_2_1, jsonMap, e_2, _d;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
@@ -42340,14 +42364,14 @@ var DataRequestManager = /** @class */ (function () {
                         return [3 /*break*/, 2];
                     case 5: return [3 /*break*/, 8];
                     case 6:
-                        e_1_1 = _e.sent();
-                        e_1 = { error: e_1_1 };
+                        e_2_1 = _e.sent();
+                        e_2 = { error: e_2_1 };
                         return [3 /*break*/, 8];
                     case 7:
                         try {
                             if (fields_1_1 && !fields_1_1.done && (_d = fields_1.return)) _d.call(fields_1);
                         }
-                        finally { if (e_1) throw e_1.error; }
+                        finally { if (e_2) throw e_2.error; }
                         return [7 /*endfinally*/];
                     case 8:
                         jsonMap = JsonUtils_1.JsonUtils.mapToJson(resultMap);
@@ -47299,7 +47323,7 @@ module.exports = __webpack_require__(217)(__webpack_require__(220)('keccak'))
 
 "use strict";
 
-var Buffer = __webpack_require__(24).Buffer
+var Buffer = __webpack_require__(25).Buffer
 var Transform = __webpack_require__(219).Transform
 var inherits = __webpack_require__(30)
 
@@ -47425,7 +47449,7 @@ if (typeof Object.create === 'function') {
 
 "use strict";
 
-var Buffer = __webpack_require__(24).Buffer
+var Buffer = __webpack_require__(25).Buffer
 var Transform = __webpack_require__(219).Transform
 var inherits = __webpack_require__(30)
 
@@ -47522,7 +47546,7 @@ module.exports = __webpack_require__(217)(__webpack_require__(629))
 
 "use strict";
 
-var Buffer = __webpack_require__(24).Buffer
+var Buffer = __webpack_require__(25).Buffer
 var keccakState = __webpack_require__(630)
 
 function Keccak () {
@@ -48131,7 +48155,7 @@ exports.isNumberInInterval = function (number, x, y, message) {
 
 "use strict";
 
-var Buffer = __webpack_require__(24).Buffer
+var Buffer = __webpack_require__(25).Buffer
 var bip66 = __webpack_require__(637)
 
 var EC_PRIVKEY_EXPORT_DER_COMPRESSED = Buffer.from([
@@ -48333,7 +48357,7 @@ exports.signatureImportLax = function (sig) {
 // Format: 0x30 [total-length] 0x02 [R-length] [R] 0x02 [S-length] [S]
 // NOTE: SIGHASH byte ignored AND restricted, truncate before use
 
-var Buffer = __webpack_require__(24).Buffer
+var Buffer = __webpack_require__(25).Buffer
 
 function check (buffer) {
   if (buffer.length < 8) return false
@@ -48450,7 +48474,7 @@ module.exports = {
 
 "use strict";
 
-var Buffer = __webpack_require__(24).Buffer
+var Buffer = __webpack_require__(25).Buffer
 var createHash = __webpack_require__(223)
 var BN = __webpack_require__(12)
 var EC = __webpack_require__(13).ec
@@ -48754,7 +48778,7 @@ module.exports = {"_args":[["elliptic@6.4.0","E:\\projects\\MY\\BitClave-Project
 
 var utils = exports;
 var BN = __webpack_require__(12);
-var minAssert = __webpack_require__(25);
+var minAssert = __webpack_require__(26);
 var minUtils = __webpack_require__(225);
 
 utils.assert = minAssert;
@@ -51444,7 +51468,7 @@ var sh = [
 
 
 var utils = __webpack_require__(16);
-var assert = __webpack_require__(25);
+var assert = __webpack_require__(26);
 
 function Hmac(hash, key, enc) {
   if (!(this instanceof Hmac))
@@ -52532,7 +52556,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
 
 var hash = __webpack_require__(85);
 var utils = __webpack_require__(225);
-var assert = __webpack_require__(25);
+var assert = __webpack_require__(26);
 
 function HmacDRBG(options) {
   if (!(this instanceof HmacDRBG))
@@ -54517,7 +54541,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var CryptoUtils_1 = __webpack_require__(77);
 var KeyPair_1 = __webpack_require__(87);
 var Permissions_1 = __webpack_require__(43);
-var JsonUtils_1 = __webpack_require__(26);
+var JsonUtils_1 = __webpack_require__(21);
 var bitcore = __webpack_require__(231);
 var Message = __webpack_require__(232);
 var ECIES = __webpack_require__(672);

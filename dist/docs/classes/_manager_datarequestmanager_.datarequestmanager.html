@@ -114,7 +114,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L14">manager/DataRequestManager.ts:14</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6e335db/src/manager/DataRequestManager.ts#L14">manager/DataRequestManager.ts:14</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -149,7 +149,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L162">manager/DataRequestManager.ts:162</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6e335db/src/manager/DataRequestManager.ts#L132">manager/DataRequestManager.ts:132</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -187,12 +187,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L106">manager/DataRequestManager.ts:106</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6e335db/src/manager/DataRequestManager.ts#L92">manager/DataRequestManager.ts:92</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns the list of permissions granted to the client</p>
+									<p>Returns list of fields that <client> authorized <me> to access</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -200,12 +200,12 @@
 								<li>
 									<h5>clientPk: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the public key of the client that was given permission.</p>
+										<p>id (baseID) of the client that granted me permission.</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>list with names of fields.</p>
+							<p>Array of field names that were authorized for access</p>
 						</li>
 					</ul>
 				</section>
@@ -219,12 +219,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L124">manager/DataRequestManager.ts:124</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6e335db/src/manager/DataRequestManager.ts#L102">manager/DataRequestManager.ts:102</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns the list of permissions granted to the client</p>
+									<p>Returns list of fields that <me> authorized <client> to access</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -232,12 +232,12 @@
 								<li>
 									<h5>clientPk: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the public key of the client that was given permission.</p>
+										<p>id (baseID) of the client that received access permission from <me></p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>list with names of fields.</p>
+							<p>Array of field names that were authorized for access</p>
 						</li>
 					</ul>
 				</section>
@@ -251,12 +251,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L72">manager/DataRequestManager.ts:72</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6e335db/src/manager/DataRequestManager.ts#L72">manager/DataRequestManager.ts:72</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns the list of permissions requested from the client</p>
+									<p>Returns list of fields requested for access by <me> from the client</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -264,12 +264,12 @@
 								<li>
 									<h5>requestedFromPk: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The public key of the client whose permission is requested</p>
+										<p>id (baseID) of the client whose permissions were requested</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>list with names of fields.</p>
+							<p>Array of field names that were requested for access</p>
 						</li>
 					</ul>
 				</section>
@@ -283,12 +283,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L89">manager/DataRequestManager.ts:89</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6e335db/src/manager/DataRequestManager.ts#L82">manager/DataRequestManager.ts:82</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns the list of permissions requested from the client</p>
+									<p>Returns list of fields requested for access by the client from <me></p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -296,12 +296,12 @@
 								<li>
 									<h5>whoRequestedPk: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The public key of the client whose permission is requested</p>
+										<p>id (baseID) of the client that asked for permission from <me></p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>list with names of fields.</p>
+							<p>Array of field names that were requested for access</p>
 						</li>
 					</ul>
 				</section>
@@ -315,7 +315,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L49">manager/DataRequestManager.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6e335db/src/manager/DataRequestManager.ts#L49">manager/DataRequestManager.ts:49</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -353,12 +353,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L61">manager/DataRequestManager.ts:61</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6e335db/src/manager/DataRequestManager.ts#L61">manager/DataRequestManager.ts:61</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Grant access data for client.</p>
+									<p>Grants access to specific fields of my data to a client.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -366,7 +366,7 @@
 								<li>
 									<h5>clientPk: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>id of client.</p>
+										<p>id (baseID) of the client that is authorized for data access.</p>
 									</div>
 								</li>
 								<li>
@@ -387,7 +387,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L146">manager/DataRequestManager.ts:146</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6e335db/src/manager/DataRequestManager.ts#L116">manager/DataRequestManager.ts:116</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -427,7 +427,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/9228b68/src/manager/DataRequestManager.ts#L36">manager/DataRequestManager.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6e335db/src/manager/DataRequestManager.ts#L36">manager/DataRequestManager.ts:36</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">

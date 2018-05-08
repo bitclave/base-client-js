@@ -1,7 +1,6 @@
 import { DataRequestRepository } from '../repository/requests/DataRequestRepository';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
-import { DataRequestState } from '../repository/models/DataRequestState';
 import DataRequest from '../repository/models/DataRequest';
 import Account from '../repository/models/Account';
 import { Observable } from 'rxjs/Rx';
@@ -19,35 +18,48 @@ export declare class DataRequestManager {
      *
      * @returns {Promise<number>} Returns requestID upon successful request record creation.
      */
-    createRequest(recipientPk: string, fields: Array<string>): Promise<number>;
-    /**
-     * Creates a response to a previously submitted data access request.
-     * @param {number} requestId ID of existed the request.
-     * @param {string} senderPk Public key of the user that issued data access request.
-     * @param {Array<string>} fields (Optional). null or empty for {@link DataRequestState.REJECT}.
-     * Arrays names of fields for accept access. (e.g. this is keys in {Map<string, string>} - personal data).
-     *
-     * @returns {Promise<DataRequestState>} state of request of data {@link DataRequestState}.
-     */
-    responseToRequest(requestId: number, senderPk: string, fields?: Array<string>): Promise<DataRequestState>;
+    requestPermissions(recipientPk: string, fields: Array<string>): Promise<number>;
     /**
      * Returns a list of outstanding data access requests, where data access requests meet the provided search criteria.
      * @param {string} fromPk (Optional if toPk exist.) public key of the user that issued data access request.
      * @param {string} toPk (Optional if fromPk exist.) public key of the user that is expected to.
-     * @param {DataRequestState} state of request.
      *
      * @returns {Promise<Array<DataRequest>>}  List of {@link DataRequest}, or empty list
      */
-    getRequests(fromPk: string | undefined, toPk: string | undefined, state: DataRequestState): Promise<Array<DataRequest>>;
+    getRequests(fromPk?: string, toPk?: string): Promise<Array<DataRequest>>;
     /**
-     * Grant access data for client.
-     * @param {string} clientPk id of client.
-     * @param {Map<string, string>} acceptedFields. Arrays names of fields for accept access.
-     * (e.g. this is keys in {Map<string, string>} - personal data).
+     * Grants access to specific fields of my data to a client.
+     * @param {string} clientPk id (baseID) of the client that is authorized for data access.
+     * @param {Map<string, string>} acceptedFields. Array of field names that are authorized for access
+     * (e.g. these are keys in {Map<string, string>} - personal data).
      *
      * @returns {Promise<number>}
      */
     grantAccessForClient(clientPk: string, acceptedFields: Array<string>): Promise<number>;
+    /**
+     * Returns list of fields requested for access by <me> from the client
+     * @param {string} requestedFromPk id (baseID) of the client whose permissions were requested
+     * @returns {Promise<Array<string>>} Array of field names that were requested for access
+     */
+    getRequestedPermissions(requestedFromPk: string): Promise<Array<string>>;
+    /**
+     * Returns list of fields requested for access by the client from <me>
+     * @param {string} whoRequestedPk id (baseID) of the client that asked for permission from <me>
+     * @returns {Promise<Array<string>>} Array of field names that were requested for access
+     */
+    getRequestedPermissionsToMe(whoRequestedPk: string): Promise<Array<string>>;
+    /**
+     * Returns list of fields that <client> authorized <me> to access
+     * @param {string} clientPk id (baseID) of the client that granted me permission.
+     * @returns {Promise<Array<string>>} Array of field names that were authorized for access
+     */
+    getGrantedPermissions(clientPk: string): Promise<Array<string>>;
+    /**
+     * Returns list of fields that <me> authorized <client> to access
+     * @param {string} clientPk id (baseID) of the client that received access permission from <me>
+     * @returns {Promise<Array<string>>} Array of field names that were authorized for access
+     */
+    getGrantedPermissionsToMe(clientPk: string): Promise<Array<string>>;
     /**
      * Grant access for offer.
      * @param {number} offerId id of Offer.
@@ -66,6 +78,8 @@ export declare class DataRequestManager {
      * @returns {object | null} object with data or null if was error.
      */
     decryptMessage(senderPk: string, encrypted: string): Promise<any>;
+    private decodeRequestedPermissions(requests, clientPk);
+    private getDecodeGrantPermissions(requests, clientPk);
     private getEncryptedDataForFields(recipientPk, fields?);
     private onChangeAccount(account);
 }
