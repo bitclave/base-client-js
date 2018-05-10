@@ -1,7 +1,7 @@
-import RpcToken from './RpcToken';
+import { RpcToken } from './RpcToken';
 import { Permissions } from '../Permissions';
 
-export default class RpcAuth extends RpcToken {
+export class RpcAuth extends RpcToken {
 
     passPhrase: string;
     origin: string;

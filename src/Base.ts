@@ -46,10 +46,14 @@ export { TransportFactory } from './repository/source/TransportFactory';
 export { KeyPairFactory } from './utils/keypair/KeyPairFactory';
 export { RemoteSigner } from './utils/keypair/RemoteSigner';
 export { CryptoUtils } from './utils/CryptoUtils';
-export { Permissions } from './utils/keypair/Permissions';
 export { WalletUtils } from './utils/WalletUtils';
 export { JsonUtils } from './utils/JsonUtils';
 export { EthereumUtils } from './utils/EthereumUtils';
+export { KeyPair } from './utils/keypair/KeyPair';
+export { KeyPairHelper } from './utils/keypair/KeyPairHelper';
+export { Permissions } from './utils/keypair/Permissions';
+export { RpcToken } from './utils/keypair/rpc/RpcToken';
+export { RpcAuth } from './utils/keypair/rpc/RpcAuth';
 
 export {
     BaseAddrPair,

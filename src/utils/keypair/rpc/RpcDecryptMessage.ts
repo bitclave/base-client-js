@@ -1,4 +1,4 @@
-import RpcToken from './RpcToken';
+import { RpcToken } from './RpcToken';
 
 export default class RpcDecryptMessage extends RpcToken {
 

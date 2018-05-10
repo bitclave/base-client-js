@@ -1,4 +1,4 @@
-export default class RpcToken {
+export class RpcToken {
 
     accessToken: string;
 

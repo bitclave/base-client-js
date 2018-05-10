@@ -7,7 +7,7 @@ import RpcFieldPassword from './RpcFieldPassword';
 import RpcDecryptMessage from './RpcDecryptMessage';
 import { RpcTransport } from '../../../repository/source/rpc/RpcTransport';
 import RpcCheckSignature from './RpcCheckSignature';
-import RpcToken from './RpcToken';
+import { RpcToken } from './RpcToken';
 import { RemoteSigner } from '../RemoteSigner';
 
 const Mnemonic = require('bitcore-mnemonic');
