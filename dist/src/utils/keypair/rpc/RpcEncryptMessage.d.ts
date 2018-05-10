@@ -1,4 +1,4 @@
-import RpcToken from './RpcToken';
+import { RpcToken } from './RpcToken';
 export default class RpcEncryptMessage extends RpcToken {
     recipientPk: string;
     message: string;
