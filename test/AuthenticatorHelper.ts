@@ -3,7 +3,7 @@ import { KeyPairFactory } from '../src/utils/keypair/KeyPairFactory';
 import { RpcTransport } from '../src/repository/source/rpc/RpcTransport';
 import { KeyPairHelper } from '../src/utils/keypair/KeyPairHelper';
 import { Permissions } from '../src/utils/keypair/Permissions';
-import RpcAuth from '../src/utils/keypair/rpc/RpcAuth';
+import { RpcAuth } from '../src/utils/keypair/rpc/RpcAuth';
 
 export default class AuthenticatorHelper {
 
