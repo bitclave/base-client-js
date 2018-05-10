@@ -1,4 +1,4 @@
-export default class RpcToken {
+export declare class RpcToken {
     accessToken: string;
     constructor(accessToken: string);
     getAccessTokenSig(): string;
