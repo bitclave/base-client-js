@@ -1,7 +1,7 @@
 import Config from '../Config';
 import { injectable } from 'inversify';
 import 'reflect-metadata';
-import Base, { RepositoryStrategyType } from 'bitclave-base';
+import Base, { AccessRight, RepositoryStrategyType } from 'bitclave-base';
 import Account from 'bitclave-base/repository/models/Account';
 import OfferManager from 'bitclave-base/manager/OfferManager';
 import ProfileManager from 'bitclave-base/manager/ProfileManager';
@@ -132,7 +132,13 @@ export default class BaseManager {
         // });
 
         console.log('new', grantedFields);
-        await this.base.dataRequestManager.grantAccessForClient(from, grantedFields);
+        const accessFields: Map<string, AccessRight> = new Map();
+
+        grantedFields.forEach(value => {
+            accessFields.set(value, AccessRight.R)
+        });
+
+        await this.base.dataRequestManager.grantAccessForClient(from, accessFields);
 
         return grantedFields;
     }
