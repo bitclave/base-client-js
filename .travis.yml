@@ -9,7 +9,7 @@ install:
   - npm install
 
 before_script:
-  - node ./external/Signer.js --authPK 020b6936ce0264852b713cff3d03faef1994477924ea0ad4c28a0d2543a16d70ec &
+  - node ./external/Signer.js --authPK 020b6936ce0264852b713cff3d03faef1994477924ea0ad4c28a0d2543a16d70ec --host https://base2-bitclva-com.herokuapp.com &
   - mkdir base-node
   - cd base-node
   - git clone https://github.com/bitclave/base-node.git
