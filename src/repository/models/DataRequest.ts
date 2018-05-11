@@ -6,7 +6,9 @@ export default class DataRequest {
     requestData: string = '';
     responseData: string = '';
 
-    constructor(toPk: string = '', requestData: string = '', responseData: string = '') {
+    constructor(toPk: string = '',
+                requestData: string = '',
+                responseData: string = '') {
         this.toPk = toPk;
         this.requestData = requestData;
         this.responseData = responseData;

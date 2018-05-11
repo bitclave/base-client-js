@@ -12,7 +12,7 @@ export class RpcAuth extends RpcToken {
                 passPhrase: string = '',
                 origin: string = '',
                 expireDate: string = '',
-                permissions: Permissions = new Permissions([])) {
+                permissions: Permissions = new Permissions()) {
         super(accessToken);
         this.passPhrase = passPhrase;
         this.origin = origin;

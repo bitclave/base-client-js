@@ -1,12 +1,13 @@
 import { KeyPairHelper } from './KeyPairHelper';
 import { CryptoUtils } from '../CryptoUtils';
 import { KeyPair } from './KeyPair';
-import { Permissions } from './Permissions';
+import { AccessRight, Permissions } from './Permissions';
 import DataRequest from '../../repository/models/DataRequest';
 import { JsonUtils } from '../JsonUtils';
 import { PermissionsSource } from '../../repository/assistant/PermissionsSource';
 import { Site } from '../../repository/models/Site';
 import { SiteDataSource } from '../../repository/assistant/SiteDataSource';
+import { AcceptedField } from './AcceptedField';
 
 const bitcore = require('bitcore-lib');
 const Message = require('bitcore-message');
@@ -22,9 +23,10 @@ export class BitKeyPair implements KeyPairHelper {
     private permissionsSource: PermissionsSource;
     private siteDataSource: SiteDataSource;
     private origin: string;
+    private isConfidential: boolean = false;
 
     constructor(permissionsSource: PermissionsSource, siteDataSource: SiteDataSource, origin: string) {
-        this.permissions = new Permissions([]);
+        this.permissions = new Permissions();
         this.permissionsSource = permissionsSource;
         this.siteDataSource = siteDataSource;
         this.origin = origin;
@@ -94,9 +96,92 @@ export class BitKeyPair implements KeyPairHelper {
         });
     }
 
-    public async generatePasswordForField(fieldName: string): Promise<string> {
-        if (this.permissions.fields.length === 0) {
+    async encryptFields(fields: Map<string, string>): Promise<Map<string, string>> {
+        return this.prepareData(fields, true);
+    }
+
+    async encryptPermissionsFields(recipient: string, data: Map<string, AccessRight>): Promise<string> {
+        if (data != null && data.size > 0) {
+            const resultMap: Map<string, AcceptedField> = new Map();
+            let pass: string;
+
+            await this.syncPermissions();
+
+            for (let [key, value] of data.entries()) {
+                if (!this.hasPermissions(key, false)) {
+                    continue;
+                }
+
+                pass = await this.generatePasswordForField(key.toLowerCase());
+                resultMap.set(key, new AcceptedField(pass, value));
+            }
+
+            const jsonMap: any = JsonUtils.mapToJson(resultMap);
+
+            return await this.encryptMessage(recipient, JSON.stringify(jsonMap));
+        }
+
+        return '';
+    }
+
+    async decryptMessage(senderPk: string, encrypted: string): Promise<string> {
+        const ecies: any = new ECIES({noKey: true})
+            .privateKey(this.privateKey)
+            .publicKey(bitcore.PublicKey.fromString(senderPk));
+
+        const result: string = ecies
+            .decrypt(new Buffer(encrypted, 'base64'))
+            .toString();
+
+        return result;
+    }
+
+    async decryptFields(fields: Map<string, string>): Promise<Map<string, string>> {
+        return this.prepareData(fields, false);
+    }
+
+    private async prepareData(data: Map<string, string>, encrypt: boolean): Promise<Map<string, string>> {
+        const result: Map<string, string> = new Map<string, string>();
+        let pass: string;
+        let changedValue: string;
+
+        await this.syncPermissions();
+
+        for (let [key, value] of data.entries()) {
+            if (!this.hasPermissions(key, !encrypt)) {
+                continue;
+            }
+
+            pass = await this.generatePasswordForField(key);
+            if (pass != null && pass != undefined && pass.length > 0) {
+                changedValue = encrypt
+                    ? CryptoUtils.encryptAes256(value, pass)
+                    : CryptoUtils.decryptAes256(value, pass);
+
+                result.set(key.toLowerCase(), changedValue);
+            }
+        }
+
+        return result;
+    }
+
+    private hasPermissions(field: string, read: boolean): boolean {
+        if (this.isConfidential) {
+            return true;
+        }
+
+        const keyPermission: AccessRight | undefined = this.permissions.fields.get(field);
+
+        return read
+            ? keyPermission === AccessRight.R || keyPermission === AccessRight.RW
+            : keyPermission === AccessRight.RW;
+    }
+
+    private async syncPermissions() {
+        if (!this.isConfidential && this.permissions.fields.size === 0) {
             const site: Site = await this.siteDataSource.getSiteData(this.origin);
+            this.isConfidential = site.confidential;
+
             if (!site.confidential) {
                 const requests: Array<DataRequest> = await this.permissionsSource.getGrandAccessRecords(
                     site.publicKey, this.getPublicKey()
@@ -104,40 +189,25 @@ export class BitKeyPair implements KeyPairHelper {
 
                 for (let request of requests) {
                     const strDecrypt: string = await this.decryptMessage(site.publicKey, request.responseData);
-                    const jsonDecrypt = JSON.parse(strDecrypt);
-                    const mapResponse: Map<string, string> = JsonUtils.jsonToMap(jsonDecrypt);
-                    this.permissions.fields = Array.from(mapResponse.keys());
-                }
+                    const jsonDecrypt: any = JSON.parse(strDecrypt);
+                    const resultMap: Map<string, AcceptedField> = JsonUtils.jsonToMap(jsonDecrypt);
 
-            } else {
-                this.permissions.fields = ['any'];
+                    this.permissions.fields.clear();
+
+                    resultMap.forEach((value, key) => {
+                        this.permissions.fields.set(key, value.access);
+                    });
+                }
             }
         }
-
-        const hasPermission = this.permissions.fields.indexOf(fieldName) > -1
-            || this.permissions.fields.indexOf('any') > -1;
-
-        return hasPermission
-            ? new Promise<string>(resolve => {
-                const result: string = CryptoUtils.PBKDF2(
-                    CryptoUtils.keccak256(this.privateKey.toString(16)) + fieldName.toLowerCase(),
-                    384
-                );
-
-                resolve(result);
-            })
-            : Promise.resolve('');
     }
 
-    decryptMessage(senderPk: string, encrypted: string): Promise<string> {
+    private generatePasswordForField(fieldName: string): Promise<string> {
         return new Promise<string>(resolve => {
-            const ecies: any = new ECIES({noKey: true})
-                .privateKey(this.privateKey)
-                .publicKey(bitcore.PublicKey.fromString(senderPk));
-
-            const result: string = ecies
-                .decrypt(new Buffer(encrypted, 'base64'))
-                .toString();
+            const result: string = CryptoUtils.PBKDF2(
+                CryptoUtils.keccak256(this.privateKey.toString(16)) + fieldName.toLowerCase(),
+                384
+            );
 
             resolve(result);
         });

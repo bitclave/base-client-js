@@ -1,9 +1,14 @@
 export class Permissions {
 
-    fields: Array<string>;
+    fields: Map<string, AccessRight>;
 
-    constructor(fields: Array<string> = []) {
+    constructor(fields: Map<string, AccessRight> = new Map()) {
         this.fields = fields;
     }
 
+}
+
+export enum AccessRight {
+    R = 0,
+    RW = 1
 }

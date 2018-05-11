@@ -3,12 +3,15 @@ import RpcClientData from './RpcClientData';
 import { KeyPair } from '../KeyPair';
 import RpcSignMessage from './RpcSignMessage';
 import RpcEncryptMessage from './RpcEncryptMessage';
-import RpcFieldPassword from './RpcFieldPassword';
 import RpcDecryptMessage from './RpcDecryptMessage';
 import { RpcTransport } from '../../../repository/source/rpc/RpcTransport';
 import RpcCheckSignature from './RpcCheckSignature';
 import { RpcToken } from './RpcToken';
 import { RemoteSigner } from '../RemoteSigner';
+import RpcDecryptEncryptFields from './RpcDecryptEncryptFields';
+import RpcPermissionsFields from './RpcPermissionsFields';
+import { AccessRight } from '../Permissions';
+import { JsonUtils } from '../../JsonUtils';
 
 const Mnemonic = require('bitcore-mnemonic');
 
@@ -55,10 +58,17 @@ export class RpcKeyPair implements KeyPairHelper, RemoteSigner {
         );
     }
 
-    public generatePasswordForField(fieldName: string): Promise<string> {
+    encryptFields(fields: Map<string, string>): Promise<Map<string, string>> {
         return this.rpcTransport.request(
-            'generatePasswordForField',
-            new RpcFieldPassword(this.clientData.accessToken, fieldName)
+            'encryptFields',
+            new RpcDecryptEncryptFields(this.clientData.accessToken, JsonUtils.mapToJson(fields))
+        ).then((response) => JsonUtils.jsonToMap<string, string>(response));
+    }
+
+    encryptPermissionsFields(recipient: string, data: Map<string, AccessRight>): Promise<string> {
+        return this.rpcTransport.request(
+            'encryptPermissionsFields',
+            new RpcPermissionsFields(this.clientData.accessToken, recipient, JsonUtils.mapToJson(data))
         );
     }
 
@@ -67,6 +77,13 @@ export class RpcKeyPair implements KeyPairHelper, RemoteSigner {
             'decryptMessage',
             new RpcDecryptMessage(this.clientData.accessToken, senderPk, encrypted)
         );
+    }
+
+    public decryptFields(fields: Map<string, string>): Promise<Map<string, string>> {
+        return this.rpcTransport.request(
+            'decryptFields',
+            new RpcDecryptEncryptFields(this.clientData.accessToken, JsonUtils.mapToJson(fields))
+        ).then((response) => JsonUtils.jsonToMap<string, string>(response));
     }
 
     public setAccessToken(accessToken: string) {

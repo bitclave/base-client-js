@@ -5,6 +5,7 @@ import { JsonUtils } from '../utils/JsonUtils';
 import DataRequest from '../repository/models/DataRequest';
 import Account from '../repository/models/Account';
 import { Observable } from 'rxjs/Rx';
+import { AccessRight } from '../utils/keypair/Permissions';
 
 export class DataRequestManager {
 
@@ -53,15 +54,14 @@ export class DataRequestManager {
     /**
      * Grants access to specific fields of my data to a client.
      * @param {string} clientPk id (baseID) of the client that is authorized for data access.
-     * @param {Map<string, string>} acceptedFields. Array of field names that are authorized for access
+     * @param {Map<string, AccessRight>} acceptedFields. Array of field names that are authorized for access
      * (e.g. these are keys in {Map<string, string>} - personal data).
      *
      * @returns {Promise<number>}
      */
-    public async grantAccessForClient(clientPk: string, acceptedFields: Array<string>): Promise<number> {
-        const encrypted: string = await this.getEncryptedDataForFields(clientPk, acceptedFields);
-
-        return await this.dataRequestRepository.grantAccessForClient(clientPk, this.account.publicKey, encrypted);
+    public async grantAccessForClient(clientPk: string, acceptedFields: Map<string, AccessRight>): Promise<number> {
+        const response: string = await this.encrypt.encryptPermissionsFields(clientPk, acceptedFields);
+        return await this.dataRequestRepository.grantAccessForClient(clientPk, this.account.publicKey, response);
     }
 
     /**
@@ -108,13 +108,13 @@ export class DataRequestManager {
      * Grant access for offer.
      * @param {number} offerId id of Offer.
      * @param {string} offerOwner Public key of offer owner.
-     * @param {Map<string, string>} acceptedFields. Arrays names of fields for accept access.
+     * @param {Map<string, AccessRight>} acceptedFields. Map with names of fields for accept access and access rights.
      * (e.g. this is keys in {Map<string, string>} - personal data).
      *
      * @returns {Promise<void>}
      */
-    public grantAccessForOffer(offerId: number, offerOwner: string, acceptedFields: Array<string>): Promise<void> {
-        return this.getEncryptedDataForFields(offerOwner, acceptedFields)
+    public grantAccessForOffer(offerId: number, offerOwner: string, acceptedFields: Map<string, AccessRight>): Promise<void> {
+        return this.encrypt.encryptPermissionsFields(offerOwner, acceptedFields)
             .then(encrypted => this.dataRequestRepository.grantAccessForOffer(
                 offerId,
                 this.account.publicKey,
@@ -166,23 +166,6 @@ export class DataRequestManager {
         } else {
             return [];
         }
-    }
-
-    private async getEncryptedDataForFields(recipientPk: string, fields?: Array<string>): Promise<string> {
-        let encryptedMessage = '';
-
-        if (fields != null && fields.length > 0) {
-            const resultMap: Map<string, string> = new Map();
-
-            for (let value of fields) {
-                resultMap.set(value, await this.encrypt.generatePasswordForField(value.toLowerCase()));
-            }
-
-            const jsonMap: any = JsonUtils.mapToJson(resultMap);
-            encryptedMessage = await this.encrypt.encryptMessage(recipientPk, JSON.stringify(jsonMap));
-        }
-
-        return encryptedMessage;
     }
 
     private onChangeAccount(account: Account) {

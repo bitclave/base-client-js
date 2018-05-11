@@ -7,6 +7,7 @@ import { MessageSigner } from '../utils/keypair/MessageSigner';
 import DataRequest from '../repository/models/DataRequest';
 import { Observable } from 'rxjs/Observable';
 import { WalletUtils, WalletVerificationCodes } from '../utils/WalletUtils';
+import { AccessRight } from '../utils/keypair/Permissions';
 
 export class WalletManager {
 
@@ -71,9 +72,10 @@ export class WalletManager {
 
         await this.profileManager.updateData(myData);
 
-        await this.dataRequestManager.grantAccessForClient(
-            validatorPbKey, [WalletManager.DATA_KEY_ETH_WALLETS]
-        );
+        const acceptedFields: Map<string, AccessRight> = new Map();
+        acceptedFields.set(WalletManager.DATA_KEY_ETH_WALLETS, AccessRight.RW);
+
+        await this.dataRequestManager.grantAccessForClient(validatorPbKey, acceptedFields);
     }
 
     public async refreshWealthPtr(): Promise<WealthPtr> {

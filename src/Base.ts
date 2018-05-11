@@ -51,7 +51,8 @@ export { JsonUtils } from './utils/JsonUtils';
 export { EthereumUtils } from './utils/EthereumUtils';
 export { KeyPair } from './utils/keypair/KeyPair';
 export { KeyPairHelper } from './utils/keypair/KeyPairHelper';
-export { Permissions } from './utils/keypair/Permissions';
+export { Permissions, AccessRight } from './utils/keypair/Permissions';
+export { AcceptedField } from './utils/keypair/AcceptedField';
 export { RpcToken } from './utils/keypair/rpc/RpcToken';
 export { RpcAuth } from './utils/keypair/rpc/RpcAuth';
 
