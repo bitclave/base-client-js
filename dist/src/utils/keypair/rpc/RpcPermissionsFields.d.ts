@@ -1,4 +1,4 @@
-import RpcToken from './RpcToken';
+import { RpcToken } from './RpcToken';
 import { AccessRight } from '../Permissions';
 export default class RpcPermissionsFields extends RpcToken {
     recipient: string;

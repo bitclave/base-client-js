@@ -4,6 +4,7 @@ import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import DataRequest from '../repository/models/DataRequest';
 import Account from '../repository/models/Account';
 import { Observable } from 'rxjs/Rx';
+import { AccessRight } from '../utils/keypair/Permissions';
 export declare class DataRequestManager {
     private account;
     private dataRequestRepository;
@@ -30,12 +31,12 @@ export declare class DataRequestManager {
     /**
      * Grants access to specific fields of my data to a client.
      * @param {string} clientPk id (baseID) of the client that is authorized for data access.
-     * @param {Map<string, string>} acceptedFields. Array of field names that are authorized for access
+     * @param {Map<string, AccessRight>} acceptedFields. Array of field names that are authorized for access
      * (e.g. these are keys in {Map<string, string>} - personal data).
      *
      * @returns {Promise<number>}
      */
-    grantAccessForClient(clientPk: string, acceptedFields: Array<string>): Promise<number>;
+    grantAccessForClient(clientPk: string, acceptedFields: Map<string, AccessRight>): Promise<number>;
     /**
      * Returns list of fields requested for access by <me> from the client
      * @param {string} requestedFromPk id (baseID) of the client whose permissions were requested
@@ -64,12 +65,12 @@ export declare class DataRequestManager {
      * Grant access for offer.
      * @param {number} offerId id of Offer.
      * @param {string} offerOwner Public key of offer owner.
-     * @param {Map<string, string>} acceptedFields. Arrays names of fields for accept access.
+     * @param {Map<string, AccessRight>} acceptedFields. Map with names of fields for accept access and access rights.
      * (e.g. this is keys in {Map<string, string>} - personal data).
      *
      * @returns {Promise<void>}
      */
-    grantAccessForOffer(offerId: number, offerOwner: string, acceptedFields: Array<string>): Promise<void>;
+    grantAccessForOffer(offerId: number, offerOwner: string, acceptedFields: Map<string, AccessRight>): Promise<void>;
     /**
      * Decodes a message that was encrypted by the owner of the private key that matches the provided public key.
      * @param {string} senderPk public key of the user that issued data access request.
@@ -80,6 +81,5 @@ export declare class DataRequestManager {
     decryptMessage(senderPk: string, encrypted: string): Promise<any>;
     private decodeRequestedPermissions(requests, clientPk);
     private getDecodeGrantPermissions(requests, clientPk);
-    private getEncryptedDataForFields(recipientPk, fields?);
     private onChangeAccount(account);
 }

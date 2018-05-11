@@ -96,10 +96,12 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_keypair_bitkeypair_.bitkeypair.html#checksig" class="tsd-kind-icon">check<wbr>Sig</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_keypair_bitkeypair_.bitkeypair.html#createkeypair" class="tsd-kind-icon">create<wbr>Key<wbr>Pair</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_keypair_bitkeypair_.bitkeypair.html#decryptfields" class="tsd-kind-icon">decrypt<wbr>Fields</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_keypair_bitkeypair_.bitkeypair.html#decryptmessage" class="tsd-kind-icon">decrypt<wbr>Message</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_keypair_bitkeypair_.bitkeypair.html#encryptfields" class="tsd-kind-icon">encrypt<wbr>Fields</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_keypair_bitkeypair_.bitkeypair.html#encryptmessage" class="tsd-kind-icon">encrypt<wbr>Message</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_keypair_bitkeypair_.bitkeypair.html#encryptpermissionsfields" class="tsd-kind-icon">encrypt<wbr>Permissions<wbr>Fields</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_keypair_bitkeypair_.bitkeypair.html#generatemnemonicphrase" class="tsd-kind-icon">generate<wbr>Mnemonic<wbr>Phrase</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_keypair_bitkeypair_.bitkeypair.html#generatepasswordforfield" class="tsd-kind-icon">generate<wbr>Password<wbr>For<wbr>Field</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_keypair_bitkeypair_.bitkeypair.html#getaddr" class="tsd-kind-icon">get<wbr>Addr</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_keypair_bitkeypair_.bitkeypair.html#getpublickey" class="tsd-kind-icon">get<wbr>Public<wbr>Key</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_keypair_bitkeypair_.bitkeypair.html#signmessage" class="tsd-kind-icon">sign<wbr>Message</a></li>
@@ -120,7 +122,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6037815/src/utils/keypair/BitKeyPair.ts#L24">utils/keypair/BitKeyPair.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/BitKeyPair.ts#L26">utils/keypair/BitKeyPair.ts:26</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -153,7 +155,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html">KeyPairHelper</a>.<a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html#checksig">checkSig</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6037815/src/utils/keypair/BitKeyPair.ts#L65">utils/keypair/BitKeyPair.ts:65</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/BitKeyPair.ts#L67">utils/keypair/BitKeyPair.ts:67</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -180,7 +182,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html">KeyPairHelper</a>.<a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html#createkeypair">createKeyPair</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6037815/src/utils/keypair/BitKeyPair.ts#L33">utils/keypair/BitKeyPair.ts:33</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/BitKeyPair.ts#L35">utils/keypair/BitKeyPair.ts:35</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -190,6 +192,30 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_utils_keypair_keypair_.keypair.html" class="tsd-signature-type">KeyPair</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="decryptfields" class="tsd-anchor"></a>
+					<h3>decrypt<wbr>Fields</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">decrypt<wbr>Fields<span class="tsd-signature-symbol">(</span>fields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html">KeyPairHelper</a>.<a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html#decryptfields">decryptFields</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/BitKeyPair.ts#L139">utils/keypair/BitKeyPair.ts:139</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>fields: <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -204,7 +230,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html">KeyPairHelper</a>.<a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html#decryptmessage">decryptMessage</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6037815/src/utils/keypair/BitKeyPair.ts#L132">utils/keypair/BitKeyPair.ts:132</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/BitKeyPair.ts#L127">utils/keypair/BitKeyPair.ts:127</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -221,6 +247,30 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="encryptfields" class="tsd-anchor"></a>
+					<h3>encrypt<wbr>Fields</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">encrypt<wbr>Fields<span class="tsd-signature-symbol">(</span>fields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html">KeyPairHelper</a>.<a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html#encryptfields">encryptFields</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/BitKeyPair.ts#L99">utils/keypair/BitKeyPair.ts:99</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>fields: <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="encryptmessage" class="tsd-anchor"></a>
 					<h3>encrypt<wbr>Message</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -231,7 +281,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html">KeyPairHelper</a>.<a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html#encryptmessage">encryptMessage</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6037815/src/utils/keypair/BitKeyPair.ts#L86">utils/keypair/BitKeyPair.ts:86</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/BitKeyPair.ts#L88">utils/keypair/BitKeyPair.ts:88</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -241,6 +291,33 @@
 								</li>
 								<li>
 									<h5>message: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="encryptpermissionsfields" class="tsd-anchor"></a>
+					<h3>encrypt<wbr>Permissions<wbr>Fields</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">encrypt<wbr>Permissions<wbr>Fields<span class="tsd-signature-symbol">(</span>recipient<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../enums/_utils_keypair_permissions_.accessright.html" class="tsd-signature-type">AccessRight</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html">KeyPairHelper</a>.<a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html#encryptpermissionsfields">encryptPermissionsFields</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/BitKeyPair.ts#L103">utils/keypair/BitKeyPair.ts:103</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>recipient: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>data: <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../enums/_utils_keypair_permissions_.accessright.html" class="tsd-signature-type">AccessRight</a><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -258,33 +335,9 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html">KeyPairHelper</a>.<a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html#generatemnemonicphrase">generateMnemonicPhrase</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6037815/src/utils/keypair/BitKeyPair.ts#L49">utils/keypair/BitKeyPair.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/BitKeyPair.ts#L51">utils/keypair/BitKeyPair.ts:51</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="generatepasswordforfield" class="tsd-anchor"></a>
-					<h3>generate<wbr>Password<wbr>For<wbr>Field</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">generate<wbr>Password<wbr>For<wbr>Field<span class="tsd-signature-symbol">(</span>fieldName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html">KeyPairHelper</a>.<a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html#generatepasswordforfield">generatePasswordForField</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6037815/src/utils/keypair/BitKeyPair.ts#L97">utils/keypair/BitKeyPair.ts:97</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>fieldName: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
@@ -299,7 +352,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6037815/src/utils/keypair/BitKeyPair.ts#L82">utils/keypair/BitKeyPair.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/BitKeyPair.ts#L84">utils/keypair/BitKeyPair.ts:84</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -317,7 +370,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html">KeyPairHelper</a>.<a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html#getpublickey">getPublicKey</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6037815/src/utils/keypair/BitKeyPair.ts#L78">utils/keypair/BitKeyPair.ts:78</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/BitKeyPair.ts#L80">utils/keypair/BitKeyPair.ts:80</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -335,7 +388,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html">KeyPairHelper</a>.<a href="../interfaces/_utils_keypair_keypairhelper_.keypairhelper.html#signmessage">signMessage</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6037815/src/utils/keypair/BitKeyPair.ts#L57">utils/keypair/BitKeyPair.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/BitKeyPair.ts#L59">utils/keypair/BitKeyPair.ts:59</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -378,16 +431,22 @@
 								<a href="_utils_keypair_bitkeypair_.bitkeypair.html#createkeypair" class="tsd-kind-icon">create<wbr>Key<wbr>Pair</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_utils_keypair_bitkeypair_.bitkeypair.html#decryptfields" class="tsd-kind-icon">decrypt<wbr>Fields</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_utils_keypair_bitkeypair_.bitkeypair.html#decryptmessage" class="tsd-kind-icon">decrypt<wbr>Message</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_utils_keypair_bitkeypair_.bitkeypair.html#encryptfields" class="tsd-kind-icon">encrypt<wbr>Fields</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_utils_keypair_bitkeypair_.bitkeypair.html#encryptmessage" class="tsd-kind-icon">encrypt<wbr>Message</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_utils_keypair_bitkeypair_.bitkeypair.html#generatemnemonicphrase" class="tsd-kind-icon">generate<wbr>Mnemonic<wbr>Phrase</a>
+								<a href="_utils_keypair_bitkeypair_.bitkeypair.html#encryptpermissionsfields" class="tsd-kind-icon">encrypt<wbr>Permissions<wbr>Fields</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_utils_keypair_bitkeypair_.bitkeypair.html#generatepasswordforfield" class="tsd-kind-icon">generate<wbr>Password<wbr>For<wbr>Field</a>
+								<a href="_utils_keypair_bitkeypair_.bitkeypair.html#generatemnemonicphrase" class="tsd-kind-icon">generate<wbr>Mnemonic<wbr>Phrase</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_utils_keypair_bitkeypair_.bitkeypair.html#getaddr" class="tsd-kind-icon">get<wbr>Addr</a>

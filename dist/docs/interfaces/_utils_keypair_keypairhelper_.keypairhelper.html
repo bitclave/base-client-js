@@ -102,10 +102,12 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="_utils_keypair_keypairhelper_.keypairhelper.html#checksig" class="tsd-kind-icon">check<wbr>Sig</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_utils_keypair_keypairhelper_.keypairhelper.html#createkeypair" class="tsd-kind-icon">create<wbr>Key<wbr>Pair</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="_utils_keypair_keypairhelper_.keypairhelper.html#decryptfields" class="tsd-kind-icon">decrypt<wbr>Fields</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="_utils_keypair_keypairhelper_.keypairhelper.html#decryptmessage" class="tsd-kind-icon">decrypt<wbr>Message</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="_utils_keypair_keypairhelper_.keypairhelper.html#encryptfields" class="tsd-kind-icon">encrypt<wbr>Fields</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="_utils_keypair_keypairhelper_.keypairhelper.html#encryptmessage" class="tsd-kind-icon">encrypt<wbr>Message</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="_utils_keypair_keypairhelper_.keypairhelper.html#encryptpermissionsfields" class="tsd-kind-icon">encrypt<wbr>Permissions<wbr>Fields</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_utils_keypair_keypairhelper_.keypairhelper.html#generatemnemonicphrase" class="tsd-kind-icon">generate<wbr>Mnemonic<wbr>Phrase</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="_utils_keypair_keypairhelper_.keypairhelper.html#generatepasswordforfield" class="tsd-kind-icon">generate<wbr>Password<wbr>For<wbr>Field</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="_utils_keypair_keypairhelper_.keypairhelper.html#getpublickey" class="tsd-kind-icon">get<wbr>Public<wbr>Key</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="_utils_keypair_keypairhelper_.keypairhelper.html#signmessage" class="tsd-kind-icon">sign<wbr>Message</a></li>
 							</ul>
@@ -126,7 +128,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_utils_keypair_messagesigner_.messagesigner.html">MessageSigner</a>.<a href="_utils_keypair_messagesigner_.messagesigner.html#checksig">checkSig</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6037815/src/utils/keypair/MessageSigner.ts#L5">utils/keypair/MessageSigner.ts:5</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/MessageSigner.ts#L5">utils/keypair/MessageSigner.ts:5</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -152,7 +154,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6037815/src/utils/keypair/KeyPairHelper.ts#L8">utils/keypair/KeyPairHelper.ts:8</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/KeyPairHelper.ts#L8">utils/keypair/KeyPairHelper.ts:8</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -162,6 +164,30 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/_utils_keypair_keypair_.keypair.html" class="tsd-signature-type">KeyPair</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+					<a name="decryptfields" class="tsd-anchor"></a>
+					<h3>decrypt<wbr>Fields</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">decrypt<wbr>Fields<span class="tsd-signature-symbol">(</span>fields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_utils_keypair_messagedecrypt_.messagedecrypt.html">MessageDecrypt</a>.<a href="_utils_keypair_messagedecrypt_.messagedecrypt.html#decryptfields">decryptFields</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/MessageDecrypt.ts#L5">utils/keypair/MessageDecrypt.ts:5</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>fields: <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -176,7 +202,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_utils_keypair_messagedecrypt_.messagedecrypt.html">MessageDecrypt</a>.<a href="_utils_keypair_messagedecrypt_.messagedecrypt.html#decryptmessage">decryptMessage</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6037815/src/utils/keypair/MessageDecrypt.ts#L3">utils/keypair/MessageDecrypt.ts:3</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/MessageDecrypt.ts#L3">utils/keypair/MessageDecrypt.ts:3</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -193,6 +219,30 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+					<a name="encryptfields" class="tsd-anchor"></a>
+					<h3>encrypt<wbr>Fields</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">encrypt<wbr>Fields<span class="tsd-signature-symbol">(</span>fields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_utils_keypair_messageencrypt_.messageencrypt.html">MessageEncrypt</a>.<a href="_utils_keypair_messageencrypt_.messageencrypt.html#encryptfields">encryptFields</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/MessageEncrypt.ts#L7">utils/keypair/MessageEncrypt.ts:7</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>fields: <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 					<a name="encryptmessage" class="tsd-anchor"></a>
 					<h3>encrypt<wbr>Message</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
@@ -203,7 +253,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_utils_keypair_messageencrypt_.messageencrypt.html">MessageEncrypt</a>.<a href="_utils_keypair_messageencrypt_.messageencrypt.html#encryptmessage">encryptMessage</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6037815/src/utils/keypair/MessageEncrypt.ts#L3">utils/keypair/MessageEncrypt.ts:3</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/MessageEncrypt.ts#L5">utils/keypair/MessageEncrypt.ts:5</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -213,6 +263,33 @@
 								</li>
 								<li>
 									<h5>message: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+					<a name="encryptpermissionsfields" class="tsd-anchor"></a>
+					<h3>encrypt<wbr>Permissions<wbr>Fields</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">encrypt<wbr>Permissions<wbr>Fields<span class="tsd-signature-symbol">(</span>recipient<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../enums/_utils_keypair_permissions_.accessright.html" class="tsd-signature-type">AccessRight</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_utils_keypair_messageencrypt_.messageencrypt.html">MessageEncrypt</a>.<a href="_utils_keypair_messageencrypt_.messageencrypt.html#encryptpermissionsfields">encryptPermissionsFields</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/MessageEncrypt.ts#L9">utils/keypair/MessageEncrypt.ts:9</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>recipient: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>data: <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../enums/_utils_keypair_permissions_.accessright.html" class="tsd-signature-type">AccessRight</a><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -229,33 +306,9 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6037815/src/utils/keypair/KeyPairHelper.ts#L10">utils/keypair/KeyPairHelper.ts:10</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/KeyPairHelper.ts#L10">utils/keypair/KeyPairHelper.ts:10</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a name="generatepasswordforfield" class="tsd-anchor"></a>
-					<h3>generate<wbr>Password<wbr>For<wbr>Field</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">generate<wbr>Password<wbr>For<wbr>Field<span class="tsd-signature-symbol">(</span>fieldName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="_utils_keypair_messageencrypt_.messageencrypt.html">MessageEncrypt</a>.<a href="_utils_keypair_messageencrypt_.messageencrypt.html#generatepasswordforfield">generatePasswordForField</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6037815/src/utils/keypair/MessageEncrypt.ts#L5">utils/keypair/MessageEncrypt.ts:5</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>fieldName: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
@@ -271,7 +324,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_utils_keypair_messagesigner_.messagesigner.html">MessageSigner</a>.<a href="_utils_keypair_messagesigner_.messagesigner.html#getpublickey">getPublicKey</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6037815/src/utils/keypair/MessageSigner.ts#L7">utils/keypair/MessageSigner.ts:7</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/MessageSigner.ts#L7">utils/keypair/MessageSigner.ts:7</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -289,7 +342,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_utils_keypair_messagesigner_.messagesigner.html">MessageSigner</a>.<a href="_utils_keypair_messagesigner_.messagesigner.html#signmessage">signMessage</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/6037815/src/utils/keypair/MessageSigner.ts#L3">utils/keypair/MessageSigner.ts:3</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/utils/keypair/MessageSigner.ts#L3">utils/keypair/MessageSigner.ts:3</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -329,16 +382,22 @@
 								<a href="_utils_keypair_keypairhelper_.keypairhelper.html#createkeypair" class="tsd-kind-icon">create<wbr>Key<wbr>Pair</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+								<a href="_utils_keypair_keypairhelper_.keypairhelper.html#decryptfields" class="tsd-kind-icon">decrypt<wbr>Fields</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 								<a href="_utils_keypair_keypairhelper_.keypairhelper.html#decryptmessage" class="tsd-kind-icon">decrypt<wbr>Message</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+								<a href="_utils_keypair_keypairhelper_.keypairhelper.html#encryptfields" class="tsd-kind-icon">encrypt<wbr>Fields</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 								<a href="_utils_keypair_keypairhelper_.keypairhelper.html#encryptmessage" class="tsd-kind-icon">encrypt<wbr>Message</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
+								<a href="_utils_keypair_keypairhelper_.keypairhelper.html#encryptpermissionsfields" class="tsd-kind-icon">encrypt<wbr>Permissions<wbr>Fields</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_utils_keypair_keypairhelper_.keypairhelper.html#generatemnemonicphrase" class="tsd-kind-icon">generate<wbr>Mnemonic<wbr>Phrase</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="_utils_keypair_keypairhelper_.keypairhelper.html#generatepasswordforfield" class="tsd-kind-icon">generate<wbr>Password<wbr>For<wbr>Field</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 								<a href="_utils_keypair_keypairhelper_.keypairhelper.html#getpublickey" class="tsd-kind-icon">get<wbr>Public<wbr>Key</a>
