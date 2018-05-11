@@ -8,6 +8,7 @@ import { BehaviorSubject } from 'rxjs/Rx';
 import Account from '../../src/repository/models/Account';
 import { Site } from '../../src/repository/models/Site';
 import { ProfileManager } from '../../src/manager/ProfileManager';
+import { AccessRight } from '../../src/utils/keypair/Permissions';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
@@ -65,7 +66,10 @@ describe('Data Request Manager: permissions for inside signer', async () => {
             keyPairHelperAlisa
         );
 
-        await requestManagerAlisa.grantAccessForClient(keyPairHelperBobSite.getPublicKey(), ['name']);
+        const grantAccess: Map<string, AccessRight> = new Map();
+        grantAccess.set('name', AccessRight.R);
+
+        await requestManagerAlisa.grantAccessForClient(keyPairHelperBobSite.getPublicKey(), grantAccess);
 
         const profileManager: ProfileManager = new ProfileManager(
             clientRepository,

@@ -10,6 +10,7 @@ import { HttpTransportImpl } from '../../src/repository/source/http/HttpTranspor
 import * as assert from 'assert';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
+import { AccessRight } from '../../src/utils/keypair/Permissions';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
@@ -118,7 +119,12 @@ describe('Data Request Manager', async () => {
     it('create response data', async () => {
         await requestManagerAlisa.requestPermissions(keyPairHelperBob.getPublicKey(), bobsFields);
 
-        await requestManagerBob.grantAccessForClient(keyPairHelperAlisa.getPublicKey(), bobsFields);
+        const grantFields: Map<string, AccessRight> = new Map();
+        for(let item of bobsFields) {
+            grantFields.set(item, AccessRight.R)
+        }
+
+        await requestManagerBob.grantAccessForClient(keyPairHelperAlisa.getPublicKey(), grantFields);
 
         const grantFromAlisaToBob: Array<string> = await requestManagerBob.getGrantedPermissions(
             keyPairHelperAlisa.getPublicKey()
@@ -134,7 +140,12 @@ describe('Data Request Manager', async () => {
     });
 
     it('grand access to field without requested permissions', async () => {
-        await requestManagerBob.grantAccessForClient(keyPairHelperAlisa.getPublicKey(), bobsFields);
+        const grantFields: Map<string, AccessRight> = new Map();
+        for(let item of bobsFields) {
+            grantFields.set(item, AccessRight.R)
+        }
+
+        await requestManagerBob.grantAccessForClient(keyPairHelperAlisa.getPublicKey(), grantFields);
 
         const grantFromAlisaToBob: Array<string> = await requestManagerBob.getGrantedPermissions(
             keyPairHelperAlisa.getPublicKey()

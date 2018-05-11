@@ -1,9 +1,7 @@
-import { JsonUtils } from '../../src/utils/JsonUtils';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import Account from '../../src/repository/models/Account';
 import { ProfileManager } from '../../src/manager/ProfileManager';
 import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
-import { CryptoUtils } from '../../src/utils/CryptoUtils';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 import ClientDataRepositoryImplMock from '../profile/ClientDataRepositoryImplMock';
 import DataRequestRepositoryImplMock from '../requests/DataRequestRepositoryImplMock';
@@ -18,6 +16,9 @@ import { WalletManager } from '../../src/manager/WalletManager';
 import { DataRequestManager } from '../../src/manager/DataRequestManager';
 import { BaseSchema } from '../../src/utils/types/BaseSchema';
 import { WalletUtils, WalletVerificationCodes } from '../../src/utils/WalletUtils';
+import { AccessRight } from '../../src/utils/keypair/Permissions';
+import { AcceptedField } from '../../src/utils/keypair/AcceptedField';
+import { JsonUtils } from '../../src/utils/JsonUtils';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
@@ -47,8 +48,11 @@ describe('Wallet manager test', async () => {
 
     const accountAlisa: Account;
     const authAccountBehaviorAlisa: BehaviorSubject<Account>;
+    const accountBob: Account;
+    const authAccountBehaviorBob: BehaviorSubject<Account>;
 
     const profileManager: ProfileManager;
+    const profileManagerBob: ProfileManager;
     const walletManager: WalletManager;
     const requestManager: DataRequestManager;
 
@@ -65,6 +69,9 @@ describe('Wallet manager test', async () => {
         accountAlisa = new Account((await keyPairHelperAlisa.createKeyPair('')).publicKey);
         authAccountBehaviorAlisa = new BehaviorSubject<Account>(accountAlisa);
 
+        accountBob = new Account((await keyPairHelperBob.createKeyPair('')).publicKey);
+        authAccountBehaviorBob = new BehaviorSubject<Account>(accountBob);
+
         profileManager = new ProfileManager(
             clientRepository,
             authAccountBehaviorAlisa,
@@ -73,6 +80,13 @@ describe('Wallet manager test', async () => {
             keyPairHelperAlisa
         );
 
+        profileManagerBob = new ProfileManager(
+            clientRepository,
+            authAccountBehaviorBob,
+            keyPairHelperBob,
+            keyPairHelperBob,
+            keyPairHelperBob
+        );
 
         dataRepository.setPK(keyPairHelperAlisa.getPublicKey(), keyPairHelperBob.getPublicKey());
 
@@ -107,18 +121,14 @@ describe('Wallet manager test', async () => {
         const originMessage: Map<string, string> = new Map();
 
         origMockData.set('name', 'Bob');
-        for (let [key, value] of origMockData) {
-            const passForValue = await keyPairHelperBob.generatePasswordForField(key);
-            mockData.set(key, CryptoUtils.encryptAes256(value, passForValue));
-            originMessage.set(key, passForValue);
-        }
+        await profileManagerBob.updateData(origMockData);
 
-        const encryptedMessage = await keyPairHelperBob.encryptMessage(
-            keyPairHelperAlisa.getPublicKey(),
-            JSON.stringify(JsonUtils.mapToJson(originMessage))
+        const grantFields: Map<string, AccessRight> = new Map();
+        grantFields.set('name', AccessRight.R);
+
+        const encryptedMessage = await keyPairHelperBob.encryptPermissionsFields(
+            keyPairHelperAlisa.getPublicKey(), grantFields
         );
-
-        clientRepository.setMockData(keyPairHelperBob.getPublicKey(), mockData);
 
         const data = await profileManager.getAuthorizedData(keyPairHelperBob.getPublicKey(), encryptedMessage);
 
@@ -129,26 +139,26 @@ describe('Wallet manager test', async () => {
         const origMockData: Map<string, string> = new Map();
         const mockData: Map<string, string> = new Map();
         const originMessage: Map<string, string> = new Map();
-        var encryptionKey: string = '';
 
         origMockData.set('name', 'Bob');
-        for (let [key, value] of origMockData) {
-            const passForValue = await keyPairHelperBob.generatePasswordForField(key);
-            mockData.set(key, CryptoUtils.encryptAes256(value, passForValue));
-            originMessage.set(key, passForValue);
-            encryptionKey = passForValue;
-        }
 
-        const encryptedMessage = await keyPairHelperBob.encryptMessage(
-            keyPairHelperAlisa.getPublicKey(),
-            JSON.stringify(JsonUtils.mapToJson(originMessage))
+        await profileManagerBob.updateData(origMockData);
+
+        const grantFields: Map<string, AccessRight> = new Map();
+        grantFields.set('name', AccessRight.R);
+
+        const encryptedMessage = await keyPairHelperBob.encryptPermissionsFields(
+            keyPairHelperAlisa.getPublicKey(), grantFields
         );
 
-        clientRepository.setMockData(keyPairHelperBob.getPublicKey(), mockData);
+        const result: string = await keyPairHelperAlisa.decryptMessage(keyPairHelperBob.getPublicKey(), encryptedMessage);
+        const map: Map<string, AcceptedField> = JsonUtils.jsonToMap(JSON.parse(result));
 
-        const data: any = (await profileManager.getAuthorizedEncryptionKeys(keyPairHelperBob.getPublicKey(), encryptedMessage)).get('name');
+        const data: any = (await profileManager.getAuthorizedEncryptionKeys(
+            keyPairHelperBob.getPublicKey(), encryptedMessage
+        )).get('name');
 
-        data.should.be.equal(encryptionKey);
+        data.should.be.equal(map.get('name').pass);
     });
 
     it('verify ETH address low level', async () => {
