@@ -1,7 +1,7 @@
 import { BaseSchema } from './types/BaseSchema';
 import { AddrRecord, BaseAddrPair } from './types/BaseTypes';
 import { EthereumUtils } from './EthereumUtils';
-import { WalletManager } from '../manager/WalletManager';
+import { WalletManagerImpl } from '../manager/WalletManagerImpl';
 
 const bitcore = require('bitcore-lib');
 const Message = require('bitcore-message');
@@ -54,8 +54,8 @@ export class WalletUtils {
     public static validateWallets(key: string, val: any, baseID: string): WalletVerificationStatus {
         const result: WalletVerificationStatus = new WalletVerificationStatus();
 
-        if (key != WalletManager.DATA_KEY_ETH_WALLETS) {
-            result.err = 'The \<key\> is expected to be "' + WalletManager.DATA_KEY_ETH_WALLETS + '"';
+        if (key != WalletManagerImpl.DATA_KEY_ETH_WALLETS) {
+            result.err = 'The \<key\> is expected to be "' + WalletManagerImpl.DATA_KEY_ETH_WALLETS + '"';
             result.rc = WalletVerificationCodes.RC_GENERAL_ERROR;
 
             return result;

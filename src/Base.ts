@@ -36,6 +36,12 @@ import { KeyPairFactory } from './utils/keypair/KeyPairFactory';
 import { SiteRepository } from './repository/site/SiteRepository';
 import { SiteRepositoryImpl } from './repository/site/SiteRepositoryImpl';
 import { SiteDataSource } from './repository/assistant/SiteDataSource';
+import { AccountManagerImpl } from './manager/AccountManagerImpl';
+import { DataRequestManagerImpl } from './manager/DataRequestManagerImpl';
+import { ProfileManagerImpl } from './manager/ProfileManagerImpl';
+import { OfferManagerImpl } from './manager/OfferManagerImpl';
+import { SearchRequestManagerImpl } from './manager/SearchRequestManagerImpl';
+import { WalletManagerImpl } from './manager/WalletManagerImpl';
 
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
@@ -72,6 +78,7 @@ export {
     OfferManager,
     SearchRequestManager,
     WalletManager,
+    WalletManagerImpl,
     SearchRequest,
     Offer,
     Base as NodeAPI
@@ -118,21 +125,21 @@ export default class Base {
         const offerRepository: OfferRepository = new OfferRepositoryImpl(transport);
         const searchRequestRepository: SearchRequestRepository = new SearchRequestRepositoryImpl(transport);
 
-        this._accountManager = new AccountManager(
+        this._accountManager = new AccountManagerImpl(
             accountRepository,
             keyPairHelper,
             messageSigner,
             this._authAccountBehavior
         );
 
-        this._dataRequestManager = new DataRequestManager(
+        this._dataRequestManager = new DataRequestManagerImpl(
             dataRequestRepository,
             this._authAccountBehavior.asObservable(),
             encryptMessage,
             decryptMessage
         );
 
-        this._profileManager = new ProfileManager(
+        this._profileManager = new ProfileManagerImpl(
             clientDataRepository,
             this._authAccountBehavior.asObservable(),
             encryptMessage,
@@ -140,14 +147,14 @@ export default class Base {
             messageSigner
         );
 
-        this._offerManager = new OfferManager(offerRepository, this._authAccountBehavior.asObservable());
+        this._offerManager = new OfferManagerImpl(offerRepository, this._authAccountBehavior.asObservable());
 
-        this._searchRequestManager = new SearchRequestManager(
+        this._searchRequestManager = new SearchRequestManagerImpl(
             searchRequestRepository,
             this._authAccountBehavior.asObservable()
         );
 
-        this._walletManager = new WalletManager(
+        this._walletManager = new WalletManagerImpl(
             this.profileManager,
             this.dataRequestManager,
             new BaseSchema(),
