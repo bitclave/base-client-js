@@ -9,6 +9,8 @@ import Account from '../../src/repository/models/Account';
 import { Site } from '../../src/repository/models/Site';
 import { ProfileManager } from '../../src/manager/ProfileManager';
 import { AccessRight } from '../../src/utils/keypair/Permissions';
+import { ProfileManagerImpl } from '../../src/manager/ProfileManagerImpl';
+import { DataRequestManagerImpl } from '../../src/manager/DataRequestManagerImpl';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
@@ -59,7 +61,7 @@ describe('Data Request Manager: permissions for inside signer', async () => {
         const accountAlisa: Account = new Account(keyPairHelperAlisa.getPublicKey());
         const authAccountBehaviorAlisa: BehaviorSubject<Account> = new BehaviorSubject<Account>(accountAlisa);
 
-        const requestManagerAlisa: DataRequestManager = new DataRequestManager(
+        const requestManagerAlisa: DataRequestManager = new DataRequestManagerImpl(
             dataRepository,
             authAccountBehaviorAlisa,
             keyPairHelperAlisa,
@@ -71,7 +73,7 @@ describe('Data Request Manager: permissions for inside signer', async () => {
 
         await requestManagerAlisa.grantAccessForClient(keyPairHelperBobSite.getPublicKey(), grantAccess);
 
-        const profileManager: ProfileManager = new ProfileManager(
+        const profileManager: ProfileManager = new ProfileManagerImpl(
             clientRepository,
             authAccountBehaviorAlisa,
             keyPairHelperAlisa,
@@ -101,7 +103,7 @@ describe('Data Request Manager: permissions for inside signer', async () => {
         const accountAlisa: Account = new Account(keyPairHelperAlisa.getPublicKey());
         const authAccountBehaviorAlisa: BehaviorSubject<Account> = new BehaviorSubject<Account>(accountAlisa);
 
-        const profileManager: ProfileManager = new ProfileManager(
+        const profileManager: ProfileManager = new ProfileManagerImpl(
             clientRepository,
             authAccountBehaviorAlisa,
             keyPairHelperAlisa,
@@ -136,21 +138,21 @@ describe('Data Request Manager: permissions for inside signer', async () => {
 
         dataRepository.setPK(keyPairHelperAlisa.getPublicKey(), keyPairHelperBobSite.getPublicKey());
 
-        requestManagerAlisa = new DataRequestManager(
+        requestManagerAlisa = new DataRequestManagerImpl(
             dataRepository,
             authAccountBehaviorAlisa,
             keyPairHelperAlisa,
             keyPairHelperAlisa
         );
 
-        requestManagerBob = new DataRequestManager(
+        requestManagerBob = new DataRequestManagerImpl(
             dataRepository,
             authAccountBehaviorBob,
             keyPairHelperBobSite,
             keyPairHelperBobSite
         );
 
-        const profileManager: ProfileManager = new ProfileManager(
+        const profileManager: ProfileManager = new ProfileManagerImpl(
             clientRepository,
             authAccountBehaviorAlisa,
             keyPairHelperAlisa,

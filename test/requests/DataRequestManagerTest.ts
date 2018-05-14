@@ -11,6 +11,7 @@ import * as assert from 'assert';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
 import { AccessRight } from '../../src/utils/keypair/Permissions';
+import { DataRequestManagerImpl } from '../../src/manager/DataRequestManagerImpl';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
@@ -52,14 +53,14 @@ describe('Data Request Manager', async () => {
 
         dataRepository.setPK(keyPairHelperAlisa.getPublicKey(), keyPairHelperBob.getPublicKey());
 
-        requestManagerAlisa = new DataRequestManager(
+        requestManagerAlisa = new DataRequestManagerImpl(
             dataRepository,
             authAccountBehaviorAlisa,
             keyPairHelperAlisa,
             keyPairHelperAlisa
         );
 
-        requestManagerBob = new DataRequestManager(
+        requestManagerBob = new DataRequestManagerImpl(
             dataRepository,
             authAccountBehaviorBob,
             keyPairHelperBob,

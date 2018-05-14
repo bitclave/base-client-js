@@ -11,6 +11,7 @@ import { EthAddrRecord, EthWallets } from '../../src/utils/types/BaseTypes';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
+import { ProfileManagerImpl } from '../../src/manager/ProfileManagerImpl';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
@@ -48,7 +49,7 @@ describe('Profile Manager', async () => {
         accountAlisa = new Account((await keyPairHelperAlisa.createKeyPair('')).publicKey);
         authAccountBehaviorAlisa = new BehaviorSubject<Account>(accountAlisa);
 
-        profileManager = new ProfileManager(
+        profileManager = new ProfileManagerImpl(
             clientRepository,
             authAccountBehaviorAlisa,
             keyPairHelperAlisa,

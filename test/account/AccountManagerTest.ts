@@ -9,6 +9,7 @@ import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
+import { AccountManagerImpl } from '../../src/manager/AccountManagerImpl';
 
 const chai = require('chai');
 const expect = chai.expect;
@@ -53,7 +54,7 @@ describe('Account Manager', async () => {
 
         accountAlisa = new Account((await keyPairHelperAlisa.createKeyPair('')).publicKey);
         accountBob = new Account((await keyPairHelperBob.createKeyPair('')).publicKey);
-        accountManager = new AccountManager(
+        accountManager = new AccountManagerImpl(
             accountRepository,
             keyPairHelper,
             keyPairHelper,

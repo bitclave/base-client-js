@@ -19,6 +19,9 @@ import { WalletUtils, WalletVerificationCodes } from '../../src/utils/WalletUtil
 import { AccessRight } from '../../src/utils/keypair/Permissions';
 import { AcceptedField } from '../../src/utils/keypair/AcceptedField';
 import { JsonUtils } from '../../src/utils/JsonUtils';
+import { ProfileManagerImpl } from '../../src/manager/ProfileManagerImpl';
+import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
+import { DataRequestManagerImpl } from '../../src/manager/DataRequestManagerImpl';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
@@ -72,7 +75,7 @@ describe('Wallet manager test', async () => {
         accountBob = new Account((await keyPairHelperBob.createKeyPair('')).publicKey);
         authAccountBehaviorBob = new BehaviorSubject<Account>(accountBob);
 
-        profileManager = new ProfileManager(
+        profileManager = new ProfileManagerImpl(
             clientRepository,
             authAccountBehaviorAlisa,
             keyPairHelperAlisa,
@@ -80,7 +83,7 @@ describe('Wallet manager test', async () => {
             keyPairHelperAlisa
         );
 
-        profileManagerBob = new ProfileManager(
+        profileManagerBob = new ProfileManagerImpl(
             clientRepository,
             authAccountBehaviorBob,
             keyPairHelperBob,
@@ -90,14 +93,14 @@ describe('Wallet manager test', async () => {
 
         dataRepository.setPK(keyPairHelperAlisa.getPublicKey(), keyPairHelperBob.getPublicKey());
 
-        requestManager = new DataRequestManager(
+        requestManager = new DataRequestManagerImpl(
             dataRepository,
             authAccountBehaviorAlisa,
             keyPairHelperAlisa,
             keyPairHelperAlisa
         );
 
-        walletManager = new WalletManager(
+        walletManager = new WalletManagerImpl(
             profileManager,
             requestManager,
             new BaseSchema(),
@@ -302,7 +305,7 @@ describe('Wallet manager test', async () => {
             '8ff8fdbfb47add1daf16ea856444ff1c76cc7a5617244acf6c103587e95fdf1e'
         );
 
-        var rc = WalletUtils.validateWallets(WalletManager.DATA_KEY_ETH_WALLETS, msg, baseUser.getPublicKey());
+        var rc = WalletUtils.validateWallets(WalletManagerImpl.DATA_KEY_ETH_WALLETS, msg, baseUser.getPublicKey());
         JSON.stringify(rc).should.be.equal(JSON.stringify(
             {
                 rc: WalletVerificationCodes.RC_OK,
@@ -330,7 +333,7 @@ describe('Wallet manager test', async () => {
             '8ff8fdbfb47add1daf16ea856444ff1c76cc7a5617244acf6c103587e95fdf1e'
         );
 
-        var rc = WalletUtils.validateWallets(WalletManager.DATA_KEY_ETH_WALLETS, msg, baseUser.getPublicKey());
+        var rc = WalletUtils.validateWallets(WalletManagerImpl.DATA_KEY_ETH_WALLETS, msg, baseUser.getPublicKey());
         JSON.stringify(rc).should.be.equal(JSON.stringify(
             {
                 rc: WalletVerificationCodes.RC_OK,
