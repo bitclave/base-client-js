@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>OfferManager | bitclave-base</title>
+	<title>OfferManagerImpl | bitclave-base</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,13 +54,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_manager_offermanager_.html">&quot;manager/OfferManager&quot;</a>
+					<a href="../modules/_manager_offermanagerimpl_.html">&quot;manager/OfferManagerImpl&quot;</a>
 				</li>
 				<li>
-					<a href="_manager_offermanager_.offermanager.html">OfferManager</a>
+					<a href="_manager_offermanagerimpl_.offermanagerimpl.html">OfferManagerImpl</a>
 				</li>
 			</ul>
-			<h1>Class OfferManager</h1>
+			<h1>Class OfferManagerImpl</h1>
 		</div>
 	</div>
 </header>
@@ -71,8 +71,14 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">OfferManager</span>
+						<span class="target">OfferManagerImpl</span>
 					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implements</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../interfaces/_manager_offermanager_.offermanager.html" class="tsd-signature-type">OfferManager</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -82,16 +88,16 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_manager_offermanager_.offermanager.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_manager_offermanagerimpl_.offermanagerimpl.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_offermanager_.offermanager.html#deleteoffer" class="tsd-kind-icon">delete<wbr>Offer</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_offermanager_.offermanager.html#getalloffers" class="tsd-kind-icon">get<wbr>All<wbr>Offers</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_offermanager_.offermanager.html#getmyoffers" class="tsd-kind-icon">get<wbr>MyOffers</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_offermanager_.offermanager.html#saveoffer" class="tsd-kind-icon">save<wbr>Offer</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_offermanagerimpl_.offermanagerimpl.html#deleteoffer" class="tsd-kind-icon">delete<wbr>Offer</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_offermanagerimpl_.offermanagerimpl.html#getalloffers" class="tsd-kind-icon">get<wbr>All<wbr>Offers</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_offermanagerimpl_.offermanagerimpl.html#getmyoffers" class="tsd-kind-icon">get<wbr>MyOffers</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_offermanagerimpl_.offermanagerimpl.html#saveoffer" class="tsd-kind-icon">save<wbr>Offer</a></li>
 							</ul>
 						</section>
 					</div>
@@ -103,13 +109,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Offer<wbr>Manager<span class="tsd-signature-symbol">(</span>offerRepository<span class="tsd-signature-symbol">: </span><a href="../interfaces/_repository_offer_offerrepository_.offerrepository.html" class="tsd-signature-type">OfferRepository</a>, authAccountBehavior<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_manager_offermanager_.offermanager.html" class="tsd-signature-type">OfferManager</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Offer<wbr>Manager<wbr>Impl<span class="tsd-signature-symbol">(</span>offerRepository<span class="tsd-signature-symbol">: </span><a href="../interfaces/_repository_offer_offerrepository_.offerrepository.html" class="tsd-signature-type">OfferRepository</a>, authAccountBehavior<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_manager_offermanagerimpl_.offermanagerimpl.html" class="tsd-signature-type">OfferManagerImpl</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/OfferManager.ts#L9">manager/OfferManager.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/OfferManagerImpl.ts#L10">manager/OfferManagerImpl.ts:10</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -121,7 +127,7 @@
 									<h5>authAccountBehavior: <span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_manager_offermanager_.offermanager.html" class="tsd-signature-type">OfferManager</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_manager_offermanagerimpl_.offermanagerimpl.html" class="tsd-signature-type">OfferManagerImpl</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -137,8 +143,9 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_manager_offermanager_.offermanager.html">OfferManager</a>.<a href="../interfaces/_manager_offermanager_.offermanager.html#deleteoffer">deleteOffer</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/OfferManager.ts#L42">manager/OfferManager.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/OfferManagerImpl.ts#L43">manager/OfferManagerImpl.ts:43</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -160,8 +167,9 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_manager_offermanager_.offermanager.html">OfferManager</a>.<a href="../interfaces/_manager_offermanager_.offermanager.html#getalloffers">getAllOffers</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/OfferManager.ts#L38">manager/OfferManager.ts:38</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/OfferManagerImpl.ts#L39">manager/OfferManagerImpl.ts:39</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_offer_.offer.html" class="tsd-signature-type">Offer</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -177,8 +185,9 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_manager_offermanager_.offermanager.html">OfferManager</a>.<a href="../interfaces/_manager_offermanager_.offermanager.html#getmyoffers">getMyOffers</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/OfferManager.ts#L29">manager/OfferManager.ts:29</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/OfferManagerImpl.ts#L30">manager/OfferManagerImpl.ts:30</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -200,8 +209,9 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_manager_offermanager_.offermanager.html">OfferManager</a>.<a href="../interfaces/_manager_offermanager_.offermanager.html#saveoffer">saveOffer</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/OfferManager.ts#L18">manager/OfferManager.ts:18</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/OfferManagerImpl.ts#L19">manager/OfferManagerImpl.ts:19</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -223,7 +233,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_manager_offermanager_.html">"manager/<wbr>Offer<wbr>Manager"</a>
+						<a href="../modules/_manager_offermanagerimpl_.html">"manager/<wbr>Offer<wbr>Manager<wbr>Impl"</a>
 					</li>
 				</ul>
 			</nav>
@@ -232,22 +242,22 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_manager_offermanager_.offermanager.html" class="tsd-kind-icon">Offer<wbr>Manager</a>
+						<a href="_manager_offermanagerimpl_.offermanagerimpl.html" class="tsd-kind-icon">Offer<wbr>Manager<wbr>Impl</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_manager_offermanager_.offermanager.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_manager_offermanagerimpl_.offermanagerimpl.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_manager_offermanager_.offermanager.html#deleteoffer" class="tsd-kind-icon">delete<wbr>Offer</a>
+								<a href="_manager_offermanagerimpl_.offermanagerimpl.html#deleteoffer" class="tsd-kind-icon">delete<wbr>Offer</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_manager_offermanager_.offermanager.html#getalloffers" class="tsd-kind-icon">get<wbr>All<wbr>Offers</a>
+								<a href="_manager_offermanagerimpl_.offermanagerimpl.html#getalloffers" class="tsd-kind-icon">get<wbr>All<wbr>Offers</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_manager_offermanager_.offermanager.html#getmyoffers" class="tsd-kind-icon">get<wbr>MyOffers</a>
+								<a href="_manager_offermanagerimpl_.offermanagerimpl.html#getmyoffers" class="tsd-kind-icon">get<wbr>MyOffers</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_manager_offermanager_.offermanager.html#saveoffer" class="tsd-kind-icon">save<wbr>Offer</a>
+								<a href="_manager_offermanagerimpl_.offermanagerimpl.html#saveoffer" class="tsd-kind-icon">save<wbr>Offer</a>
 							</li>
 						</ul>
 					</li>

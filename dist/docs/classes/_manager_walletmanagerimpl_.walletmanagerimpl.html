@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>WalletManager | bitclave-base</title>
+	<title>WalletManagerImpl | bitclave-base</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,13 +54,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_manager_walletmanager_.html">&quot;manager/WalletManager&quot;</a>
+					<a href="../modules/_manager_walletmanagerimpl_.html">&quot;manager/WalletManagerImpl&quot;</a>
 				</li>
 				<li>
-					<a href="_manager_walletmanager_.walletmanager.html">WalletManager</a>
+					<a href="_manager_walletmanagerimpl_.walletmanagerimpl.html">WalletManagerImpl</a>
 				</li>
 			</ul>
-			<h1>Class WalletManager</h1>
+			<h1>Class WalletManagerImpl</h1>
 		</div>
 	</div>
 </header>
@@ -71,8 +71,14 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">WalletManager</span>
+						<span class="target">WalletManagerImpl</span>
 					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implements</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../interfaces/_manager_walletmanager_.walletmanager.html" class="tsd-signature-type">WalletManager</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -82,23 +88,23 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_manager_walletmanager_.walletmanager.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_manager_walletmanagerimpl_.walletmanagerimpl.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_manager_walletmanager_.walletmanager.html#data_key_eth_wallets" class="tsd-kind-icon">DATA_<wbr>KEY_<wbr>ETH_<wbr>WALLETS</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_manager_walletmanager_.walletmanager.html#data_key_eth_wealth_validator" class="tsd-kind-icon">DATA_<wbr>KEY_<wbr>ETH_<wbr>WEALTH_<wbr>VALIDATOR</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_manager_walletmanager_.walletmanager.html#data_key_wealth" class="tsd-kind-icon">DATA_<wbr>KEY_<wbr>WEALTH</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_manager_walletmanagerimpl_.walletmanagerimpl.html#data_key_eth_wallets" class="tsd-kind-icon">DATA_<wbr>KEY_<wbr>ETH_<wbr>WALLETS</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_manager_walletmanagerimpl_.walletmanagerimpl.html#data_key_eth_wealth_validator" class="tsd-kind-icon">DATA_<wbr>KEY_<wbr>ETH_<wbr>WEALTH_<wbr>VALIDATOR</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_manager_walletmanagerimpl_.walletmanagerimpl.html#data_key_wealth" class="tsd-kind-icon">DATA_<wbr>KEY_<wbr>WEALTH</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_walletmanager_.walletmanager.html#addwealthvalidator" class="tsd-kind-icon">add<wbr>Wealth<wbr>Validator</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_walletmanager_.walletmanager.html#createwalletsrecords" class="tsd-kind-icon">create<wbr>Wallets<wbr>Records</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_walletmanager_.walletmanager.html#refreshwealthptr" class="tsd-kind-icon">refresh<wbr>Wealth<wbr>Ptr</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_walletmanagerimpl_.walletmanagerimpl.html#addwealthvalidator" class="tsd-kind-icon">add<wbr>Wealth<wbr>Validator</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_walletmanagerimpl_.walletmanagerimpl.html#createwalletsrecords" class="tsd-kind-icon">create<wbr>Wallets<wbr>Records</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_walletmanagerimpl_.walletmanagerimpl.html#refreshwealthptr" class="tsd-kind-icon">refresh<wbr>Wealth<wbr>Ptr</a></li>
 							</ul>
 						</section>
 					</div>
@@ -110,22 +116,22 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Wallet<wbr>Manager<span class="tsd-signature-symbol">(</span>profileManager<span class="tsd-signature-symbol">: </span><a href="_manager_profilemanager_.profilemanager.html" class="tsd-signature-type">ProfileManager</a>, dataRequestManager<span class="tsd-signature-symbol">: </span><a href="_manager_datarequestmanager_.datarequestmanager.html" class="tsd-signature-type">DataRequestManager</a>, baseSchema<span class="tsd-signature-symbol">: </span><a href="_utils_types_baseschema_.baseschema.html" class="tsd-signature-type">BaseSchema</a>, messageSigner<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_keypair_messagesigner_.messagesigner.html" class="tsd-signature-type">MessageSigner</a>, authAccountBehavior<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_manager_walletmanager_.walletmanager.html" class="tsd-signature-type">WalletManager</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Wallet<wbr>Manager<wbr>Impl<span class="tsd-signature-symbol">(</span>profileManager<span class="tsd-signature-symbol">: </span><a href="../interfaces/_manager_profilemanager_.profilemanager.html" class="tsd-signature-type">ProfileManager</a>, dataRequestManager<span class="tsd-signature-symbol">: </span><a href="../interfaces/_manager_datarequestmanager_.datarequestmanager.html" class="tsd-signature-type">DataRequestManager</a>, baseSchema<span class="tsd-signature-symbol">: </span><a href="_utils_types_baseschema_.baseschema.html" class="tsd-signature-type">BaseSchema</a>, messageSigner<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_keypair_messagesigner_.messagesigner.html" class="tsd-signature-type">MessageSigner</a>, authAccountBehavior<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_manager_walletmanagerimpl_.walletmanagerimpl.html" class="tsd-signature-type">WalletManagerImpl</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/WalletManager.ts#L22">manager/WalletManager.ts:22</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/WalletManagerImpl.ts#L23">manager/WalletManagerImpl.ts:23</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>profileManager: <a href="_manager_profilemanager_.profilemanager.html" class="tsd-signature-type">ProfileManager</a></h5>
+									<h5>profileManager: <a href="../interfaces/_manager_profilemanager_.profilemanager.html" class="tsd-signature-type">ProfileManager</a></h5>
 								</li>
 								<li>
-									<h5>dataRequestManager: <a href="_manager_datarequestmanager_.datarequestmanager.html" class="tsd-signature-type">DataRequestManager</a></h5>
+									<h5>dataRequestManager: <a href="../interfaces/_manager_datarequestmanager_.datarequestmanager.html" class="tsd-signature-type">DataRequestManager</a></h5>
 								</li>
 								<li>
 									<h5>baseSchema: <a href="_utils_types_baseschema_.baseschema.html" class="tsd-signature-type">BaseSchema</a></h5>
@@ -137,7 +143,7 @@
 									<h5>authAccountBehavior: <span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_manager_walletmanager_.walletmanager.html" class="tsd-signature-type">WalletManager</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_manager_walletmanagerimpl_.walletmanagerimpl.html" class="tsd-signature-type">WalletManagerImpl</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -150,7 +156,7 @@
 					<div class="tsd-signature tsd-kind-icon">DATA_<wbr>KEY_<wbr>ETH_<wbr>WALLETS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;eth_wallets&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/WalletManager.ts#L14">manager/WalletManager.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/WalletManagerImpl.ts#L15">manager/WalletManagerImpl.ts:15</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -160,7 +166,7 @@
 					<div class="tsd-signature tsd-kind-icon">DATA_<wbr>KEY_<wbr>ETH_<wbr>WEALTH_<wbr>VALIDATOR<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;ethwealthvalidator&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/WalletManager.ts#L15">manager/WalletManager.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/WalletManagerImpl.ts#L16">manager/WalletManagerImpl.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -170,7 +176,7 @@
 					<div class="tsd-signature tsd-kind-icon">DATA_<wbr>KEY_<wbr>WEALTH<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;wealth&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/WalletManager.ts#L16">manager/WalletManager.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/WalletManagerImpl.ts#L17">manager/WalletManagerImpl.ts:17</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -186,8 +192,9 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_manager_walletmanager_.walletmanager.html">WalletManager</a>.<a href="../interfaces/_manager_walletmanager_.walletmanager.html#addwealthvalidator">addWealthValidator</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/WalletManager.ts#L68">manager/WalletManager.ts:68</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/WalletManagerImpl.ts#L69">manager/WalletManagerImpl.ts:69</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -209,8 +216,9 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_manager_walletmanager_.walletmanager.html">WalletManager</a>.<a href="../interfaces/_manager_walletmanager_.walletmanager.html#createwalletsrecords">createWalletsRecords</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/WalletManager.ts#L40">manager/WalletManager.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/WalletManagerImpl.ts#L41">manager/WalletManagerImpl.ts:41</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -235,8 +243,9 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_manager_walletmanager_.walletmanager.html">WalletManager</a>.<a href="../interfaces/_manager_walletmanager_.walletmanager.html#refreshwealthptr">refreshWealthPtr</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/WalletManager.ts#L81">manager/WalletManager.ts:81</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/WalletManagerImpl.ts#L82">manager/WalletManagerImpl.ts:82</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_utils_types_basetypes_.wealthptr.html" class="tsd-signature-type">WealthPtr</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -252,7 +261,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_manager_walletmanager_.html">"manager/<wbr>Wallet<wbr>Manager"</a>
+						<a href="../modules/_manager_walletmanagerimpl_.html">"manager/<wbr>Wallet<wbr>Manager<wbr>Impl"</a>
 					</li>
 				</ul>
 			</nav>
@@ -261,28 +270,28 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_manager_walletmanager_.walletmanager.html" class="tsd-kind-icon">Wallet<wbr>Manager</a>
+						<a href="_manager_walletmanagerimpl_.walletmanagerimpl.html" class="tsd-kind-icon">Wallet<wbr>Manager<wbr>Impl</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_manager_walletmanager_.walletmanager.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_manager_walletmanagerimpl_.walletmanagerimpl.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="_manager_walletmanager_.walletmanager.html#data_key_eth_wallets" class="tsd-kind-icon">DATA_<wbr>KEY_<wbr>ETH_<wbr>WALLETS</a>
+								<a href="_manager_walletmanagerimpl_.walletmanagerimpl.html#data_key_eth_wallets" class="tsd-kind-icon">DATA_<wbr>KEY_<wbr>ETH_<wbr>WALLETS</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="_manager_walletmanager_.walletmanager.html#data_key_eth_wealth_validator" class="tsd-kind-icon">DATA_<wbr>KEY_<wbr>ETH_<wbr>WEALTH_<wbr>VALIDATOR</a>
+								<a href="_manager_walletmanagerimpl_.walletmanagerimpl.html#data_key_eth_wealth_validator" class="tsd-kind-icon">DATA_<wbr>KEY_<wbr>ETH_<wbr>WEALTH_<wbr>VALIDATOR</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="_manager_walletmanager_.walletmanager.html#data_key_wealth" class="tsd-kind-icon">DATA_<wbr>KEY_<wbr>WEALTH</a>
+								<a href="_manager_walletmanagerimpl_.walletmanagerimpl.html#data_key_wealth" class="tsd-kind-icon">DATA_<wbr>KEY_<wbr>WEALTH</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_manager_walletmanager_.walletmanager.html#addwealthvalidator" class="tsd-kind-icon">add<wbr>Wealth<wbr>Validator</a>
+								<a href="_manager_walletmanagerimpl_.walletmanagerimpl.html#addwealthvalidator" class="tsd-kind-icon">add<wbr>Wealth<wbr>Validator</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_manager_walletmanager_.walletmanager.html#createwalletsrecords" class="tsd-kind-icon">create<wbr>Wallets<wbr>Records</a>
+								<a href="_manager_walletmanagerimpl_.walletmanagerimpl.html#createwalletsrecords" class="tsd-kind-icon">create<wbr>Wallets<wbr>Records</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_manager_walletmanager_.walletmanager.html#refreshwealthptr" class="tsd-kind-icon">refresh<wbr>Wealth<wbr>Ptr</a>
+								<a href="_manager_walletmanagerimpl_.walletmanagerimpl.html#refreshwealthptr" class="tsd-kind-icon">refresh<wbr>Wealth<wbr>Ptr</a>
 							</li>
 						</ul>
 					</li>

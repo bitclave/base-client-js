@@ -7,6 +7,7 @@ import { SearchRequestManager } from './manager/SearchRequestManager';
 import SearchRequest from './repository/models/SearchRequest';
 import Offer from './repository/models/Offer';
 import { WalletManager } from './manager/WalletManager';
+import { WalletManagerImpl } from './manager/WalletManagerImpl';
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
 export { RpcTransport } from './repository/source/rpc/RpcTransport';
@@ -26,7 +27,7 @@ export { AcceptedField } from './utils/keypair/AcceptedField';
 export { RpcToken } from './utils/keypair/rpc/RpcToken';
 export { RpcAuth } from './utils/keypair/rpc/RpcAuth';
 export { BaseAddrPair, AddrRecord, WalletsRecords, WealthRecord, WealthPtr, ProfileUser, ProfileWealthValidator } from './utils/types/BaseTypes';
-export { AccountManager, ProfileManager, DataRequestManager, OfferManager, SearchRequestManager, WalletManager, SearchRequest, Offer, Base as NodeAPI };
+export { AccountManager, ProfileManager, DataRequestManager, OfferManager, SearchRequestManager, WalletManager, WalletManagerImpl, SearchRequest, Offer, Base as NodeAPI };
 export default class Base {
     private _walletManager;
     private _accountManager;

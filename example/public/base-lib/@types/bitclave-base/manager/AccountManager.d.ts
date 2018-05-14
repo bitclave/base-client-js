@@ -1,14 +1,5 @@
-import { AccountRepository } from '../repository/account/AccountRepository';
 import Account from '../repository/models/Account';
-import { KeyPairHelper } from '../utils/keypair/KeyPairHelper';
-import { BehaviorSubject } from 'rxjs/Rx';
-import { MessageSigner } from '../utils/keypair/MessageSigner';
-export declare class AccountManager {
-    private accountRepository;
-    private keyPairCreator;
-    private messageSigner;
-    private authAccountBehavior;
-    constructor(auth: AccountRepository, keyPairCreator: KeyPairHelper, messageSigner: MessageSigner, authAccountBehavior: BehaviorSubject<Account>);
+export interface AccountManager {
     /**
      * Checks or Register user with provided mnemonic phrase is already registered in the system.
      * @param {string} passPhrase Mnemonic phrase for Public/Private key pair
@@ -46,7 +37,6 @@ export declare class AccountManager {
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
     checkAccount(mnemonicPhrase: string, message: string): Promise<Account>;
-    private checkSigMessage(message);
     /**
      * Allows user to unsubscribe from BASE. Delets all his data
      *
@@ -54,7 +44,4 @@ export declare class AccountManager {
      */
     unsubscribe(): Promise<Account>;
     getNewMnemonic(): Promise<string>;
-    private getAccount(account, message);
-    private generateAccount(keyPair);
-    private onGetAccount(account, message);
 }

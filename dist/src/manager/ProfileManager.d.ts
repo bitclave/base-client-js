@@ -1,16 +1,4 @@
-import { Observable } from 'rxjs/Rx';
-import Account from '../repository/models/Account';
-import { ClientDataRepository } from '../repository/client/ClientDataRepository';
-import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
-import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
-import { MessageSigner } from '../utils/keypair/MessageSigner';
-export declare class ProfileManager {
-    private clientDataRepository;
-    private account;
-    private encrypt;
-    private decrypt;
-    private signer;
-    constructor(clientRepository: ClientDataRepository, authAccountBehavior: Observable<Account>, encrypt: MessageEncrypt, decrypt: MessageDecrypt, signer: MessageSigner);
+export interface ProfileManager {
     signMessage(data: any): Promise<string>;
     /**
      * Returns decrypted data of the authorized user.
@@ -48,5 +36,4 @@ export declare class ProfileManager {
      * @returns {Promise<Map<string, string>>} Map with encrypted data.
      */
     updateData(data: Map<string, string>): Promise<Map<string, string>>;
-    private onChangeAccount(account);
 }

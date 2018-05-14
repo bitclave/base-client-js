@@ -60,7 +60,7 @@
 					<a href="_manager_profilemanager_.profilemanager.html">ProfileManager</a>
 				</li>
 			</ul>
-			<h1>Class ProfileManager</h1>
+			<h1>Interface ProfileManager</h1>
 		</div>
 	</div>
 </header>
@@ -75,81 +75,43 @@
 					</li>
 				</ul>
 			</section>
+			<section class="tsd-panel">
+				<h3>Implemented by</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../classes/_manager_profilemanagerimpl_.profilemanagerimpl.html" class="tsd-signature-type">ProfileManagerImpl</a></li>
+				</ul>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Constructors</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_manager_profilemanager_.profilemanager.html#constructor" class="tsd-kind-icon">constructor</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_profilemanager_.profilemanager.html#getauthorizeddata" class="tsd-kind-icon">get<wbr>Authorized<wbr>Data</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_profilemanager_.profilemanager.html#getauthorizedencryptionkeys" class="tsd-kind-icon">get<wbr>Authorized<wbr>Encryption<wbr>Keys</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_profilemanager_.profilemanager.html#getdata" class="tsd-kind-icon">get<wbr>Data</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_profilemanager_.profilemanager.html#getrawdata" class="tsd-kind-icon">get<wbr>Raw<wbr>Data</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_profilemanager_.profilemanager.html#signmessage" class="tsd-kind-icon">sign<wbr>Message</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_profilemanager_.profilemanager.html#updatedata" class="tsd-kind-icon">update<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_manager_profilemanager_.profilemanager.html#getauthorizeddata" class="tsd-kind-icon">get<wbr>Authorized<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_manager_profilemanager_.profilemanager.html#getauthorizedencryptionkeys" class="tsd-kind-icon">get<wbr>Authorized<wbr>Encryption<wbr>Keys</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_manager_profilemanager_.profilemanager.html#getdata" class="tsd-kind-icon">get<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_manager_profilemanager_.profilemanager.html#getrawdata" class="tsd-kind-icon">get<wbr>Raw<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_manager_profilemanager_.profilemanager.html#signmessage" class="tsd-kind-icon">sign<wbr>Message</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_manager_profilemanager_.profilemanager.html#updatedata" class="tsd-kind-icon">update<wbr>Data</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
-					<a name="constructor" class="tsd-anchor"></a>
-					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Profile<wbr>Manager<span class="tsd-signature-symbol">(</span>clientRepository<span class="tsd-signature-symbol">: </span><a href="../interfaces/_repository_client_clientdatarepository_.clientdatarepository.html" class="tsd-signature-type">ClientDataRepository</a>, authAccountBehavior<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span>, encrypt<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_keypair_messageencrypt_.messageencrypt.html" class="tsd-signature-type">MessageEncrypt</a>, decrypt<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_keypair_messagedecrypt_.messagedecrypt.html" class="tsd-signature-type">MessageDecrypt</a>, signer<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_keypair_messagesigner_.messagesigner.html" class="tsd-signature-type">MessageSigner</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_manager_profilemanager_.profilemanager.html" class="tsd-signature-type">ProfileManager</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/ProfileManager.ts#L17">manager/ProfileManager.ts:17</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>clientRepository: <a href="../interfaces/_repository_client_clientdatarepository_.clientdatarepository.html" class="tsd-signature-type">ClientDataRepository</a></h5>
-								</li>
-								<li>
-									<h5>authAccountBehavior: <span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></h5>
-								</li>
-								<li>
-									<h5>encrypt: <a href="../interfaces/_utils_keypair_messageencrypt_.messageencrypt.html" class="tsd-signature-type">MessageEncrypt</a></h5>
-								</li>
-								<li>
-									<h5>decrypt: <a href="../interfaces/_utils_keypair_messagedecrypt_.messagedecrypt.html" class="tsd-signature-type">MessageDecrypt</a></h5>
-								</li>
-								<li>
-									<h5>signer: <a href="../interfaces/_utils_keypair_messagesigner_.messagesigner.html" class="tsd-signature-type">MessageSigner</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_manager_profilemanager_.profilemanager.html" class="tsd-signature-type">ProfileManager</a></h4>
-						</li>
-					</ul>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="getauthorizeddata" class="tsd-anchor"></a>
 					<h3>get<wbr>Authorized<wbr>Data</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
 						<li class="tsd-signature tsd-kind-icon">get<wbr>Authorized<wbr>Data<span class="tsd-signature-symbol">(</span>recipientPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, encryptedData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/ProfileManager.ts#L65">manager/ProfileManager.ts:65</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/ProfileManager.ts#L27">manager/ProfileManager.ts:27</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -177,17 +139,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="getauthorizedencryptionkeys" class="tsd-anchor"></a>
 					<h3>get<wbr>Authorized<wbr>Encryption<wbr>Keys</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
 						<li class="tsd-signature tsd-kind-icon">get<wbr>Authorized<wbr>Encryption<wbr>Keys<span class="tsd-signature-symbol">(</span>recipientPk<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, encryptedData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/ProfileManager.ts#L96">manager/ProfileManager.ts:96</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/ProfileManager.ts#L36">manager/ProfileManager.ts:36</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -215,17 +177,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="getdata" class="tsd-anchor"></a>
 					<h3>get<wbr>Data</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
 						<li class="tsd-signature tsd-kind-icon">get<wbr>Data<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/ProfileManager.ts#L43">manager/ProfileManager.ts:43</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/ProfileManager.ts#L10">manager/ProfileManager.ts:10</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -238,17 +200,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="getrawdata" class="tsd-anchor"></a>
 					<h3>get<wbr>Raw<wbr>Data</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
 						<li class="tsd-signature tsd-kind-icon">get<wbr>Raw<wbr>Data<span class="tsd-signature-symbol">(</span>anyPublicKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/ProfileManager.ts#L54">manager/ProfileManager.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/ProfileManager.ts#L18">manager/ProfileManager.ts:18</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -270,17 +232,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="signmessage" class="tsd-anchor"></a>
 					<h3>sign<wbr>Message</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
 						<li class="tsd-signature tsd-kind-icon">sign<wbr>Message<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/ProfileManager.ts#L34">manager/ProfileManager.ts:34</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/ProfileManager.ts#L3">manager/ProfileManager.ts:3</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -293,17 +255,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="updatedata" class="tsd-anchor"></a>
 					<h3>update<wbr>Data</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
 						<li class="tsd-signature tsd-kind-icon">update<wbr>Data<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/c018e6a/src/manager/ProfileManager.ts#L119">manager/ProfileManager.ts:119</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/ProfileManager.ts#L44">manager/ProfileManager.ts:44</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -342,28 +304,25 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-class tsd-parent-kind-external-module">
+					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_manager_profilemanager_.profilemanager.html" class="tsd-kind-icon">Profile<wbr>Manager</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_manager_profilemanager_.profilemanager.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_manager_profilemanager_.profilemanager.html#getauthorizeddata" class="tsd-kind-icon">get<wbr>Authorized<wbr>Data</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_manager_profilemanager_.profilemanager.html#getauthorizedencryptionkeys" class="tsd-kind-icon">get<wbr>Authorized<wbr>Encryption<wbr>Keys</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_manager_profilemanager_.profilemanager.html#getdata" class="tsd-kind-icon">get<wbr>Data</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_manager_profilemanager_.profilemanager.html#getrawdata" class="tsd-kind-icon">get<wbr>Raw<wbr>Data</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_manager_profilemanager_.profilemanager.html#signmessage" class="tsd-kind-icon">sign<wbr>Message</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_manager_profilemanager_.profilemanager.html#updatedata" class="tsd-kind-icon">update<wbr>Data</a>
 							</li>
 						</ul>

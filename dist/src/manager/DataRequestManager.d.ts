@@ -1,16 +1,6 @@
-import { DataRequestRepository } from '../repository/requests/DataRequestRepository';
-import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
-import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import DataRequest from '../repository/models/DataRequest';
-import Account from '../repository/models/Account';
-import { Observable } from 'rxjs/Rx';
 import { AccessRight } from '../utils/keypair/Permissions';
-export declare class DataRequestManager {
-    private account;
-    private dataRequestRepository;
-    private encrypt;
-    private decrypt;
-    constructor(dataRequestRepository: DataRequestRepository, authAccountBehavior: Observable<Account>, encrypt: MessageEncrypt, decrypt: MessageDecrypt);
+export interface DataRequestManager {
     /**
      * Creates data access request to a specific user for a specific personal data.
      * @param {string} recipientPk Public Key of the user that the personal data is requested from.
@@ -27,7 +17,7 @@ export declare class DataRequestManager {
      *
      * @returns {Promise<Array<DataRequest>>}  List of {@link DataRequest}, or empty list
      */
-    getRequests(fromPk?: string, toPk?: string): Promise<Array<DataRequest>>;
+    getRequests(fromPk: string, toPk: string): Promise<Array<DataRequest>>;
     /**
      * Grants access to specific fields of my data to a client.
      * @param {string} clientPk id (baseID) of the client that is authorized for data access.
@@ -79,7 +69,4 @@ export declare class DataRequestManager {
      * @returns {object | null} object with data or null if was error.
      */
     decryptMessage(senderPk: string, encrypted: string): Promise<any>;
-    private decodeRequestedPermissions(requests, clientPk);
-    private getDecodeGrantPermissions(requests, clientPk);
-    private onChangeAccount(account);
 }
