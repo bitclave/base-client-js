@@ -13,7 +13,29 @@ export class BaseSchema {
         'additionalProperties': false
     };
 
+    public static BtcBaseAddrPair: any = {
+        'type': 'object',
+        'properties': {
+            'baseID': {'type': 'string'},
+            'btcAddr': {'type': 'string'}
+        },
+        'required': ['baseID', 'btcAddr'],
+        'additionalProperties': false
+    };
+
     public static EthAddrRecord: any = {
+        'type': 'object',
+        'properties': {
+            'data': {'type': 'string'},
+            'sig': {
+                'type': 'string'
+            },
+        },
+        'required': ['data'],
+        'additionalProperties': false
+    };
+
+    public static BtcAddrRecord: any = {
         'type': 'object',
         'properties': {
             'data': {'type': 'string'},
@@ -44,11 +66,31 @@ export class BaseSchema {
         }
     };
 
+    public static BtcWallets: any = {
+        'definitions': {
+            'btc_address': BaseSchema.BtcAddrRecord
+        },
+        'description': 'list of BTC wallets',
+        'type': 'object',
+        'properties': {
+            'data': {
+                'type': 'array',
+                'items': {'$ref': '#/definitions/btc_address'},
+                'minItems': 1,
+                'uniqueItems': true
+            },
+            'sig': {
+                'type': 'string'
+            }
+        }
+    };
+
     public static All: any = {
         'title': 'Profile',
         'definitions': {
             'eth_address': BaseSchema.EthAddrRecord,
-            'eth_wallets': BaseSchema.EthWallets
+            'eth_wallets': BaseSchema.EthWallets,
+            'btc_wallets': BaseSchema.BtcWallets
         },
 
         'type': 'object',
@@ -70,31 +112,49 @@ export class BaseSchema {
     };
 
     private ajvValidateAll: Function;
-    private ajvValidateAddr: Function;
-    private ajvValidateBaseAddrPair: Function;
-    private ajvValidateWallets: Function;
+    private ajvValidateEthAddr: Function;
+    private ajvValidateEthBaseAddrPair: Function;
+    private ajvValidateEthWallets: Function;
+    private ajvValidateBtcAddr: Function;
+    private ajvValidateBtcBaseAddrPair: Function;
+    private ajvValidateBtcWallets: Function;
 
     private ajv: any;
 
     constructor() {
         this.ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
 
-        this.ajvValidateBaseAddrPair = this.ajv.compile(BaseSchema.EthBaseAddrPair);
-        this.ajvValidateAddr = this.ajv.compile(BaseSchema.EthAddrRecord);
-        this.ajvValidateWallets = this.ajv.compile(BaseSchema.EthWallets);
+        this.ajvValidateEthBaseAddrPair = this.ajv.compile(BaseSchema.EthBaseAddrPair);
+        this.ajvValidateEthAddr = this.ajv.compile(BaseSchema.EthAddrRecord);
+        this.ajvValidateEthWallets = this.ajv.compile(BaseSchema.EthWallets);
+        this.ajvValidateBtcBaseAddrPair = this.ajv.compile(BaseSchema.BtcBaseAddrPair);
+        this.ajvValidateBtcAddr = this.ajv.compile(BaseSchema.BtcAddrRecord);
+        this.ajvValidateBtcWallets = this.ajv.compile(BaseSchema.BtcWallets);
         this.ajvValidateAll = this.ajv.compile(BaseSchema.All);
     }
 
-    public validateAddr(s: any): boolean {
-        return this.ajvValidateAddr(s);
+    public validateEthAddr(s: any): boolean {
+        return this.ajvValidateEthAddr(s);
     }
 
-    public validateWallets(s: any): boolean {
-        return this.ajvValidateWallets(s);
+    public validateEthWallets(s: any): boolean {
+        return this.ajvValidateEthWallets(s);
     }
 
-    public validateBaseAddrPair(s: any): boolean {
-        return this.ajvValidateBaseAddrPair(s);
+    public validateEthBaseAddrPair(s: any): boolean {
+        return this.ajvValidateEthBaseAddrPair(s);
+    }
+
+    public validateBtcAddr(s: any): boolean {
+        return this.ajvValidateBtcAddr(s);
+    }
+
+    public validateBtcWallets(s: any): boolean {
+        return this.ajvValidateBtcWallets(s);
+    }
+
+    public validateBtcBaseAddrPair(s: any): boolean {
+        return this.ajvValidateBtcBaseAddrPair(s);
     }
 
     public validateAll(s: any): boolean {

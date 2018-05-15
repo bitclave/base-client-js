@@ -1,8 +1,10 @@
-import { AddrRecord, WalletsRecords, WealthPtr } from '../utils/types/BaseTypes';
+import { EthAddrRecord, EthWalletsRecords, BtcAddrRecord, BtcWalletsRecords, WealthPtr } from '../utils/types/BaseTypes';
 
 export interface WalletManager {
 
-    createWalletsRecords(wallets: AddrRecord[], baseID: string): Promise<WalletsRecords>;
+    createEthWalletsRecords(wallets: EthAddrRecord[], baseID: string): Promise<EthWalletsRecords>;
+    
+    createBtcWalletsRecords(wallets: BtcAddrRecord[], baseID: string): Promise<BtcWalletsRecords>;
 
     addWealthValidator(validatorPbKey: string): Promise<void>;
 

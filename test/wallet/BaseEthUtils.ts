@@ -1,6 +1,6 @@
-import { AddrRecord, BaseAddrPair, WalletsRecords } from '../../src/utils/types/BaseTypes';
+import { EthAddrRecord, EthBaseAddrPair, EthWalletsRecords } from '../../src/utils/types/BaseTypes';
 import { BaseSchema } from '../../src/utils/types/BaseSchema';
-import { WalletUtils, WalletVerificationCodes } from '../../src/utils/WalletUtils';
+import { WalletUtils, WalletVerificationCodes, WalletVerificationStatus } from '../../src/utils/WalletUtils';
 
 const Message = require('bitcore-message');
 const bitcore = require('bitcore-lib');
@@ -10,9 +10,9 @@ const baseSchema = new BaseSchema();
 
 export default class BaseEthUtils {
 
-    public static createEthAddrRecord(baseID: string, ethAddr: string, ethPrvKey: string): AddrRecord {
-        const record: AddrRecord = new AddrRecord(
-            JSON.stringify(new BaseAddrPair(baseID, ethAddr)),
+    public static createEthAddrRecord(baseID: string, ethAddr: string, ethPrvKey: string): EthAddrRecord {
+        const record: EthAddrRecord = new EthAddrRecord(
+            JSON.stringify(new EthBaseAddrPair(baseID, ethAddr)),
             ''
         );
         record.sig = sigUtil.personalSign(Buffer.from(ethPrvKey, 'hex'), record);
@@ -20,10 +20,10 @@ export default class BaseEthUtils {
         return record;
     }
 
-    public static async createEthWalletsRecordDebug(baseID: string, signedEthRecords: Array<AddrRecord>,
-                                                    prvKey: string): Promise<WalletsRecords> {
+    public static async createEthWalletsRecordDebug(baseID: string, signedEthRecords: Array<EthAddrRecord>,
+                                                    prvKey: string): Promise<EthWalletsRecords> {
         // no verification is performed here
-        const msgWallets: WalletsRecords = new WalletsRecords(signedEthRecords, '');
+        const msgWallets: EthWalletsRecords = new EthWalletsRecords(signedEthRecords, '');
 
         const privateKey = new bitcore.PrivateKey(bitcore.crypto.BN.fromString(prvKey, 16));
         const message = new Message(JSON.stringify(msgWallets.data));
@@ -33,11 +33,11 @@ export default class BaseEthUtils {
         return msgWallets;
     }
 
-    public static async createEthWalletsRecordWithSigner(baseID: string, signedRecords: Array<AddrRecord>,
-                                                         privKey: string): Promise<WalletsRecords> {
+    public static async createEthWalletsRecordWithSigner(baseID: string, signedRecords: Array<EthAddrRecord>,
+                                                         privKey: string): Promise<EthWalletsRecords> {
         for (let record of signedRecords) {
-            if ((WalletUtils.verifyAddressRecord(record) != WalletVerificationCodes.RC_OK) &&
-                (WalletUtils.verifyAddressRecord(record) != WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
+            if ((WalletUtils.verifyEthAddressRecord(record) != WalletVerificationCodes.RC_OK) &&
+                (WalletUtils.verifyEthAddressRecord(record) != WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
                 throw 'invalid eth record: ' + record;
             }
 
@@ -46,9 +46,9 @@ export default class BaseEthUtils {
             }
         }
 
-        const walletsRecords: WalletsRecords = new WalletsRecords(signedRecords, '');
+        const ethWalletsRecords: EthWalletsRecords = new EthWalletsRecords(signedRecords, '');
 
-        if (!baseSchema.validateWallets(walletsRecords)) {
+        if (!baseSchema.validateEthWallets(ethWalletsRecords)) {
             throw 'invalid wallets structure';
         }
 
@@ -58,20 +58,20 @@ export default class BaseEthUtils {
 
         // BASE Style signing
         const privateKey = new bitcore.PrivateKey(bitcore.crypto.BN.fromString(privKey, 16));
-        const message = new Message(JSON.stringify(walletsRecords.data));
+        const message = new Message(JSON.stringify(ethWalletsRecords.data));
 
-        walletsRecords.sig = message.sign(privateKey);
+        ethWalletsRecords.sig = message.sign(privateKey);
 
-        return walletsRecords;
+        return ethWalletsRecords;
     }
 
-    public static verifyWalletsRecord(baseID: string, msg: any): EthWalletVerificationStatus {
-        let resultCode: EthWalletVerificationCodes;
-        const status: EthWalletVerificationStatus = new EthWalletVerificationStatus();
-        status.rc = EthWalletVerificationCodes.RC_OK;
+    public static verifyEthWalletsRecord(baseID: string, msg: any): WalletVerificationStatus {
+        let resultCode: WalletVerificationCodes;
+        const status: WalletVerificationStatus = new WalletVerificationStatus();
+        status.rc = WalletVerificationCodes.RC_OK;
 
         if (!baseSchema.validateEthWallets(msg)) {
-            status.rc = EthWalletVerificationCodes.RC_ETH_ADDR_SCHEMA_MISSMATCH;
+            status.rc = WalletVerificationCodes.RC_ADDR_SCHEMA_MISSMATCH;
             return status;
         }
 
@@ -81,13 +81,13 @@ export default class BaseEthUtils {
         for (let item of msg.data) {
             const pubKey = JSON.parse(item.data).baseID;
             if (pubKey != basePubKey) {
-                status.details.push(EthWalletVerificationCodes.RC_BASEID_MISSMATCH);
+                status.details.push(WalletVerificationCodes.RC_BASEID_MISSMATCH);
 
-            } else if ((resultCode = this.verifyEthAddrRecord(item)) != EthWalletVerificationCodes.RC_OK) {
+            } else if ((resultCode = WalletUtils.verifyEthAddressRecord(item)) != WalletVerificationCodes.RC_OK) {
                 status.details.push(resultCode);
 
             } else {
-                status.details.push(EthWalletVerificationCodes.RC_OK);
+                status.details.push(WalletVerificationCodes.RC_OK);
             }
         }
 
@@ -99,12 +99,12 @@ export default class BaseEthUtils {
             if (msg.sig.length > 0) {
                 sigCheck = Message(JSON.stringify(msg.data)).verify(baseAddr, msg.sig);
                 if (!sigCheck)
-                    status.rc = EthWalletVerificationCodes.RC_ETH_ADDR_WRONG_SIGNATURE;
+                    status.rc = WalletVerificationCodes.RC_ADDR_WRONG_SIGNATURE;
             } else {
-                status.rc = EthWalletVerificationCodes.RC_ETH_ADDR_NOT_VERIFIED;
+                status.rc = WalletVerificationCodes.RC_ADDR_NOT_VERIFIED;
             }
         } catch (err) {
-            status.rc = EthWalletVerificationCodes.RC_GENERAL_ERROR;
+            status.rc = WalletVerificationCodes.RC_GENERAL_ERROR;
         }
 
         return status;

@@ -256,7 +256,7 @@ describe('BASE API test: External Validator', async () => {
                 decryptedObj.get(WalletManagerImpl.DATA_KEY_ETH_WALLETS).should.be.equal(wallets[i]);
 
                 // validator verifies the ETH wallets
-                var res: WalletVerificationStatus = WalletUtils.validateWallets(
+                var res: WalletVerificationStatus = WalletUtils.validateEthWallets(
                     WalletManagerImpl.DATA_KEY_ETH_WALLETS,
                     JSON.parse(wallets[i]),
                     accs[i].publicKey
