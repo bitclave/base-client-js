@@ -229,6 +229,72 @@ describe('Wallet manager test', async () => {
         Message(JSON.stringify(finalMsg.data)).verify(baseUserAddr, finalMsg.sig).should.be.true;
     });
 
+    it('verify BTC address low level', async () => {
+        //BASE (BitCoin-like) signature verification
+        const keyPairHelper: KeyPairHelper = KeyPairFactory.createDefaultKeyPair();
+        const messageSigner: MessageSigner = keyPairHelper;
+
+        // create BASE user for tesing
+        const baseUser = await keyPairHelper.createKeyPair('mnemonic for BASE user for testing');
+
+        const baseUserAddr = bitcore.PrivateKey.fromString(baseUser.privateKey).toAddress();
+
+        var baseID = keyPairHelper.getPublicKey();
+
+        // create ETH keys for testing
+        var btcPrvKey1 = '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001';
+        // the matching addr1 for the above key is 0x42cb8ae103896daee71ebb5dca5367f16727164a
+        var btcAddr1 = bitcore.PrivateKey.fromString(btcPrvKey1).toAddress();
+
+        var btcPrvKey2 = '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369002';
+        // the matching addr1 for the above key is 0x50575b106b1f96359f5e5dbe4c270443e6185f1f
+        var btcAddr2 = bitcore.PrivateKey.fromString(btcPrvKey2).toAddress();
+
+        // sign string {baseID, eth_addr1, eth_addr2} with private keys for baseID, eth_addr1, eth_addr2
+        var msg = {
+            'baseID': baseID,
+            'addr1': baseID + '_' + btcAddr1,
+            'addr2': baseID + '_' + btcAddr2
+        };
+
+        const msgParams1 = {data: msg.addr1, sig: ''};
+        const msgParams2 = {data: msg.addr2, sig: ''};
+
+        // sign BTC address1
+        msgParams1.sig = sigUtil.personalSign(Buffer.from(btcPrvKey1, 'hex'), msgParams1);
+        var pub1 = '04' + sigUtil.extractPublicKey(msgParams1).substr(2);
+        var compressedPub1 = ("02468ACE".indexOf(pub1[pub1.length - 1]) > -1 ? '02' : '03') + pub1.substr(2, 64)
+        var addr1 = bitcore.PublicKey.fromString(compressedPub1).toAddress();
+        addr1.toString().should.be.equal(btcAddr1.toString());
+
+        var dataForAddr1 = '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41_1FQcHqbTTCeNPk7gKEe5YjsquDf57U6dVv';
+        // you can get this signature externally by using https://www.myetherwallet.com/signmsg.html with private key ethPrvKey1 and dataForAddr1
+        // or if you import ethPrvKey1 into MetaMask and sign with MetaMask
+        var sigForAddr1 = '0x83d343aa9e760a101b775c9852617160a9476cf16e0cda1fcfa91e5b06c6e40f5dc849c1fe8898f3e41c9ee6693a082a959572069154431f1401e139a467c1041b';
+        msgParams1.data.should.be.equal(dataForAddr1);
+        msgParams1.sig.should.be.equal(sigForAddr1);
+
+        // sign BTC address1
+        msgParams2.sig = sigUtil.personalSign(Buffer.from(btcPrvKey2, 'hex'), msgParams2);
+        var pub2 = '04' + sigUtil.extractPublicKey(msgParams2).substr(2);
+        var compressedPub2 = ("02468ACE".indexOf(pub2[pub2.length - 1]) > -1 ? '02' : '03') + pub2.substr(2, 64)
+        var addr2 = bitcore.PublicKey.fromString(compressedPub2).toAddress();
+        addr2.toString().should.be.equal(btcAddr2.toString());
+
+        // sign BASE and BTC addresses all together
+        const finalMsg = {
+            data: {
+                baseID: msg.baseID,
+                addr1: msgParams1,
+                addr2: msgParams2
+            },
+            sig: ''
+        };
+
+        finalMsg.sig = await messageSigner.signMessage(JSON.stringify(finalMsg.data));
+        Message(JSON.stringify(finalMsg.data)).verify(baseUserAddr, finalMsg.sig).should.be.true;
+    });
+
     it('create ETH address record by BASE interface', function () {
         var msg: EthAddrRecord = BaseEthUtils.createEthAddrRecord(
             '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',

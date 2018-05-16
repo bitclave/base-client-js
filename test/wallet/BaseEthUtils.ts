@@ -92,7 +92,7 @@ export default class BaseEthUtils {
         }
 
         // verify signature matches the baseID
-        const baseAddr = new bitcore.PublicKey.fromString(basePubKey).toAddress().toString(16);
+        const baseAddr = new bitcore.PublicKey.fromString(basePubKey).toAddress().toString();
         let sigCheck = false;
 
         try {

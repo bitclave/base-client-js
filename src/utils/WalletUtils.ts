@@ -171,7 +171,7 @@ export class WalletUtils {
         }
 
         // verify signature matches the baseID
-        const baseAddr = bitcore.PublicKey.fromString(baseID).toAddress().toString(16);
+        const baseAddr = bitcore.PublicKey.fromString(baseID).toAddress().toString();
         let sigCheck = false;
 
         try {

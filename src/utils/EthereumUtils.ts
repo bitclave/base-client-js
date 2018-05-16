@@ -9,7 +9,7 @@ export class EthereumUtils {
 
     public static recoverSignerBitcoinAddress(data: any): string {
         const publicKey = sigUtil.extractPublicKey(data);
-        return bitcore.PublicKey.fromString(publicKey).toAddress().toString(16);
+        return bitcore.PublicKey.fromString(publicKey.substr(2)).toAddress();
     }
 
     public static createSig(privateKey: string, data: any): string {

@@ -14,7 +14,7 @@ export class WalletManagerImpl implements WalletManager {
 
     public static DATA_KEY_ETH_WALLETS: string = 'eth_wallets';
     public static DATA_KEY_BTC_WALLETS: string = 'btc_wallets';
-    public static DATA_KEY_ETH_WEALTH_VALIDATOR: string =  'ethwealthvalidator';
+    public static DATA_KEY_WEALTH_VALIDATOR: string =  'ethwealthvalidator';
     public static DATA_KEY_WEALTH: string =  'wealth';
 
     private account: Account = new Account();
@@ -98,12 +98,13 @@ export class WalletManagerImpl implements WalletManager {
     public async addWealthValidator(validatorPbKey: string): Promise<void> {
         // Alice adds wealth record pointing to Validator's
         const myData: Map<string, string> = await this.profileManager.getData();
-        myData.set(WalletManagerImpl.DATA_KEY_ETH_WEALTH_VALIDATOR, validatorPbKey);
+        myData.set(WalletManagerImpl.DATA_KEY_WEALTH_VALIDATOR, validatorPbKey);
 
         await this.profileManager.updateData(myData);
 
         const acceptedFields: Map<string, AccessRight> = new Map();
         acceptedFields.set(WalletManagerImpl.DATA_KEY_ETH_WALLETS, AccessRight.RW);
+        acceptedFields.set(WalletManagerImpl.DATA_KEY_BTC_WALLETS, AccessRight.RW);
 
         await this.dataRequestManager.grantAccessForClient(validatorPbKey, acceptedFields);
     }
@@ -116,8 +117,8 @@ export class WalletManagerImpl implements WalletManager {
             const wealth: string = data.get(WalletManagerImpl.DATA_KEY_WEALTH) || '';
             wealthPtr = Object.assign(new WealthPtr(), JSON.parse(wealth));
 
-        } else if (data.has(WalletManagerImpl.DATA_KEY_ETH_WEALTH_VALIDATOR)) {
-            const validatorPbKey: string = data.get(WalletManagerImpl.DATA_KEY_ETH_WEALTH_VALIDATOR) || '';
+        } else if (data.has(WalletManagerImpl.DATA_KEY_WEALTH_VALIDATOR)) {
+            const validatorPbKey: string = data.get(WalletManagerImpl.DATA_KEY_WEALTH_VALIDATOR) || '';
 
             // Alice reads the wealth record that Validator shared
             const recordsFromValidator: Array<DataRequest> = await this.dataRequestManager.getRequests(
@@ -147,7 +148,7 @@ export class WalletManagerImpl implements WalletManager {
             }
 
         } else {
-            throw WalletManagerImpl.DATA_KEY_ETH_WEALTH_VALIDATOR + ' data not exist!';
+            throw WalletManagerImpl.DATA_KEY_WEALTH_VALIDATOR + ' data not exist!';
         }
 
         return wealthPtr;

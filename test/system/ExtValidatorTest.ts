@@ -206,7 +206,7 @@ describe('BASE API test: External Validator', async () => {
             return await baseAlice.walletManager.refreshWealthPtr();
         } catch (e) {
             if (e === 'validator did not verify anything yet' ||
-                e === WalletManagerImpl.DATA_KEY_ETH_WEALTH_VALIDATOR + ' data not exist!') {
+                e === WalletManagerImpl.DATA_KEY_WEALTH_VALIDATOR + ' data not exist!') {
                 //ignore error is normal
             } else {
                 throw e;

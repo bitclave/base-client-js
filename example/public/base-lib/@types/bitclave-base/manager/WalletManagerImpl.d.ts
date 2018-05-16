@@ -8,7 +8,7 @@ import { Observable } from 'rxjs/Observable';
 import { WalletManager } from './WalletManager';
 export declare class WalletManagerImpl implements WalletManager {
     static DATA_KEY_ETH_WALLETS: string;
-    static DATA_KEY_ETH_WEALTH_VALIDATOR: string;
+    static DATA_KEY_WEALTH_VALIDATOR: string;
     static DATA_KEY_WEALTH: string;
     private account;
     private profileManager;
