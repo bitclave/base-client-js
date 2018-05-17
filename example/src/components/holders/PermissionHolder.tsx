@@ -25,6 +25,7 @@ export default class PermissionHolder extends React.Component<Prop, {}> {
                     <Col className="client-data-item-field" xs="3">
                         Accepted:
                         <br/>
+                        <br/>
                         {this.prepareResponseFields()}
                     </Col>
 
@@ -39,11 +40,11 @@ export default class PermissionHolder extends React.Component<Prop, {}> {
         const {from, to, accountPublicKey} = this.props.model;
 
         if (from && from != accountPublicKey) {
-            result.push(<div>from: {from}</div>);
+            result.push(<div key='from'>from: {from}</div>);
         }
 
         if (to && to != accountPublicKey) {
-            result.push(<div>to: {to}</div>);
+            result.push(<div key='to'>to: {to}</div>);
         }
 
         return result;

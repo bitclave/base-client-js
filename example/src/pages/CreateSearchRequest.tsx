@@ -106,7 +106,7 @@ export default class CreateSearchRequest extends React.Component<Props, State> {
         });
 
         this.baseManager
-            .getSearchRequestManager()
+            .getSearchManager()
             .createRequest(new SearchRequest(map))
             .then(result => {
                 alert('data has been saved');

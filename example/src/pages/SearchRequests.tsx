@@ -28,7 +28,7 @@ export default class SearchRequests extends React.Component<Props, State> {
 
     componentDidMount() {
         this.baseManager
-            .getSearchRequestManager()
+            .getSearchManager()
             .getMyRequests()
             .then(this.onSyncData.bind(this));
     }
@@ -46,12 +46,18 @@ export default class SearchRequests extends React.Component<Props, State> {
                     <div className="h-100 justify-content-center align-items-center">
                         <SearchRequestList
                             selectable={false}
+                            onItemClick={(item) => this.onRequestClick(item)}
                             data={this.state.requests}
                         />
                     </div>
                 </Container>
             </div>
         );
+    }
+
+    private onRequestClick(item: SearchRequest) {
+        const {history} = this.props;
+        history.push(`/search-result/${item.id}`);
     }
 
     private onSyncData(result: Array<SearchRequest>) {

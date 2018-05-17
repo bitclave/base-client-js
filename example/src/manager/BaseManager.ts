@@ -1,11 +1,11 @@
 import Config from '../Config';
 import { injectable } from 'inversify';
 import 'reflect-metadata';
-import Base, { AccessRight, RepositoryStrategyType } from 'bitclave-base';
+import Base, { AccessRight, RepositoryStrategyType, OfferSearch, DataRequestManager } from 'bitclave-base';
 import Account from 'bitclave-base/repository/models/Account';
 import OfferManager from 'bitclave-base/manager/OfferManager';
 import ProfileManager from 'bitclave-base/manager/ProfileManager';
-import SearchRequestManager from 'bitclave-base/manager/SearchRequestManager';
+import SearchManager from 'bitclave-base/manager/SearchManager';
 
 @injectable()
 export default class BaseManager {
@@ -75,8 +75,12 @@ export default class BaseManager {
         return this.base.profileManager;
     }
 
-    getSearchRequestManager(): SearchRequestManager {
-        return this.base.searchRequestManager;
+    getSearchManager(): SearchManager {
+        return this.base.searchManager;
+    }
+
+    getDataReuqestManager(): DataRequestManager {
+        return this.base.dataRequestManager;
     }
 
     getId() {

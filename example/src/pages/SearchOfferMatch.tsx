@@ -8,6 +8,7 @@ import Offer from 'bitclave-base/repository/models/Offer';
 import OfferList from '../components/lists/OfferList';
 import SearchRequest from 'bitclave-base/repository/models/SearchRequest';
 import SearchRequestList from '../components/lists/SearchRequestList';
+import {OfferSearch} from 'bitclave-base';
 
 interface Props extends RouteComponentProps<{}> {
 }
@@ -41,7 +42,7 @@ export default class SearchOfferMatch extends React.Component<Props, State> {
             .then(this.onSyncOffers.bind(this));
 
         this.baseManager
-            .getSearchRequestManager()
+            .getSearchManager()
             .getAllRequests()
             .then(this.onSyncSearchRequest.bind(this));
     }
@@ -93,9 +94,12 @@ export default class SearchOfferMatch extends React.Component<Props, State> {
         if (this.state.selectedSearch === undefined) {
             alert('Please select search request');
             return;
+
         }
-        this.baseManager.shareDataForOffer(this.state.selectedOffer)
-            .then(() => alert('data successful shared!'))
+        this.baseManager.getSearchManager().addResultItem(
+            new OfferSearch(this.state.selectedSearch.id, this.state.selectedOffer.id)
+        )
+            .then(() => alert('offer successful added to search result!'))
             .catch(() => alert('something went wrong'));
     }
 
