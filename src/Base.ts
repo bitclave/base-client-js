@@ -20,7 +20,7 @@ import { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 import { OfferManager } from './manager/OfferManager';
 import { OfferRepository } from './repository/offer/OfferRepository';
 import OfferRepositoryImpl from './repository/offer/OfferRepositoryImpl';
-import { SearchRequestManager } from './manager/SearchRequestManager';
+import { SearchManager } from './manager/SearchManager';
 import { SearchRequestRepository } from './repository/search/SearchRequestRepository';
 import SearchRequestRepositoryImpl from './repository/search/SearchRequestRepositoryImpl';
 import SearchRequest from './repository/models/SearchRequest';
@@ -40,8 +40,12 @@ import { AccountManagerImpl } from './manager/AccountManagerImpl';
 import { DataRequestManagerImpl } from './manager/DataRequestManagerImpl';
 import { ProfileManagerImpl } from './manager/ProfileManagerImpl';
 import { OfferManagerImpl } from './manager/OfferManagerImpl';
-import { SearchRequestManagerImpl } from './manager/SearchRequestManagerImpl';
+import { SearchManagerImpl } from './manager/SearchManagerImpl';
 import { WalletManagerImpl } from './manager/WalletManagerImpl';
+import { OfferSearchRepository } from './repository/search/OfferSearchRepository';
+import { OfferSearchRepositoryImpl } from './repository/search/OfferSearchRepositoryImpl';
+import  OfferSearchResultItem  from './repository/models/OfferSearchResultItem';
+import OfferSearch, {OfferResultAction} from './repository/models/OfferSearch';
 
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
@@ -76,12 +80,14 @@ export {
     ProfileManager,
     DataRequestManager,
     OfferManager,
-    SearchRequestManager,
+    SearchManager,
     WalletManager,
     WalletManagerImpl,
-    SearchRequest,
     Offer,
-    Base as NodeAPI
+    SearchRequest,
+    OfferSearch,
+    OfferSearchResultItem,
+    OfferResultAction
 };
 
 export default class Base {
@@ -91,7 +97,7 @@ export default class Base {
     private _profileManager: ProfileManager;
     private _dataRequestManager: DataRequestManager;
     private _offerManager: OfferManager;
-    private _searchRequestManager: SearchRequestManager;
+    private _searchManager: SearchManager;
     private _authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
     private _repositoryStrategyInterceptor: RepositoryStrategyInterceptor;
 
@@ -124,6 +130,7 @@ export default class Base {
         const dataRequestRepository: DataRequestRepository = new DataRequestRepositoryImpl(transport);
         const offerRepository: OfferRepository = new OfferRepositoryImpl(transport);
         const searchRequestRepository: SearchRequestRepository = new SearchRequestRepositoryImpl(transport);
+        const offerSearchRepository: OfferSearchRepository = new OfferSearchRepositoryImpl(transport);
 
         this._accountManager = new AccountManagerImpl(
             accountRepository,
@@ -149,8 +156,9 @@ export default class Base {
 
         this._offerManager = new OfferManagerImpl(offerRepository, this._authAccountBehavior.asObservable());
 
-        this._searchRequestManager = new SearchRequestManagerImpl(
+        this._searchManager = new SearchManagerImpl(
             searchRequestRepository,
+            offerSearchRepository,
             this._authAccountBehavior.asObservable()
         );
 
@@ -187,8 +195,8 @@ export default class Base {
         return this._offerManager;
     }
 
-    get searchRequestManager(): SearchRequestManager {
-        return this._searchRequestManager;
+    get searchManager(): SearchManager {
+        return this._searchManager;
     }
 
     private createNodeAssistant(httpTransport: HttpTransport): AssistantNodeRepository {

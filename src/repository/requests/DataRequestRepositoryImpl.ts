@@ -6,12 +6,9 @@ import OfferShareData from '../models/OfferShareData';
 
 export default class DataRequestRepositoryImpl implements DataRequestRepository {
 
-    private readonly CREATE_DATA_REQUEST: string = '/v1/data/request/';
-    private readonly GET_DATA_REQUEST_FORM: string = '/v1/data/request/from/{fromPk}/';
-    private readonly GET_DATA_REQUEST_TO: string = '/v1/data/request/to/{toPk}/';
-    private readonly GET_DATA_REQUEST_FROM_TO: string = '/v1/data/request/from/{fromPk}/to/{toPk}/';
+    private readonly DATA_REQUEST: string = '/v1/data/request/';
     private readonly GRANT_ACCESS_FOR_CLIENT: string = '/v1/data/grant/request/';
-    private readonly GRANT_ACCESS_FOR_OFFER: string = '/v1/data/grant/offer';
+    private readonly GRANT_ACCESS_FOR_OFFER: string = '/v1/data/grant/offer/';
 
     private transport: HttpTransport;
 
@@ -23,7 +20,7 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
         const data: DataRequest = new DataRequest(toPk, encryptedRequest);
         return this.transport
             .sendRequest(
-                this.CREATE_DATA_REQUEST,
+                this.DATA_REQUEST,
                 HttpMethod.Post,
                 data
             ).then((response) => parseInt(response.json.toString()));
@@ -43,38 +40,41 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
     }
 
     getRequests(fromPk: string | null, toPk: string | null): Promise<Array<DataRequest>> {
-        let path: string = '';
+        const params: Map<string, any> = new Map([
+            ['toPk', toPk],
+            ['fromPk', fromPk]
+        ]);
 
-        if (!this.isEmpty(fromPk) && !this.isEmpty(toPk)) {
-            path = this.GET_DATA_REQUEST_FROM_TO;
-
-        } else if (!this.isEmpty(fromPk) && this.isEmpty(toPk)) {
-            path = this.GET_DATA_REQUEST_FORM;
-
-        } else if (this.isEmpty(fromPk) && !this.isEmpty(toPk)) {
-            path = this.GET_DATA_REQUEST_TO;
-        }
-
-        path = path.replace('{fromPk}', (fromPk || ''))
-            .replace('{toPk}', (toPk || ''));
+        const strParams: string = this.joinParams(params);
 
         return this.transport
             .sendRequest(
-                path,
+                this.DATA_REQUEST + `?${strParams}`,
                 HttpMethod.Get
             ).then((response) => Object.assign([], response.json));
     }
 
-    grantAccessForOffer(offerId: number, clientPk: string, encryptedClientResponse: string): Promise<void> {
-        const shareData = new OfferShareData(offerId, clientPk, encryptedClientResponse);
+    grantAccessForOffer(offerSearchId: number, clientPk: string, encryptedClientResponse: string): Promise<void> {
+        const shareData = new OfferShareData(offerSearchId, encryptedClientResponse);
         return this.transport
             .sendRequest(this.GRANT_ACCESS_FOR_OFFER, HttpMethod.Post, shareData)
             .then(() => {
             });
     }
 
+    private joinParams(params: Map<string, any>): string {
+        let result: Array<string> = [];
+        params.forEach((value, key) => {
+            if (!this.isEmpty(value)) {
+                result.push(`${key}=${value}`)
+            }
+        });
+
+        return result.join('&');
+    }
+
     private isEmpty(value: string | null): boolean {
-        return value == null || value.trim().length === 0;
+        return value == null || value == undefined || value.trim().length === 0;
     }
 
 }

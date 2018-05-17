@@ -13,7 +13,7 @@ export default class AuthenticatorHelper {
 
     constructor(rpcTransport: RpcTransport) {
         this.rpcTransport = rpcTransport;
-        this.keyHelper = KeyPairFactory.createDefaultKeyPair(new Permissions(['any']));
+        this.keyHelper = KeyPairFactory.createDefaultKeyPair();
     }
 
     public async generateAccessToken(passPhrase: string): Promise<string> {
@@ -24,9 +24,8 @@ export default class AuthenticatorHelper {
         let accessToken: string = this.makeClearAccessToken();
         accessToken += await this.keyHelper.signMessage(accessToken);
         const signerPK: string = await this.rpcTransport.request('getPublicKey', null);
-        const permissions = new Permissions(['any']);
 
-        const auth: RpcAuth = new RpcAuth(accessToken, passPhrase, 'http://localhost', '', permissions);
+        const auth: RpcAuth = new RpcAuth(accessToken, passPhrase, 'http://localhost', '');
         const encryptedAuth: string = await this.keyHelper.encryptMessage(signerPK, JSON.stringify(auth));
         await this.rpcTransport.request('authenticatorRegisterClient', encryptedAuth);
 

@@ -5,7 +5,7 @@ import { HttpTransport } from '../source/http/HttpTransport';
 
 export default class SearchRequestRepositoryImpl implements SearchRequestRepository {
 
-    private readonly SEARCH_REQUEST_API: string = '/v1/client/{owner}/search/{id}';
+    private readonly SEARCH_REQUEST_API: string = '/v1/client/{owner}/search/request/{id}';
 
     private transport: HttpTransport;
 
