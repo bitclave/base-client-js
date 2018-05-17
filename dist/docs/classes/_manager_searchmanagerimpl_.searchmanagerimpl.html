@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>SearchRequestManagerImpl | bitclave-base</title>
+	<title>SearchManagerImpl | bitclave-base</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,13 +54,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_manager_searchrequestmanagerimpl_.html">&quot;manager/SearchRequestManagerImpl&quot;</a>
+					<a href="../modules/_manager_searchmanagerimpl_.html">&quot;manager/SearchManagerImpl&quot;</a>
 				</li>
 				<li>
-					<a href="_manager_searchrequestmanagerimpl_.searchrequestmanagerimpl.html">SearchRequestManagerImpl</a>
+					<a href="_manager_searchmanagerimpl_.searchmanagerimpl.html">SearchManagerImpl</a>
 				</li>
 			</ul>
-			<h1>Class SearchRequestManagerImpl</h1>
+			<h1>Class SearchManagerImpl</h1>
 		</div>
 	</div>
 </header>
@@ -71,14 +71,14 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">SearchRequestManagerImpl</span>
+						<span class="target">SearchManagerImpl</span>
 					</li>
 				</ul>
 			</section>
 			<section class="tsd-panel">
 				<h3>Implements</h3>
 				<ul class="tsd-hierarchy">
-					<li><a href="../interfaces/_manager_searchrequestmanager_.searchrequestmanager.html" class="tsd-signature-type">SearchRequestManager</a></li>
+					<li><a href="../interfaces/_manager_searchmanager_.searchmanager.html" class="tsd-signature-type">SearchManager</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -88,16 +88,19 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_manager_searchrequestmanagerimpl_.searchrequestmanagerimpl.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_manager_searchmanagerimpl_.searchmanagerimpl.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_searchrequestmanagerimpl_.searchrequestmanagerimpl.html#createrequest" class="tsd-kind-icon">create<wbr>Request</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_searchrequestmanagerimpl_.searchrequestmanagerimpl.html#deleterequest" class="tsd-kind-icon">delete<wbr>Request</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_searchrequestmanagerimpl_.searchrequestmanagerimpl.html#getallrequests" class="tsd-kind-icon">get<wbr>All<wbr>Requests</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_searchrequestmanagerimpl_.searchrequestmanagerimpl.html#getmyrequests" class="tsd-kind-icon">get<wbr>MyRequests</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_searchmanagerimpl_.searchmanagerimpl.html#addresultitem" class="tsd-kind-icon">add<wbr>Result<wbr>Item</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_searchmanagerimpl_.searchmanagerimpl.html#complaintosearchitem" class="tsd-kind-icon">complain<wbr>ToSearch<wbr>Item</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_searchmanagerimpl_.searchmanagerimpl.html#createrequest" class="tsd-kind-icon">create<wbr>Request</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_searchmanagerimpl_.searchmanagerimpl.html#deleterequest" class="tsd-kind-icon">delete<wbr>Request</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_searchmanagerimpl_.searchmanagerimpl.html#getallrequests" class="tsd-kind-icon">get<wbr>All<wbr>Requests</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_searchmanagerimpl_.searchmanagerimpl.html#getmyrequests" class="tsd-kind-icon">get<wbr>MyRequests</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_manager_searchmanagerimpl_.searchmanagerimpl.html#getsearchresult" class="tsd-kind-icon">get<wbr>Search<wbr>Result</a></li>
 							</ul>
 						</section>
 					</div>
@@ -109,13 +112,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Search<wbr>Request<wbr>Manager<wbr>Impl<span class="tsd-signature-symbol">(</span>requestRepository<span class="tsd-signature-symbol">: </span><a href="../interfaces/_repository_search_searchrequestrepository_.searchrequestrepository.html" class="tsd-signature-type">SearchRequestRepository</a>, authAccountBehavior<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_manager_searchrequestmanagerimpl_.searchrequestmanagerimpl.html" class="tsd-signature-type">SearchRequestManagerImpl</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Search<wbr>Manager<wbr>Impl<span class="tsd-signature-symbol">(</span>requestRepository<span class="tsd-signature-symbol">: </span><a href="../interfaces/_repository_search_searchrequestrepository_.searchrequestrepository.html" class="tsd-signature-type">SearchRequestRepository</a>, offerSearchRepository<span class="tsd-signature-symbol">: </span><a href="../interfaces/_repository_search_offersearchrepository_.offersearchrepository.html" class="tsd-signature-type">OfferSearchRepository</a>, authAccountBehavior<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_manager_searchmanagerimpl_.searchmanagerimpl.html" class="tsd-signature-type">SearchManagerImpl</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/SearchRequestManagerImpl.ts#L10">manager/SearchRequestManagerImpl.ts:10</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/0f0237a/src/manager/SearchManagerImpl.ts#L14">manager/SearchManagerImpl.ts:14</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -124,16 +127,67 @@
 									<h5>requestRepository: <a href="../interfaces/_repository_search_searchrequestrepository_.searchrequestrepository.html" class="tsd-signature-type">SearchRequestRepository</a></h5>
 								</li>
 								<li>
+									<h5>offerSearchRepository: <a href="../interfaces/_repository_search_offersearchrepository_.offersearchrepository.html" class="tsd-signature-type">OfferSearchRepository</a></h5>
+								</li>
+								<li>
 									<h5>authAccountBehavior: <span class="tsd-signature-type">Observable</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_account_.account.html" class="tsd-signature-type">Account</a><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_manager_searchrequestmanagerimpl_.searchrequestmanagerimpl.html" class="tsd-signature-type">SearchRequestManagerImpl</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_manager_searchmanagerimpl_.searchmanagerimpl.html" class="tsd-signature-type">SearchManagerImpl</a></h4>
 						</li>
 					</ul>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="addresultitem" class="tsd-anchor"></a>
+					<h3>add<wbr>Result<wbr>Item</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Result<wbr>Item<span class="tsd-signature-symbol">(</span>offerSearch<span class="tsd-signature-symbol">: </span><a href="_repository_models_offersearch_.offersearch.html" class="tsd-signature-type">OfferSearch</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_manager_searchmanager_.searchmanager.html">SearchManager</a>.<a href="../interfaces/_manager_searchmanager_.searchmanager.html#addresultitem">addResultItem</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/0f0237a/src/manager/SearchManagerImpl.ts#L55">manager/SearchManagerImpl.ts:55</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>offerSearch: <a href="_repository_models_offersearch_.offersearch.html" class="tsd-signature-type">OfferSearch</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="complaintosearchitem" class="tsd-anchor"></a>
+					<h3>complain<wbr>ToSearch<wbr>Item</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">complain<wbr>ToSearch<wbr>Item<span class="tsd-signature-symbol">(</span>searchResultId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_manager_searchmanager_.searchmanager.html">SearchManager</a>.<a href="../interfaces/_manager_searchmanager_.searchmanager.html#complaintosearchitem">complainToSearchItem</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/0f0237a/src/manager/SearchManagerImpl.ts#L51">manager/SearchManagerImpl.ts:51</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>searchResultId: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="createrequest" class="tsd-anchor"></a>
 					<h3>create<wbr>Request</h3>
@@ -143,9 +197,9 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/_manager_searchrequestmanager_.searchrequestmanager.html">SearchRequestManager</a>.<a href="../interfaces/_manager_searchrequestmanager_.searchrequestmanager.html#createrequest">createRequest</a></p>
+								<p>Implementation of <a href="../interfaces/_manager_searchmanager_.searchmanager.html">SearchManager</a>.<a href="../interfaces/_manager_searchmanager_.searchmanager.html#createrequest">createRequest</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/SearchRequestManagerImpl.ts#L19">manager/SearchRequestManagerImpl.ts:19</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/0f0237a/src/manager/SearchManagerImpl.ts#L26">manager/SearchManagerImpl.ts:26</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -167,9 +221,9 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/_manager_searchrequestmanager_.searchrequestmanager.html">SearchRequestManager</a>.<a href="../interfaces/_manager_searchrequestmanager_.searchrequestmanager.html#deleterequest">deleteRequest</a></p>
+								<p>Implementation of <a href="../interfaces/_manager_searchmanager_.searchmanager.html">SearchManager</a>.<a href="../interfaces/_manager_searchmanager_.searchmanager.html#deleterequest">deleteRequest</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/SearchRequestManagerImpl.ts#L36">manager/SearchRequestManagerImpl.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/0f0237a/src/manager/SearchManagerImpl.ts#L43">manager/SearchManagerImpl.ts:43</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -191,9 +245,9 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/_manager_searchrequestmanager_.searchrequestmanager.html">SearchRequestManager</a>.<a href="../interfaces/_manager_searchrequestmanager_.searchrequestmanager.html#getallrequests">getAllRequests</a></p>
+								<p>Implementation of <a href="../interfaces/_manager_searchmanager_.searchmanager.html">SearchManager</a>.<a href="../interfaces/_manager_searchmanager_.searchmanager.html#getallrequests">getAllRequests</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/SearchRequestManagerImpl.ts#L32">manager/SearchRequestManagerImpl.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/0f0237a/src/manager/SearchManagerImpl.ts#L39">manager/SearchManagerImpl.ts:39</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_searchrequest_.searchrequest.html" class="tsd-signature-type">SearchRequest</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -209,9 +263,9 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/_manager_searchrequestmanager_.searchrequestmanager.html">SearchRequestManager</a>.<a href="../interfaces/_manager_searchrequestmanager_.searchrequestmanager.html#getmyrequests">getMyRequests</a></p>
+								<p>Implementation of <a href="../interfaces/_manager_searchmanager_.searchmanager.html">SearchManager</a>.<a href="../interfaces/_manager_searchmanager_.searchmanager.html#getmyrequests">getMyRequests</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/588d10e/src/manager/SearchRequestManagerImpl.ts#L23">manager/SearchRequestManagerImpl.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/0f0237a/src/manager/SearchManagerImpl.ts#L30">manager/SearchManagerImpl.ts:30</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -224,6 +278,30 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getsearchresult" class="tsd-anchor"></a>
+					<h3>get<wbr>Search<wbr>Result</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Search<wbr>Result<span class="tsd-signature-symbol">(</span>searchRequestId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_offersearchresultitem_.offersearchresultitem.html" class="tsd-signature-type">OfferSearchResultItem</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_manager_searchmanager_.searchmanager.html">SearchManager</a>.<a href="../interfaces/_manager_searchmanager_.searchmanager.html#getsearchresult">getSearchResult</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/0f0237a/src/manager/SearchManagerImpl.ts#L47">manager/SearchManagerImpl.ts:47</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>searchRequestId: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_offersearchresultitem_.offersearchresultitem.html" class="tsd-signature-type">OfferSearchResultItem</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
 			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -233,7 +311,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_manager_searchrequestmanagerimpl_.html">"manager/<wbr>Search<wbr>Request<wbr>Manager<wbr>Impl"</a>
+						<a href="../modules/_manager_searchmanagerimpl_.html">"manager/<wbr>Search<wbr>Manager<wbr>Impl"</a>
 					</li>
 				</ul>
 			</nav>
@@ -242,22 +320,31 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_manager_searchrequestmanagerimpl_.searchrequestmanagerimpl.html" class="tsd-kind-icon">Search<wbr>Request<wbr>Manager<wbr>Impl</a>
+						<a href="_manager_searchmanagerimpl_.searchmanagerimpl.html" class="tsd-kind-icon">Search<wbr>Manager<wbr>Impl</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_manager_searchrequestmanagerimpl_.searchrequestmanagerimpl.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_manager_searchmanagerimpl_.searchmanagerimpl.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_manager_searchrequestmanagerimpl_.searchrequestmanagerimpl.html#createrequest" class="tsd-kind-icon">create<wbr>Request</a>
+								<a href="_manager_searchmanagerimpl_.searchmanagerimpl.html#addresultitem" class="tsd-kind-icon">add<wbr>Result<wbr>Item</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_manager_searchrequestmanagerimpl_.searchrequestmanagerimpl.html#deleterequest" class="tsd-kind-icon">delete<wbr>Request</a>
+								<a href="_manager_searchmanagerimpl_.searchmanagerimpl.html#complaintosearchitem" class="tsd-kind-icon">complain<wbr>ToSearch<wbr>Item</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_manager_searchrequestmanagerimpl_.searchrequestmanagerimpl.html#getallrequests" class="tsd-kind-icon">get<wbr>All<wbr>Requests</a>
+								<a href="_manager_searchmanagerimpl_.searchmanagerimpl.html#createrequest" class="tsd-kind-icon">create<wbr>Request</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_manager_searchrequestmanagerimpl_.searchrequestmanagerimpl.html#getmyrequests" class="tsd-kind-icon">get<wbr>MyRequests</a>
+								<a href="_manager_searchmanagerimpl_.searchmanagerimpl.html#deleterequest" class="tsd-kind-icon">delete<wbr>Request</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_manager_searchmanagerimpl_.searchmanagerimpl.html#getallrequests" class="tsd-kind-icon">get<wbr>All<wbr>Requests</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_manager_searchmanagerimpl_.searchmanagerimpl.html#getmyrequests" class="tsd-kind-icon">get<wbr>MyRequests</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_manager_searchmanagerimpl_.searchmanagerimpl.html#getsearchresult" class="tsd-kind-icon">get<wbr>Search<wbr>Result</a>
 							</li>
 						</ul>
 					</li>
