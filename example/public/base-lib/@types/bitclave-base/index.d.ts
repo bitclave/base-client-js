@@ -10,6 +10,7 @@ import { WalletManager } from './manager/WalletManager';
 import { WalletManagerImpl } from './manager/WalletManagerImpl';
 import OfferSearchResultItem from './repository/models/OfferSearchResultItem';
 import OfferSearch, { OfferResultAction } from './repository/models/OfferSearch';
+import OfferShareData from './repository/models/OfferShareData';
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
 export { RpcTransport } from './repository/source/rpc/RpcTransport';
@@ -29,7 +30,7 @@ export { AcceptedField } from './utils/keypair/AcceptedField';
 export { RpcToken } from './utils/keypair/rpc/RpcToken';
 export { RpcAuth } from './utils/keypair/rpc/RpcAuth';
 export { BaseAddrPair, AddrRecord, WalletsRecords, WealthRecord, WealthPtr, ProfileUser, ProfileWealthValidator } from './utils/types/BaseTypes';
-export { AccountManager, ProfileManager, DataRequestManager, OfferManager, SearchManager, WalletManager, WalletManagerImpl, Offer, SearchRequest, OfferSearch, OfferSearchResultItem, OfferResultAction };
+export { AccountManager, ProfileManager, DataRequestManager, OfferManager, SearchManager, WalletManager, WalletManagerImpl, Offer, SearchRequest, OfferSearch, OfferSearchResultItem, OfferResultAction, OfferShareData };
 export default class Base {
     private _walletManager;
     private _accountManager;
