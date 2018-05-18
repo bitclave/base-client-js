@@ -101,8 +101,9 @@ export class BitKeyPair implements KeyPairHelper {
     }
 
     async encryptPermissionsFields(recipient: string, data: Map<string, AccessRight>): Promise<string> {
+        const resultMap: Map<string, AcceptedField> = new Map();
+
         if (data != null && data.size > 0) {
-            const resultMap: Map<string, AcceptedField> = new Map();
             let pass: string;
 
             await this.syncPermissions();
@@ -115,13 +116,11 @@ export class BitKeyPair implements KeyPairHelper {
                 pass = await this.generatePasswordForField(key.toLowerCase());
                 resultMap.set(key, new AcceptedField(pass, value));
             }
-
-            const jsonMap: any = JsonUtils.mapToJson(resultMap);
-
-            return await this.encryptMessage(recipient, JSON.stringify(jsonMap));
         }
 
-        return '';
+        const jsonMap: any = JsonUtils.mapToJson(resultMap);
+
+        return await this.encryptMessage(recipient, JSON.stringify(jsonMap));
     }
 
     async decryptMessage(senderPk: string, encrypted: string): Promise<string> {
