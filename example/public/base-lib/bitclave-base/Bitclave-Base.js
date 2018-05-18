@@ -47408,10 +47408,10 @@ var DataRequestManagerImpl = /** @class */ (function () {
      *
      * @returns {Promise<void>}
      */
-    DataRequestManagerImpl.prototype.grantAccessForOffer = function (offerId, offerOwner, acceptedFields) {
+    DataRequestManagerImpl.prototype.grantAccessForOffer = function (offerSearchId, offerOwner, acceptedFields) {
         var _this = this;
         return this.encrypt.encryptPermissionsFields(offerOwner, acceptedFields)
-            .then(function (encrypted) { return _this.dataRequestRepository.grantAccessForOffer(offerId, _this.account.publicKey, encrypted); });
+            .then(function (encrypted) { return _this.dataRequestRepository.grantAccessForOffer(offerSearchId, _this.account.publicKey, encrypted); });
     };
     /**
      * Decodes a message that was encrypted by the owner of the private key that matches the provided public key.

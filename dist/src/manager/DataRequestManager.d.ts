@@ -53,14 +53,14 @@ export interface DataRequestManager {
     getGrantedPermissionsToMe(clientPk: string): Promise<Array<string>>;
     /**
      * Grant access for offer.
-     * @param {number} offerId id of Offer.
+     * @param {number} offerSearchId id of item search result {@link OfferSearch} and {@link OfferSearchResultItem}.
      * @param {string} offerOwner Public key of offer owner.
      * @param {Map<string, AccessRight>} acceptedFields. Map with names of fields for accept access and access rights.
      * (e.g. this is keys in {Map<string, string>} - personal data).
      *
      * @returns {Promise<void>}
      */
-    grantAccessForOffer(offerId: number, offerOwner: string, acceptedFields: Map<string, AccessRight>): Promise<void>;
+    grantAccessForOffer(offerSearchId: number, offerOwner: string, acceptedFields: Map<string, AccessRight>): Promise<void>;
     /**
      * Decodes a message that was encrypted by the owner of the private key that matches the provided public key.
      * @param {string} senderPk public key of the user that issued data access request.

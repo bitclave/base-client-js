@@ -71,7 +71,7 @@ export declare class DataRequestManagerImpl implements DataRequestManager {
      *
      * @returns {Promise<void>}
      */
-    grantAccessForOffer(offerId: number, offerOwner: string, acceptedFields: Map<string, AccessRight>): Promise<void>;
+    grantAccessForOffer(offerSearchId: number, offerOwner: string, acceptedFields: Map<string, AccessRight>): Promise<void>;
     /**
      * Decodes a message that was encrypted by the owner of the private key that matches the provided public key.
      * @param {string} senderPk public key of the user that issued data access request.
