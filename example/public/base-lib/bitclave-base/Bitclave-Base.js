@@ -43193,8 +43193,8 @@ var BitKeyPair = /** @class */ (function () {
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
-                        if (!(data != null && data.size > 0)) return [3 /*break*/, 11];
                         resultMap = new Map();
+                        if (!(data != null && data.size > 0)) return [3 /*break*/, 9];
                         pass = void 0;
                         return [4 /*yield*/, this.syncPermissions()];
                     case 1:
@@ -43233,7 +43233,6 @@ var BitKeyPair = /** @class */ (function () {
                         jsonMap = JsonUtils_1.JsonUtils.mapToJson(resultMap);
                         return [4 /*yield*/, this.encryptMessage(recipient, JSON.stringify(jsonMap))];
                     case 10: return [2 /*return*/, _e.sent()];
-                    case 11: return [2 /*return*/, ''];
                 }
             });
         });
@@ -47401,7 +47400,7 @@ var DataRequestManagerImpl = /** @class */ (function () {
     };
     /**
      * Grant access for offer.
-     * @param {number} offerId id of Offer.
+     * @param {number} offerSearchId id of item search result {@link OfferSearch} and {@link OfferSearchResultItem}.
      * @param {string} offerOwner Public key of offer owner.
      * @param {Map<string, AccessRight>} acceptedFields. Map with names of fields for accept access and access rights.
      * (e.g. this is keys in {Map<string, string>} - personal data).
