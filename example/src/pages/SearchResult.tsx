@@ -66,7 +66,7 @@ export default class SearchResult extends React.Component<Props, State> {
 
         this.baseManager.getDataReuqestManager()
             .grantAccessForOffer(
-                model.offer.id,
+                model.offerSearch.id,
                 model.offer.owner,
                 grantFields
             )
