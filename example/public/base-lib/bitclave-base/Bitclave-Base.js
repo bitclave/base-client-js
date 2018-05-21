@@ -22386,6 +22386,7 @@ var OfferShareData = /** @class */ (function () {
     function OfferShareData(offerSearchId, clientResponse) {
         this.offerSearchId = 0;
         this.offerOwner = '0x0';
+        this.clientId = '0x0';
         this.clientResponse = '';
         this.worth = '0';
         this.accepted = false;
