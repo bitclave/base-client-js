@@ -10605,10 +10605,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var CompareAction_1 = __webpack_require__(193);
 var JsonUtils_1 = __webpack_require__(20);
 var Offer = /** @class */ (function () {
-    function Offer(description, title, imageUrl, tags, compare, rules) {
+    function Offer(description, title, imageUrl, worth, tags, compare, rules) {
         if (description === void 0) { description = ''; }
         if (title === void 0) { title = ''; }
         if (imageUrl === void 0) { imageUrl = ''; }
+        if (worth === void 0) { worth = '0'; }
         if (tags === void 0) { tags = new Map(); }
         if (compare === void 0) { compare = new Map(); }
         if (rules === void 0) { rules = new Map(); }
@@ -10617,6 +10618,7 @@ var Offer = /** @class */ (function () {
         this.description = description;
         this.title = title;
         this.imageUrl = imageUrl;
+        this.worth = worth;
         this.tags = tags;
         this.compare = compare;
         this.rules = rules;
@@ -47183,12 +47185,7 @@ var AccountManagerImpl = /** @class */ (function () {
         this.checkSigMessage(message);
         return this.keyPairCreator.createKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
-            .then(function (account) { return _this.getAccount(account, message); });
-    };
-    AccountManagerImpl.prototype.checkSigMessage = function (message) {
-        if (message == null || message == undefined || message.length < 10) {
-            throw 'message for signature should be have min 10 symbols';
-        }
+            .then(function (account) { return _this.syncAccount(account, message); });
     };
     /**
      * Allows user to unsubscribe from BASE. Delets all his data
@@ -47201,7 +47198,15 @@ var AccountManagerImpl = /** @class */ (function () {
     AccountManagerImpl.prototype.getNewMnemonic = function () {
         return this.keyPairCreator.generateMnemonicPhrase();
     };
-    AccountManagerImpl.prototype.getAccount = function (account, message) {
+    AccountManagerImpl.prototype.getAccount = function () {
+        return this.authAccountBehavior.getValue();
+    };
+    AccountManagerImpl.prototype.checkSigMessage = function (message) {
+        if (message == null || message == undefined || message.length < 10) {
+            throw 'message for signature should be have min 10 symbols';
+        }
+    };
+    AccountManagerImpl.prototype.syncAccount = function (account, message) {
         var _this = this;
         return this.accountRepository.checkAccount(account)
             .then(function (account) { return _this.onGetAccount(account, message); });

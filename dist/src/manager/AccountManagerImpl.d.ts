@@ -47,7 +47,6 @@ export declare class AccountManagerImpl implements AccountManager {
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
     checkAccount(mnemonicPhrase: string, message: string): Promise<Account>;
-    private checkSigMessage(message);
     /**
      * Allows user to unsubscribe from BASE. Delets all his data
      *
@@ -55,7 +54,9 @@ export declare class AccountManagerImpl implements AccountManager {
      */
     unsubscribe(): Promise<Account>;
     getNewMnemonic(): Promise<string>;
-    private getAccount(account, message);
+    getAccount(): Account;
+    private checkSigMessage(message);
+    private syncAccount(account, message);
     private generateAccount(keyPair);
     private onGetAccount(account, message);
 }

@@ -44,4 +44,5 @@ export interface AccountManager {
      */
     unsubscribe(): Promise<Account>;
     getNewMnemonic(): Promise<string>;
+    getAccount(): Account;
 }
