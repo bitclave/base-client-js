@@ -97,13 +97,7 @@ export class AccountManagerImpl implements AccountManager {
 
         return this.keyPairCreator.createKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
-            .then(account => this.getAccount(account, message));
-    }
-
-    private checkSigMessage(message: string) {
-        if (message == null || message == undefined || message.length < 10) {
-            throw 'message for signature should be have min 10 symbols';
-        }
+            .then(account => this.syncAccount(account, message));
     }
 
     /**
@@ -119,7 +113,17 @@ export class AccountManagerImpl implements AccountManager {
         return this.keyPairCreator.generateMnemonicPhrase();
     }
 
-    private getAccount(account: Account, message: string): Promise<Account> {
+    public getAccount(): Account {
+        return this.authAccountBehavior.getValue();
+    }
+
+    private checkSigMessage(message: string) {
+        if (message == null || message == undefined || message.length < 10) {
+            throw 'message for signature should be have min 10 symbols';
+        }
+    }
+
+    private syncAccount(account: Account, message: string): Promise<Account> {
         return this.accountRepository.checkAccount(account)
             .then(account => this.onGetAccount(account, message));
     }

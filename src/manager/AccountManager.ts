@@ -52,4 +52,6 @@ export interface AccountManager {
 
     getNewMnemonic(): Promise<string>;
 
+    getAccount(): Account;
+
 }
