@@ -1,4 +1,4 @@
-import { EthAddrRecord, EthBaseAddrPair, EthWalletsRecords } from '../../src/utils/types/BaseTypes';
+import { AddrRecord, BaseAddrPair, WalletsRecords } from '../../src/utils/types/BaseTypes';
 import { BaseSchema } from '../../src/utils/types/BaseSchema';
 import { WalletUtils, WalletVerificationCodes, WalletVerificationStatus } from '../../src/utils/WalletUtils';
 
@@ -10,9 +10,9 @@ const baseSchema = new BaseSchema();
 
 export default class BaseEthUtils {
 
-    public static createEthAddrRecord(baseID: string, ethAddr: string, ethPrvKey: string): EthAddrRecord {
-        const record: EthAddrRecord = new EthAddrRecord(
-            JSON.stringify(new EthBaseAddrPair(baseID, ethAddr)),
+    public static createEthAddrRecord(baseID: string, addr: string, ethPrvKey: string): AddrRecord {
+        const record: AddrRecord = new AddrRecord(
+            JSON.stringify(new BaseAddrPair(baseID, addr)),
             ''
         );
         record.sig = sigUtil.personalSign(Buffer.from(ethPrvKey, 'hex'), record);
@@ -20,10 +20,10 @@ export default class BaseEthUtils {
         return record;
     }
 
-    public static async createEthWalletsRecordDebug(baseID: string, signedEthRecords: Array<EthAddrRecord>,
-                                                    prvKey: string): Promise<EthWalletsRecords> {
+    public static async createEthWalletsRecordDebug(baseID: string, signedEthRecords: Array<AddrRecord>,
+                                                    prvKey: string): Promise<WalletsRecords> {
         // no verification is performed here
-        const msgWallets: EthWalletsRecords = new EthWalletsRecords(signedEthRecords, '');
+        const msgWallets: WalletsRecords = new WalletsRecords(signedEthRecords, '');
 
         const privateKey = new bitcore.PrivateKey(bitcore.crypto.BN.fromString(prvKey, 16));
         const message = new Message(JSON.stringify(msgWallets.data));
@@ -33,8 +33,8 @@ export default class BaseEthUtils {
         return msgWallets;
     }
 
-    public static async createEthWalletsRecordWithSigner(baseID: string, signedRecords: Array<EthAddrRecord>,
-                                                         privKey: string): Promise<EthWalletsRecords> {
+    public static async createEthWalletsRecordWithSigner(baseID: string, signedRecords: Array<AddrRecord>,
+                                                         privKey: string): Promise<WalletsRecords> {
         for (let record of signedRecords) {
             if ((WalletUtils.verifyEthAddressRecord(record) != WalletVerificationCodes.RC_OK) &&
                 (WalletUtils.verifyEthAddressRecord(record) != WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
@@ -46,7 +46,7 @@ export default class BaseEthUtils {
             }
         }
 
-        const ethWalletsRecords: EthWalletsRecords = new EthWalletsRecords(signedRecords, '');
+        const ethWalletsRecords: WalletsRecords = new WalletsRecords(signedRecords, '');
 
         if (!baseSchema.validateEthWallets(ethWalletsRecords)) {
             throw 'invalid wallets structure';

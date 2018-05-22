@@ -1,5 +1,5 @@
 import { BaseSchema } from './types/BaseSchema';
-import { EthAddrRecord, EthBaseAddrPair, BtcAddrRecord, BtcBaseAddrPair } from './types/BaseTypes';
+import { AddrRecord, BaseAddrPair } from './types/BaseTypes';
 import { EthereumUtils } from './EthereumUtils';
 import { WalletManagerImpl } from '../manager/WalletManagerImpl';
 
@@ -25,7 +25,7 @@ export class WalletUtils {
 
     private static baseSchema = new BaseSchema();
 
-    public static verifyEthAddressRecord(record: EthAddrRecord): WalletVerificationCodes {
+    public static verifyEthAddressRecord(record: AddrRecord): WalletVerificationCodes {
         let signerEthAddr: string;
         try {
             if (!this.baseSchema.validateEthAddr(record)) {
@@ -46,12 +46,12 @@ export class WalletUtils {
             return WalletVerificationCodes.RC_GENERAL_ERROR;
         }
 
-        return (signerEthAddr == JSON.parse(record.data).ethAddr)
+        return (signerEthAddr == JSON.parse(record.data).addr)
             ? WalletVerificationCodes.RC_OK
             : WalletVerificationCodes.RC_ADDR_WRONG_SIGNATURE;
     }
 
-    public static verifyBtcAddressRecord(record: BtcAddrRecord): WalletVerificationCodes {
+    public static verifyBtcAddressRecord(record: AddrRecord): WalletVerificationCodes {
         let signerBtcAddr: string;
         try {
             if (!this.baseSchema.validateBtcAddr(record)) {
@@ -72,7 +72,7 @@ export class WalletUtils {
             return WalletVerificationCodes.RC_GENERAL_ERROR;
         }
 
-        return (signerBtcAddr == JSON.parse(record.data).btcAddr)
+        return (signerBtcAddr == JSON.parse(record.data).addr)
             ? WalletVerificationCodes.RC_OK
             : WalletVerificationCodes.RC_ADDR_WRONG_SIGNATURE;
     }
@@ -189,9 +189,9 @@ export class WalletUtils {
         return status;
     }
 
-    public static createEthereumAddersRecord(baseID: string, ethAddr: string, ethPrvKey: string): EthAddrRecord {
-        const record: EthAddrRecord = new EthAddrRecord(
-            JSON.stringify(new EthBaseAddrPair(baseID, ethAddr)),
+    public static createEthereumAddersRecord(baseID: string, addr: string, ethPrvKey: string): AddrRecord {
+        const record: AddrRecord = new AddrRecord(
+            JSON.stringify(new BaseAddrPair(baseID, addr)),
             ''
         );
         record.sig = EthereumUtils.createSig(ethPrvKey, record);
@@ -199,9 +199,9 @@ export class WalletUtils {
         return record;
     }
 
-    public static createBitcoinAddersRecord(baseID: string, btcAddr: string, btcPrvKey: string): EthAddrRecord {
-        const record: BtcAddrRecord = new BtcAddrRecord(
-            JSON.stringify(new BtcBaseAddrPair(baseID, btcAddr)),
+    public static createBitcoinAddersRecord(baseID: string, addr: string, btcPrvKey: string): AddrRecord {
+        const record: AddrRecord = new AddrRecord(
+            JSON.stringify(new BaseAddrPair(baseID, addr)),
             ''
         );
         record.sig = EthereumUtils.createSig(btcPrvKey, record);

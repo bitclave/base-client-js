@@ -1,19 +1,19 @@
 export declare class BaseSchema {
     private static instance;
-    static EthBaseAddrPair: {
+    static BaseAddrPair: {
         'type': string;
         'properties': {
             'baseID': {
                 'type': string;
             };
-            'ethAddr': {
+            'addr': {
                 'type': string;
             };
         };
         'required': string[];
         'additionalProperties': boolean;
     };
-    static EthAddrRecord: {
+    static AddrRecord: {
         'type': string;
         'properties': {
             'data': {

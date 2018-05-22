@@ -1,6 +1,6 @@
 import * as BaseType from '../../src/utils/BaseTypes';
 import { MessageSigner } from './keypair/MessageSigner';
-import { EthAddrRecord } from './BaseTypes';
+import { AddrRecord } from './BaseTypes';
 export declare enum EthWalletVerificationCodes {
     RC_OK = 0,
     RC_BASEID_MISSMATCH = -1,
@@ -15,10 +15,10 @@ export declare class EthWalletVerificationStatus {
     details: Array<number>;
 }
 export default class BaseEthUtils {
-    static verifyEthAddrRecord(msg: BaseType.EthAddrRecord): EthWalletVerificationCodes;
-    static createEthAddrRecord(baseID: string, ethAddr: string, ethPrvKey: string): BaseType.EthAddrRecord;
-    static createEthWalletsRecordDebug(baseID: string, signedEthRecords: Array<BaseType.EthAddrRecord>, prvKey: string): Promise<BaseType.EthWallets>;
-    static createEthWalletsRecordWithSigner(baseID: string, signedEthRecords: Array<EthAddrRecord>, signer: MessageSigner): Promise<BaseType.EthWallets>;
-    static createEthWalletsRecordWithPrvKey(baseID: string, signedEthRecords: Array<BaseType.EthAddrRecord>, prvKey: string): Promise<BaseType.EthWallets>;
+    static verifyEthAddrRecord(msg: BaseType.AddrRecord): EthWalletVerificationCodes;
+    static createEthAddrRecord(baseID: string, addr: string, ethPrvKey: string): BaseType.AddrRecord;
+    static createEthWalletsRecordDebug(baseID: string, signedEthRecords: Array<BaseType.AddrRecord>, prvKey: string): Promise<BaseType.EthWallets>;
+    static createEthWalletsRecordWithSigner(baseID: string, signedEthRecords: Array<AddrRecord>, signer: MessageSigner): Promise<BaseType.EthWallets>;
+    static createEthWalletsRecordWithPrvKey(baseID: string, signedEthRecords: Array<BaseType.AddrRecord>, prvKey: string): Promise<BaseType.EthWallets>;
     static verifyEthWalletsRecord(baseID: string, msg: any): EthWalletVerificationStatus;
 }

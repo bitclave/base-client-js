@@ -1,4 +1,4 @@
-import { EthAddrRecord, EthWalletsRecords, BtcAddrRecord, BtcWalletsRecords, WealthPtr } from '../utils/types/BaseTypes';
+import { AddrRecord, WalletsRecords, AddrRecord, WalletsRecords, WealthPtr } from '../utils/types/BaseTypes';
 import Account from '../repository/models/Account';
 import { ProfileManager } from './ProfileManager';
 import { DataRequestManager } from './DataRequestManager';
@@ -39,7 +39,7 @@ export class WalletManagerImpl implements WalletManager {
             .subscribe(this.onChangeAccount.bind(this));
     }
 
-    public async createEthWalletsRecords(wallets: EthAddrRecord[], baseID: string): Promise<EthWalletsRecords> {
+    public async createEthWalletsRecords(wallets: AddrRecord[], baseID: string): Promise<WalletsRecords> {
         for (let msg of wallets) {
             if ((WalletUtils.verifyEthAddressRecord(msg) != WalletVerificationCodes.RC_OK) &&
                 (WalletUtils.verifyEthAddressRecord(msg) != WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
@@ -51,7 +51,7 @@ export class WalletManagerImpl implements WalletManager {
             }
         }
 
-        const msgWallets: EthWalletsRecords = new EthWalletsRecords(wallets, '');
+        const msgWallets: WalletsRecords = new WalletsRecords(wallets, '');
 
         if (!this.baseSchema.validateEthWallets(msgWallets)) {
             throw 'invalid wallets structure';
@@ -67,7 +67,7 @@ export class WalletManagerImpl implements WalletManager {
         return msgWallets;
     }
 
-    public async createBtcWalletsRecords(wallets: BtcAddrRecord[], baseID: string): Promise<BtcWalletsRecords> {
+    public async createBtcWalletsRecords(wallets: AddrRecord[], baseID: string): Promise<WalletsRecords> {
         for (let msg of wallets) {
             if ((WalletUtils.verifyBtcAddressRecord(msg) != WalletVerificationCodes.RC_OK) &&
                 (WalletUtils.verifyBtcAddressRecord(msg) != WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
@@ -79,7 +79,7 @@ export class WalletManagerImpl implements WalletManager {
             }
         }
 
-        const msgWallets: BtcWalletsRecords = new BtcWalletsRecords(wallets, '');
+        const msgWallets: WalletsRecords = new WalletsRecords(wallets, '');
 
         if (!this.baseSchema.validateEthWallets(msgWallets)) {
             throw 'invalid wallets structure';

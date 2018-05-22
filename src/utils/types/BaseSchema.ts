@@ -3,27 +3,27 @@ const Ajv = require('ajv');
 // todo need refactor this class!!!!
 export class BaseSchema {
 
-    public static EthBaseAddrPair: any = {
+    public static BaseAddrPair: any = {
         'type': 'object',
         'properties': {
             'baseID': {'type': 'string'},
-            'ethAddr': {'type': 'string'}
+            'addr': {'type': 'string'}
         },
-        'required': ['baseID', 'ethAddr'],
+        'required': ['baseID', 'addr'],
         'additionalProperties': false
     };
 
-    public static BtcBaseAddrPair: any = {
+    public static BaseAddrPair: any = {
         'type': 'object',
         'properties': {
             'baseID': {'type': 'string'},
-            'btcAddr': {'type': 'string'}
+            'addr': {'type': 'string'}
         },
-        'required': ['baseID', 'btcAddr'],
+        'required': ['baseID', 'addr'],
         'additionalProperties': false
     };
 
-    public static EthAddrRecord: any = {
+    public static AddrRecord: any = {
         'type': 'object',
         'properties': {
             'data': {'type': 'string'},
@@ -35,7 +35,7 @@ export class BaseSchema {
         'additionalProperties': false
     };
 
-    public static BtcAddrRecord: any = {
+    public static AddrRecord: any = {
         'type': 'object',
         'properties': {
             'data': {'type': 'string'},
@@ -49,7 +49,7 @@ export class BaseSchema {
 
     public static EthWallets: any = {
         'definitions': {
-            'eth_address': BaseSchema.EthAddrRecord
+            'eth_address': BaseSchema.AddrRecord
         },
         'description': 'list of ETH wallets',
         'type': 'object',
@@ -68,7 +68,7 @@ export class BaseSchema {
 
     public static BtcWallets: any = {
         'definitions': {
-            'btc_address': BaseSchema.BtcAddrRecord
+            'btc_address': BaseSchema.AddrRecord
         },
         'description': 'list of BTC wallets',
         'type': 'object',
@@ -88,7 +88,7 @@ export class BaseSchema {
     public static All: any = {
         'title': 'Profile',
         'definitions': {
-            'eth_address': BaseSchema.EthAddrRecord,
+            'eth_address': BaseSchema.AddrRecord,
             'eth_wallets': BaseSchema.EthWallets,
             'btc_wallets': BaseSchema.BtcWallets
         },
@@ -124,11 +124,11 @@ export class BaseSchema {
     constructor() {
         this.ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
 
-        this.ajvValidateEthBaseAddrPair = this.ajv.compile(BaseSchema.EthBaseAddrPair);
-        this.ajvValidateEthAddr = this.ajv.compile(BaseSchema.EthAddrRecord);
+        this.ajvValidateEthBaseAddrPair = this.ajv.compile(BaseSchema.BaseAddrPair);
+        this.ajvValidateEthAddr = this.ajv.compile(BaseSchema.AddrRecord);
         this.ajvValidateEthWallets = this.ajv.compile(BaseSchema.EthWallets);
-        this.ajvValidateBtcBaseAddrPair = this.ajv.compile(BaseSchema.BtcBaseAddrPair);
-        this.ajvValidateBtcAddr = this.ajv.compile(BaseSchema.BtcAddrRecord);
+        this.ajvValidateBtcBaseAddrPair = this.ajv.compile(BaseSchema.BaseAddrPair);
+        this.ajvValidateBtcAddr = this.ajv.compile(BaseSchema.AddrRecord);
         this.ajvValidateBtcWallets = this.ajv.compile(BaseSchema.BtcWallets);
         this.ajvValidateAll = this.ajv.compile(BaseSchema.All);
     }

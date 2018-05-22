@@ -1,7 +1,7 @@
 declare class BaseAddrPair {
     baseID: string;
-    ethAddr: string;
-    constructor(baseID: string, ethAddr: string);
+    addr: string;
+    constructor(baseID: string, addr: string);
 }
 declare class AddrRecord {
     data: string;

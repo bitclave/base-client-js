@@ -13284,9 +13284,9 @@ exports.KeyPair = KeyPair;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var BaseAddrPair = /** @class */ (function () {
-    function BaseAddrPair(baseID, ethAddr) {
+    function BaseAddrPair(baseID, addr) {
         this.baseID = baseID;
-        this.ethAddr = ethAddr;
+        this.addr = addr;
     }
     return BaseAddrPair;
 }());
@@ -23249,8 +23249,8 @@ var Ajv = __webpack_require__(548);
 var BaseSchema = /** @class */ (function () {
     function BaseSchema() {
         this.ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
-        this.ajvValidateBaseAddrPair = this.ajv.compile(BaseSchema.EthBaseAddrPair);
-        this.ajvValidateAddr = this.ajv.compile(BaseSchema.EthAddrRecord);
+        this.ajvValidateBaseAddrPair = this.ajv.compile(BaseSchema.BaseAddrPair);
+        this.ajvValidateAddr = this.ajv.compile(BaseSchema.AddrRecord);
         this.ajvValidateWallets = this.ajv.compile(BaseSchema.EthWallets);
         this.ajvValidateAll = this.ajv.compile(BaseSchema.All);
     }
@@ -23266,16 +23266,16 @@ var BaseSchema = /** @class */ (function () {
     BaseSchema.prototype.validateAll = function (s) {
         return this.ajvValidateAll(s);
     };
-    BaseSchema.EthBaseAddrPair = {
+    BaseSchema.BaseAddrPair = {
         'type': 'object',
         'properties': {
             'baseID': { 'type': 'string' },
-            'ethAddr': { 'type': 'string' }
+            'addr': { 'type': 'string' }
         },
-        'required': ['baseID', 'ethAddr'],
+        'required': ['baseID', 'addr'],
         'additionalProperties': false
     };
-    BaseSchema.EthAddrRecord = {
+    BaseSchema.AddrRecord = {
         'type': 'object',
         'properties': {
             'data': { 'type': 'string' },
@@ -23288,7 +23288,7 @@ var BaseSchema = /** @class */ (function () {
     };
     BaseSchema.EthWallets = {
         'definitions': {
-            'eth_address': BaseSchema.EthAddrRecord
+            'eth_address': BaseSchema.AddrRecord
         },
         'description': 'list of ETH wallets',
         'type': 'object',
@@ -23307,7 +23307,7 @@ var BaseSchema = /** @class */ (function () {
     BaseSchema.All = {
         'title': 'Profile',
         'definitions': {
-            'eth_address': BaseSchema.EthAddrRecord,
+            'eth_address': BaseSchema.AddrRecord,
             'eth_wallets': BaseSchema.EthWallets
         },
         'type': 'object',
@@ -25295,7 +25295,7 @@ var WalletUtils = /** @class */ (function () {
         catch (err) {
             return WalletVerificationCodes.RC_GENERAL_ERROR;
         }
-        return (signerAddr == JSON.parse(record.data).ethAddr)
+        return (signerAddr == JSON.parse(record.data).addr)
             ? WalletVerificationCodes.RC_OK
             : WalletVerificationCodes.RC_ADDR_WRONG_SIGNATURE;
     };
@@ -25358,8 +25358,8 @@ var WalletUtils = /** @class */ (function () {
         return status;
         var e_1, _c;
     };
-    WalletUtils.createEthereumAddersRecord = function (baseID, ethAddr, ethPrvKey) {
-        var record = new BaseTypes_1.AddrRecord(JSON.stringify(new BaseTypes_1.BaseAddrPair(baseID, ethAddr)), '');
+    WalletUtils.createEthereumAddersRecord = function (baseID, addr, ethPrvKey) {
+        var record = new BaseTypes_1.AddrRecord(JSON.stringify(new BaseTypes_1.BaseAddrPair(baseID, addr)), '');
         record.sig = EthereumUtils_1.EthereumUtils.createSig(ethPrvKey, record);
         return record;
     };

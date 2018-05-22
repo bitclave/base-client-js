@@ -1,27 +1,16 @@
-class EthBaseAddrPair {
+class BaseAddrPair {
     baseID: string;
-    ethAddr: string;
+    addr: string;
 
-    constructor(baseID: string, ethAddr: string) {
+    constructor(baseID: string, addr: string) {
         this.baseID = baseID;
-        this.ethAddr = ethAddr;
+        this.addr = addr;
     }
 
 }
 
-class BtcBaseAddrPair {
-    baseID: string;
-    btcAddr: string;
-
-    constructor(baseID: string, btcAddr: string) {
-        this.baseID = baseID;
-        this.btcAddr = btcAddr;
-    }
-
-}
-
-class EthAddrRecord {
-    // this must be serialization of EthBaseAddrPair
+class AddrRecord {
+    // this must be serialization of BaseAddrPair
     // to make sure this string exactly can be shared with external wallets for signing
     data: string;
     sig: string;
@@ -33,35 +22,11 @@ class EthAddrRecord {
 
 }
 
-class BtcAddrRecord {
-    // this must be serialization of EthBaseAddrPair
-    // to make sure this string exactly can be shared with external wallets for signing
-    data: string;
+class WalletsRecords {
+    data: Array<AddrRecord>;
     sig: string;
 
-    constructor(data?: string, sig?: string) {
-        this.data = data || '';
-        this.sig = sig || '';
-    }
-
-}
-
-class EthWalletsRecords {
-    data: Array<EthAddrRecord>;
-    sig: string;
-
-    constructor(data: Array<EthAddrRecord>, sig: string) {
-        this.data = data;
-        this.sig = sig;
-    }
-
-}
-
-class BtcWalletsRecords {
-    data: Array<BtcAddrRecord>;
-    sig: string;
-
-    constructor(data: Array<BtcAddrRecord>, sig: string) {
+    constructor(data: Array<AddrRecord>, sig: string) {
         this.data = data;
         this.sig = sig;
     }
@@ -94,8 +59,8 @@ class ProfileUser {
     baseID: string;
     email: string;
     wealth: WealthPtr;
-    eth_wallets: EthWalletsRecords;
-    btc_wallets: BtcWalletsRecords;
+    eth_wallets: WalletsRecords;
+    btc_wallets: WalletsRecords;
 }
 
 class ProfileWealthValidator {
@@ -104,12 +69,9 @@ class ProfileWealthValidator {
 }
 
 export {
-    EthBaseAddrPair,
-    EthAddrRecord,
-    EthWalletsRecords,
-    BtcBaseAddrPair,
-    BtcAddrRecord,
-    BtcWalletsRecords,
+    BaseAddrPair,
+    AddrRecord,
+    WalletsRecords,
     WealthRecord,
     WealthPtr,
     ProfileUser,

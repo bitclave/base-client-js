@@ -1,6 +1,6 @@
 export declare class BaseSchema {
-    static EthBaseAddrPair: any;
-    static EthAddrRecord: any;
+    static BaseAddrPair: any;
+    static AddrRecord: any;
     static EthWallets: any;
     static All: any;
     private ajvValidateAll;

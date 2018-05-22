@@ -281,7 +281,7 @@ export default class Dashboard extends React.Component<Props, State> {
 
         var newAddr = {
             'baseID': this.baseManager.getId(),
-            'ethAddr': ethAddress
+            'addr': ethAddress
         };
         var newAddrRecord = {
             'data': JSON.stringify(newAddr),
@@ -365,7 +365,7 @@ export default class Dashboard extends React.Component<Props, State> {
         var thisMessage = JSON.stringify(
             {
                 'baseID': this.baseManager.getId(),
-                'ethAddr': signingAddr
+                'addr': signingAddr
             }
         );
         var signedMessage = '';

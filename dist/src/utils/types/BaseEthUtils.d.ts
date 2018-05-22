@@ -1,4 +1,4 @@
-import { EthAddrRecord, EthWallets } from './BaseTypes';
+import { AddrRecord, EthWallets } from './BaseTypes';
 import { MessageSigner } from '../keypair/MessageSigner';
 export declare enum EthWalletVerificationCodes {
     RC_OK = 0,
@@ -14,8 +14,8 @@ export declare class EthWalletVerificationStatus {
     details: Array<number>;
 }
 export default class BaseEthUtils {
-    static verifyEthAddrRecord(msg: EthAddrRecord): EthWalletVerificationCodes;
-    static createEthAddrRecord(baseID: string, ethAddr: string, ethPrvKey: string): EthAddrRecord;
-    static createEthWalletsRecordWithSigner(baseID: string, signedEthRecords: Array<EthAddrRecord>, signer: MessageSigner): Promise<EthWallets>;
+    static verifyEthAddrRecord(msg: AddrRecord): EthWalletVerificationCodes;
+    static createEthAddrRecord(baseID: string, addr: string, ethPrvKey: string): AddrRecord;
+    static createEthWalletsRecordWithSigner(baseID: string, signedEthRecords: Array<AddrRecord>, signer: MessageSigner): Promise<EthWallets>;
     static verifyEthWalletsRecord(baseID: string, msg: any): EthWalletVerificationStatus;
 }

@@ -17,5 +17,5 @@ export declare class WalletUtils {
     static verifyAddressRecord(record: AddrRecord): WalletVerificationCodes;
     static validateWallets(key: string, val: any, baseID: string): WalletVerificationStatus;
     static verifyWalletsRecord(baseID: string, msg: any): WalletVerificationStatus;
-    static createEthereumAddersRecord(baseID: string, ethAddr: string, ethPrvKey: string): AddrRecord;
+    static createEthereumAddersRecord(baseID: string, addr: string, ethPrvKey: string): AddrRecord;
 }

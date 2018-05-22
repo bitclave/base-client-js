@@ -1,17 +1,17 @@
-declare class EthBaseAddrPair {
+declare class BaseAddrPair {
     baseID: string;
-    ethAddr: string;
-    constructor(baseID: string, ethAddr: string);
+    addr: string;
+    constructor(baseID: string, addr: string);
 }
-declare class EthAddrRecord {
+declare class AddrRecord {
     data: string;
     sig: string;
     constructor(data?: string, sig?: string);
 }
 declare class EthWallets {
-    data: Array<EthAddrRecord>;
+    data: Array<AddrRecord>;
     sig: string;
-    constructor(data: Array<EthAddrRecord>, sig: string);
+    constructor(data: Array<AddrRecord>, sig: string);
 }
 declare class EthWealthRecord {
     wealth: string;
@@ -33,4 +33,4 @@ declare class ProfileEthWealthValidator {
     baseID: string;
     wealth: Map<string, EthWealthRecord>;
 }
-export { EthBaseAddrPair, EthAddrRecord, EthWallets, EthWealthRecord, EthWealthPtr, ProfileUser, ProfileEthWealthValidator };
+export { BaseAddrPair, AddrRecord, EthWallets, EthWealthRecord, EthWealthPtr, ProfileUser, ProfileEthWealthValidator };

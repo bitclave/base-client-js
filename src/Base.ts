@@ -68,12 +68,9 @@ export { RpcToken } from './utils/keypair/rpc/RpcToken';
 export { RpcAuth } from './utils/keypair/rpc/RpcAuth';
 
 export {
-    EthBaseAddrPair,
-    EthAddrRecord,
-    EthWalletsRecords,
-    BtcBaseAddrPair,
-    BtcAddrRecord,
-    BtcWalletsRecords,
+    BaseAddrPair,
+    AddrRecord,
+    WalletsRecords,
     WealthRecord,
     WealthPtr,
     ProfileUser,
