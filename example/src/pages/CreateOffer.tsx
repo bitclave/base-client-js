@@ -22,6 +22,7 @@ interface State {
     title: string;
     desc: string;
     imageUrl: string;
+    worth: string;
     inputTagKey: string;
     inputTagValue: string;
     inputCompareKey: string;
@@ -55,6 +56,7 @@ export default class CreateOffer extends React.Component<Props, State> {
             title: '',
             desc: '',
             imageUrl: '',
+            worth: '0',
             inputTagKey: '',
             inputTagValue: '',
             inputCompareKey: '',
@@ -85,7 +87,13 @@ export default class CreateOffer extends React.Component<Props, State> {
                         value={this.state.imageUrl}
                         onChange={e => this.onChangeImageUrl(e.target.value)}
                     />
-
+                    <Input
+                        placeholder="count of CAT (reward for client)"
+                        value={this.state.worth}
+                        type="number"
+                        step="0.01"
+                        onChange={e => this.onChangeWorth(e.target.value)}
+                    />
                     <div className="my-4 row justify-content-center align-items-center">
                         <Form className="w-50">
                             <FormGroup>
@@ -198,6 +206,12 @@ export default class CreateOffer extends React.Component<Props, State> {
         this.setState({imageUrl: value});
     }
 
+    private onChangeWorth(value: string) {
+       const worth: number = parseFloat(value);
+
+        this.setState({worth: (worth || 0).toString()});
+    }
+
     private onChangeCompareRules(index: number, value: string) {
         const action: CompareAction | undefined = this.compareActionToValue.get(value);
         if (action !== undefined) {
@@ -263,6 +277,7 @@ export default class CreateOffer extends React.Component<Props, State> {
                 this.state.desc,
                 this.state.title,
                 this.state.imageUrl,
+                this.state.worth,
                 tagsMap,
                 compareMap,
                 rulesMap

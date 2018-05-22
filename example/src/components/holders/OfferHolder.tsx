@@ -30,10 +30,11 @@ export default class OfferHolder extends AbstractHolder<Properties, Offer, Abstr
         const model: Offer = this.props.model;
         return (
             <div>
-                <div>{model.id}</div>
-                <div>{model.title}</div>
-                <div>{model.description}</div>
-                <div>{model.imageUrl}</div>
+                <div>{'id: ' + model.id}</div>
+                <div>{'title: ' + model.title}</div>
+                <div>{'desc: ' + model.description}</div>
+                <div>{'image: ' + model.imageUrl}</div>
+                <div>{'worth: ' + model.worth + ' CAT'}</div>
             </div>
         );
     }

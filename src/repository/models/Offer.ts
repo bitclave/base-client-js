@@ -8,6 +8,7 @@ export default class Offer {
     description: string;
     title: string;
     imageUrl: string;
+    worth: string;
     tags: Map<String, String>;
     compare: Map<String, String>;
     rules: Map<String, CompareAction>;
@@ -24,6 +25,7 @@ export default class Offer {
     constructor(description: string = '',
                 title: string = '',
                 imageUrl: string = '',
+                worth: string = '0',
                 tags: Map<String, String> = new Map(),
                 compare: Map<String, String> = new Map(),
                 rules: Map<String, CompareAction> = new Map()) {
@@ -31,6 +33,7 @@ export default class Offer {
         this.description = description;
         this.title = title;
         this.imageUrl = imageUrl;
+        this.worth = worth;
         this.tags = tags;
         this.compare = compare;
         this.rules = rules;
