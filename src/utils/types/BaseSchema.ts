@@ -13,16 +13,6 @@ export class BaseSchema {
         'additionalProperties': false
     };
 
-    public static BaseAddrPair: any = {
-        'type': 'object',
-        'properties': {
-            'baseID': {'type': 'string'},
-            'addr': {'type': 'string'}
-        },
-        'required': ['baseID', 'addr'],
-        'additionalProperties': false
-    };
-
     public static AddrRecord: any = {
         'type': 'object',
         'properties': {
@@ -47,35 +37,16 @@ export class BaseSchema {
         'additionalProperties': false
     };
 
-    public static EthWallets: any = {
+    public static CryptoWallets: any = {
         'definitions': {
-            'eth_address': BaseSchema.AddrRecord
+            'address': BaseSchema.AddrRecord
         },
-        'description': 'list of ETH wallets',
+        'description': 'list of crypto wallets',
         'type': 'object',
         'properties': {
             'data': {
                 'type': 'array',
-                'items': {'$ref': '#/definitions/eth_address'},
-                'minItems': 1,
-                'uniqueItems': true
-            },
-            'sig': {
-                'type': 'string'
-            }
-        }
-    };
-
-    public static BtcWallets: any = {
-        'definitions': {
-            'btc_address': BaseSchema.AddrRecord
-        },
-        'description': 'list of BTC wallets',
-        'type': 'object',
-        'properties': {
-            'data': {
-                'type': 'array',
-                'items': {'$ref': '#/definitions/btc_address'},
+                'items': {'$ref': '#/definitions/address'},
                 'minItems': 1,
                 'uniqueItems': true
             },
@@ -88,9 +59,8 @@ export class BaseSchema {
     public static All: any = {
         'title': 'Profile',
         'definitions': {
-            'eth_address': BaseSchema.AddrRecord,
-            'eth_wallets': BaseSchema.EthWallets,
-            'btc_wallets': BaseSchema.BtcWallets
+            'address': BaseSchema.AddrRecord,
+            'wallets': BaseSchema.CryptoWallets
         },
 
         'type': 'object',
@@ -105,56 +75,38 @@ export class BaseSchema {
                 'description': 'wealth in USD',
                 'type': 'string'
             },
-            'eth_wallets': {'$ref': '#/definitions/eth_wallets'},
+            'wallets': {'$ref': '#/definitions/wallets'},
         },
         'required': ['baseID'],
         'additionalProperties': false
     };
 
     private ajvValidateAll: Function;
-    private ajvValidateEthAddr: Function;
-    private ajvValidateEthBaseAddrPair: Function;
-    private ajvValidateEthWallets: Function;
-    private ajvValidateBtcAddr: Function;
-    private ajvValidateBtcBaseAddrPair: Function;
-    private ajvValidateBtcWallets: Function;
+    private ajvValidateAddr: Function;
+    private ajvValidateBaseAddrPair: Function;
+    private ajvValidateWallets: Function;
 
     private ajv: any;
 
     constructor() {
         this.ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
 
-        this.ajvValidateEthBaseAddrPair = this.ajv.compile(BaseSchema.BaseAddrPair);
-        this.ajvValidateEthAddr = this.ajv.compile(BaseSchema.AddrRecord);
-        this.ajvValidateEthWallets = this.ajv.compile(BaseSchema.EthWallets);
-        this.ajvValidateBtcBaseAddrPair = this.ajv.compile(BaseSchema.BaseAddrPair);
-        this.ajvValidateBtcAddr = this.ajv.compile(BaseSchema.AddrRecord);
-        this.ajvValidateBtcWallets = this.ajv.compile(BaseSchema.BtcWallets);
+        this.ajvValidateBaseAddrPair = this.ajv.compile(BaseSchema.BaseAddrPair);
+        this.ajvValidateAddr = this.ajv.compile(BaseSchema.AddrRecord);
+        this.ajvValidateWallets = this.ajv.compile(BaseSchema.CryptoWallets);
         this.ajvValidateAll = this.ajv.compile(BaseSchema.All);
     }
 
-    public validateEthAddr(s: any): boolean {
-        return this.ajvValidateEthAddr(s);
+    public validateAddr(s: any): boolean {
+        return this.ajvValidateAddr(s);
     }
 
-    public validateEthWallets(s: any): boolean {
-        return this.ajvValidateEthWallets(s);
+    public validateWallets(s: any): boolean {
+        return this.ajvValidateWallets(s);
     }
 
-    public validateEthBaseAddrPair(s: any): boolean {
-        return this.ajvValidateEthBaseAddrPair(s);
-    }
-
-    public validateBtcAddr(s: any): boolean {
-        return this.ajvValidateBtcAddr(s);
-    }
-
-    public validateBtcWallets(s: any): boolean {
-        return this.ajvValidateBtcWallets(s);
-    }
-
-    public validateBtcBaseAddrPair(s: any): boolean {
-        return this.ajvValidateBtcBaseAddrPair(s);
+    public validateBaseAddrPair(s: any): boolean {
+        return this.ajvValidateBaseAddrPair(s);
     }
 
     public validateAll(s: any): boolean {

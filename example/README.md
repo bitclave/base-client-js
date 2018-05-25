@@ -28,12 +28,12 @@ This is the main dashboard.
 - the middle part allows user to add new <key,value> pair or update previous <key> with new data
 - the top part allows to add new ETH wallets
   - Sign w/Web3 - will popup a Metamask (or any Web3 wallet) and ask you to sign a special 
-  string. Once you sign the string, it will populate the eth_address and signature fields.
-  - Set Single - will add a new eth_address to the eth_wallets structure in the low section
-  - Verify - will verify the eth_wallets structure in the low section
+  string. Once you sign the string, it will populate the address and signature fields.
+  - Set Single - will add a new address to the wallets structure in the low section
+  - Verify - will verify the wallets structure in the low section
     - When eth_walelts structure is propery signed the response shall be something like
     {"rc":0,"err":"","details":[0,0]}
-  - Sign Wallets - will sign the eth_wallets structure
+  - Sign Wallets - will sign the wallets structure
   
 
 

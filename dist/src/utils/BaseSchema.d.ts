@@ -26,9 +26,9 @@ export declare class BaseSchema {
         'required': string[];
         'additionalProperties': boolean;
     };
-    static EthWallets: {
+    static CryptoWallets: {
         'definitions': {
-            'eth_address': {
+            'address': {
                 'type': string;
                 'properties': {
                     'data': {
@@ -61,7 +61,7 @@ export declare class BaseSchema {
     static All: {
         'title': string;
         'definitions': {
-            'eth_address': {
+            'address': {
                 'type': string;
                 'properties': {
                     'data': {
@@ -74,9 +74,9 @@ export declare class BaseSchema {
                 'required': string[];
                 'additionalProperties': boolean;
             };
-            'eth_wallets': {
+            'wallets': {
                 'definitions': {
-                    'eth_address': {
+                    'address': {
                         'type': string;
                         'properties': {
                             'data': {
@@ -119,7 +119,7 @@ export declare class BaseSchema {
                 'description': string;
                 'type': string;
             };
-            'eth_wallets': {
+            'wallets': {
                 '$ref': string;
             };
         };
@@ -128,13 +128,13 @@ export declare class BaseSchema {
     };
     static getInstance(): BaseSchema;
     private ajvValidateAll;
-    private ajvValidateEthAddr;
-    private ajvValidateEthBaseAddrPair;
-    private ajvValidateEthWallets;
+    private ajvValidateAddr;
+    private ajvValidateBaseAddrPair;
+    private ajvValidateWallets;
     private ajv;
     constructor();
-    validateEthAddr(s: any): boolean;
-    validateEthWallets(s: any): boolean;
-    validateEthBaseAddrPair(s: any): boolean;
+    validateAddr(s: any): boolean;
+    validateWallets(s: any): boolean;
+    validateBaseAddrPair(s: any): boolean;
     validateAll(s: any): boolean;
 }

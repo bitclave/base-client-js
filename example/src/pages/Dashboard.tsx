@@ -103,7 +103,7 @@ export default class Dashboard extends React.Component<Props, State> {
                                 <Row>
                                     <Col className="p-0" xs="1" sm="2">
                                         <Input
-                                            value={'eth_address'} readOnly
+                                            value={'address'} readOnly
                                         />
                                     </Col>
                                     <Col className="p-0" xs="1" sm="5">
@@ -277,7 +277,7 @@ export default class Dashboard extends React.Component<Props, State> {
             alert('The ethAddress must not be empty');
             return;
         }
-        var pos = this.state.clientData.findIndex(model => model.key === 'eth_wallets');
+        var pos = this.state.clientData.findIndex(model => model.key === 'wallets');
 
         var newAddr = {
             'baseID': this.baseManager.getId(),
@@ -293,7 +293,7 @@ export default class Dashboard extends React.Component<Props, State> {
             wallets.sig = '';
             this.state.clientData[pos].value = JSON.stringify(wallets);
         } else {
-            this.state.clientData.push(new Pair('eth_wallets', JSON.stringify(
+            this.state.clientData.push(new Pair('wallets', JSON.stringify(
                 {
                     'data': [newAddrRecord],
                     'sig': ''
@@ -302,7 +302,7 @@ export default class Dashboard extends React.Component<Props, State> {
         }
 
         // var msg = JSON.parse(this.state.clientData[pos].value);
-        // var res = this.baseManager.getProfileManager().validateEthWallets(
+        // var res = this.baseManager.getProfileManager().validateWallets(
         //     this.state.clientData[pos].key, msg, this.baseManager.getId());
         // alert(JSON.stringify(res));
 
@@ -310,20 +310,20 @@ export default class Dashboard extends React.Component<Props, State> {
     }
 
     private onVerifyWallets() {
-        var pos = this.state.clientData.findIndex(model => model.key === 'eth_wallets');
+        var pos = this.state.clientData.findIndex(model => model.key === 'wallets');
         if (pos >= 0) {
             var msg = JSON.parse(this.state.clientData[pos].value);
-            var res = this.baseManager.getProfileManager().validateEthWallets(
+            var res = this.baseManager.getProfileManager().validateWallets(
                 this.state.clientData[pos].key, msg, this.baseManager.getId());
             alert(JSON.stringify(res));
         }
         else {
-            alert('no eth_wallets found');
+            alert('no wallets found');
         }
     }
 
     private async onSignWallets() {
-        var pos = this.state.clientData.findIndex(model => model.key === 'eth_wallets');
+        var pos = this.state.clientData.findIndex(model => model.key === 'wallets');
         if (pos >= 0) {
             var msg = JSON.parse(this.state.clientData[pos].value);
             try {
@@ -331,14 +331,14 @@ export default class Dashboard extends React.Component<Props, State> {
                     msg.data, this.baseManager.getId());
                 msg.sig = res.sig;
                 this.state.clientData[pos].value = JSON.stringify(msg);
-                alert('eth_wallets signed');
+                alert('wallets signed');
             } catch (err) {
                 alert('exception in onSignWallets: ' + err);
             }
 
         }
         else {
-            alert('no eth_wallets found');
+            alert('no wallets found');
         }
     }
 

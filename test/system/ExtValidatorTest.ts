@@ -93,11 +93,11 @@ describe('BASE API test: External Validator', async () => {
 
         // create wallets for Alice
         await baseAlice.profileManager.updateData(
-            new Map([[WalletManagerImpl.DATA_KEY_ETH_WALLETS, 'test eth wallets']])
+            new Map([[WalletManagerImpl.DATA_KEY_WALLETS, 'test eth wallets']])
         );
 
         const grantFields: Map<string, AccessRight> = new Map();
-        grantFields.set(WalletManagerImpl.DATA_KEY_ETH_WALLETS, AccessRight.R);
+        grantFields.set(WalletManagerImpl.DATA_KEY_WALLETS, AccessRight.R);
 
         await baseAlice.dataRequestManager.grantAccessForClient(
             accValidator.publicKey, grantFields
@@ -116,22 +116,22 @@ describe('BASE API test: External Validator', async () => {
         );
 
         // console.log(decryptedObj);
-        decryptedObj.get(WalletManagerImpl.DATA_KEY_ETH_WALLETS).should.be.equal('test eth wallets');
+        decryptedObj.get(WalletManagerImpl.DATA_KEY_WALLETS).should.be.equal('test eth wallets');
     });
 
     it('Validator asks Alice for access', async () => {
         // create wallets for Alice
         await baseAlice.profileManager.updateData(
-            new Map([[WalletManagerImpl.DATA_KEY_ETH_WALLETS, 'test eth wallets']]));
+            new Map([[WalletManagerImpl.DATA_KEY_WALLETS, 'test eth wallets']]));
 
-        // Validator asks Alice to get access to eth_wallets
+        // Validator asks Alice to get access to wallets
         const id: number = await baseValidator.dataRequestManager.requestPermissions(
             accAlice.publicKey,
-            [WalletManagerImpl.DATA_KEY_ETH_WALLETS]
+            [WalletManagerImpl.DATA_KEY_WALLETS]
         );
 
         const grantFields: Map<string, AccessRight> = new Map();
-        grantFields.set(WalletManagerImpl.DATA_KEY_ETH_WALLETS, AccessRight.R);
+        grantFields.set(WalletManagerImpl.DATA_KEY_WALLETS, AccessRight.R);
 
         // Alice grants access to Validator
         await baseAlice.dataRequestManager.grantAccessForClient(
@@ -151,7 +151,7 @@ describe('BASE API test: External Validator', async () => {
         );
 
         // console.log(decryptedObj);
-        decryptedObj.get(WalletManagerImpl.DATA_KEY_ETH_WALLETS).should.be.equal('test eth wallets');
+        decryptedObj.get(WalletManagerImpl.DATA_KEY_WALLETS).should.be.equal('test eth wallets');
     });
 
     /**/
@@ -214,7 +214,7 @@ describe('BASE API test: External Validator', async () => {
         }
     }
 
-    it('full flow with Alice, Bob, Carol, Desearch and Validator', async () => {
+    it.only('full flow with Alice, Bob, Carol, Desearch and Validator', async () => {
         // to get this records, I used example application, created a wallet records and did copy&paste
         try {
             var wallets = [
@@ -227,15 +227,15 @@ describe('BASE API test: External Validator', async () => {
             ];
 
             // create wallets for Alice and grantt access for Validator
-            await baseAlice.profileManager.updateData(new Map([[WalletManagerImpl.DATA_KEY_ETH_WALLETS, wallets[0]]]));
+            await baseAlice.profileManager.updateData(new Map([[WalletManagerImpl.DATA_KEY_WALLETS, wallets[0]]]));
             await baseAlice.walletManager.addWealthValidator(accValidator.publicKey);
 
             // create wallets for Bob and grantt access for Validator
-            await baseBob.profileManager.updateData(new Map([[WalletManagerImpl.DATA_KEY_ETH_WALLETS, wallets[1]]]));
+            await baseBob.profileManager.updateData(new Map([[WalletManagerImpl.DATA_KEY_WALLETS, wallets[1]]]));
             await baseBob.walletManager.addWealthValidator(accValidator.publicKey);
 
             // create wallets for Carol and grantt access for Validator
-            await baseCarol.profileManager.updateData(new Map([[WalletManagerImpl.DATA_KEY_ETH_WALLETS, wallets[2]]]));
+            await baseCarol.profileManager.updateData(new Map([[WalletManagerImpl.DATA_KEY_WALLETS, wallets[2]]]));
             await baseCarol.walletManager.addWealthValidator(accValidator.publicKey);
 
             // Validator retrieves the requests from Alice,Bob and Carol
@@ -253,11 +253,11 @@ describe('BASE API test: External Validator', async () => {
                     requestsByFrom[i].toPk,
                     requestsByFrom[i].responseData
                 );
-                decryptedObj.get(WalletManagerImpl.DATA_KEY_ETH_WALLETS).should.be.equal(wallets[i]);
+                decryptedObj.get(WalletManagerImpl.DATA_KEY_WALLETS).should.be.equal(wallets[i]);
 
                 // validator verifies the ETH wallets
-                var res: WalletVerificationStatus = WalletUtils.validateEthWallets(
-                    WalletManagerImpl.DATA_KEY_ETH_WALLETS,
+                var res: WalletVerificationStatus = WalletUtils.validateWallets(
+                    WalletManagerImpl.DATA_KEY_WALLETS,
                     JSON.parse(wallets[i]),
                     accs[i].publicKey
                 );

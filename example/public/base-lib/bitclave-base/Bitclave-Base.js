@@ -23251,7 +23251,7 @@ var BaseSchema = /** @class */ (function () {
         this.ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
         this.ajvValidateBaseAddrPair = this.ajv.compile(BaseSchema.BaseAddrPair);
         this.ajvValidateAddr = this.ajv.compile(BaseSchema.AddrRecord);
-        this.ajvValidateWallets = this.ajv.compile(BaseSchema.EthWallets);
+        this.ajvValidateWallets = this.ajv.compile(BaseSchema.CryptoWallets);
         this.ajvValidateAll = this.ajv.compile(BaseSchema.All);
     }
     BaseSchema.prototype.validateAddr = function (s) {
@@ -23286,16 +23286,16 @@ var BaseSchema = /** @class */ (function () {
         'required': ['data'],
         'additionalProperties': false
     };
-    BaseSchema.EthWallets = {
+    BaseSchema.CryptoWallets = {
         'definitions': {
-            'eth_address': BaseSchema.AddrRecord
+            'address': BaseSchema.AddrRecord
         },
         'description': 'list of ETH wallets',
         'type': 'object',
         'properties': {
             'data': {
                 'type': 'array',
-                'items': { '$ref': '#/definitions/eth_address' },
+                'items': { '$ref': '#/definitions/address' },
                 'minItems': 1,
                 'uniqueItems': true
             },
@@ -23307,8 +23307,8 @@ var BaseSchema = /** @class */ (function () {
     BaseSchema.All = {
         'title': 'Profile',
         'definitions': {
-            'eth_address': BaseSchema.AddrRecord,
-            'eth_wallets': BaseSchema.EthWallets
+            'address': BaseSchema.AddrRecord,
+            'wallets': BaseSchema.CryptoWallets
         },
         'type': 'object',
         'properties': {
@@ -23322,7 +23322,7 @@ var BaseSchema = /** @class */ (function () {
                 'description': 'wealth in USD',
                 'type': 'string'
             },
-            'eth_wallets': { '$ref': '#/definitions/eth_wallets' },
+            'wallets': { '$ref': '#/definitions/wallets' },
         },
         'required': ['baseID'],
         'additionalProperties': false
@@ -25174,7 +25174,7 @@ var WalletManagerImpl = /** @class */ (function () {
                     case 2:
                         _a.sent();
                         acceptedFields = new Map();
-                        acceptedFields.set(WalletManagerImpl.DATA_KEY_ETH_WALLETS, Permissions_1.AccessRight.RW);
+                        acceptedFields.set(WalletManagerImpl.DATA_KEY_WALLETS, Permissions_1.AccessRight.RW);
                         return [4 /*yield*/, this.dataRequestManager.grantAccessForClient(validatorPbKey, acceptedFields)];
                     case 3:
                         _a.sent();
@@ -25224,7 +25224,7 @@ var WalletManagerImpl = /** @class */ (function () {
     WalletManagerImpl.prototype.onChangeAccount = function (account) {
         this.account = account;
     };
-    WalletManagerImpl.DATA_KEY_ETH_WALLETS = 'eth_wallets';
+    WalletManagerImpl.DATA_KEY_WALLETS = 'wallets';
     WalletManagerImpl.DATA_KEY_ETH_WEALTH_VALIDATOR = 'ethwealthvalidator';
     WalletManagerImpl.DATA_KEY_WEALTH = 'wealth';
     return WalletManagerImpl;
@@ -25301,8 +25301,8 @@ var WalletUtils = /** @class */ (function () {
     };
     WalletUtils.validateWallets = function (key, val, baseID) {
         var result = new WalletVerificationStatus();
-        if (key != WalletManagerImpl_1.WalletManagerImpl.DATA_KEY_ETH_WALLETS) {
-            result.err = 'The \<key\> is expected to be "' + WalletManagerImpl_1.WalletManagerImpl.DATA_KEY_ETH_WALLETS + '"';
+        if (key != WalletManagerImpl_1.WalletManagerImpl.DATA_KEY_WALLETS) {
+            result.err = 'The \<key\> is expected to be "' + WalletManagerImpl_1.WalletManagerImpl.DATA_KEY_WALLETS + '"';
             result.rc = WalletVerificationCodes.RC_GENERAL_ERROR;
             return result;
         }
@@ -25358,7 +25358,7 @@ var WalletUtils = /** @class */ (function () {
         return status;
         var e_1, _c;
     };
-    WalletUtils.createEthereumAddersRecord = function (baseID, addr, ethPrvKey) {
+    WalletUtils.createAddersRecord = function (baseID, addr, ethPrvKey) {
         var record = new BaseTypes_1.AddrRecord(JSON.stringify(new BaseTypes_1.BaseAddrPair(baseID, addr)), '');
         record.sig = EthereumUtils_1.EthereumUtils.createSig(ethPrvKey, record);
         return record;

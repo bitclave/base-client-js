@@ -7,6 +7,14 @@ class BaseAddrPair {
         this.addr = addr;
     }
 
+    public isEthereumAddress(): boolean {
+        return new RegExp("^(0x[0-9a-fA-F]{40})$").test(this.addr);
+    }
+
+    public isBitcoinAddress(): boolean {
+        return new RegExp("^([13][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{25,34})$").test(this.addr);
+    }
+
 }
 
 class AddrRecord {
@@ -18,6 +26,18 @@ class AddrRecord {
     constructor(data?: string, sig?: string) {
         this.data = data || '';
         this.sig = sig || '';
+
+        if (this.data.length > 0 && !this.isEthereumAddress() && !this.isBitcoinAddress()) {
+            throw 'invalid data argument neither Ethereum nor Bitcoin address';
+        }
+    }
+
+    public isEthereumAddress(): boolean {
+        return new RegExp("^(0x[0-9a-fA-F]{40})$").test(this.data);
+    }
+
+    public isBitcoinAddress(): boolean {
+        return new RegExp("^([13][123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{25,34})$").test(this.data);
     }
 
 }
@@ -59,8 +79,7 @@ class ProfileUser {
     baseID: string;
     email: string;
     wealth: WealthPtr;
-    eth_wallets: WalletsRecords;
-    btc_wallets: WalletsRecords;
+    wallets: WalletsRecords;
 }
 
 class ProfileWealthValidator {

@@ -1,7 +1,7 @@
 export declare class BaseSchema {
     static BaseAddrPair: any;
     static AddrRecord: any;
-    static EthWallets: any;
+    static CryptoWallets: any;
     static All: any;
     private ajvValidateAll;
     private ajvValidateAddr;

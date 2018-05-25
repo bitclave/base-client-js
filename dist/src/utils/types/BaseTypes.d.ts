@@ -27,7 +27,7 @@ declare class ProfileUser {
     baseID: string;
     email: string;
     wealth: WealthPtr;
-    eth_wallets: WalletsRecords;
+    wallets: WalletsRecords;
 }
 declare class ProfileWealthValidator {
     baseID: string;

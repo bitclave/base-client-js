@@ -24,7 +24,7 @@ describe('Base Schema', async () => {
         const schema = {
             'title': 'Profile',
             'definitions': {
-                'eth_address': schemaEthAddr
+                'address': schemaEthAddr
             },
 
             'type': 'object',
@@ -39,10 +39,10 @@ describe('Base Schema', async () => {
                     'description': 'wealth in USD',
                     'type': 'string'
                 },
-                'eth_wallets': {
+                'wallets': {
                     'description': 'list of ETH wallets',
                     'type': 'array',
-                    'items': {'$ref': '#/definitions/eth_address'},
+                    'items': {'$ref': '#/definitions/address'},
                     'minItems': 1,
                     'uniqueItems': true
                 }
@@ -57,7 +57,7 @@ describe('Base Schema', async () => {
         const data1 = {
             'baseID': baseID,
             'email': 'mark@bitclave.com',
-            'eth_wallets': [
+            'wallets': [
                 {'addr': '0xaaa'},
                 {'addr': '0xbbb', 'signature': 'signature'}
             ]
@@ -65,7 +65,7 @@ describe('Base Schema', async () => {
         const data2 = {
             'baseID': baseID,
             'email': 'mark@bitclave.com',
-            'eth_wallets': [
+            'wallets': [
                 {'addr': '0xaaa'},
                 {'addr': '0xbbb', 'signature1': 'signature'}
             ]

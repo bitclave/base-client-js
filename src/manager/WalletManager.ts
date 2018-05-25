@@ -2,9 +2,7 @@ import { AddrRecord, WalletsRecords, AddrRecord, WalletsRecords, WealthPtr } fro
 
 export interface WalletManager {
 
-    createEthWalletsRecords(wallets: AddrRecord[], baseID: string): Promise<WalletsRecords>;
-    
-    createBtcWalletsRecords(wallets: AddrRecord[], baseID: string): Promise<WalletsRecords>;
+    createWalletsRecords(wallets: AddrRecord[], baseID: string): Promise<WalletsRecords>;
 
     addWealthValidator(validatorPbKey: string): Promise<void>;
 

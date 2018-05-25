@@ -36,8 +36,8 @@ export default class BaseEthUtils {
     public static async createEthWalletsRecordWithSigner(baseID: string, signedRecords: Array<AddrRecord>,
                                                          privKey: string): Promise<WalletsRecords> {
         for (let record of signedRecords) {
-            if ((WalletUtils.verifyEthAddressRecord(record) != WalletVerificationCodes.RC_OK) &&
-                (WalletUtils.verifyEthAddressRecord(record) != WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
+            if ((WalletUtils.verifyAddressRecord(record) != WalletVerificationCodes.RC_OK) &&
+                (WalletUtils.verifyAddressRecord(record) != WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
                 throw 'invalid eth record: ' + record;
             }
 
@@ -48,7 +48,7 @@ export default class BaseEthUtils {
 
         const ethWalletsRecords: WalletsRecords = new WalletsRecords(signedRecords, '');
 
-        if (!baseSchema.validateEthWallets(ethWalletsRecords)) {
+        if (!baseSchema.validateWallets(ethWalletsRecords)) {
             throw 'invalid wallets structure';
         }
 
@@ -70,7 +70,7 @@ export default class BaseEthUtils {
         const status: WalletVerificationStatus = new WalletVerificationStatus();
         status.rc = WalletVerificationCodes.RC_OK;
 
-        if (!baseSchema.validateEthWallets(msg)) {
+        if (!baseSchema.validateWallets(msg)) {
             status.rc = WalletVerificationCodes.RC_ADDR_SCHEMA_MISSMATCH;
             return status;
         }
@@ -83,7 +83,7 @@ export default class BaseEthUtils {
             if (pubKey != basePubKey) {
                 status.details.push(WalletVerificationCodes.RC_BASEID_MISSMATCH);
 
-            } else if ((resultCode = WalletUtils.verifyEthAddressRecord(item)) != WalletVerificationCodes.RC_OK) {
+            } else if ((resultCode = WalletUtils.verifyAddressRecord(item)) != WalletVerificationCodes.RC_OK) {
                 status.details.push(resultCode);
 
             } else {
@@ -92,7 +92,7 @@ export default class BaseEthUtils {
         }
 
         // verify signature matches the baseID
-        const baseAddr = new bitcore.PublicKey.fromString(basePubKey).toAddress().toString();
+        const baseAddr = bitcore.PublicKey.fromString(basePubKey).toAddress().toString();
         let sigCheck = false;
 
         try {

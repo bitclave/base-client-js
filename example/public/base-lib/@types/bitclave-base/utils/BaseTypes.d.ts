@@ -8,7 +8,7 @@ declare class AddrRecord {
     sig: string;
     constructor(data?: string, sig?: string);
 }
-declare class EthWallets {
+declare class CryptoWallets {
     data: Array<AddrRecord>;
     sig: string;
     constructor(data: Array<AddrRecord>, sig: string);
@@ -27,10 +27,10 @@ declare class ProfileUser {
     baseID: string;
     email: string;
     wealth: EthWealthPtr;
-    eth_wallets: EthWallets;
+    wallets: CryptoWallets;
 }
 declare class ProfileEthWealthValidator {
     baseID: string;
     wealth: Map<string, EthWealthRecord>;
 }
-export { BaseAddrPair, AddrRecord, EthWallets, EthWealthRecord, EthWealthPtr, ProfileUser, ProfileEthWealthValidator };
+export { BaseAddrPair, AddrRecord, CryptoWallets, EthWealthRecord, EthWealthPtr, ProfileUser, ProfileEthWealthValidator };

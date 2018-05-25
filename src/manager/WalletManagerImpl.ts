@@ -12,8 +12,7 @@ import { WalletManager } from './WalletManager';
 
 export class WalletManagerImpl implements WalletManager {
 
-    public static DATA_KEY_ETH_WALLETS: string = 'eth_wallets';
-    public static DATA_KEY_BTC_WALLETS: string = 'btc_wallets';
+    public static DATA_KEY_WALLETS: string = 'wallets';
     public static DATA_KEY_WEALTH_VALIDATOR: string =  'ethwealthvalidator';
     public static DATA_KEY_WEALTH: string =  'wealth';
 
@@ -39,11 +38,19 @@ export class WalletManagerImpl implements WalletManager {
             .subscribe(this.onChangeAccount.bind(this));
     }
 
-    public async createEthWalletsRecords(wallets: AddrRecord[], baseID: string): Promise<WalletsRecords> {
+    private async createWalletsRecords(wallets: AddrRecord[], baseID: string): Promise<WalletsRecords> {
         for (let msg of wallets) {
-            if ((WalletUtils.verifyEthAddressRecord(msg) != WalletVerificationCodes.RC_OK) &&
-                (WalletUtils.verifyEthAddressRecord(msg) != WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
-                throw 'invalid eth record: ' + msg;
+            if (msg.isEthereumAddress()) {
+                if ((WalletUtils.verifyAddressRecord(msg) != WalletVerificationCodes.RC_OK) &&
+                    (WalletUtils.verifyAddressRecord(msg) != WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
+                    throw 'invalid eth record: ' + msg;
+                }
+            }
+            if (msg.isBitcoinAddress()) {
+                if ((WalletUtils.verifyBtcAddressRecord(msg) != WalletVerificationCodes.RC_OK) &&
+                    (WalletUtils.verifyBtcAddressRecord(msg) != WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
+                    throw 'invalid eth record: ' + msg;
+                }
             }
 
             if (baseID != JSON.parse(msg.data).baseID) {
@@ -53,38 +60,10 @@ export class WalletManagerImpl implements WalletManager {
 
         const msgWallets: WalletsRecords = new WalletsRecords(wallets, '');
 
-        if (!this.baseSchema.validateEthWallets(msgWallets)) {
+        if (!this.baseSchema.validateWallets(msgWallets)) {
             throw 'invalid wallets structure';
         }
-
-        // eth style signing
-        // msgWallets.sig = sigUtil.personalSign(Buffer.from(prvKey, 'hex'), msgWallets);
-        // var signerAddr = sigUtil.recoverPersonalSignature(msgWallets)
-
-        // BASE Style signing
-        msgWallets.sig = await this.messageSigner.signMessage(JSON.stringify(msgWallets.data));
-
-        return msgWallets;
-    }
-
-    public async createBtcWalletsRecords(wallets: AddrRecord[], baseID: string): Promise<WalletsRecords> {
-        for (let msg of wallets) {
-            if ((WalletUtils.verifyBtcAddressRecord(msg) != WalletVerificationCodes.RC_OK) &&
-                (WalletUtils.verifyBtcAddressRecord(msg) != WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
-                throw 'invalid eth record: ' + msg;
-            }
-
-            if (baseID != JSON.parse(msg.data).baseID) {
-                throw 'baseID missmatch';
-            }
-        }
-
-        const msgWallets: WalletsRecords = new WalletsRecords(wallets, '');
-
-        if (!this.baseSchema.validateEthWallets(msgWallets)) {
-            throw 'invalid wallets structure';
-        }
-
+        
         // eth style signing
         // msgWallets.sig = sigUtil.personalSign(Buffer.from(prvKey, 'hex'), msgWallets);
         // var signerAddr = sigUtil.recoverPersonalSignature(msgWallets)
@@ -103,8 +82,7 @@ export class WalletManagerImpl implements WalletManager {
         await this.profileManager.updateData(myData);
 
         const acceptedFields: Map<string, AccessRight> = new Map();
-        acceptedFields.set(WalletManagerImpl.DATA_KEY_ETH_WALLETS, AccessRight.RW);
-        acceptedFields.set(WalletManagerImpl.DATA_KEY_BTC_WALLETS, AccessRight.RW);
+        acceptedFields.set(WalletManagerImpl.DATA_KEY_WALLETS, AccessRight.RW);
 
         await this.dataRequestManager.grantAccessForClient(validatorPbKey, acceptedFields);
     }
