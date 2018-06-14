@@ -78,11 +78,11 @@ describe('BASE API test: External Validator', async () => {
     });
 
     it('get public ID', async () => {
-        accAlice.publicKey.should.be.equal('02fe55f705abc712a8a80c43442ebe19ab5e66e5b165a0619440438385bc08383a');
-        accBob.publicKey.should.be.equal('0303247051dc50d32aaacd7b36c96792a8950a0fda1fdf5a41231e67224865f61f');
-        accCarol.publicKey.should.be.equal('02de5804b34c2f3b3d917de52c4768984e9200e799df9bd012cfd03fe428d8fafd');
-        accDesearch.publicKey.should.be.equal('03d3a075d33cf8b7870d87b0c2e80653f03c00c5966dd27bdc3abab53d928dcc87');
-        accValidator.publicKey.should.be.equal('027b4ac791802620d8896111ed5aba38004e740a296473ead603ae47da34147a81');
+        accAlice.publicKey.should.be.equal('03cb46e31c2d0f5827bb267f9fb30cf98077165d0e560b964651c6c379f69c7a35');
+        accBob.publicKey.should.be.equal('0340a73ea75b60ca5df6b2d6bb53a30f14322f0656ff962d4c6d9097d19d097180');
+        accCarol.publicKey.should.be.equal('0384b1a0bf78a291c615b87f924e6b684099efa3e96ecfdb2244d9573f56b849fe');
+        accDesearch.publicKey.should.be.equal('02671d71867d52b142f568ccd537a60d6e5fcece2b606e65e016c26c45f3bd8ad8');
+        accValidator.publicKey.should.be.equal('03aaac4cdf86121b6a051e67581e30a046c66a4c08097878ce7ab1f3be318dcd74');
     });
 
     /**/

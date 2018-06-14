@@ -203,10 +203,10 @@ describe('Wallet manager test', async () => {
         var pub1 = sigUtil.recoverPersonalSignature(msgParams1);
         pub1.should.be.equal(ethAddr1.toLowerCase());
 
-        var dataForAddr1 = '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41_0x42cb8ae103896daee71ebb5dca5367f16727164a';
+        var dataForAddr1 = '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996_0x42cb8ae103896daee71ebb5dca5367f16727164a';
         // you can get this signature externally by using https://www.myetherwallet.com/signmsg.html with private key ethPrvKey1 and dataForAddr1
         // or if you import ethPrvKey1 into MetaMask and sign with MetaMask
-        var sigForAddr1 = '0xaebc6259855beef413e3022addb06d5113de66dca7b803c4777b9123fa85e63559df2a4bc5e53966f09af308bbf5876c042bf5297b942df81922e3409e89b82b1b';
+        var sigForAddr1 = '0x5f9c14ab9613c4d4d604f9f6ed241ec736db1f2f1e3443da95dca23affc239df7e304553ea3a42469e2d56d51113979c2cb56cce2e3579f1c6fb23dd993fdbfc1b';
         msgParams1.data.should.be.equal(dataForAddr1);
         msgParams1.sig.should.be.equal(sigForAddr1);
 
