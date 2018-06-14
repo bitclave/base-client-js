@@ -192,9 +192,9 @@ export class BitKeyPair implements KeyPairHelper {
                     const resultMap: Map<string, AcceptedField> = JsonUtils.jsonToMap(jsonDecrypt);
 
                     this.permissions.fields.clear();
-
+                    let self = this;
                     resultMap.forEach((value, key) => {
-                        this.permissions.fields.set(key, value.access);
+                        self.permissions.fields.set(key, value.access);
                     });
                 }
             }
