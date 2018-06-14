@@ -231,7 +231,7 @@ describe('Wallet manager test', async () => {
 
     it('create ETH address record by BASE interface', function () {
         var msg: AddrRecord = BaseEthUtils.createEthAddrRecord(
-            '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
+            '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
             '0x42cb8ae103896daee71ebb5dca5367f16727164a',
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
         );
@@ -243,14 +243,19 @@ describe('Wallet manager test', async () => {
         here is the exact string for message - pay attention to " " and "\n"
         "{\n  \"baseID\": \"02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41\",\n  \"ethAddr\": \"0x42cb8ae103896daee71ebb5dca5367f16727164a\"\n}"
          */
+        //b4ea5b297db8f178e15ef0afb6df240f6e56e67d3d3cb4ada162a677d7a36807
+        //0x29F2EF2D5948de8b192Cb67672DD170d4e44D543
+
+        //0x29F2EF2D5948de8b192Cb67672DD170d4e44D543
+        //0x7d530570d312f51a739d9f632bd3997721c463113ae2d04d45bf5c56426b98f610775dab97f8e3ea0601089312b5e6e720e29ee514b8e6ff372649a402d5eb1e1b
         WalletUtils.verifyAddressRecord(
             {
                 'data': JSON.stringify(
                     {
-                        baseID: '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
+                        baseID: '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
                         ethAddr: '0x42cb8ae103896daee71ebb5dca5367f16727164a'
                     }),
-                'sig': '0x5b5dfb8f20d10cd3e172eddab49a5a07d10acb0abadd889eb9bc441a35312fc4072dfa8e5dda313abba31c7e697532306061dfc2ee29cce0793d56ba18d975f31c'
+                'sig': '0x273f63c3c0da0bde3448a5dc24865cd25e936d6a210f548fdf7fcfd3f8fc2f9d5089fd6fc2ce2c778a04a4a464de09d9f781c2f1f42914eb33f168c3f8e5e2351c'
             }
         ).should.be.equal(WalletVerificationCodes.RC_OK);
 
@@ -258,10 +263,10 @@ describe('Wallet manager test', async () => {
             {
                 'data': JSON.stringify(
                     {
-                        _baseID: '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
+                        _baseID: '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
                         ethAddr: '0x42cb8ae103896daee71ebb5dca5367f16727164a'
                     }),
-                'sig': '0x5b5dfb8f20d10cd3e172eddab49a5a07d10acb0abadd889eb9bc441a35312fc4072dfa8e5dda313abba31c7e697532306061dfc2ee29cce0793d56ba18d975f31c'
+                'sig': '0x273f63c3c0da0bde3448a5dc24865cd25e936d6a210f548fdf7fcfd3f8fc2f9d5089fd6fc2ce2c778a04a4a464de09d9f781c2f1f42914eb33f168c3f8e5e2351c'
             }
         ).should.be.not.equal(WalletVerificationCodes.RC_OK);
 
@@ -269,10 +274,10 @@ describe('Wallet manager test', async () => {
             {
                 'data': JSON.stringify(
                     {
-                        baseID: '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
+                        baseID: '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
                         ethAddr: '0x42cb8ae103896daee71ebb5dca5367f16727164a'
                     }),
-                'sig': '0x6b5dfb8f20d10cd3e172eddab49a5a07d10acb0abadd889eb9bc441a35312fc4072dfa8e5dda313abba31c7e697532306061dfc2ee29cce0793d56ba18d975f31c'
+                'sig': '0x373f63c3c0da0bde3448a5dc24865cd25e936d6a210f548fdf7fcfd3f8fc2f9d5089fd6fc2ce2c778a04a4a464de09d9f781c2f1f42914eb33f168c3f8e5e2351c'
             }
         ).should.be.not.equal(WalletVerificationCodes.RC_OK);
     });
@@ -286,23 +291,23 @@ describe('Wallet manager test', async () => {
         baseUser.setAccessToken(baseUserAccessToken);
         await baseUser.createKeyPair('');
 
-        baseUser.getPublicKey().should.be.equal('02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41');
+        baseUser.getPublicKey().should.be.equal('03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996');
 
         var msg = await BaseEthUtils.createEthWalletsRecordWithSigner(
-            '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
+            '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
             [
                 WalletUtils.createEthereumAddersRecord(
-                    '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
+                    '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
                     '0x42cb8ae103896daee71ebb5dca5367f16727164a',
                     '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
                 ),
                 WalletUtils.createEthereumAddersRecord(
-                    '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
+                    '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
                     '0x50575b106b1f96359f5e5dbe4c270443e6185f1f',
                     '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369002'
                 )
             ],
-            '8ff8fdbfb47add1daf16ea856444ff1c76cc7a5617244acf6c103587e95fdf1e'
+            '17e326f9ebad9ee205ade59c23d3a2d49f87b587f20b1667ee089abe5eb9453b'
         );
 
         var rc = WalletUtils.validateWallets(WalletManagerImpl.DATA_KEY_ETH_WALLETS, msg, baseUser.getPublicKey());
@@ -317,10 +322,10 @@ describe('Wallet manager test', async () => {
             }));
 
         var msg = await BaseEthUtils.createEthWalletsRecordDebug(
-            '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
+            '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
             [
                 WalletUtils.createEthereumAddersRecord(
-                    '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
+                    '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
                     '0x42cb8ae103896daee71ebb5dca5367f16727164a',
                     '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
                 ),
@@ -330,7 +335,7 @@ describe('Wallet manager test', async () => {
                     '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369002'
                 )
             ],
-            '8ff8fdbfb47add1daf16ea856444ff1c76cc7a5617244acf6c103587e95fdf1e'
+            '17e326f9ebad9ee205ade59c23d3a2d49f87b587f20b1667ee089abe5eb9453b'
         );
 
         var rc = WalletUtils.validateWallets(WalletManagerImpl.DATA_KEY_ETH_WALLETS, msg, baseUser.getPublicKey());
@@ -348,7 +353,7 @@ describe('Wallet manager test', async () => {
         rc.rc.should.be.equal(WalletVerificationCodes.RC_GENERAL_ERROR);
 
         const ethAddrRecord: AddrRecord = WalletUtils.createEthereumAddersRecord(
-            '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
+            '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
             '0x42cb8ae103896daee71ebb5dca5367f16727164a',
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
         );
@@ -362,12 +367,12 @@ describe('Wallet manager test', async () => {
         sawException.should.be.equal(true);
 
         const ethAddrRecord: AddrRecord = WalletUtils.createEthereumAddersRecord(
-            '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
+            '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
             '0x42cb8ae103896daee71ebb5dca5367f16727164a',
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
         );
 
-        let walletsRecords: WalletsRecords = await walletManager.createWalletsRecords([ethAddrRecord], '02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41');
+        let walletsRecords: WalletsRecords = await walletManager.createWalletsRecords([ethAddrRecord], '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996');
         walletsRecords.data.length.should.be.equal(1);
     });
 
