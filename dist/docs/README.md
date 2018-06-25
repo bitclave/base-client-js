@@ -4,16 +4,16 @@ This folder is the root of automatically generated documentation for all SW comp
 
 To help you with developing APPs on top of BASE APIs, please visit the following examples
 
-- [BASE Platform Tutorial](https://github.com/bitclave/base-tutorial)
+- [BASE Platform Tutorial](https://github.com/bitclave/base-tutorial) <br/>
 This is the most basic example demonstrating the usage of the most basic BASE APIs
 
-- [Base Application Starter - AngularJS](https://github.com/bitclave/base-tutorial-sample-app)
+- [Base Application Starter - AngularJS](https://github.com/bitclave/base-tutorial-sample-app) <br/>
 This is a more advanced example showing a sample application with UI that us using BASE APIs
 
-- [BASE low level base-client-js example](https://github.com/bitclave/base-client-js/tree/develop/example)
+- [BASE low level base-client-js example](https://github.com/bitclave/base-client-js/tree/develop/example) <br/>
 This is a sample application demonstrating the use of all base-client-js APIs
 
-- [BASE Auth Frontend](https://github.com/bitclave/base-auth-frontend)
+- [BASE Auth Frontend](https://github.com/bitclave/base-auth-frontend) <br/>
 This is a widget that can be used for registration and authorization into BASE ecosystem
 
 
