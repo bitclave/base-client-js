@@ -6,6 +6,7 @@ import Account from 'bitclave-base/repository/models/Account';
 import OfferManager from 'bitclave-base/manager/OfferManager';
 import ProfileManager from 'bitclave-base/manager/ProfileManager';
 import SearchManager from 'bitclave-base/manager/SearchManager';
+import WalletManager from 'bitclave-base/manager/WalletManager';
 
 @injectable()
 export default class BaseManager {
@@ -73,6 +74,10 @@ export default class BaseManager {
 
     getProfileManager(): ProfileManager {
         return this.base.profileManager;
+    }
+
+    getWalletManager(): WalletManager {
+        return this.base.walletManager;
     }
 
     getSearchManager(): SearchManager {

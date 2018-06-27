@@ -30,7 +30,7 @@ export class CryptoUtils {
         return CryptoJS.PBKDF2(
             password,
             CryptoUtils.sha384(CryptoUtils.sha384(password)),
-            {keySize: keySize / 32, iterations: 10000}
+            {keySize: keySize / 32, iterations: 100}
         ).toString(CryptoJS.enc.Hex);
     }
 

@@ -78,11 +78,11 @@ describe('BASE API test: External Validator', async () => {
     });
 
     it('get public ID', async () => {
-        accAlice.publicKey.should.be.equal('02fe55f705abc712a8a80c43442ebe19ab5e66e5b165a0619440438385bc08383a');
-        accBob.publicKey.should.be.equal('0303247051dc50d32aaacd7b36c96792a8950a0fda1fdf5a41231e67224865f61f');
-        accCarol.publicKey.should.be.equal('02de5804b34c2f3b3d917de52c4768984e9200e799df9bd012cfd03fe428d8fafd');
-        accDesearch.publicKey.should.be.equal('03d3a075d33cf8b7870d87b0c2e80653f03c00c5966dd27bdc3abab53d928dcc87');
-        accValidator.publicKey.should.be.equal('027b4ac791802620d8896111ed5aba38004e740a296473ead603ae47da34147a81');
+        accAlice.publicKey.should.be.equal('03cb46e31c2d0f5827bb267f9fb30cf98077165d0e560b964651c6c379f69c7a35');
+        accBob.publicKey.should.be.equal('0340a73ea75b60ca5df6b2d6bb53a30f14322f0656ff962d4c6d9097d19d097180');
+        accCarol.publicKey.should.be.equal('0384b1a0bf78a291c615b87f924e6b684099efa3e96ecfdb2244d9573f56b849fe');
+        accDesearch.publicKey.should.be.equal('02671d71867d52b142f568ccd537a60d6e5fcece2b606e65e016c26c45f3bd8ad8');
+        accValidator.publicKey.should.be.equal('03aaac4cdf86121b6a051e67581e30a046c66a4c08097878ce7ab1f3be318dcd74');
     });
 
     /**/
@@ -218,9 +218,9 @@ describe('BASE API test: External Validator', async () => {
         // to get this records, I used example application, created a wallet records and did copy&paste
         try {
             var wallets = [
-                '{"data":[{"data":"{\\"baseID\\":\\"02fe55f705abc712a8a80c43442ebe19ab5e66e5b165a0619440438385bc08383a\\",\\"ethAddr\\":\\"0xa5f79860b160dee0943bd1f6a5713a61dc56f931\\"}","sig":"0x5227af80548be15c9d5f5d66fcf8459df7e4203bf4508497133c9e2054a6ed281dfbbc5fdb7f44801fe93da514613efba96efc8e52209c74bb2d1e1769f8ebba1b"}],"sig":"IIBNKCKMHVBq6LpneRJi9ZNia7U5KCHfJq4TotM65xmYSZ7uGH5V2onnvOwK+1/EZQEg6dRzuYgp3PTVRShA4Nc="}',
-                '{"data":[{"data":"{\\"baseID\\":\\"0303247051dc50d32aaacd7b36c96792a8950a0fda1fdf5a41231e67224865f61f\\",\\"ethAddr\\":\\"0xa5f79860b160dee0943bd1f6a5713a61dc56f931\\"}","sig":"0x55b61cea89a84722288807553ad35994bdb45813a6273dee35d5b33bc49cfaa879d8b2c5451ec191cdc6974ed3ad7e3050130d4498915134debb2ff977dd83e91c"}],"sig":"INzbg3aOjA4qc+PD9K787CEFUORJGw5iv/09rEZGR3mSdmaWpDe9OfLSLKBTbk9BI6ZCzm/k5To8/Sw4QrjV07k="}',
-                '{"data":[{"data":"{\\"baseID\\":\\"02de5804b34c2f3b3d917de52c4768984e9200e799df9bd012cfd03fe428d8fafd\\",\\"ethAddr\\":\\"0xa5f79860b160dee0943bd1f6a5713a61dc56f931\\"}","sig":"0x8ee4014de7b828adeede57f1abfa626d058f52881df4268d67439a11bcbe03f16aaa8e70e7f7f6bff2b7f8bb2714b4b0002e959be73f3f191e42a4b2f04668f31b"}],"sig":"IMmdINnrSQS6VaQOXqr2/BX/LlIFl34stcEOfl6kR9HRJl8BkkNbDWzYm+xI0jA6ZAdKT70TTXO6OX4ST8n2cHo="}'
+                '{"data":[{"data":"{\\"baseID\\":\\"03cb46e31c2d0f5827bb267f9fb30cf98077165d0e560b964651c6c379f69c7a35\\",\\"ethAddr\\":\\"0x916e1c7340f3f0a7af1a5b55e0fd9c3846ef8d28\\"}","sig":"0x08602606d842363d58e714e18f8c4d4b644c0cdc88d644dba03d0af3558f0691334a4db534034ba736347a085f28a58c9b643be25a9c7169f073f69a26b432531b"}],"sig":"IMBBXn+LLf4jWmjhQ1cWGmccuCZW9M5TwQYq46nXpCFUbs72Sxjn0hxOtmyNwiP4va97ZwCruqFyNhi3CuR1BvM="}',
+                '{"data":[{"data":"{\\"baseID\\":\\"0340a73ea75b60ca5df6b2d6bb53a30f14322f0656ff962d4c6d9097d19d097180\\",\\"ethAddr\\":\\"0x1bb83f8d7f129a1960a7dac980502f64f9ed3fe4\\"}","sig":"0x7e92cb41c0acd2a16a216aa3d0a3c35b349585bf3ff78c961f208be273940ed70bf2d106004f3f66d7311f65fb6444b2013f8c24b343b08b5f5f3318d7a7bb701c"}],"sig":"H4f4nchY7l37PtURD6kjDftT6w2Njn0luhUm1Y4aPxf6YtOhSDe7lxRy5PYCxV6dGC33MVeNp9/jOUyqoZTV6N8="}',
+                '{"data":[{"data":"{\\"baseID\\":\\"0384b1a0bf78a291c615b87f924e6b684099efa3e96ecfdb2244d9573f56b849fe\\",\\"ethAddr\\":\\"0x39c35615912afc979a32c019431cde09415f8bbe\\"}","sig":"0x9e42c1d5cd721bde0132105ef57a835abd915c069f6ca5e5e982c5670d50ac32592ae54dbf46613a28ab7032d73dc40e2b071bbde48deb486e0c0ed18da01ba91b"}],"sig":"ICtfx7h7j5Lpwu5DvtjUcr2Sq0DXLC9uQ9oEPKmCh9CkUokyoOpbmvIDEzwUzdHCIxewXz5A8Y2y+ObxQteaxso="}'
             ];
             var accs = [
                 accAlice, accBob, accCarol
