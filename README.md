@@ -26,6 +26,7 @@ npm start
 ```
 
 # How to run tests
+- from root directory run
 ```
 node ./external/Signer.js --authPK 02e2d9c04891bf7f9934041d7171ade343e540f5d18bd357cde4ef175da3de7e06 --host https://base2-bitclva-com.herokuapp.com &
 npm test
