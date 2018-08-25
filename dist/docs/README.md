@@ -32,16 +32,21 @@ The repository also includes an example application, demonstrating how to integr
 
 ![Alt text](https://github.com/bitclave/base-client-js/blob/develop/images/base_phase1_overview.png)
 
-# How to run
+# How to build
 - from root directory run
 ```
-npm install
-node ./external/Signer.js
+./install_lib.sh
 
 ```
+# How to run example application
 - from example directory run
 ```
-npm install
-cp -rf public/base-lib/* node_modules/
 npm start
+```
+
+# How to run tests
+- from root directory run
+```
+node ./external/Signer.js --authPK 02e2d9c04891bf7f9934041d7171ade343e540f5d18bd357cde4ef175da3de7e06 --host https://base2-bitclva-com.herokuapp.com &
+npm test
 ```
