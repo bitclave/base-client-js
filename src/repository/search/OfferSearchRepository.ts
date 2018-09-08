@@ -7,7 +7,6 @@ export interface OfferSearchRepository {
 
     complainToSearchItem(clientId: string, searchResultId: number): Promise<void>
 
-    // debug method! do not use!
     addResultItem(clientId: string, offerSearch: OfferSearch): Promise<void>
 
 }
