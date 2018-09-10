@@ -13,5 +13,6 @@ export interface OfferRepository {
     getOfferByOwner(owner: string): Promise<Array<Offer>>;
 
     getAllOffer(): Promise<Array<Offer>>;
+    getOfferByPriceId(owner: string, id: number): Promise<Offer>;
 
 }

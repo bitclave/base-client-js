@@ -7,6 +7,7 @@ import Account from '../repository/models/Account';
 import { Observable } from 'rxjs/Rx';
 import { AccessRight } from '../utils/keypair/Permissions';
 import { DataRequestManager } from './DataRequestManager';
+import { OfferPrice } from '../repository/models/OfferPrice';
 
 export class DataRequestManagerImpl implements DataRequestManager {
 
@@ -114,12 +115,19 @@ export class DataRequestManagerImpl implements DataRequestManager {
      *
      * @returns {Promise<void>}
      */
-    public grantAccessForOffer(offerSearchId: number, offerOwner: string, acceptedFields: Map<string, AccessRight>): Promise<void> {
-        return this.encrypt.encryptPermissionsFields(offerOwner, acceptedFields)
+    public grantAccessForOffer(
+        offerSearchId: number,
+        offerOwner: string,
+        acceptedFields: Map<string, AccessRight>,
+        priceId: number): Promise<void>
+    {
+        return this.encrypt
+            .encryptPermissionsFields(offerOwner, acceptedFields)
             .then(encrypted => this.dataRequestRepository.grantAccessForOffer(
                 offerSearchId,
                 this.account.publicKey,
-                encrypted
+                encrypted,
+                priceId
             ));
     }
 

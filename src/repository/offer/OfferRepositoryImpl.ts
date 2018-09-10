@@ -6,6 +6,7 @@ import { HttpTransport } from '../source/http/HttpTransport';
 export default class OfferRepositoryImpl implements OfferRepository {
 
     private readonly OFFER_API: string = '/v1/client/{owner}/offer/{id}';
+    private readonly OFFER_PRICE_API: string = '/v1/client/{owner}/price/{id}';
 
     private transport: HttpTransport;
 
@@ -58,14 +59,19 @@ export default class OfferRepositoryImpl implements OfferRepository {
         ).then((response) => this.jsonToListOffers(response.json));
     }
 
+    public getOfferByPriceId(owner: string, id: number): Promise<Offer> {
+      return this.transport.sendRequest(
+        this.OFFER_PRICE_API.replace('{owner}', owner).replace('{id}', id.toString()),
+        HttpMethod.Get
+    ).then((response) => Offer.fromJson(response.json));
+    }
+
     private jsonToListOffers(json: any): Array<Offer> {
         const result: Array<Offer> = [];
 
         for (let item of json) {
             result.push(Offer.fromJson(item));
         }
-
         return result;
     }
-
 }
