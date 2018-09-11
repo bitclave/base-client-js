@@ -25,3 +25,9 @@ npm install
 cp -rf public/base-lib/* node_modules/
 npm start
 ```
+# about tests
+- the prerequest for extValidator test running is
+```
+node ./external/Signer.js --authPK 02e2d9c04891bf7f9934041d7171ade343e540f5d18bd357cde4ef175da3de7e06 --host https://base2-bitclva-com.herokuapp.com
+```
+(Signer will run on port 3545)

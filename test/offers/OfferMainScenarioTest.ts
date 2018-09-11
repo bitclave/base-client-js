@@ -193,15 +193,8 @@ describe('Offer main scenario', async () => {
             const clientData = await businessBase.profileManager
                 .getAuthorizedData(offerShareData.clientId, offerShareData.clientResponse);
 
-            // it's not optimal
-            // TODO: replace by adding new API endpoint
-            const priceId = offerShareData.priceId;
-            const allMyOffers = await businessBase.offerManager.getMyOffers(0);
-            const confirmedOffer = allMyOffers.find(e =>
-              !!e.getPriceById(priceId)
-            );
-            const price =  confirmedOffer.getPriceById(priceId);
-            price.worth.should.be.eql('1.5');
+            const price =  offerShareData.worth;
+            price.should.be.eql('1.5');
 
         } catch (e) {
             console.log(e);
