@@ -10158,7 +10158,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var CompareAction_1 = __webpack_require__(191);
 var JsonUtils_1 = __webpack_require__(20);
 var Offer = /** @class */ (function () {
-    function Offer(description, title, imageUrl, worth, tags, compare, rules) {
+    function Offer(description, title, imageUrl, worth, tags, compare, rules, offerPrices) {
         if (description === void 0) { description = ''; }
         if (title === void 0) { title = ''; }
         if (imageUrl === void 0) { imageUrl = ''; }
@@ -10166,8 +10166,10 @@ var Offer = /** @class */ (function () {
         if (tags === void 0) { tags = new Map(); }
         if (compare === void 0) { compare = new Map(); }
         if (rules === void 0) { rules = new Map(); }
+        if (offerPrices === void 0) { offerPrices = new Array(); }
         this.id = 0;
         this.owner = '0x0';
+        this.offerPrices = new Array();
         this.description = description;
         this.title = title;
         this.imageUrl = imageUrl;
@@ -10175,12 +10177,14 @@ var Offer = /** @class */ (function () {
         this.tags = tags;
         this.compare = compare;
         this.rules = rules;
+        this.offerPrices = offerPrices;
     }
     Offer.fromJson = function (json) {
         var offer = Object.assign(new Offer(), json);
         offer.tags = JsonUtils_1.JsonUtils.jsonToMap(json['tags']);
         offer.compare = JsonUtils_1.JsonUtils.jsonToMap(json['compare']);
         offer.rules = JsonUtils_1.JsonUtils.jsonToMap(json['rules']);
+        offer.offerPrices = json.offerPrices;
         return offer;
     };
     Offer.prototype.toJson = function () {
@@ -24504,8 +24508,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -43627,8 +43631,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -43886,11 +43890,10 @@ var BitKeyPair = /** @class */ (function () {
     };
     BitKeyPair.prototype.syncPermissions = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var e_3, _a, site, requests, requests_1, requests_1_1, request, strDecrypt, jsonDecrypt, resultMap, e_3_1;
+            var e_3, _a, site, requests, _loop_1, this_1, requests_1, requests_1_1, request, e_3_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        var _this = this;
                         if (!(!this.isConfidential && this.permissions.fields.size === 0)) return [3 /*break*/, 10];
                         return [4 /*yield*/, this.siteDataSource.getSiteData(this.origin)];
                     case 1:
@@ -43900,6 +43903,25 @@ var BitKeyPair = /** @class */ (function () {
                         return [4 /*yield*/, this.permissionsSource.getGrandAccessRecords(site.publicKey, this.getPublicKey())];
                     case 2:
                         requests = _b.sent();
+                        _loop_1 = function (request) {
+                            var strDecrypt, jsonDecrypt, resultMap, self_1;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0: return [4 /*yield*/, this_1.decryptMessage(site.publicKey, request.responseData)];
+                                    case 1:
+                                        strDecrypt = _a.sent();
+                                        jsonDecrypt = JSON.parse(strDecrypt);
+                                        resultMap = JsonUtils_1.JsonUtils.jsonToMap(jsonDecrypt);
+                                        this_1.permissions.fields.clear();
+                                        self_1 = this_1;
+                                        resultMap.forEach(function (value, key) {
+                                            self_1.permissions.fields.set(key, value.access);
+                                        });
+                                        return [2 /*return*/];
+                                }
+                            });
+                        };
+                        this_1 = this;
                         _b.label = 3;
                     case 3:
                         _b.trys.push([3, 8, 9, 10]);
@@ -43908,15 +43930,9 @@ var BitKeyPair = /** @class */ (function () {
                     case 4:
                         if (!!requests_1_1.done) return [3 /*break*/, 7];
                         request = requests_1_1.value;
-                        return [4 /*yield*/, this.decryptMessage(site.publicKey, request.responseData)];
+                        return [5 /*yield**/, _loop_1(request)];
                     case 5:
-                        strDecrypt = _b.sent();
-                        jsonDecrypt = JSON.parse(strDecrypt);
-                        resultMap = JsonUtils_1.JsonUtils.jsonToMap(jsonDecrypt);
-                        this.permissions.fields.clear();
-                        resultMap.forEach(function (value, key) {
-                            _this.permissions.fields.set(key, value.access);
-                        });
+                        _b.sent();
                         _b.label = 6;
                     case 6:
                         requests_1_1 = requests_1.next();
@@ -47814,8 +47830,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -48071,8 +48087,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -49884,7 +49900,7 @@ module.exports = function(module) {
 /* 641 */
 /***/ (function(module, exports) {
 
-module.exports = {"_from":"elliptic@=6.4.0","_id":"elliptic@6.4.0","_inBundle":false,"_integrity":"sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@=6.4.0","name":"elliptic","escapedName":"elliptic","rawSpec":"=6.4.0","saveSpec":null,"fetchSpec":"=6.4.0"},"_requiredBy":["/bitcore-lib","/browserify-sign","/create-ecdh","/secp256k1"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz","_shasum":"cac9af8762c85836187003c8dfe193e5e2eae5df","_spec":"elliptic@=6.4.0","_where":"/private/tmp/base-client-js/node_modules/bitcore-lib","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"bundleDependencies":false,"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"deprecated":false,"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.0"}
+module.exports = {"_from":"elliptic@=6.4.0","_id":"elliptic@6.4.0","_inBundle":false,"_integrity":"sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@=6.4.0","name":"elliptic","escapedName":"elliptic","rawSpec":"=6.4.0","saveSpec":null,"fetchSpec":"=6.4.0"},"_requiredBy":["/bitcore-lib","/browserify-sign","/create-ecdh","/secp256k1"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz","_shasum":"cac9af8762c85836187003c8dfe193e5e2eae5df","_spec":"elliptic@=6.4.0","_where":"/Users/antonbatalin/Documents/Development/2018/base-client-js/node_modules/bitcore-lib","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"bundleDependencies":false,"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"deprecated":false,"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.0"}
 
 /***/ }),
 /* 642 */
@@ -55439,8 +55455,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
