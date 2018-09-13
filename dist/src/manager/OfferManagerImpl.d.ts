@@ -11,5 +11,5 @@ export declare class OfferManagerImpl implements OfferManager {
     getMyOffers(id?: number): Promise<Array<Offer>>;
     getAllOffers(): Promise<Array<Offer>>;
     deleteOffer(id: number): Promise<number>;
-    private onChangeAccount(account);
+    private onChangeAccount;
 }

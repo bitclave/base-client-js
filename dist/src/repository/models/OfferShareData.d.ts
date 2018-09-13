@@ -5,5 +5,6 @@ export default class OfferShareData {
     clientResponse: string;
     worth: string;
     accepted: boolean;
-    constructor(offerSearchId: number, clientResponse: string);
+    priceId: number;
+    constructor(offerSearchId: number, clientResponse: string, priceId: number);
 }

@@ -18,5 +18,5 @@ export declare class SearchManagerImpl implements SearchManager {
     getSearchResult(searchRequestId: number): Promise<Array<OfferSearchResultItem>>;
     complainToSearchItem(searchResultId: number): Promise<void>;
     addResultItem(offerSearch: OfferSearch): Promise<void>;
-    private onChangeAccount(account);
+    private onChangeAccount;
 }
