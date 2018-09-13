@@ -24,7 +24,7 @@ export default class Offer {
         offer.rules = JsonUtils.jsonToMap(json['rules']);
 
         if (json.offerPrices && json.offerPrices.length) {
-          offer.offerPrices = json.offerPrices.map( e => {
+          offer.offerPrices = json.offerPrices.map( (e: OfferPrice) => {
               const offerRules: Array<OfferPriceRules> = e.rules && e.rules.length
                 ? e.rules.map( r => OfferPriceRules.fromJson(r))
                 : Array<OfferPriceRules>();

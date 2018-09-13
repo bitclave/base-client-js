@@ -24,7 +24,7 @@ export default class OfferShareDataRepositoryImpl implements OfferShareDataRepos
         const result: Array<OfferShareData> = [];
 
         for (let item of json) {
-            result.push(Object.assign(new OfferShareData(0, ''), item));
+            result.push(Object.assign(new OfferShareData(0, '', 0), item));
         }
 
         return result;

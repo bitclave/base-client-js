@@ -44,9 +44,6 @@ export class OfferManagerImpl implements OfferManager {
         return this.offerRepository.deleteById(this.account.publicKey, id);
     }
 
-    public getOfferByPriceId(id: number): Promise<Offer> {
-        return this.offerRepository.getOfferByPriceId(this.account.publicKey, id);
-    }
     private onChangeAccount(account: Account) {
         this.account = account;
     }

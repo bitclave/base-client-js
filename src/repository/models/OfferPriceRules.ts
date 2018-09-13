@@ -5,8 +5,17 @@ export class OfferPriceRules {
     value: string;
     rule: CompareAction;
     public static fromJson(data: any): OfferPriceRules {
-      const rule: CompareAction = CompareAction[data.rule];
+      let rule: CompareAction;
+      switch (data.rule) {
+        case CompareAction.NOT_EQUAL: rule = CompareAction.NOT_EQUAL; break;
+        case CompareAction.LESS_OR_EQUAL: rule = CompareAction.LESS_OR_EQUAL; break;
+        case CompareAction.MORE_OR_EQUAL: rule = CompareAction.MORE_OR_EQUAL; break;
+        case CompareAction.MORE: rule = CompareAction.MORE; break;
+        case CompareAction.LESS: rule = CompareAction.LESS; break;
+        default: rule = CompareAction.EQUALLY; break;
+      }
       return new OfferPriceRules(data.id, data.rulesKey, data.value, rule);
+      return new OfferPriceRules(data.id, data.rulesKey, data.value, data.rule);
   }
     constructor(
         id: number = 0,
@@ -50,7 +59,7 @@ export class OfferPriceRules {
                     return externalNumericValue !== internalNumericValue;
                 default: throw new Error('wrong rule');
             }
-        } else {
+        } else if (value) {
             // compare as string
             switch (this.rule) {
                 case CompareAction.EQUALLY:
@@ -67,6 +76,9 @@ export class OfferPriceRules {
                     return value !== this.value;
                 default: throw new Error('wrong rule');
             }
+        } else {
+          // value is undefined
+          return false;
         }
     }
 }

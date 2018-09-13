@@ -34,19 +34,7 @@ export class HttpTransportImpl implements HttpTransport {
         return this;
     }
 
-    private acceptInterceptor(interceptorCortege: InterceptorCortege,
-                              interceptorIndex: number = 0): Promise<InterceptorCortege> {
-        return (interceptorIndex >= this.interceptors.length)
-            ? Promise.resolve(interceptorCortege)
-
-            : this.interceptors[interceptorIndex]
-                .onIntercept(interceptorCortege)
-                .then(interceptorCortegeResult =>
-                    this.acceptInterceptor(interceptorCortegeResult, ++interceptorIndex)
-                );
-    }
-
-    sendRequest(method: HttpMethod, data?: any): Promise<Response>
+    // sendRequest(method: HttpMethod, data?: any): Promise<Response>
     sendRequest(path: string, method: HttpMethod, data?: any): Promise<Response> {
         return this.acceptInterceptor(new InterceptorCortege(path, method, this.headers, data))
             .then((cortege: InterceptorCortege) => new Promise<Response>((resolve, reject) => {
@@ -85,4 +73,13 @@ export class HttpTransportImpl implements HttpTransport {
         return this.host;
     }
 
+    private acceptInterceptor(interceptorCortege: InterceptorCortege, interceptorIndex: number = 0): Promise<InterceptorCortege> {
+        return (interceptorIndex >= this.interceptors.length)
+            ? Promise.resolve(interceptorCortege)
+            : this.interceptors[interceptorIndex]
+                  .onIntercept(interceptorCortege)
+                  .then(interceptorCortegeResult =>
+                      this.acceptInterceptor(interceptorCortegeResult, ++interceptorIndex)
+                  );
+    }
 }

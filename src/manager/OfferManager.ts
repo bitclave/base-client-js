@@ -10,6 +10,4 @@ export interface OfferManager {
 
     deleteOffer(id: number): Promise<number>;
 
-    getOfferByPriceId(id: number): Promise<Offer>;
-
 }

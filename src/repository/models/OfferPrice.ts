@@ -1,5 +1,5 @@
 import { OfferPriceRules } from './OfferPriceRules';
-import { CompareAction, AccessRight } from '../../Base';
+import { AccessRight } from '../../Base';
 export class OfferPrice {
 
     id: number;
@@ -29,8 +29,8 @@ export class OfferPrice {
     isRelevant(data: Map<string, string>): boolean {
         return this.rules && this.rules.length && this.rules.every( priceRule => {
             const value = data.get(priceRule.rulesKey);
-            return value && priceRule.isValid(value);
-        });
+            return (value && priceRule.isValid(value)) ? true : false;
+        }) ? true : false;
     }
     getFieldsForAcception(accessRight: AccessRight): Map<string, AccessRight> {
         const fields = new Map<string, AccessRight>();
