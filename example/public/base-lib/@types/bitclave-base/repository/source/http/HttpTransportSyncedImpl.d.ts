@@ -9,9 +9,9 @@ export declare class HttpTransportSyncedImpl implements HttpTransport {
     private host;
     constructor(host: string);
     addInterceptor(interceptor: HttpInterceptor): HttpTransport;
-    private acceptInterceptor(interceptorCortege, interceptorIndex?);
+    private acceptInterceptor;
     sendRequest(method: HttpMethod, data?: any): Promise<Response>;
     getHost(): string;
-    private runTransaction(transaction);
-    private callNextRequest();
+    private runTransaction;
+    private callNextRequest;
 }

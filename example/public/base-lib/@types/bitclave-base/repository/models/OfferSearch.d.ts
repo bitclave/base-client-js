@@ -8,5 +8,5 @@ export default class OfferSearch {
 export declare enum OfferResultAction {
     NONE = "NONE",
     ACCEPT = "ACCEPT",
-    REJECT = "REJECT",
+    REJECT = "REJECT"
 }
