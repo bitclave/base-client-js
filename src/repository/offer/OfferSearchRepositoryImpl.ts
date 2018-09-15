@@ -7,7 +7,7 @@ const fetch = require('node-fetch');
 
 export default class OfferSearchRepositoryImpl implements OfferSearchRepository {
 
-    private readonly OFFER_SEARCH_API = '/v1/client/{clientId}/search/result/?searchResultId={searchResultId}';
+    private readonly OFFER_SEARCH_API = '/v1/search/result/?searchResultId={searchResultId}';
     private host: string;
 
     constructor(host: string) {
@@ -16,7 +16,7 @@ export default class OfferSearchRepositoryImpl implements OfferSearchRepository 
 
     async getOfferSearchItem(clientId: string, searchResultId: number): Promise<OfferSearchResultItem> {
         const url = this.host + this.OFFER_SEARCH_API
-            .replace('{clientId}', clientId)
+            // .replace('{clientId}', clientId)
             .replace('{searchResultId}', searchResultId.toString());
 
         const response = await fetch(url, {method: 'GET'});

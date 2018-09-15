@@ -126,8 +126,9 @@ describe('Offer main scenario', async () => {
         // rpcClient.disconnect();
     });
 
-    it.only('should select offer, price, confirmed and share data', async () => {
-        try {
+    // it.only('should select offer, price, confirmed and share data', async () => {
+    it('should select offer, price, confirmed and share data', async () => {
+            try {
 
             // Business:
             // create offer
