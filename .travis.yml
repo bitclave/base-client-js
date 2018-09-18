@@ -10,9 +10,9 @@ install:
 
 before_script:
   - node ./external/Signer.js --authPK 02e2d9c04891bf7f9934041d7171ade343e540f5d18bd357cde4ef175da3de7e06 --host https://base2-bitclva-com.herokuapp.com &
-  - git clone https://github.com/bitclave/base-development.git && cd base-development
-  - git submodule init && git submodule update
-  - ./start.sh 
+  # - git clone https://github.com/bitclave/base-development.git && cd base-development
+  # - git submodule init && git submodule update
+  # - ./start.sh 
   - sleep 2
 
 script:
