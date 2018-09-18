@@ -14,7 +14,7 @@ before_script:
   - docker-compose -v
   - git submodule init && git submodule update
   - ./start.sh 
-  - sleep 2
+  - sleep 3
 
 script:
   - npm run coveralls
