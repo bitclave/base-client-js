@@ -28,7 +28,7 @@ async function createUser(user: Base, pass: string): Promise<Account> {
         await user.accountManager.unsubscribe();
     } catch (e) {
         console.log('check createUser', e);
-        //ignore error if user not exist
+        // ignore error if user not exist
     }
 
     return await user.accountManager.registration(pass, someSigMessage); // this method private.

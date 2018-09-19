@@ -22048,24 +22048,25 @@ var OfferPriceRules = /** @class */ (function () {
     OfferPriceRules.fromJson = function (data) {
         var rule;
         switch (data.rule) {
-            case CompareAction_1.CompareAction.NOT_EQUAL:
-                rule = CompareAction_1.CompareAction.NOT_EQUAL;
-                break;
-            case CompareAction_1.CompareAction.LESS_OR_EQUAL:
-                rule = CompareAction_1.CompareAction.LESS_OR_EQUAL;
-                break;
-            case CompareAction_1.CompareAction.MORE_OR_EQUAL:
-                rule = CompareAction_1.CompareAction.MORE_OR_EQUAL;
-                break;
-            case CompareAction_1.CompareAction.MORE:
-                rule = CompareAction_1.CompareAction.MORE;
-                break;
-            case CompareAction_1.CompareAction.LESS:
-                rule = CompareAction_1.CompareAction.LESS;
-                break;
-            default:
+            case 'EQUALLY':
                 rule = CompareAction_1.CompareAction.EQUALLY;
                 break;
+            case 'NOT_EQUAL':
+                rule = CompareAction_1.CompareAction.NOT_EQUAL;
+                break;
+            case 'LESS_OR_EQUAL':
+                rule = CompareAction_1.CompareAction.LESS_OR_EQUAL;
+                break;
+            case 'MORE_OR_EQUAL':
+                rule = CompareAction_1.CompareAction.MORE_OR_EQUAL;
+                break;
+            case 'MORE':
+                rule = CompareAction_1.CompareAction.MORE;
+                break;
+            case 'LESS':
+                rule = CompareAction_1.CompareAction.LESS;
+                break;
+            default: throw new Error("wrong compare action: " + data.rule);
         }
         return new OfferPriceRules(data.id, data.rulesKey, data.value, rule);
         return new OfferPriceRules(data.id, data.rulesKey, data.value, data.rule);
@@ -55672,21 +55673,25 @@ var HttpMethod_1 = __webpack_require__(18);
 var Offer_1 = __webpack_require__(57);
 var OfferSearchRepositoryImpl = /** @class */ (function () {
     function OfferSearchRepositoryImpl(transport) {
-        this.OFFER_SEARCH_API = '/v1/client/{clientId}/search/result/{id}';
-        this.OFFER_SEARCH_ADD_API = '/dev/client/{clientId}/search/result/';
+        this.OFFER_SEARCH_API = '/v1/search/result/{id}';
+        this.OFFER_SEARCH_ADD_API = '/v1/search/result/';
         this.transport = transport;
     }
     OfferSearchRepositoryImpl.prototype.getSearchResult = function (clientId, searchRequestId) {
         var _this = this;
-        return this.transport.sendRequest(this.OFFER_SEARCH_API.replace('{clientId}', clientId)
+        return this.transport.sendRequest(this.OFFER_SEARCH_API
+            // .replace('{clientId}', clientId)
             .replace('{id}', '') + ("?searchRequestId=" + searchRequestId), HttpMethod_1.HttpMethod.Get).then(function (response) { return _this.jsonToListResult(response.json); });
     };
     OfferSearchRepositoryImpl.prototype.complainToSearchItem = function (clientId, searchResultId) {
-        return this.transport.sendRequest(this.OFFER_SEARCH_API.replace('{clientId}', clientId)
+        return this.transport.sendRequest(this.OFFER_SEARCH_API
+            // .replace('{clientId}', clientId)
             .replace('{id}', searchResultId.toString()) + ("?searchResultId=" + searchResultId), HttpMethod_1.HttpMethod.Patch, searchResultId).then(function (response) { });
     };
     OfferSearchRepositoryImpl.prototype.addResultItem = function (clientId, offerSearch) {
-        return this.transport.sendRequest(this.OFFER_SEARCH_ADD_API.replace('{clientId}', clientId), HttpMethod_1.HttpMethod.Post, offerSearch).then(function (response) { });
+        return this.transport.sendRequest(
+        // this.OFFER_SEARCH_ADD_API.replace('{clientId}', clientId),
+        this.OFFER_SEARCH_ADD_API, HttpMethod_1.HttpMethod.Post, offerSearch).then(function (response) { });
     };
     OfferSearchRepositoryImpl.prototype.jsonToListResult = function (json) {
         return __awaiter(this, void 0, void 0, function () {
