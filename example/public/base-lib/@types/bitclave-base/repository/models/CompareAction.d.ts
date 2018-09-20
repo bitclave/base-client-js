@@ -4,5 +4,5 @@ export declare enum CompareAction {
     LESS_OR_EQUAL = 2,
     MORE_OR_EQUAL = 3,
     MORE = 4,
-    LESS = 5,
+    LESS = 5
 }

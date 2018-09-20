@@ -49,5 +49,5 @@ export declare class ProfileManagerImpl implements ProfileManager {
      * @returns {Promise<Map<string, string>>} Map with encrypted data.
      */
     updateData(data: Map<string, string>): Promise<Map<string, string>>;
-    private onChangeAccount(account);
+    private onChangeAccount;
 }

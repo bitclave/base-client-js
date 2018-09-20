@@ -19,5 +19,5 @@ export declare class WalletManagerImpl implements WalletManager {
     createWalletsRecords(wallets: AddrRecord[], baseID: string): Promise<WalletsRecords>;
     addWealthValidator(validatorPbKey: string): Promise<void>;
     refreshWealthPtr(): Promise<WealthPtr>;
-    private onChangeAccount(account);
+    private onChangeAccount;
 }

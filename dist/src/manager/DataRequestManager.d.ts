@@ -60,7 +60,7 @@ export interface DataRequestManager {
      *
      * @returns {Promise<void>}
      */
-    grantAccessForOffer(offerSearchId: number, offerOwner: string, acceptedFields: Map<string, AccessRight>): Promise<void>;
+    grantAccessForOffer(offerSearchId: number, offerOwner: string, acceptedFields: Map<string, AccessRight>, priceId: number): Promise<void>;
     /**
      * Decodes a message that was encrypted by the owner of the private key that matches the provided public key.
      * @param {string} senderPk public key of the user that issued data access request.

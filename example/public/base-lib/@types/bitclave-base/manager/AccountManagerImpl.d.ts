@@ -55,8 +55,8 @@ export declare class AccountManagerImpl implements AccountManager {
     unsubscribe(): Promise<Account>;
     getNewMnemonic(): Promise<string>;
     getAccount(): Account;
-    private checkSigMessage(message);
-    private syncAccount(account, message);
-    private generateAccount(keyPair);
-    private onGetAccount(account, message);
+    private checkSigMessage;
+    private syncAccount;
+    private generateAccount;
+    private onGetAccount;
 }

@@ -5,7 +5,7 @@ export declare enum WalletVerificationCodes {
     RC_ADDR_NOT_VERIFIED = -2,
     RC_ADDR_WRONG_SIGNATURE = -3,
     RC_ADDR_SCHEMA_MISSMATCH = -4,
-    RC_GENERAL_ERROR = -100,
+    RC_GENERAL_ERROR = -100
 }
 export declare class WalletVerificationStatus {
     rc: WalletVerificationCodes;

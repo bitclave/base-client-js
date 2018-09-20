@@ -64,8 +64,6 @@ export default class OfferRepositoryImpl implements OfferRepository {
         for (let item of json) {
             result.push(Offer.fromJson(item));
         }
-
         return result;
     }
-
 }

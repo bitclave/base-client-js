@@ -6,6 +6,8 @@ import { OfferManager } from './manager/OfferManager';
 import { SearchManager } from './manager/SearchManager';
 import SearchRequest from './repository/models/SearchRequest';
 import Offer from './repository/models/Offer';
+import { OfferPrice } from './repository/models/OfferPrice';
+import { OfferPriceRules } from './repository/models/OfferPriceRules';
 import { WalletManager } from './manager/WalletManager';
 import { WalletManagerImpl } from './manager/WalletManagerImpl';
 import OfferSearchResultItem from './repository/models/OfferSearchResultItem';
@@ -30,7 +32,7 @@ export { AcceptedField } from './utils/keypair/AcceptedField';
 export { RpcToken } from './utils/keypair/rpc/RpcToken';
 export { RpcAuth } from './utils/keypair/rpc/RpcAuth';
 export { BaseAddrPair, AddrRecord, WalletsRecords, WealthRecord, WealthPtr, ProfileUser, ProfileWealthValidator } from './utils/types/BaseTypes';
-export { AccountManager, ProfileManager, DataRequestManager, OfferManager, SearchManager, WalletManager, WalletManagerImpl, Offer, SearchRequest, OfferSearch, OfferSearchResultItem, OfferResultAction, OfferShareData };
+export { AccountManager, ProfileManager, DataRequestManager, OfferManager, SearchManager, WalletManager, WalletManagerImpl, Offer, OfferPrice, OfferPriceRules, SearchRequest, OfferSearch, OfferSearchResultItem, OfferResultAction, OfferShareData };
 export default class Base {
     private _walletManager;
     private _accountManager;
@@ -48,6 +50,6 @@ export default class Base {
     readonly dataRequestManager: DataRequestManager;
     readonly offerManager: OfferManager;
     readonly searchManager: SearchManager;
-    private createNodeAssistant(httpTransport);
-    private createKeyPairHelper(signerHost, permissionSource, siteDataSource, siteOrigin);
+    private createNodeAssistant;
+    private createKeyPairHelper;
 }

@@ -4,5 +4,5 @@ export declare class Permissions {
 }
 export declare enum AccessRight {
     R = 0,
-    RW = 1,
+    RW = 1
 }

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>bitclave-base</title>
+	<title>@bitclave/base-client-js</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">bitclave-base</a>
+					<a href="index.html" class="title">@bitclave/base-client-js</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -54,7 +54,7 @@
 					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1> bitclave-base</h1>
+			<h1> @bitclave/base-client-js</h1>
 		</div>
 	</div>
 </header>
@@ -65,22 +65,26 @@
 				<h1 id="base-client-js">BASE-CLIENT-JS</h1>
 				<p>JS client side library for interaction with BASE platform.</p>
 				<p><a href="https://travis-ci.org/bitclave/base-client-js"><img src="https://travis-ci.org/bitclave/base-client-js.svg?branch=develop" alt="Build Status"></a>
-				<a href="https://coveralls.io/github/bitclave/base-client-js"><img src="https://coveralls.io/repos/github/bitclave/base-client-js/badge.svg" alt="Coverage Status"></a></p>
+					<a href="https://coveralls.io/github/bitclave/base-client-js"><img src="https://coveralls.io/repos/github/bitclave/base-client-js/badge.svg" alt="Coverage Status"></a>
+				<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a></p>
 				<p>This repository contains code for BASE-CLIENT-JS library. This library can be integrated by our partners to interact with BASE platform from client side. The library does not store any keys.</p>
 				<p>The repository also includes an example application, demonstrating how to integrate the library in WEB application</p>
 				<h1 id="overview">Overview</h1>
 				<p><img src="https://github.com/bitclave/base-client-js/blob/develop/images/base_phase1_overview.png" alt="Alt text"></p>
-				<h1 id="how-to-run">How to run</h1>
+				<h1 id="how-to-build">How to build</h1>
 				<ul>
 					<li>from root directory run
 						<code>`</code>
-						npm install
-					node ./external/Signer.js</li>
+					./install_lib.sh</li>
 				</ul>
-				<pre><code>- <span class="hljs-keyword">from</span> example directory <span class="hljs-keyword">run</span><span class="bash"></span>
-</code></pre><p>npm install
-					cp -rf public/base-lib/* node_modules/
-					npm start
+				<pre><code><span class="hljs-comment"># How to run example application</span>
+- <span class="hljs-keyword">from</span> example directory <span class="hljs-keyword">run</span><span class="bash"></span>
+</code></pre><p>npm start</p>
+				<pre><code>
+<span class="hljs-comment"># How to run tests</span>
+- <span class="hljs-keyword">from</span> root directory <span class="hljs-keyword">run</span><span class="bash"></span>
+</code></pre><p>node ./external/Signer.js --authPK 02e2d9c04891bf7f9934041d7171ade343e540f5d18bd357cde4ef175da3de7e06 --host <a href="https://base2-bitclva-com.herokuapp.com">https://base2-bitclva-com.herokuapp.com</a> &amp;
+					npm test
 				<code>`</code></p>
 			</div>
 		</div>

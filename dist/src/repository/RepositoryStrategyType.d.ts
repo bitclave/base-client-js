@@ -1,4 +1,4 @@
 export declare enum RepositoryStrategyType {
     Postgres = "POSTGRES",
-    Hybrid = "HYBRID",
+    Hybrid = "HYBRID"
 }

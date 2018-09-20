@@ -51,9 +51,16 @@ export default class PermissionHolder extends React.Component<Prop, {}> {
     }
 
     private prepareRequestFields() {
-        return this.props.model.requestFields.map(item => {
-            return <div key={item}>{item}</div>;
-        });
+        if ( this.props.model.requestFields.length<1 ) {
+            return <div key='grant'>grant access</div>
+        }
+
+        if (this.props.model.requestFields && this.props.model.requestFields.length) {
+            return this.props.model.requestFields.map(item => {
+                return <div key={item}>{item}</div>;
+            });
+        }
+
     }
 
     private prepareResponseFields() {
@@ -77,7 +84,11 @@ export default class PermissionHolder extends React.Component<Prop, {}> {
         }
 
         const {responseFields, requestFields} = this.props.model;
-        const missing = responseFields.filter(item => requestFields.indexOf(item) < 0);
+
+        if (requestFields.length<1) return;
+        
+        // const missing = responseFields.filter(item => requestFields.indexOf(item) < 0);
+        const missing = requestFields.filter(item => responseFields.indexOf(item) < 0);
         if (responseFields.length != requestFields.length || missing.length > 0) {
             return (<Col className="client-data-item-field" xs="auto">
                 <Button color="success" onClick={e => this.props.onAcceptClick()}>Accept</Button>

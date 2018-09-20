@@ -5,5 +5,5 @@ export declare enum HttpMethod {
     Delete = "DELETE",
     Head = "HEAD",
     Options = "OPTIONS",
-    Patch = "PATCH",
+    Patch = "PATCH"
 }

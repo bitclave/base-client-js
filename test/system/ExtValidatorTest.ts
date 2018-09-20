@@ -10,6 +10,7 @@ import { WalletManager } from '../../src/manager/WalletManager';
 import { WalletUtils, WalletVerificationStatus } from '../../src/utils/WalletUtils';
 import { AccessRight } from '../../src/utils/keypair/Permissions';
 import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
+import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 
 const should = require('chai')
     .use(require('chai-as-promised'))
@@ -54,6 +55,7 @@ describe('BASE API test: External Validator', async () => {
 
     private function createBase(): Base {
         return new Base(
+            // 'http://localhost:8080',
             'https://base2-bitclva-com.herokuapp.com',
             'localhost',
             RepositoryStrategyType.Postgres,
@@ -191,17 +193,17 @@ describe('BASE API test: External Validator', async () => {
         // validator shares results with Alice
         await baseValidator.dataRequestManager.grantAccessForClient(accAlice.publicKey, grantFields);
         // Alice tries to access wealth after it is shared
-        const ethWealthPtr: WealthPtr = await refreshWealthPtrWithCheckError();
-        ethWealthPtr.validator.should.be.equal(accValidator.publicKey);
+        const ethWealthPtr1: WealthPtr = await refreshWealthPtrWithCheckError();
+        ethWealthPtr1.validator.should.be.equal(accValidator.publicKey);
         // ~Alice tries to access wealth after it is shared
 
         // Alice tries to access wealth after it is already internally saved
-        const ethWealthPtr: WealthPtr = await refreshWealthPtrWithCheckError();
-        ethWealthPtr.validator.should.be.equal(accValidator.publicKey);
+        const ethWealthPtr2: WealthPtr = await refreshWealthPtrWithCheckError();
+        ethWealthPtr2.validator.should.be.equal(accValidator.publicKey);
         // ~Alice tries to access wealth after it is already internally saved
     });
 
-    private async function refreshWealthPtrWithCheckError(): Promise<WealthPtr> {
+    async function refreshWealthPtrWithCheckError(): Promise<WealthPtr> {
         try {
             return await baseAlice.walletManager.refreshWealthPtr();
         } catch (e) {
@@ -243,7 +245,7 @@ describe('BASE API test: External Validator', async () => {
                 accValidator.publicKey, ''
             );
 
-            requestsByFrom.sort((a, b) => a.id > b.id);
+            requestsByFrom.sort((a, b) => a.id > b.id ? 1 : -1);
 
             // Validator decodes wallets for Alice, Bob and Carol
             const wealthMap: Map<string, string> = new Map<string, string>();
@@ -275,7 +277,8 @@ describe('BASE API test: External Validator', async () => {
             }
 
             // Validator writes wealth for all users to BASE
-            // Validator stores the data in <key, value> map, where key is the public key of the user that asked for verification
+            // Validator stores the data in <key, value> map,
+            // where key is the public key of the user that asked for verification
             baseValidator.profileManager.updateData(wealthMap);
 
             const grantFields: Map<string, AccessRight> = new Map();
@@ -290,9 +293,9 @@ describe('BASE API test: External Validator', async () => {
             // Alice updates her internal wealth ptr record
             await baseAlice.walletManager.refreshWealthPtr();
 
-            //Alice shares the data with desearch
+            // Alice shares the data with desearch
             // await baseAlice.dataRequestManager.grantAccessForClient(accDesearch.publicKey, ['wealth']);
-            //!Alice shares the data with desearch
+            // !Alice shares the data with desearch
 
             // Desearch asks Alice for access
             /* const id: number = */
