@@ -22,7 +22,8 @@ const rpcSignerHost: string = 'http://localhost:3545';
 const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
 const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
-const baseNodeUrl = 'http://localhost:8080';
+// const baseNodeUrl = 'http://localhost:8080';
+const baseNodeUrl = 'https://base2-bitclva-com.herokuapp.com';
 
 async function createUser(user: Base, pass: string): Promise<Account> {
     let accessToken: string = '';

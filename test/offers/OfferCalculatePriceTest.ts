@@ -20,6 +20,11 @@ const rpcSignerHost: string = 'http://localhost:3545';
 const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
 const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
+// process.on('unhandledRejection', err => {
+//     // Will print "unhandledRejection err is not defined"
+//     console.log('unhandledRejection', err);
+// });
+
 async function createUser(user: Base, pass: string): Promise<Account> {
     let accessToken: string = '';
     try {
