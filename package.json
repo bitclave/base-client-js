@@ -5,7 +5,7 @@
   "main": "Bitclave-Base.js",
   "scripts": {
     "postinstall": "node remove-bitcore-lib-dep.js",
-    "test": "mocha --timeout 500000 --recursive --require ts-node/register \"./test/**/*Test.ts\"",
+    "test": "mocha --timeout 100000 --recursive --require ts-node/register \"./test/**/*Test.ts\"",
     "testProfile": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/profile/*Test.ts\"",
     "testValidator": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/system/ExtValidatorTest.ts\"",
     "testRequest": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/requests/*Test.ts\"",
