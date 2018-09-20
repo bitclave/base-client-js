@@ -51,7 +51,7 @@ var OfferSearchResultItem_1 = require("./../models/OfferSearchResultItem");
 var fetch = require('node-fetch');
 var OfferSearchRepositoryImpl = /** @class */ (function () {
     function OfferSearchRepositoryImpl(host) {
-        this.OFFER_SEARCH_API = '/v1/client/{clientId}/search/result/?searchResultId={searchResultId}';
+        this.OFFER_SEARCH_API = '/v1/search/result/?searchResultId={searchResultId}';
         this.host = host;
     }
     OfferSearchRepositoryImpl.prototype.getOfferSearchItem = function (clientId, searchResultId) {
@@ -61,7 +61,7 @@ var OfferSearchRepositoryImpl = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         url = this.host + this.OFFER_SEARCH_API
-                            .replace('{clientId}', clientId)
+                            // .replace('{clientId}', clientId)
                             .replace('{searchResultId}', searchResultId.toString());
                         return [4 /*yield*/, fetch(url, { method: 'GET' })];
                     case 1:
