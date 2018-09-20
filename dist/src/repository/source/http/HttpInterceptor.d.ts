@@ -1,4 +1,4 @@
 import { InterceptorCortege } from './InterceptorCortege';
-export interface HttpInterceptor {
+export declare interface HttpInterceptor {
     onIntercept(cortege: InterceptorCortege): Promise<InterceptorCortege>;
 }

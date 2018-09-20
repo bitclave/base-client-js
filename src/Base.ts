@@ -25,6 +25,8 @@ import { SearchRequestRepository } from './repository/search/SearchRequestReposi
 import SearchRequestRepositoryImpl from './repository/search/SearchRequestRepositoryImpl';
 import SearchRequest from './repository/models/SearchRequest';
 import Offer from './repository/models/Offer';
+import { OfferPrice } from './repository/models/OfferPrice';
+import { OfferPriceRules } from './repository/models/OfferPriceRules';
 import { HttpTransportImpl } from './repository/source/http/HttpTransportImpl';
 import NonceInterceptor from './repository/source/http/NonceInterceptor';
 import { WalletManager } from './manager/WalletManager';
@@ -85,6 +87,8 @@ export {
     WalletManager,
     WalletManagerImpl,
     Offer,
+    OfferPrice,
+    OfferPriceRules,
     SearchRequest,
     OfferSearch,
     OfferSearchResultItem,

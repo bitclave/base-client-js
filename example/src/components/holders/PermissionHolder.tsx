@@ -55,9 +55,12 @@ export default class PermissionHolder extends React.Component<Prop, {}> {
             return <div key='grant'>grant access</div>
         }
 
-        return this.props.model.requestFields.map(item => {
-            return <div key={item}>{item}</div>;
-        });
+        if (this.props.model.requestFields && this.props.model.requestFields.length) {
+            return this.props.model.requestFields.map(item => {
+                return <div key={item}>{item}</div>;
+            });
+        }
+
     }
 
     private prepareResponseFields() {

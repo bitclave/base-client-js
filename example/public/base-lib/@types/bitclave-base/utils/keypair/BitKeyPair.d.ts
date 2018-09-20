@@ -24,8 +24,8 @@ export declare class BitKeyPair implements KeyPairHelper {
     encryptPermissionsFields(recipient: string, data: Map<string, AccessRight>): Promise<string>;
     decryptMessage(senderPk: string, encrypted: string): Promise<string>;
     decryptFields(fields: Map<string, string>): Promise<Map<string, string>>;
-    private prepareData(data, encrypt);
-    private hasPermissions(field, read);
-    private syncPermissions();
-    private generatePasswordForField(fieldName);
+    private prepareData;
+    private hasPermissions;
+    private syncPermissions;
+    private generatePasswordForField;
 }

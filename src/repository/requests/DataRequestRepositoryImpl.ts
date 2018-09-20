@@ -54,12 +54,11 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
             ).then((response) => Object.assign([], response.json));
     }
 
-    grantAccessForOffer(offerSearchId: number, clientPk: string, encryptedClientResponse: string): Promise<void> {
-        const shareData = new OfferShareData(offerSearchId, encryptedClientResponse);
+    grantAccessForOffer(offerSearchId: number, clientPk: string, encryptedClientResponse: string, priceId: number): Promise<void> {
+        const shareData = new OfferShareData(offerSearchId, encryptedClientResponse, priceId);
         return this.transport
             .sendRequest(this.GRANT_ACCESS_FOR_OFFER, HttpMethod.Post, shareData)
-            .then(() => {
-            });
+            .then(() => {});
     }
 
     private joinParams(params: Map<string, any>): string {

@@ -8,6 +8,7 @@ import Offer from '../models/Offer';
 export class OfferSearchRepositoryImpl implements OfferSearchRepository {
 
     private readonly OFFER_SEARCH_API = '/v1/search/result/{id}';
+    private readonly OFFER_SEARCH_ADD_API = '/v1/search/result/';
 
     private transport: HttpTransport;
 
@@ -18,6 +19,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     public getSearchResult(clientId: string, searchRequestId: number): Promise<Array<OfferSearchResultItem>> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_API
+                // .replace('{clientId}', clientId)
                 .replace('{id}', '') + `?searchRequestId=${searchRequestId}`,
             HttpMethod.Get
         ).then((response) => this.jsonToListResult(response.json));
@@ -26,6 +28,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     public complainToSearchItem(clientId: string, searchResultId: number): Promise<void> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_API
+                // .replace('{clientId}', clientId)
                 .replace('{id}', searchResultId.toString()) + `?searchResultId=${searchResultId}`,
             HttpMethod.Patch,
             searchResultId
@@ -34,7 +37,8 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
 
     public addResultItem(clientId: string, offerSearch: OfferSearch): Promise<void> {
         return this.transport.sendRequest(
-            this.OFFER_SEARCH_API.replace('{id}', ''),
+            // this.OFFER_SEARCH_ADD_API.replace('{clientId}', clientId),
+            this.OFFER_SEARCH_ADD_API,
             HttpMethod.Post,
             offerSearch
         ).then((response) => {});

@@ -327,8 +327,10 @@ export default class Dashboard extends React.Component<Props, State> {
         if (pos >= 0) {
             var msg = JSON.parse(this.state.clientData[pos].value);
             try {
-                var res = await this.baseManager.getWalletManager().createWalletsRecords(
-                    msg.data, this.baseManager.getId());
+                var res = await this.baseManager
+                  .getWalletManager()
+                  .createWalletsRecords(msg.data, this.baseManager.getId());
+
                 msg.sig = res.sig;
                 console.log('wallet signature', msg.sig);
                 this.state.clientData[pos].value = JSON.stringify(msg);

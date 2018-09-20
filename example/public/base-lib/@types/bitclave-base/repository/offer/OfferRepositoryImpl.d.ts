@@ -11,5 +11,5 @@ export default class OfferRepositoryImpl implements OfferRepository {
     getOfferByOwnerAndId(owner: string, id: number): Promise<Array<Offer>>;
     getOfferByOwner(owner: string): Promise<Array<Offer>>;
     getAllOffer(): Promise<Array<Offer>>;
-    private jsonToListOffers(json);
+    private jsonToListOffers;
 }
