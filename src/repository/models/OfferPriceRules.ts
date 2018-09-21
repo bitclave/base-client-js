@@ -8,6 +8,7 @@ export class OfferPriceRules {
       let rule: CompareAction;
       switch (data.rule) {
 
+        case CompareAction.EQUALLY: rule = CompareAction.EQUALLY; break;
         case CompareAction.NOT_EQUAL: rule = CompareAction.NOT_EQUAL; break;
         case CompareAction.LESS_OR_EQUAL: rule = CompareAction.LESS_OR_EQUAL; break;
         case CompareAction.MORE_OR_EQUAL: rule = CompareAction.MORE_OR_EQUAL; break;

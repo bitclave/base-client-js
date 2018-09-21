@@ -15,6 +15,9 @@ var OfferPriceRules = /** @class */ (function () {
     OfferPriceRules.fromJson = function (data) {
         var rule;
         switch (data.rule) {
+            case CompareAction_1.CompareAction.EQUALLY:
+                rule = CompareAction_1.CompareAction.EQUALLY;
+                break;
             case CompareAction_1.CompareAction.NOT_EQUAL:
                 rule = CompareAction_1.CompareAction.NOT_EQUAL;
                 break;
