@@ -120,6 +120,9 @@ export class DataRequestManagerImpl implements DataRequestManager {
         acceptedFields: Map<string, AccessRight>,
         priceId: number): Promise<void>
     {
+        // automatically grant access to eth_wallets
+        acceptedFields.set('eth_wallets', AccessRight.R)
+
         return this.encrypt
             .encryptPermissionsFields(offerOwner, acceptedFields)
             .then(encrypted => this.dataRequestRepository.grantAccessForOffer(

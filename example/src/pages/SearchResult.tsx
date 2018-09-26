@@ -68,7 +68,8 @@ export default class SearchResult extends React.Component<Props, State> {
             .grantAccessForOffer(
                 model.offerSearch.id,
                 model.offer.owner,
-                grantFields
+                grantFields,
+                model.offer.offerPrices[0].id
             )
             .then(() => {
                 model.offerSearch.state = OfferResultAction.ACCEPT;

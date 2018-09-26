@@ -25,6 +25,15 @@ var Offer = /** @class */ (function () {
         this.compare = compare;
         this.rules = rules;
         this.offerPrices = offerPrices;
+        if (this.offerPrices.length == 0 && this.compare.size > 0) {
+            var key = Array.from(compare.keys())[0];
+            var val = compare.get(key) || "";
+            this.offerPrices = [
+                new OfferPrice_1.OfferPrice(0, "default", worth, [
+                    new OfferPriceRules_1.OfferPriceRules(0, key.toString(), val.toString(), rules[0])
+                ])
+            ];
+        }
     }
     Offer.fromJson = function (json) {
         var offer = Object.assign(new Offer(), json);
@@ -38,6 +47,17 @@ var Offer = /** @class */ (function () {
                     : Array();
                 return new OfferPrice_1.OfferPrice(e.id, e.description, e.worth, offerRules);
             });
+        }
+        else {
+            if (offer.compare.size > 0) {
+                var key = Array.from(offer.compare.keys())[0];
+                var val = offer.compare.get(key) || "";
+                offer.offerPrices = [
+                    new OfferPrice_1.OfferPrice(0, "default", offer.worth, [
+                        new OfferPriceRules_1.OfferPriceRules(0, key.toString(), val.toString(), offer.rules[0])
+                    ])
+                ];
+            }
         }
         return offer;
     };
