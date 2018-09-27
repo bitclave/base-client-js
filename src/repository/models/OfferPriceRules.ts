@@ -13,7 +13,7 @@ export class OfferPriceRules {
         case 'MORE_OR_EQUAL': rule = CompareAction.MORE_OR_EQUAL; break;
         case 'MORE': rule = CompareAction.MORE; break;
         case 'LESS': rule = CompareAction.LESS; break;
-        default: throw new Error(`wrong compare action: ${data.rule}`);
+        default: rule = data.rule;
       }
       return new OfferPriceRules(data.id, data.rulesKey, data.value, rule);
   }
