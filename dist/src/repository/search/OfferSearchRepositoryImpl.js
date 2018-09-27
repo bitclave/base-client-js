@@ -51,21 +51,26 @@ var HttpMethod_1 = require("../source/http/HttpMethod");
 var Offer_1 = require("../models/Offer");
 var OfferSearchRepositoryImpl = /** @class */ (function () {
     function OfferSearchRepositoryImpl(transport) {
-        this.OFFER_SEARCH_API = '/v1/client/{clientId}/search/result/{id}';
-        this.OFFER_SEARCH_ADD_API = '/dev/client/{clientId}/search/result/';
+        this.OFFER_SEARCH_API = '/v1/search/result/{id}';
+        this.OFFER_SEARCH_ADD_API = '/v1/search/result/';
         this.transport = transport;
     }
     OfferSearchRepositoryImpl.prototype.getSearchResult = function (clientId, searchRequestId) {
         var _this = this;
-        return this.transport.sendRequest(this.OFFER_SEARCH_API.replace('{clientId}', clientId)
-            .replace('{id}', '') + ("?searchRequestId=" + searchRequestId), HttpMethod_1.HttpMethod.Get).then(function (response) { return _this.jsonToListResult(response.json); });
+        return this.transport.sendRequest(this.OFFER_SEARCH_ADD_API + ("?searchRequestId=" + searchRequestId), 
+        // .replace('{clientId}', clientId)
+        // .replace('{id}', '') + `?searchRequestId=${searchRequestId}`,
+        HttpMethod_1.HttpMethod.Get).then(function (response) { return _this.jsonToListResult(response.json); });
     };
     OfferSearchRepositoryImpl.prototype.complainToSearchItem = function (clientId, searchResultId) {
-        return this.transport.sendRequest(this.OFFER_SEARCH_API.replace('{clientId}', clientId)
+        return this.transport.sendRequest(this.OFFER_SEARCH_API
+            // .replace('{clientId}', clientId)
             .replace('{id}', searchResultId.toString()) + ("?searchResultId=" + searchResultId), HttpMethod_1.HttpMethod.Patch, searchResultId).then(function (response) { });
     };
     OfferSearchRepositoryImpl.prototype.addResultItem = function (clientId, offerSearch) {
-        return this.transport.sendRequest(this.OFFER_SEARCH_ADD_API.replace('{clientId}', clientId), HttpMethod_1.HttpMethod.Post, offerSearch).then(function (response) { });
+        return this.transport.sendRequest(
+        // this.OFFER_SEARCH_ADD_API.replace('{clientId}', clientId),
+        this.OFFER_SEARCH_ADD_API, HttpMethod_1.HttpMethod.Post, offerSearch).then(function (response) { });
     };
     OfferSearchRepositoryImpl.prototype.jsonToListResult = function (json) {
         return __awaiter(this, void 0, void 0, function () {
