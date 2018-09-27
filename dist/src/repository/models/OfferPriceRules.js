@@ -36,7 +36,6 @@ var OfferPriceRules = /** @class */ (function () {
             default: throw new Error("wrong compare action: " + data.rule);
         }
         return new OfferPriceRules(data.id, data.rulesKey, data.value, rule);
-        return new OfferPriceRules(data.id, data.rulesKey, data.value, data.rule);
     };
     OfferPriceRules.prototype.toJson = function () {
         return {

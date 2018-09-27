@@ -57,7 +57,7 @@ var OfferSearchRepositoryImpl = /** @class */ (function () {
     }
     OfferSearchRepositoryImpl.prototype.getSearchResult = function (clientId, searchRequestId) {
         var _this = this;
-        return this.transport.sendRequest(this.OFFER_SEARCH_ADD_API + ("?searchRequestId=" + searchRequestId),
+        return this.transport.sendRequest(this.OFFER_SEARCH_ADD_API + ("?searchRequestId=" + searchRequestId), 
         // .replace('{clientId}', clientId)
         // .replace('{id}', '') + `?searchRequestId=${searchRequestId}`,
         HttpMethod_1.HttpMethod.Get).then(function (response) { return _this.jsonToListResult(response.json); });
