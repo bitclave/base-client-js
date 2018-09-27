@@ -33,7 +33,7 @@ var OfferPriceRules = /** @class */ (function () {
             case 'LESS':
                 rule = CompareAction_1.CompareAction.LESS;
                 break;
-            default: throw new Error("wrong compare action: " + data.rule);
+            default: rule = data.rule;
         }
         return new OfferPriceRules(data.id, data.rulesKey, data.value, rule);
     };
