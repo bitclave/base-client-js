@@ -15,6 +15,9 @@ var OfferPriceRules = /** @class */ (function () {
     OfferPriceRules.fromJson = function (data) {
         var rule;
         switch (data.rule) {
+            case CompareAction_1.CompareAction.EQUALLY:
+                rule = CompareAction_1.CompareAction.EQUALLY;
+                break;
             case CompareAction_1.CompareAction.NOT_EQUAL:
                 rule = CompareAction_1.CompareAction.NOT_EQUAL;
                 break;
@@ -30,9 +33,25 @@ var OfferPriceRules = /** @class */ (function () {
             case CompareAction_1.CompareAction.LESS:
                 rule = CompareAction_1.CompareAction.LESS;
                 break;
-            default:
+            case 'EQUALLY':
                 rule = CompareAction_1.CompareAction.EQUALLY;
                 break;
+            case 'NOT_EQUAL':
+                rule = CompareAction_1.CompareAction.NOT_EQUAL;
+                break;
+            case 'LESS_OR_EQUAL':
+                rule = CompareAction_1.CompareAction.LESS_OR_EQUAL;
+                break;
+            case 'MORE_OR_EQUAL':
+                rule = CompareAction_1.CompareAction.MORE_OR_EQUAL;
+                break;
+            case 'MORE':
+                rule = CompareAction_1.CompareAction.MORE;
+                break;
+            case 'LESS':
+                rule = CompareAction_1.CompareAction.LESS;
+                break;
+            default: throw new Error("wrong compare action: " + data.rule);
         }
         return new OfferPriceRules(data.id, data.rulesKey, data.value, rule);
         return new OfferPriceRules(data.id, data.rulesKey, data.value, data.rule);

@@ -1,5 +1,5 @@
 import { OfferPriceRules } from './OfferPriceRules';
-import { AccessRight } from '../../Base';
+import { AccessRight } from '../../utils/keypair/Permissions';
 export class OfferPrice {
 
     id: number;

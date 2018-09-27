@@ -1,9 +1,10 @@
 {
-  "name": "bitclave-base",
-  "version": "0.0.1",
+  "name": "@bitclave/base-client-js",
+  "version": "0.1.1",
   "description": "Base JS library for BASE-platform",
-  "main": "Bitclave-Base.js",
+  "main": "dist/Bitclave-Base.js",
   "scripts": {
+    "prepublich": "npm run build",
     "postinstall": "node remove-bitcore-lib-dep.js",
     "test": "mocha --timeout 100000 --recursive --require ts-node/register \"./test/**/*Test.ts\"",
     "testProfile": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/profile/*Test.ts\"",
@@ -14,6 +15,12 @@
     "preBuild": "tsc --outDir dist -d",
     "build": "webpack"
   },
+  "types": "dist/src/Base.d.ts",
+  "files": [
+    "dist/Bitclave-Base.js",
+    "dist/Bitclave-Base.js.map",
+    "remove-bitcore-lib-dep.js"
+  ],
   "nyc": {
     "extension": [
       ".ts"
@@ -51,19 +58,20 @@
   },
   "homepage": "https://github.com/bitclave/base-js#readme",
   "dependencies": {
+    "ajv": "^6.3.0",
     "bitcore-ecies": "^1.0.3",
     "bitcore-lib": "^0.15.0",
     "bitcore-message": "^1.0.4",
     "bitcore-mnemonic": "^1.5.0",
-    "node-fetch": "^2.2.0"
-  },
-  "devDependencies": {
-    "ajv": "^6.3.0",
-    "bs58": "^4.0.1",
-    "buffer-compare": "^1.1.1",
     "crypto-js": "^3.1.9-1",
     "eth-sig-util": "^1.4.2",
     "rxjs": "^5.5.10",
+    "xmlhttprequest": "^1.8.0",
+    "node-fetch": "^2.2.0"
+  },
+  "devDependencies": {
+    "bs58": "^4.0.1",
+    "buffer-compare": "^1.1.1",
     "@babel/core": "^7.0.0-beta.44",
     "@babel/preset-env": "^7.0.0-beta.44",
     "@types/chai": "^4.1.2",
@@ -84,7 +92,6 @@
     "typedoc": "^0.9.0",
     "typedoc-webpack-plugin": "^1.1.4",
     "typescript": "^2.8.1",
-    "webpack": "^3.11.0",
-    "xmlhttprequest": "^1.8.0"
+    "webpack": "^3.11.0"
   }
 }

@@ -16,7 +16,6 @@ export interface SearchManager {
 
     complainToSearchItem(searchResultId: number): Promise<void>
 
-    // debug method! do not use!
     addResultItem(offerSearch: OfferSearch): Promise<void>
 
 }

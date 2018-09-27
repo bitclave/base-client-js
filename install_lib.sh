@@ -3,6 +3,7 @@
 pushd .
 npm install
 # node remove-bitcore-lib-dep.js
+npm run preBuild
 npm run build
 
 #cp ./dist/Base.js* example/public/base-lib/base/
