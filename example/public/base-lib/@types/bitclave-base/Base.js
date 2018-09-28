@@ -19,6 +19,7 @@ exports.OfferPrice = OfferPrice_1.OfferPrice;
 var OfferPriceRules_1 = require("./repository/models/OfferPriceRules");
 exports.OfferPriceRules = OfferPriceRules_1.OfferPriceRules;
 var HttpTransportImpl_1 = require("./repository/source/http/HttpTransportImpl");
+exports.HttpTransportImpl = HttpTransportImpl_1.HttpTransportImpl;
 var NonceInterceptor_1 = require("./repository/source/http/NonceInterceptor");
 var BaseSchema_1 = require("./utils/types/BaseSchema");
 var AssistantNodeRepository_1 = require("./repository/assistant/AssistantNodeRepository");

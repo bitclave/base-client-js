@@ -12983,6 +12983,7 @@ exports.OfferPrice = OfferPrice_1.OfferPrice;
 var OfferPriceRules_1 = __webpack_require__(195);
 exports.OfferPriceRules = OfferPriceRules_1.OfferPriceRules;
 var HttpTransportImpl_1 = __webpack_require__(197);
+exports.HttpTransportImpl = HttpTransportImpl_1.HttpTransportImpl;
 var NonceInterceptor_1 = __webpack_require__(544);
 var BaseSchema_1 = __webpack_require__(205);
 var AssistantNodeRepository_1 = __webpack_require__(579);
