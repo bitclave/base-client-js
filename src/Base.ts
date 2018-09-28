@@ -99,7 +99,8 @@ export {
     OfferShareDataRepository,
     OfferShareDataRepositoryImpl,
     OfferSearchRepository,
-    OfferSearchRepositoryImpl
+    OfferSearchRepositoryImpl,
+    HttpTransportImpl
 };
 
 export default class Base {
