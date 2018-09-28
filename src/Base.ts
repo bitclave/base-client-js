@@ -50,6 +50,7 @@ import  OfferSearchResultItem  from './repository/models/OfferSearchResultItem';
 import OfferSearch, { OfferResultAction } from './repository/models/OfferSearch';
 import  OfferShareData  from './repository/models/OfferShareData';
 import { OfferShareDataRepository } from './repository/offer/OfferShareDataRepository';
+import OfferShareDataRepositoryImpl from './repository/offer/OfferShareDataRepositoryImpl';
 
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
@@ -96,6 +97,7 @@ export {
     OfferResultAction,
     OfferShareData,
     OfferShareDataRepository,
+    OfferShareDataRepositoryImpl,
     OfferSearchRepository,
     OfferSearchRepositoryImpl
 };
