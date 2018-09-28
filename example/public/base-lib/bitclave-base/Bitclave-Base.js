@@ -26638,6 +26638,7 @@ var SearchManagerImpl_1 = __webpack_require__(623);
 var WalletManagerImpl_1 = __webpack_require__(217);
 exports.WalletManagerImpl = WalletManagerImpl_1.WalletManagerImpl;
 var OfferSearchRepositoryImpl_1 = __webpack_require__(670);
+exports.OfferSearchRepositoryImpl = OfferSearchRepositoryImpl_1.OfferSearchRepositoryImpl;
 var OfferSearchResultItem_1 = __webpack_require__(235);
 exports.OfferSearchResultItem = OfferSearchResultItem_1.default;
 var OfferSearch_1 = __webpack_require__(87);

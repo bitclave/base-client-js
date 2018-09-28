@@ -33,6 +33,7 @@ var SearchManagerImpl_1 = require("./manager/SearchManagerImpl");
 var WalletManagerImpl_1 = require("./manager/WalletManagerImpl");
 exports.WalletManagerImpl = WalletManagerImpl_1.WalletManagerImpl;
 var OfferSearchRepositoryImpl_1 = require("./repository/search/OfferSearchRepositoryImpl");
+exports.OfferSearchRepositoryImpl = OfferSearchRepositoryImpl_1.OfferSearchRepositoryImpl;
 var OfferSearchResultItem_1 = require("./repository/models/OfferSearchResultItem");
 exports.OfferSearchResultItem = OfferSearchResultItem_1.default;
 var OfferSearch_1 = require("./repository/models/OfferSearch");
