@@ -1,5 +1,7 @@
 import { OfferShareDataRepository } from './OfferShareDataRepository';
-import {default as Base, OfferShareData } from './../../Base';
+import OfferShareData from './../models/OfferShareData';
+import { AccountManager } from '../../manager/AccountManager';
+import { ProfileManager } from '../../manager/ProfileManager';
 
 const fetch = require('node-fetch');
 
@@ -8,11 +10,14 @@ export default class OfferShareDataRepositoryImpl implements OfferShareDataRepos
     private readonly SHARE_DATA_API: string = '/v1/data/offer/';
     private readonly NONCE_DATA_API: string = '/v1/nonce/';
     private host: string;
-    private base: Base;
 
-    constructor(host: string, base: Base) {
+    private accountManager: AccountManager;
+    private profileManager: ProfileManager;
+
+    constructor(host: string, accountManager: AccountManager, profileManager: ProfileManager) {
         this.host = host;
-        this.base = base;
+        this.accountManager = accountManager;
+        this.profileManager = profileManager;
     }
 
     async getShareData(owner: string, accepted: boolean): Promise<Array<OfferShareData>> {
@@ -31,20 +36,19 @@ export default class OfferShareDataRepositoryImpl implements OfferShareDataRepos
     }
 
     async acceptShareData(searchId: number, worth: string): Promise<void> {
-        const publicKey: string = this.base
-            .accountManager
+        const publicKey: string = this.accountManager
             .getAccount()
             .publicKey;
 
         const nonceUrl: string = this.host + this.NONCE_DATA_API + publicKey;
         const nonceResponse: Response = await fetch(nonceUrl, {method: 'GET'});
-        let nonce = parseInt(await nonceResponse.json());
+        let nonce = parseInt(await nonceResponse.json(), 10);
 
         const acceptUrl: string = this.host + this.SHARE_DATA_API + `?offerSearchId=${searchId}`;
-        const data: any = {
+        const data = {
             data: worth,
             pk: publicKey,
-            sig: await this.base.profileManager.signMessage(worth),
+            sig: await this.profileManager.signMessage(worth),
             nonce: ++nonce
         };
 
