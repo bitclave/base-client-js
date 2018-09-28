@@ -47,7 +47,7 @@ describe('Offer main scenario', async () => {
     const businessBase: Base = createBase();
     const userBase: Base = createBase();
 
-    const offerShareDataRepository: OfferShareDataRepository = new OfferShareDataRepositoryImpl(baseNodeUrl, businessBase);
+    const offerShareDataRepository = new OfferShareDataRepositoryImpl(baseNodeUrl, businessBase.accountManager, businessBase.profileManager);
 
     let businessAccount: Account;
     let userAccount: Account;
