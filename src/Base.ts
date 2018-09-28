@@ -47,8 +47,9 @@ import { WalletManagerImpl } from './manager/WalletManagerImpl';
 import { OfferSearchRepository } from './repository/search/OfferSearchRepository';
 import { OfferSearchRepositoryImpl } from './repository/search/OfferSearchRepositoryImpl';
 import  OfferSearchResultItem  from './repository/models/OfferSearchResultItem';
-import OfferSearch, {OfferResultAction} from './repository/models/OfferSearch';
+import OfferSearch, { OfferResultAction } from './repository/models/OfferSearch';
 import  OfferShareData  from './repository/models/OfferShareData';
+import { OfferShareDataRepository } from './repository/offer/OfferShareDataRepository';
 
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
@@ -93,7 +94,10 @@ export {
     OfferSearch,
     OfferSearchResultItem,
     OfferResultAction,
-    OfferShareData
+    OfferShareData,
+    OfferShareDataRepository,
+    OfferSearchRepository,
+    OfferSearchRepositoryImpl
 };
 
 export default class Base {
