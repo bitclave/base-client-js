@@ -45,14 +45,15 @@ var __values = (this && this.__values) || function (o) {
     };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Base_1 = require("./../../Base");
+var OfferShareData_1 = require("./../models/OfferShareData");
 var fetch = require('node-fetch');
 var OfferShareDataRepositoryImpl = /** @class */ (function () {
-    function OfferShareDataRepositoryImpl(host, base) {
+    function OfferShareDataRepositoryImpl(host, accountManager, profileManager) {
         this.SHARE_DATA_API = '/v1/data/offer/';
         this.NONCE_DATA_API = '/v1/nonce/';
         this.host = host;
-        this.base = base;
+        this.accountManager = accountManager;
+        this.profileManager = profileManager;
     }
     OfferShareDataRepositoryImpl.prototype.getShareData = function (owner, accepted) {
         return __awaiter(this, void 0, void 0, function () {
@@ -72,7 +73,7 @@ var OfferShareDataRepositoryImpl = /** @class */ (function () {
                         try {
                             for (json_1 = __values(json), json_1_1 = json_1.next(); !json_1_1.done; json_1_1 = json_1.next()) {
                                 item = json_1_1.value;
-                                result.push(Object.assign(new Base_1.OfferShareData(0, '', 0), item));
+                                result.push(Object.assign(new OfferShareData_1.default(0, '', 0), item));
                             }
                         }
                         catch (e_1_1) { e_1 = { error: e_1_1 }; }
@@ -93,8 +94,7 @@ var OfferShareDataRepositoryImpl = /** @class */ (function () {
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        publicKey = this.base
-                            .accountManager
+                        publicKey = this.accountManager
                             .getAccount()
                             .publicKey;
                         nonceUrl = this.host + this.NONCE_DATA_API + publicKey;
@@ -104,13 +104,13 @@ var OfferShareDataRepositoryImpl = /** @class */ (function () {
                         _a = parseInt;
                         return [4 /*yield*/, nonceResponse.json()];
                     case 2:
-                        nonce = _a.apply(void 0, [_c.sent()]);
+                        nonce = _a.apply(void 0, [_c.sent(), 10]);
                         acceptUrl = this.host + this.SHARE_DATA_API + ("?offerSearchId=" + searchId);
                         _b = {
                             data: worth,
                             pk: publicKey
                         };
-                        return [4 /*yield*/, this.base.profileManager.signMessage(worth)];
+                        return [4 /*yield*/, this.profileManager.signMessage(worth)];
                     case 3:
                         data = (_b.sig = _c.sent(),
                             _b.nonce = ++nonce,
