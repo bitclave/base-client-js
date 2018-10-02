@@ -24859,6 +24859,9 @@ var WalletManagerImpl = /** @class */ (function () {
             });
         });
     };
+    WalletManagerImpl.prototype.validateWallets = function (walletRecords) {
+        return this.baseSchema.validateWallets(walletRecords);
+    };
     WalletManagerImpl.prototype.onChangeAccount = function (account) {
         this.account = account;
     };
