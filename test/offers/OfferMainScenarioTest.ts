@@ -18,9 +18,10 @@ import { OfferShareDataRepository } from './../../src/repository/offer/OfferShar
 
 const should = require('chai').use(require('chai-as-promised')).should();
 const someSigMessage = 'some unique message for signature';
-// const baseNodeUrl = 'http://localhost:8080';
+
 const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
 const rpcSignerHost: string = 'http://localhost:3545';
+
 const httpTransport = TransportFactory.createHttpTransport(baseNodeUrl);
 const rpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
 const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
@@ -131,7 +132,7 @@ describe('Offer main scenario', async () => {
     });
 
     // it.only('should select offer, price, confirmed and share data', async () => {
-    it.only('should select offer, price, confirmed and share data', async () => {
+    it('should select offer, price, confirmed and share data', async () => {
             try {
 
             // Business:
@@ -176,6 +177,7 @@ describe('Offer main scenario', async () => {
             // User:
             // grants access to data for business by offer rule keys
             const acceptedFields = onePrice.getFieldsForAcception(AccessRight.R);
+            acceptedFields.set('eth_wallets', AccessRight.R);
             const pkBusiness = businessAccount.publicKey;
             await userBase
                 .dataRequestManager
