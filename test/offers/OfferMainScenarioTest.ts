@@ -18,13 +18,14 @@ import { OfferShareDataRepository } from './../../src/repository/offer/OfferShar
 
 const should = require('chai').use(require('chai-as-promised')).should();
 const someSigMessage = 'some unique message for signature';
+// const baseNodeUrl = 'http://localhost:8080';
+const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
 const rpcSignerHost: string = 'http://localhost:3545';
-const httpTransport = TransportFactory.createHttpTransport('http://localhost:8080');
+const httpTransport = TransportFactory.createHttpTransport(baseNodeUrl);
 const rpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
 const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
-// const baseNodeUrl = 'http://localhost:8080';
-const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
+
 
 async function createUser(user: Base, pass: string): Promise<Account> {
     let accessToken: string = '';
