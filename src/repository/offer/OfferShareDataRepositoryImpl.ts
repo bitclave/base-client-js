@@ -6,8 +6,6 @@ import { HttpTransport } from '../source/http/HttpTransport';
 import { HttpMethod } from '../source/http/HttpMethod';
 import { Response } from './../source/http/Response';
 
-const fetch = require('node-fetch');
-
 export default class OfferShareDataRepositoryImpl implements OfferShareDataRepository {
 
     private readonly SHARE_DATA_API: string = '/v1/data/offer/';
@@ -29,7 +27,7 @@ export default class OfferShareDataRepositoryImpl implements OfferShareDataRepos
           .sendRequest(url, HttpMethod.Get)
           .then( (response: Response) => {
             const result: Array<OfferShareData> = [];
-            for (let item of response.json) {
+            for (let item of (response.json as Array<any>)) {
                 result.push(Object.assign(new OfferShareData(0, '', 0), item));
             }
             return result;
@@ -44,7 +42,7 @@ export default class OfferShareDataRepositoryImpl implements OfferShareDataRepos
         const nonceUrl: string = this.NONCE_DATA_API + publicKey;
 
         const nonceResponse: Response = await this.transport.sendRequest (nonceUrl, HttpMethod.Get);
-        let nonce = parseInt(await nonceResponse.json(), 10);
+        let nonce = parseInt(await nonceResponse.json.toString(), 10);
 
         const acceptUrl: string = this.SHARE_DATA_API + `?offerSearchId=${searchId}`;
         const data = {
