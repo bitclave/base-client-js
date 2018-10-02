@@ -124,6 +124,9 @@ export class WalletManagerImpl implements WalletManager {
         return wealthPtr;
     }
 
+    public validateWallets(walletRecords: WalletsRecords): boolean {
+      return this.baseSchema.validateWallets(walletRecords);
+    }
     private onChangeAccount(account: Account) {
         this.account = account;
     }
