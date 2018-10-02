@@ -19,11 +19,12 @@ import { OfferShareDataRepository } from './../../src/repository/offer/OfferShar
 const should = require('chai').use(require('chai-as-promised')).should();
 const someSigMessage = 'some unique message for signature';
 const rpcSignerHost: string = 'http://localhost:3545';
-const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
+const httpTransport = TransportFactory.createHttpTransport('http://localhost:8080');
+const rpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
 const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
 // const baseNodeUrl = 'http://localhost:8080';
-const baseNodeUrl = 'https://base2-bitclva-com.herokuapp.com';
+const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
 
 async function createUser(user: Base, pass: string): Promise<Account> {
     let accessToken: string = '';
@@ -47,7 +48,8 @@ describe('Offer main scenario', async () => {
     const businessBase: Base = createBase();
     const userBase: Base = createBase();
 
-    const offerShareDataRepository = new OfferShareDataRepositoryImpl(baseNodeUrl, businessBase.accountManager, businessBase.profileManager);
+    // tslint:disable-next-line:max-line-length
+    const offerShareDataRepository = new OfferShareDataRepositoryImpl(httpTransport, businessBase.accountManager, businessBase.profileManager);
 
     let businessAccount: Account;
     let userAccount: Account;
@@ -128,15 +130,13 @@ describe('Offer main scenario', async () => {
     });
 
     // it.only('should select offer, price, confirmed and share data', async () => {
-    it('should select offer, price, confirmed and share data', async () => {
+    it.only('should select offer, price, confirmed and share data', async () => {
             try {
 
             // Business:
             // create offer
             const offer = offerFactory(true);
             const businessOffer = await businessBase.offerManager.saveOffer(offer);
-
-
 
             // User:
             // create user private data and upload ones to server
@@ -152,15 +152,10 @@ describe('Offer main scenario', async () => {
             // retrieve private data
             const userData = await userBase.profileManager.getData();
 
-
-
-
             // External Matcher:
             // match the offer and the searchRequest
             const offerSearch = new OfferSearch(userSearchRequest.id, businessOffer.id);
             await userBase.searchManager.addResultItem(offerSearch);
-
-
 
             // User:
             // get OfferSearch (matched offer and searchRequesr data)
@@ -173,7 +168,6 @@ describe('Offer main scenario', async () => {
             // get valid prices from the offer price list
             const prices = businessOffer.validPrices(userData);
 
-
             // User:
             // select manually one price
             const onePrice = prices[0];
@@ -185,7 +179,6 @@ describe('Offer main scenario', async () => {
             await userBase
                 .dataRequestManager
                 .grantAccessForOffer(searchResult.id, pkBusiness, acceptedFields, onePrice.id);
-
 
             // BUSINESS:
             // get shared data
