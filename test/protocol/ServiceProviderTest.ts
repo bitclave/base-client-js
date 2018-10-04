@@ -36,16 +36,16 @@ async function createUser(user: Base, pass: string): Promise<Account> {
 }
 
 describe('BASE API test: External Validator', async () => {
-  const passPhraseAlice: string = 'Alice';
-  const passPhraseDesearch: string = 'Desearch';
+  const passPhraseUser: string = 'User';
+  const passPhraseBusiness: string = 'Business';
   const passPhraseValidator: string = 'Validator';
 
-  const baseAlice: Base = createBase();
-  const baseDesearch: Base = createBase();
+  const baseUser: Base = createBase();
+  const baseBusiness: Base = createBase();
   const baseValidator: Base = createBase();
 
-  var accAlice: Account;
-  var accDesearch: Account;
+  var accUser: Account;
+  var accBusiness: Account;
   var accValidator: Account;
 
   private function createBase(): Base {
@@ -63,8 +63,8 @@ describe('BASE API test: External Validator', async () => {
   });
 
   beforeEach(async () => {
-      accAlice = await createUser(baseAlice, passPhraseAlice);
-      accDesearch = await createUser(baseDesearch, passPhraseDesearch);
+      accUser = await createUser(baseUser, passPhraseUser);
+      accBusiness = await createUser(baseBusiness, passPhraseBusiness);
       accValidator = await createUser(baseValidator, passPhraseValidator);
   });
 
@@ -72,19 +72,19 @@ describe('BASE API test: External Validator', async () => {
       // rpcClient.disconnect();
   });
 
-  it('full flow with Alice, Bob, Carol, Desearch and Validator', async () => {
+  it('User - Service Provider - Business data flow protocol', async () => {
       // to get this records, I used example application, created a wallet records and did copy&paste
       try {
           var wallets = [
               '{"data":[{"data":"{\\"baseID\\":\\"03cb46e31c2d0f5827bb267f9fb30cf98077165d0e560b964651c6c379f69c7a35\\",\\"ethAddr\\":\\"0x916e1c7340f3f0a7af1a5b55e0fd9c3846ef8d28\\"}","sig":"0x08602606d842363d58e714e18f8c4d4b644c0cdc88d644dba03d0af3558f0691334a4db534034ba736347a085f28a58c9b643be25a9c7169f073f69a26b432531b"}],"sig":"IMBBXn+LLf4jWmjhQ1cWGmccuCZW9M5TwQYq46nXpCFUbs72Sxjn0hxOtmyNwiP4va97ZwCruqFyNhi3CuR1BvM="}',
           ];
           var accs = [
-              accAlice
+              accUser
           ];
 
           // create wallets for Alice and grantt access for Validator
-          await baseAlice.profileManager.updateData(new Map([[WalletManagerImpl.DATA_KEY_ETH_WALLETS, wallets[0]]]));
-          await baseAlice.walletManager.addWealthValidator(accValidator.publicKey);
+          await baseUser.profileManager.updateData(new Map([[WalletManagerImpl.DATA_KEY_ETH_WALLETS, wallets[0]]]));
+          await baseUser.walletManager.addWealthValidator(accValidator.publicKey);
 
           // Validator retrieves the requests from Alice,Bob and Carol
           const requestsByFrom: Array<DataRequest> = await baseValidator.dataRequestManager.getRequests(
@@ -137,7 +137,7 @@ describe('BASE API test: External Validator', async () => {
           }
 
           // Alice updates her internal wealth ptr record
-          await baseAlice.walletManager.refreshWealthPtr();
+          await baseUser.walletManager.refreshWealthPtr();
 
           // Alice shares the data with desearch
           // await baseAlice.dataRequestManager.grantAccessForClient(accDesearch.publicKey, ['wealth']);
@@ -145,11 +145,11 @@ describe('BASE API test: External Validator', async () => {
 
           // Desearch asks Alice for access
           /* const id: number = */
-          await baseDesearch.dataRequestManager.requestPermissions(accAlice.publicKey, [WalletManagerImpl.DATA_KEY_WEALTH]);
+          await baseBusiness.dataRequestManager.requestPermissions(accUser.publicKey, [WalletManagerImpl.DATA_KEY_WEALTH]);
 
           // Alice checks for outstanding requests to her from Desearch
-          const recordsForAliceToApprove: Array<DataRequest> = await baseAlice.dataRequestManager.getRequests(
-              accDesearch.publicKey, accAlice.publicKey
+          const recordsForAliceToApprove: Array<DataRequest> = await baseUser.dataRequestManager.getRequests(
+              accBusiness.publicKey, accUser.publicKey
           );
 
           recordsForAliceToApprove.length.should.be.equal(1);
@@ -158,14 +158,14 @@ describe('BASE API test: External Validator', async () => {
           grantFields.clear();
           grantFields.set(WalletManagerImpl.DATA_KEY_WEALTH, AccessRight.R);
           // Alice approves the request
-          await baseAlice.dataRequestManager.grantAccessForClient(/* id */
-              accDesearch.publicKey, grantFields);
+          await baseUser.dataRequestManager.grantAccessForClient(/* id */
+              accBusiness.publicKey, grantFields);
 
           //Desearch reads wealth record from Alice
-          const recordsForDesearch = await baseDesearch.dataRequestManager.getRequests(
-              accDesearch.publicKey, accAlice.publicKey
+          const recordsForDesearch = await baseBusiness.dataRequestManager.getRequests(
+              accBusiness.publicKey, accUser.publicKey
           );
-          const wealthOfAlice: Map<string, string> = await baseDesearch.profileManager.getAuthorizedData(
+          const wealthOfAlice: Map<string, string> = await baseBusiness.profileManager.getAuthorizedData(
               // accAlice.publicKey, recordsForDesearch[0].responseData);
               recordsForDesearch[0].toPk, recordsForDesearch[0].responseData);
           const wealthRecord: any = wealthOfAlice.get(WalletManagerImpl.DATA_KEY_WEALTH);
@@ -173,8 +173,8 @@ describe('BASE API test: External Validator', async () => {
           // console.log(wealthRecord);
 
           // desearch reads Alice's wealth from Validator's storage
-          const rawData = await baseDesearch.profileManager.getRawData(wealthRecordObject.validator);
-          var encryptedAliceWealth: any = rawData.get(accAlice.publicKey);
+          const rawData = await baseBusiness.profileManager.getRawData(wealthRecordObject.validator);
+          var encryptedAliceWealth: any = rawData.get(accUser.publicKey);
           // desearch decodes Alice's wealth
           const decryptedAliceWealth: string = CryptoUtils.decryptAes256(encryptedAliceWealth, wealthRecordObject.decryptKey);
           // console.log("Alice's wealth as is seen by Desearch", decryptedAliceWealth);
