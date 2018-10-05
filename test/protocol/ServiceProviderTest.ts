@@ -255,7 +255,7 @@ describe('BASE API test: Protocol Flow', async () => {
 
             // Step 8: Business write nonce to its storage
             const nonceKey = getNonceKey(accUser.publicKey, wealthPtr.spid);
-            const nonceValue = '14829';
+            const nonceValue = Math.floor(Math.random() * 1000000).toString();
             await baseBusiness.profileManager.updateData(new Map([[nonceKey, nonceValue]]));
 
             // Step 9: Business grants nonce to User
