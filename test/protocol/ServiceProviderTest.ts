@@ -12,8 +12,9 @@ import { AccessRight } from '../../src/utils/keypair/Permissions';
 import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 
-const crypto = require('crypto')
+const crypto = require('crypto');
 const Message = require('bitcore-message');
+const bitcore = require('bitcore-lib');
 
 const should = require('chai')
     .use(require('chai-as-promised'))
@@ -320,7 +321,8 @@ describe('BASE API test: Protocol Flow', async () => {
             const signedToken: SignedMessage = JSON.parse(wealthEntry.token);
 
             // Business verify the signature of the token
-            Message(signedToken.message).verify(accUser.publicKey, signedToken.signature).should.be.true;
+            const addrUser = bitcore.Address(bitcore.PublicKey(accUser.publicKey));
+            Message(signedToken.message).verify(addrUser, signedToken.signature).should.be.true;
 
             const token: Token = JSON.parse(signedToken.message);
 
@@ -336,7 +338,7 @@ describe('BASE API test: Protocol Flow', async () => {
             // Business read the timestamp from token
             var timestampDate = new Date();
             timestampDate.setTime(Number(token.timestamp));
-            console.log("Business received token timestamp: " + timestampDate.toDateString());
+            console.log("Business received token timestamp: " + timestampDate.toString());
             
         } catch (e) {
             console.log(e);
