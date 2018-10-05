@@ -1,12 +1,9 @@
 import Base from '../../src/Base';
 import Account from '../../src/repository/models/Account';
-import { CryptoUtils } from '../../src/utils/CryptoUtils';
 import DataRequest from '../../src/repository/models/DataRequest';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
-import { WealthPtr, WealthRecord } from '../../src/utils/types/BaseTypes';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
-import { WalletManager } from '../../src/manager/WalletManager';
 import { WalletUtils, WalletVerificationStatus } from '../../src/utils/WalletUtils';
 import { AccessRight } from '../../src/utils/keypair/Permissions';
 import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
@@ -40,7 +37,6 @@ async function createUser(user: Base, pass: string): Promise<Account> {
     return await user.accountManager.registration(pass, someSigMessage); // this method private.
 }
 
-const VALUE_KEY_SCHEME: string = "scheme";
 const SEP: string = "_"
 const SPID: string = "spid"
 const UID: string = "uid"
@@ -50,19 +46,6 @@ const KEY_WEALTH_PTR: string = "wealth_ptr";
 const WEALTH_KEY_SCHEME: string = UID + SEP + BID + SEP + "wealth";
 const NONCE_KEY_SCHEME: string = UID + SEP + SPID + SEP + "nonce";
 const TOKEN_KEY_SCHEME: string = BID + SEP + SPID + SEP + "token";
-
-function getNonceKey(uid: string, spid: string): string {
-    return uid + SEP + spid + SEP + "nonce";
-}
-
-function getTokenKey(bid: string, spid: string): string {
-    return bid + SEP + spid + SEP + "token";
-}
-
-function getWealthEntryKey(uid: string, bid: string): string {
-  return uid + SEP + bid + SEP + "wealth";
-}
-
 
 class Pointer {
     public spid: string;
@@ -84,6 +67,18 @@ class Token {
 class WealthEntry {
   public wealth: string;
   public token: string;
+}
+
+function getNonceKey(uid: string, spid: string): string {
+    return uid + SEP + spid + SEP + "nonce";
+}
+
+function getTokenKey(bid: string, spid: string): string {
+    return bid + SEP + spid + SEP + "token";
+}
+
+function getWealthEntryKey(uid: string, bid: string): string {
+  return uid + SEP + bid + SEP + "wealth";
 }
 
 describe('BASE API test: Protocol Flow', async () => {
