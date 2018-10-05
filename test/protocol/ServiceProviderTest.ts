@@ -43,7 +43,7 @@ const UID: string = "uid"
 const BID: string = "bid"
 
 const KEY_WEALTH_PTR: string = "wealth_ptr";
-const WEALTH_KEY_SCHEME: string = UID + SEP + SPID + SEP + "wealth";
+const WEALTH_KEY_SCHEME: string = UID + SEP + BID + SEP + "wealth";
 const NONCE_KEY_SCHEME: string = UID + SEP + SPID + SEP + "nonce";
 const TOKEN_KEY_SCHEME: string = BID + SEP + SPID + SEP + "token";
 
@@ -53,6 +53,10 @@ function getNonceKey(uid: string, spid: string): string {
 
 function getTokenKey(bid: string, spid: string): string {
     return bid + SEP + spid + SEP + "token";
+}
+
+function getWealthEntryKey(uid: string, bid: string): string {
+  return uid + SEP + bid + SEP + "wealth";
 }
 
 
@@ -66,6 +70,11 @@ class Token {
     public nonce: string;
     public hash: string;
     public timestamp: string;
+}
+
+class WealthEntry {
+  public wealth: string;
+  public token: string;
 }
 
 describe('BASE API test: Protocol Flow', async () => {
@@ -113,6 +122,16 @@ describe('BASE API test: Protocol Flow', async () => {
         const data = new Map<string, string>();
         data.set(key, signedToken);
         await user.profileManager.updateData(data);
+    }
+
+    async function spWriteWealthEntry(sp: Base, key: string, wealth: string, token: string){
+      const wealthEntry = new WealthEntry();
+      wealthEntry.wealth = wealth;
+      wealthEntry.token = token;
+      const wealthEntryString = JSON.stringify(wealthEntry);
+      const data = new Map<string, string>();
+      data.set(key, wealthEntryString);
+      await sp.profileManager.updateData(data);
     }
 
     before(async () => {
@@ -214,7 +233,7 @@ describe('BASE API test: Protocol Flow', async () => {
                 accBusiness.publicKey, grantFields);
 
             //Business reads wealth pointer from User
-            const recordsForBusiness = await baseBusiness.dataRequestManager.getRequests(
+            var recordsForBusiness: Array<DataRequest> = await baseBusiness.dataRequestManager.getRequests(
                 accBusiness.publicKey, accUser.publicKey
             );
 
@@ -249,13 +268,46 @@ describe('BASE API test: Protocol Flow', async () => {
 
             // Step 10: User write signed token
             const tokenKey = getTokenKey(accBusiness.publicKey, accValidator.publicKey);
-            userWriteToken(baseUser, tokenKey, accBusiness.publicKey, nonceValue, processedData);
+            await userWriteToken(baseUser, tokenKey, accBusiness.publicKey, nonceValue, processedData);
 
             // Step 11: User grant token to Validator
             grantFields.clear();
             grantFields.set(tokenKey, AccessRight.R);
             await baseUser.dataRequestManager.grantAccessForClient(accValidator.publicKey, grantFields);
+            
+            // Test Validator receives the token
+            recordsForValidator = await baseValidator.dataRequestManager.getRequests(
+              accValidator.publicKey, accUser.publicKey
+            );
 
+            recordsForValidator.length.should.be.equal(1);
+            const tokenMap: Map<string, string> = await baseValidator.profileManager.getAuthorizedData(
+              recordsForValidator[0].toPk, recordsForValidator[0].responseData
+            );
+
+            // Step 12: Validator write signed token and processed data
+            const wealthEntryKey = getWealthEntryKey(accUser.publicKey, accBusiness.publicKey);
+            await spWriteWealthEntry(baseValidator, wealthEntryKey, wealth, tokenMap.get(tokenKey));
+
+            grantFields.clear();
+            grantFields.set(wealthEntryKey, AccessRight.R);
+            // Step 13: grant wealth entry to business
+            await baseValidator.dataRequestManager.grantAccessForClient(accBusiness.publicKey, grantFields);
+            // Step 14: grant wealth entry to user
+            await baseValidator.dataRequestManager.grantAccessForClient(accUser.publicKey, grantFields);
+
+            // Test Business receives the wealth data and verified it with the signed token
+            recordsForBusiness = await baseBusiness.dataRequestManager.getRequests(
+              accBusiness.publicKey, accValidator.publicKey
+            );
+            recordsForBusiness.length.should.be.equal(1);
+            // Step 15: get wealth entry and verify the signed token
+            const wealthEntryMap: Map<string, string> = await baseBusiness.profileManager.getAuthorizedData(
+              recordsForBusiness[0].toPk, recordsForBusiness[0].responseData
+            );
+            var wealthEntry: WealthEntry = JSON.parse(wealthEntryMap.get(wealthEntryKey));
+            wealthEntry.wealth.should.be.equal(wealth);
+            
 
             // Test the retrieved wealthPtr data is correct at service provider side
             // var testWealthPtr: any = {}
