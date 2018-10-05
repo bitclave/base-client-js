@@ -115,18 +115,18 @@ describe('BASE API test: Protocol Flow', async () => {
             await baseUser.dataRequestManager.grantAccessForClient(accValidator.publicKey, grantFields);
 
             // Validator retrieves the requests from user
-            const requestsByFrom: Array<DataRequest> = await baseValidator.dataRequestManager.getRequests(
-                accValidator.publicKey, ''
+            var recordsForValidator: Array<DataRequest> = await baseValidator.dataRequestManager.getRequests(
+                accValidator.publicKey, accUser.publicKey
             );
 
-            requestsByFrom.length.should.be.equal(1);
-            const requestUser = requestsByFrom[0]
+            recordsForValidator.length.should.be.equal(1);
+            const userDataRequest = recordsForValidator[0]
 
             // Validator decodes wallets for User and calculate wealth
             const wealthMap: Map<string, string> = new Map<string, string>();
             const decryptedObj: Map<string, string> = await baseValidator.profileManager.getAuthorizedData(
-                requestUser.toPk,
-                requestUser.responseData
+                userDataRequest.toPk,
+                userDataRequest.responseData
             );
             decryptedObj.get(WalletManagerImpl.DATA_KEY_ETH_WALLETS).should.be.equal(wallet);
 
@@ -142,19 +142,25 @@ describe('BASE API test: Protocol Flow', async () => {
             var wealth = '15213';
             // ~compute wealth
 
-            // Step 3: Validator create a corresponding entries into its base.
-            // The value is a json object containing the calculated wealth, and key is the user's public key
-            const obj: any = {};
-            obj[WalletManagerImpl.DATA_KEY_WEALTH] = wealth;
-            wealthMap.set(requestUser.toPk, JSON.stringify(obj));
-            baseValidator.profileManager.updateData(wealthMap);
+            // Step 3: Validator create a corresponding entries into its base
+            // The value is the calculated wealth, and key is the user's public key
+            wealthMap.set(userDataRequest.toPk, wealth);
+            await baseValidator.profileManager.updateData(wealthMap);
 
             // Step 4: Validator shares back this entry to user
             grantFields.clear();
-            grantFields.set(requestUser.toPk, AccessRight.R);
+            grantFields.set(userDataRequest.toPk, AccessRight.R);
             await baseValidator.dataRequestManager.grantAccessForClient(accUser.publicKey, grantFields);
 
-
+            // Test user receives the shared data
+            var recordsForUser: Array<DataRequest> = await baseUser.dataRequestManager.getRequests(
+              accUser.publicKey, accValidator.publicKey
+            );
+            recordsForUser.length.should.be.equal(1);
+            const processedDataMap: Map<string, string> = await baseUser.profileManager.getAuthorizedData(
+              recordsForUser[0].toPk, recordsForUser[0].responseData);
+            processedDataMap.get(accUser.publicKey).should.be.equal(wealth)
+            
             // Step 5: Users receives the shared record, write a new record into Base
             await userWriteWealthPtr(baseUser, accValidator.publicKey);
 
@@ -194,23 +200,23 @@ describe('BASE API test: Protocol Flow', async () => {
             wealthPtr.scheme.should.be.equal(WEALTH_KEY_SCHEME);
 
             // Step 8: Business write nonce to its storage
-            const nonceKey = getNonceKey(accUser.publicKey, accValidator.publicKey);
+            const nonceKey = getNonceKey(accUser.publicKey, wealthPtr.spid);
             const nonceValue = '14829';
-            baseBusiness.profileManager.updateData(new Map([[nonceKey, nonceValue]]));
+            await baseBusiness.profileManager.updateData(new Map([[nonceKey, nonceValue]]));
 
             // Step 9: Business grants nonce to User
             grantFields.clear();
             grantFields.set(nonceKey, AccessRight.R);
             await baseBusiness.dataRequestManager.grantAccessForClient(accUser.publicKey, grantFields);
 
-            const recordsForUser = await baseUser.dataRequestManager.getRequests(
+            recordsForUser = await baseUser.dataRequestManager.getRequests(
                 accUser.publicKey, accBusiness.publicKey
             );
-
+            
             recordsForUser.length.should.be.equal(1);
             const nonceMap: Map<string, string> = await baseUser.profileManager.getAuthorizedData(
                 recordsForUser[0].toPk, recordsForUser[0].responseData);
-            nonceMap[nonceKey].should.be.equal(nonceValue)
+            nonceMap.get(nonceKey).should.be.equal(nonceValue);
 
 
             // Test the retrieved wealthPtr data is correct at service provider side
