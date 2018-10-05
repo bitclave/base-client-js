@@ -43,6 +43,7 @@ const BID: string = "bid"
 
 const KEY_WEALTH_PTR: string = "wealth_ptr";
 const WEALTH_KEY_SCHEME: string = UID + SEP + SPID + SEP + "wealth";
+const NONCE_KEY_SCHEME: string = UID + SEP + SPID + SEP + "nonce";
 
 interface Pointer {
     spid: string;
@@ -83,6 +84,10 @@ describe('BASE API test: Protocol Flow', async () => {
         );
     }
 
+    private function getNonceKey(uid: string, spid: string): string {
+        return uid + SEP + spid + SEP + "nonce";
+    }
+
     before(async () => {
 
     });
@@ -105,9 +110,9 @@ describe('BASE API test: Protocol Flow', async () => {
             // Step 1: create wallets for User and grant access for Validator
             await baseUser.profileManager.updateData(new Map([[WalletManagerImpl.DATA_KEY_ETH_WALLETS, wallet]]));
             // Step 2: user grant data to service provider
-            const acceptedFields: Map<string, AccessRight> = new Map();
-            acceptedFields.set(WalletManagerImpl.DATA_KEY_ETH_WALLETS, AccessRight.RW);
-            await baseUser.dataRequestManager.grantAccessForClient(accValidator.publicKey, acceptedFields);
+            const grantFields: Map<string, AccessRight> = new Map();
+            grantFields.set(WalletManagerImpl.DATA_KEY_ETH_WALLETS, AccessRight.R);
+            await baseUser.dataRequestManager.grantAccessForClient(accValidator.publicKey, grantFields);
 
             // Validator retrieves the requests from user
             const requestsByFrom: Array<DataRequest> = await baseValidator.dataRequestManager.getRequests(
@@ -145,7 +150,7 @@ describe('BASE API test: Protocol Flow', async () => {
             baseValidator.profileManager.updateData(wealthMap);
 
             // Step 4: Validator shares back this entry to user
-            const grantFields: Map<string, AccessRight> = new Map();
+            grantFields.clear();
             grantFields.set(requestUser.toPk, AccessRight.R);
             await baseValidator.dataRequestManager.grantAccessForClient(accUser.publicKey, grantFields);
 
@@ -179,15 +184,33 @@ describe('BASE API test: Protocol Flow', async () => {
             );
 
             recordsForBusiness.length.should.be.equal(1);
-            const record = recordsForBusiness[0];
 
-            const userWealthPtr: Map<string, string> = await baseBusiness.profileManager.getAuthorizedData(
-                record.toPk, record.responseData);
-            const userWealthPtrValue: Pointer = JSON.parse(userWealthPtr.get(KEY_WEALTH_PTR));
+            const wealthPtrMap: Map<string, string> = await baseBusiness.profileManager.getAuthorizedData(
+                recordsForBusiness[0].toPk, recordsForBusiness[0].responseData);
+            const wealthPtr: Pointer = JSON.parse(wealthPtrMap.get(KEY_WEALTH_PTR));
 
             // Business get the Service Provider ID and SP key scheme
-            userWealthPtrValue.spid.should.be.equal(accValidator.publicKey);
-            userWealthPtrValue.scheme.should.be.equal(WEALTH_KEY_SCHEME);
+            wealthPtr.spid.should.be.equal(accValidator.publicKey);
+            wealthPtr.scheme.should.be.equal(WEALTH_KEY_SCHEME);
+
+            // Step 8: Business write nonce to its storage
+            const nonceKey = getNonceKey(accUser.publicKey, accValidator.publicKey);
+            const nonceValue = '14829';
+            baseBusiness.profileManager.updateData(new Map([[nonceKey, nonceValue]]));
+
+            // Step 9: Business grants nonce to User
+            grantFields.clear();
+            grantFields.set(nonceKey, AccessRight.R);
+            await baseBusiness.dataRequestManager.grantAccessForClient(accUser.publicKey, grantFields);
+
+            const recordsForUser = await baseUser.dataRequestManager.getRequests(
+                accUser.publicKey, accBusiness.publicKey
+            );
+
+            recordsForUser.length.should.be.equal(1);
+            const nonceMap: Map<string, string> = await baseUser.profileManager.getAuthorizedData(
+                recordsForUser[0].toPk, recordsForUser[0].responseData);
+            nonceMap[nonceKey].should.be.equal(nonceValue)
 
 
             // Test the retrieved wealthPtr data is correct at service provider side
