@@ -35,20 +35,24 @@ async function createUser(user: Base, pass: string): Promise<Account> {
     return await user.accountManager.registration(pass, someSigMessage); // this method private.
 }
 
-const wealthPtrKey: string = "wealth_ptr";
-const wealthPtrScheme: string = "scheme";
-const wealthPtrSchemeValue: string = "uid_spid_wealth";
-const wealthPtrSpID: string = "spid";
+const VALUE_KEY_SCHEME: string = "scheme";
+const SEP: string = "_"
+const SPID: string = "spid"
+const UID: string = "uid"
+const BID: string = "bid"
+
+const KEY_WEALTH_PTR: string = "wealth_ptr";
+const wealthKeyScheme: string = UID + SEP + SPID + SEP + "wealth";
 
 // User write an entry into his own storage after receiving shared back data from
 // service provider
-async function userWritePtr(user: Base, spID: string) {
-  const value: any = {}
-  value[wealthPtrScheme] = wealthPtrSchemeValue;
-  value[wealthPtrSpID] = spID;
-  const data: Map<string, string> = new Map<string, string>();
-  data.set(wealthPtrKey, JSON.stringify(value));
-  await user.profileManager.updateData(data);
+async function userWriteWealthPtr(user: Base, spID: string) {
+    const value: any = {}
+    value[VALUE_KEY_SCHEME] = wealthKeyScheme;
+    value[SPID] = spID;
+    const data: Map<string, string> = new Map<string, string>();
+    data.set(KEY_WEALTH_PTR, JSON.stringify(value));
+    await user.profileManager.updateData(data);
 }
 
 describe('BASE API test: Protocol Flow', async () => {
@@ -104,10 +108,10 @@ describe('BASE API test: Protocol Flow', async () => {
             const requestsByFrom: Array<DataRequest> = await baseValidator.dataRequestManager.getRequests(
                 accValidator.publicKey, ''
             );
-            
+
             requestsByFrom.length.should.be.equal(1);
             const requestUser = requestsByFrom[0]
-            
+
             // Validator decodes wallets for Alice and calculate wealth
             const wealthMap: Map<string, string> = new Map<string, string>();
             const decryptedObj: Map<string, string> = await baseValidator.profileManager.getAuthorizedData(
@@ -134,27 +138,28 @@ describe('BASE API test: Protocol Flow', async () => {
             obj[WalletManagerImpl.DATA_KEY_WEALTH] = wealth;
             wealthMap.set(requestUser.toPk, JSON.stringify(obj));
             baseValidator.profileManager.updateData(wealthMap);
+
             // Step 4: Validator shares back this entry to user
             const grantFields: Map<string, AccessRight> = new Map();
             grantFields.set(requestUser.toPk, AccessRight.R);
-
             await baseValidator.dataRequestManager.grantAccessForClient(accUser.publicKey, grantFields);
-            
+
+
             // Step 5: Users receives the shared record, write a new record into Base
-            await userWritePtr(baseUser, accValidator.publicKey);
-            
+            await userWriteWealthPtr(baseUser, accValidator.publicKey);
+
 
             // Step 6: Business request wealth record from user
-            await baseBusiness.dataRequestManager.requestPermissions(accUser.publicKey, [wealthPtrKey]);
-            // User checks for outstanding requests to her from Business
+            await baseBusiness.dataRequestManager.requestPermissions(accUser.publicKey, [KEY_WEALTH_PTR]);
+
+
+            // Step 7: User checks for outstanding requests from Business
             const recordsForUserToApprove: Array<DataRequest> = await baseUser.dataRequestManager.getRequests(
                 accBusiness.publicKey, accUser.publicKey
             );
-
             recordsForUserToApprove.length.should.be.equal(1);
-
             grantFields.clear();
-            grantFields.set(wealthPtrKey, AccessRight.R);
+            grantFields.set(KEY_WEALTH_PTR, AccessRight.R);
             // Alice approves the request
             await baseUser.dataRequestManager.grantAccessForClient(/* id */
                 accBusiness.publicKey, grantFields);
@@ -166,11 +171,11 @@ describe('BASE API test: Protocol Flow', async () => {
             const wealthOfAlice: Map<string, string> = await baseBusiness.profileManager.getAuthorizedData(
                 // accAlice.publicKey, recordsForBusiness[0].responseData);
                 recordsForBusiness[0].toPk, recordsForBusiness[0].responseData);
-            const wealthRecord: any = wealthOfAlice.get(wealthPtrKey);
+            const wealthRecord: any = wealthOfAlice.get(KEY_WEALTH_PTR);
             // Test the retrieved wealthPtr data is correct at service provider side
             var testWealthPtr: any = {}
-            testWealthPtr[wealthPtrScheme] = wealthPtrSchemeValue;
-            testWealthPtr[wealthPtrSpID] = accValidator.publicKey;
+            testWealthPtr[valueKeyScheme] = wealthKeyScheme;
+            testWealthPtr[spidScheme] = accValidator.publicKey;
             wealthRecord.should.be.equal(JSON.stringify(testWealthPtr));
             // const wealthRecordObject: WealthPtr = JSON.parse(wealthRecord);
             // // console.log(wealthRecord);
