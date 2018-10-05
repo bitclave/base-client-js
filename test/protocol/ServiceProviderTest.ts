@@ -12,7 +12,8 @@ import { AccessRight } from '../../src/utils/keypair/Permissions';
 import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 
-
+var crypto = require('crypto')
+const HASH_ALG = 'sha256';
 const should = require('chai')
     .use(require('chai-as-promised'))
     .should();
@@ -44,21 +45,27 @@ const BID: string = "bid"
 const KEY_WEALTH_PTR: string = "wealth_ptr";
 const WEALTH_KEY_SCHEME: string = UID + SEP + SPID + SEP + "wealth";
 const NONCE_KEY_SCHEME: string = UID + SEP + SPID + SEP + "nonce";
+const TOKEN_KEY_SCHEME: string = BID + SEP + SPID + SEP + "token";
 
-interface Pointer {
-    spid: string;
-    scheme: string;
+function getNonceKey(uid: string, spid: string): string {
+    return uid + SEP + spid + SEP + "nonce";
 }
 
-// User write an entry into his own storage after receiving shared back data from
-// service provider
-async function userWriteWealthPtr(user: Base, serviceProviderID: string) {
-    const value: any = {}
-    value[VALUE_KEY_SCHEME] = WEALTH_KEY_SCHEME;
-    value[SPID] = serviceProviderID;
-    const data: Map<string, string> = new Map<string, string>();
-    data.set(KEY_WEALTH_PTR, JSON.stringify(value));
-    await user.profileManager.updateData(data);
+function getTokenKey(bid: string, spid: string): string {
+    return bid + SEP + spid + SEP + "token";
+}
+
+
+class Pointer {
+    public spid: string;
+    public scheme: string;
+}
+
+class Token {
+    public bid: string;
+    public nonce: string;
+    public hash: string;
+    public timestamp: string;
 }
 
 describe('BASE API test: Protocol Flow', async () => {
@@ -74,7 +81,7 @@ describe('BASE API test: Protocol Flow', async () => {
     var accBusiness: Account;
     var accValidator: Account;
 
-    private function createBase(): Base {
+    function createBase(): Base {
         return new Base(
             'http://localhost:8080',
             //'https://base2-bitclva-com.herokuapp.com',
@@ -84,8 +91,28 @@ describe('BASE API test: Protocol Flow', async () => {
         );
     }
 
-    private function getNonceKey(uid: string, spid: string): string {
-        return uid + SEP + spid + SEP + "nonce";
+    // User write an entry into his own storage after receiving shared back data from
+    // service provider
+    async function userWriteWealthPtr(user: Base, spid: string) {
+        const value = new Pointer();
+        value.scheme = WEALTH_KEY_SCHEME;
+        value.spid = spid;
+        const data = new Map<string, string>();
+        data.set(KEY_WEALTH_PTR, JSON.stringify(value));
+        await user.profileManager.updateData(data);
+    }
+
+    async function userWriteToken(user: Base, key: string, bid: string, nonce: string, processedData: string) {
+        const token = new Token();
+        token.bid = bid;
+        token.nonce = nonce;
+        token.hash = crypto.createHash(HASH_ALG).update(processedData).digest('hex');
+        token.timestamp = Date.now().toString();
+        const tokenString = JSON.stringify(token);
+        const signedToken = await user.profileManager.signMessage(tokenString);
+        const data = new Map<string, string>();
+        data.set(key, signedToken);
+        await user.profileManager.updateData(data);
     }
 
     before(async () => {
@@ -154,13 +181,15 @@ describe('BASE API test: Protocol Flow', async () => {
 
             // Test user receives the shared data
             var recordsForUser: Array<DataRequest> = await baseUser.dataRequestManager.getRequests(
-              accUser.publicKey, accValidator.publicKey
+                accUser.publicKey, accValidator.publicKey
             );
             recordsForUser.length.should.be.equal(1);
             const processedDataMap: Map<string, string> = await baseUser.profileManager.getAuthorizedData(
-              recordsForUser[0].toPk, recordsForUser[0].responseData);
-            processedDataMap.get(accUser.publicKey).should.be.equal(wealth)
-            
+                recordsForUser[0].toPk, recordsForUser[0].responseData);
+
+            const processedData = processedDataMap.get(accUser.publicKey);
+            processedData.should.be.equal(wealth);
+
             // Step 5: Users receives the shared record, write a new record into Base
             await userWriteWealthPtr(baseUser, accValidator.publicKey);
 
@@ -212,11 +241,20 @@ describe('BASE API test: Protocol Flow', async () => {
             recordsForUser = await baseUser.dataRequestManager.getRequests(
                 accUser.publicKey, accBusiness.publicKey
             );
-            
+
             recordsForUser.length.should.be.equal(1);
             const nonceMap: Map<string, string> = await baseUser.profileManager.getAuthorizedData(
                 recordsForUser[0].toPk, recordsForUser[0].responseData);
             nonceMap.get(nonceKey).should.be.equal(nonceValue);
+
+            // Step 10: User write signed token
+            const tokenKey = getTokenKey(accBusiness.publicKey, accValidator.publicKey);
+            userWriteToken(baseUser, tokenKey, accBusiness.publicKey, nonceValue, processedData);
+
+            // Step 11: User grant token to Validator
+            grantFields.clear();
+            grantFields.set(tokenKey, AccessRight.R);
+            await baseUser.dataRequestManager.grantAccessForClient(accValidator.publicKey, grantFields);
 
 
             // Test the retrieved wealthPtr data is correct at service provider side
