@@ -42,13 +42,13 @@ const UID: string = "uid"
 const BID: string = "bid"
 
 const KEY_WEALTH_PTR: string = "wealth_ptr";
-const wealthKeyScheme: string = UID + SEP + SPID + SEP + "wealth";
+const WEALTH_KEY_SCHEME: string = UID + SEP + SPID + SEP + "wealth";
 
 // User write an entry into his own storage after receiving shared back data from
 // service provider
 async function userWriteWealthPtr(user: Base, spID: string) {
     const value: any = {}
-    value[VALUE_KEY_SCHEME] = wealthKeyScheme;
+    value[VALUE_KEY_SCHEME] = WEALTH_KEY_SCHEME;
     value[SPID] = spID;
     const data: Map<string, string> = new Map<string, string>();
     data.set(KEY_WEALTH_PTR, JSON.stringify(value));
@@ -158,25 +158,40 @@ describe('BASE API test: Protocol Flow', async () => {
                 accBusiness.publicKey, accUser.publicKey
             );
             recordsForUserToApprove.length.should.be.equal(1);
+
+            // TODO: how data request is encoded into base64
+            // recordsForUserToApprove[0].requestData.should.be.equal(KEY_WEALTH_PTR);
+
             grantFields.clear();
             grantFields.set(KEY_WEALTH_PTR, AccessRight.R);
             // User approves the request
             await baseUser.dataRequestManager.grantAccessForClient(/* id */
                 accBusiness.publicKey, grantFields);
 
-            //Business reads wealth record from User
+            //Business reads wealth pointer from User
             const recordsForBusiness = await baseBusiness.dataRequestManager.getRequests(
                 accBusiness.publicKey, accUser.publicKey
             );
-            const wealthOfUser: Map<string, string> = await baseBusiness.profileManager.getAuthorizedData(
-                // accUser.publicKey, recordsForBusiness[0].responseData);
-                recordsForBusiness[0].toPk, recordsForBusiness[0].responseData);
-            const wealthRecord: any = wealthOfUser.get(KEY_WEALTH_PTR);
+
+            recordsForBusiness.length.should.be.equal(1);
+            const record = recordsForBusiness[0];
+
+            const userWealthPtr: Map<string, string> = await baseBusiness.profileManager.getAuthorizedData(
+                record.toPk, record.responseData);
+            const wealthPtrValue: any = userWealthPtr.get(KEY_WEALTH_PTR);
+
+            // Business get the Service Provider ID and SP key scheme
+            const serviceProviderPk = wealthPtrValue[SPID];
+            const wealthScheme = wealthPtrValue[VALUE_KEY_SCHEME];
+            serviceProviderPk.should.be.equal(accValidator.publicKey);
+            wealthScheme.should.be.equal(WEALTH_KEY_SCHEME);
+
+
             // Test the retrieved wealthPtr data is correct at service provider side
-            var testWealthPtr: any = {}
-            testWealthPtr[VALUE_KEY_SCHEME] = wealthKeyScheme;
-            testWealthPtr[SPID] = accValidator.publicKey;
-            wealthRecord.should.be.equal(JSON.stringify(testWealthPtr));
+            // var testWealthPtr: any = {}
+            // testWealthPtr[VALUE_KEY_SCHEME] = WEALTH_KEY_SCHEME;
+            // testWealthPtr[SPID] = accValidator.publicKey;
+            // wealthPtrValue.should.be.equal(JSON.stringify(testWealthPtr));
             // const wealthRecordObject: WealthPtr = JSON.parse(wealthRecord);
             // // console.log(wealthRecord);
 
