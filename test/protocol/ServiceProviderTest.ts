@@ -44,12 +44,17 @@ const BID: string = "bid"
 const KEY_WEALTH_PTR: string = "wealth_ptr";
 const WEALTH_KEY_SCHEME: string = UID + SEP + SPID + SEP + "wealth";
 
+interface Pointer {
+    spid: string;
+    scheme: string;
+}
+
 // User write an entry into his own storage after receiving shared back data from
 // service provider
-async function userWriteWealthPtr(user: Base, spID: string) {
+async function userWriteWealthPtr(user: Base, serviceProviderID: string) {
     const value: any = {}
     value[VALUE_KEY_SCHEME] = WEALTH_KEY_SCHEME;
-    value[SPID] = spID;
+    value[SPID] = serviceProviderID;
     const data: Map<string, string> = new Map<string, string>();
     data.set(KEY_WEALTH_PTR, JSON.stringify(value));
     await user.profileManager.updateData(data);
@@ -178,13 +183,11 @@ describe('BASE API test: Protocol Flow', async () => {
 
             const userWealthPtr: Map<string, string> = await baseBusiness.profileManager.getAuthorizedData(
                 record.toPk, record.responseData);
-            const wealthPtrValue: any = userWealthPtr.get(KEY_WEALTH_PTR);
+            const userWealthPtrValue: Pointer = JSON.parse(userWealthPtr.get(KEY_WEALTH_PTR));
 
             // Business get the Service Provider ID and SP key scheme
-            const serviceProviderPk = wealthPtrValue[SPID];
-            const wealthScheme = wealthPtrValue[VALUE_KEY_SCHEME];
-            serviceProviderPk.should.be.equal(accValidator.publicKey);
-            wealthScheme.should.be.equal(WEALTH_KEY_SCHEME);
+            userWealthPtrValue.spid.should.be.equal(accValidator.publicKey);
+            userWealthPtrValue.scheme.should.be.equal(WEALTH_KEY_SCHEME);
 
 
             // Test the retrieved wealthPtr data is correct at service provider side
