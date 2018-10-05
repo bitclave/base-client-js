@@ -12,11 +12,14 @@ import { AccessRight } from '../../src/utils/keypair/Permissions';
 import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 
-var crypto = require('crypto')
-const HASH_ALG = 'sha256';
+const crypto = require('crypto')
+const Message = require('bitcore-message');
+
 const should = require('chai')
     .use(require('chai-as-promised'))
     .should();
+
+const HASH_ALG = 'sha256';
 const someSigMessage = 'some unique message for signature';
 const rpcSignerHost: string = 'http://localhost:3545';
 const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
@@ -65,6 +68,11 @@ class Pointer {
     public scheme: string;
 }
 
+class SignedMessage {
+    public message: string;
+    public signature: string;
+}
+
 class Token {
     public bid: string;
     public nonce: string;
@@ -111,16 +119,18 @@ describe('BASE API test: Protocol Flow', async () => {
         await user.profileManager.updateData(data);
     }
 
-    async function userWriteToken(user: Base, key: string, bid: string, nonce: string, processedData: string) {
+    async function userWriteSignedToken(user: Base, key: string, bid: string, nonce: string, processedData: string) {
         const token = new Token();
         token.bid = bid;
         token.nonce = nonce;
         token.hash = crypto.createHash(HASH_ALG).update(processedData).digest('hex');
         token.timestamp = Date.now().toString();
         const tokenString = JSON.stringify(token);
-        const signedToken = await user.profileManager.signMessage(tokenString);
+        const signedToken = new SignedMessage();
+        signedToken.message = tokenString;
+        signedToken.signature = await user.profileManager.signMessage(tokenString);
         const data = new Map<string, string>();
-        data.set(key, signedToken);
+        data.set(key, JSON.stringify(signedToken));
         await user.profileManager.updateData(data);
     }
 
@@ -268,7 +278,7 @@ describe('BASE API test: Protocol Flow', async () => {
 
             // Step 10: User write signed token
             const tokenKey = getTokenKey(accBusiness.publicKey, accValidator.publicKey);
-            await userWriteToken(baseUser, tokenKey, accBusiness.publicKey, nonceValue, processedData);
+            await userWriteSignedToken(baseUser, tokenKey, accBusiness.publicKey, nonceValue, processedData);
 
             // Step 11: User grant token to Validator
             grantFields.clear();
@@ -289,11 +299,10 @@ describe('BASE API test: Protocol Flow', async () => {
             const wealthEntryKey = getWealthEntryKey(accUser.publicKey, accBusiness.publicKey);
             await spWriteWealthEntry(baseValidator, wealthEntryKey, wealth, tokenMap.get(tokenKey));
 
+            // Step 13, 14: grant wealth entry to business and user
             grantFields.clear();
             grantFields.set(wealthEntryKey, AccessRight.R);
-            // Step 13: grant wealth entry to business
             await baseValidator.dataRequestManager.grantAccessForClient(accBusiness.publicKey, grantFields);
-            // Step 14: grant wealth entry to user
             await baseValidator.dataRequestManager.grantAccessForClient(accUser.publicKey, grantFields);
 
             // Test Business receives the wealth data and verified it with the signed token
@@ -301,36 +310,34 @@ describe('BASE API test: Protocol Flow', async () => {
               accBusiness.publicKey, accValidator.publicKey
             );
             recordsForBusiness.length.should.be.equal(1);
+
             // Step 15: get wealth entry and verify the signed token
             const wealthEntryMap: Map<string, string> = await baseBusiness.profileManager.getAuthorizedData(
               recordsForBusiness[0].toPk, recordsForBusiness[0].responseData
             );
-            var wealthEntry: WealthEntry = JSON.parse(wealthEntryMap.get(wealthEntryKey));
+            const wealthEntry: WealthEntry = JSON.parse(wealthEntryMap.get(wealthEntryKey));
             wealthEntry.wealth.should.be.equal(wealth);
+            const signedToken: SignedMessage = JSON.parse(wealthEntry.token);
+
+            // Business verify the signature of the token
+            Message(signedToken.message).verify(accUser.publicKey, signedToken.signature).should.be.true;
+
+            const token: Token = JSON.parse(signedToken.message);
+
+            // Business verify the bid from token
+            token.bid.should.be.equal(accBusiness.publicKey);
+
+            // Business verify the nonce from token
+            token.nonce.should.be.equal(nonceValue);
+
+            // Business verify the data hash from token
+            token.hash.should.be.equal(crypto.createHash(HASH_ALG).update(processedData).digest('hex'));
+
+            // Business read the timestamp from token
+            var timestampDate = new Date();
+            timestampDate.setTime(Number(token.timestamp));
+            console.log("Business received token timestamp: " + timestampDate.toDateString());
             
-
-            // Test the retrieved wealthPtr data is correct at service provider side
-            // var testWealthPtr: any = {}
-            // testWealthPtr[VALUE_KEY_SCHEME] = WEALTH_KEY_SCHEME;
-            // testWealthPtr[SPID] = accValidator.publicKey;
-            // wealthPtrValue.should.be.equal(JSON.stringify(testWealthPtr));
-            // const wealthRecordObject: WealthPtr = JSON.parse(wealthRecord);
-            // // console.log(wealthRecord);
-
-            // // business reads User's wealth from Validator's storage
-            // const rawData = await baseBusiness.profileManager.getRawData(wealthRecordObject.validator);
-            // var encryptedUserWealth: any = rawData.get(accUser.publicKey);
-            // // business decodes User's wealth
-            // const decryptedUserWealth: string = CryptoUtils.decryptAes256(encryptedUserWealth, wealthRecordObject.decryptKey);
-            // // console.log("User's wealth as is seen by Business", decryptedUserWealth);
-
-            // const decryptedUserWealthObject: WealthRecord = JSON.parse(decryptedUserWealth);
-
-            // // business verifies the signature of the wealth record
-            // const Message = require('bitcore-message');
-            // const bitcore = require('bitcore-lib');
-            // const addrValidator = bitcore.Address(bitcore.PublicKey(wealthRecordObject.validator));
-            // Message(decryptedUserWealthObject.wealth).verify(addrValidator, decryptedUserWealthObject.sig).should.be.true;
         } catch (e) {
             console.log(e);
             throw e;
