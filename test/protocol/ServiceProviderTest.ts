@@ -106,16 +106,16 @@ describe('BASE API test: Protocol Flow', async () => {
 
     // User write an entry into his own storage after receiving shared back data from
     // service provider
-    async function userWriteWealthPtr(user: Base, spid: string) {
+    async function userWriteWealthPtr(user: Base, spid: string): Promise<Map<string, string>> {
         const value = new Pointer();
         value.scheme = WEALTH_KEY_SCHEME;
         value.spid = spid;
         const data = new Map<string, string>();
         data.set(KEY_WEALTH_PTR, JSON.stringify(value));
-        await user.profileManager.updateData(data);
+        return await user.profileManager.updateData(data);
     }
 
-    async function userWriteSignedToken(user: Base, key: string, bid: string, nonce: string, processedData: string) {
+    async function userWriteSignedToken(user: Base, key: string, bid: string, nonce: string, processedData: string): Promise<Map<string, string>> {
         const token = new Token();
         token.bid = bid;
         token.nonce = nonce;
@@ -127,17 +127,17 @@ describe('BASE API test: Protocol Flow', async () => {
         signedToken.signature = await user.profileManager.signMessage(tokenString);
         const data = new Map<string, string>();
         data.set(key, JSON.stringify(signedToken));
-        await user.profileManager.updateData(data);
+        return await user.profileManager.updateData(data);
     }
 
-    async function spWriteWealthEntry(sp: Base, key: string, wealth: string, token: string) {
+    async function spWriteWealthEntry(sp: Base, key: string, wealth: string, token: string): Promise<Map<string, string>> {
         const wealthEntry = new WealthEntry();
         wealthEntry.wealth = wealth;
         wealthEntry.token = token;
         const wealthEntryString = JSON.stringify(wealthEntry);
         const data = new Map<string, string>();
         data.set(key, wealthEntryString);
-        await sp.profileManager.updateData(data);
+        return await sp.profileManager.updateData(data);
     }
 
     before(async () => {
