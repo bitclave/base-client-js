@@ -9,33 +9,9 @@ import { AccessRight } from '../../src/utils/keypair/Permissions';
 import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 
-const crypto = require('crypto');
-const Message = require('bitcore-message');
-const bitcore = require('bitcore-lib');
-
 const should = require('chai')
     .use(require('chai-as-promised'))
     .should();
-
-const HASH_ALG = 'sha256';
-const someSigMessage = 'some unique message for signature';
-const rpcSignerHost: string = 'http://localhost:3545';
-const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
-const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
-
-async function createUser(user: Base, pass: string): Promise<Account> {
-    let accessToken: string = '';
-    try {
-        accessToken = await authenticatorHelper.generateAccessToken(pass);
-        await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
-        await user.accountManager.unsubscribe();
-    } catch (e) {
-        console.log('check createUser', e);
-        //ignore error if user not exist
-    }
-
-    return await user.accountManager.registration(pass, someSigMessage); // this method private.
-}
 
 const SEP: string = "_"
 const SPID: string = "spid"
@@ -46,6 +22,11 @@ const KEY_WEALTH_PTR: string = "wealth_ptr";
 const WEALTH_KEY_SCHEME: string = UID + SEP + BID + SEP + "wealth";
 const NONCE_KEY_SCHEME: string = UID + SEP + SPID + SEP + "nonce";
 const TOKEN_KEY_SCHEME: string = BID + SEP + SPID + SEP + "token";
+
+const someSigMessage = 'some unique message for signature';
+const rpcSignerHost: string = 'http://localhost:3545';
+const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
+const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
 class Pointer {
     public spid: string;
@@ -65,8 +46,8 @@ class Token {
 }
 
 class WealthEntry {
-  public wealth: string;
-  public token: string;
+    public wealth: string;
+    public token: string;
 }
 
 function getNonceKey(uid: string, spid: string): string {
@@ -78,7 +59,21 @@ function getTokenKey(bid: string, spid: string): string {
 }
 
 function getWealthEntryKey(uid: string, bid: string): string {
-  return uid + SEP + bid + SEP + "wealth";
+    return uid + SEP + bid + SEP + "wealth";
+}
+
+async function createUser(user: Base, pass: string): Promise<Account> {
+    let accessToken: string = '';
+    try {
+        accessToken = await authenticatorHelper.generateAccessToken(pass);
+        await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
+        await user.accountManager.unsubscribe();
+    } catch (e) {
+        console.log('check createUser', e);
+        //ignore error if user not exist
+    }
+
+    return await user.accountManager.registration(pass, someSigMessage); // this method private.
 }
 
 describe('BASE API test: Protocol Flow', async () => {
@@ -104,6 +99,11 @@ describe('BASE API test: Protocol Flow', async () => {
         );
     }
 
+    function getHash(message: string): string {
+        const crypto = require('crypto');
+        return crypto.createHash('sha256').update(message).digest('hex');
+    }
+
     // User write an entry into his own storage after receiving shared back data from
     // service provider
     async function userWriteWealthPtr(user: Base, spid: string) {
@@ -119,7 +119,7 @@ describe('BASE API test: Protocol Flow', async () => {
         const token = new Token();
         token.bid = bid;
         token.nonce = nonce;
-        token.hash = crypto.createHash(HASH_ALG).update(processedData).digest('hex');
+        token.hash = getHash(processedData);
         token.timestamp = Date.now().toString();
         const tokenString = JSON.stringify(token);
         const signedToken = new SignedMessage();
@@ -130,14 +130,14 @@ describe('BASE API test: Protocol Flow', async () => {
         await user.profileManager.updateData(data);
     }
 
-    async function spWriteWealthEntry(sp: Base, key: string, wealth: string, token: string){
-      const wealthEntry = new WealthEntry();
-      wealthEntry.wealth = wealth;
-      wealthEntry.token = token;
-      const wealthEntryString = JSON.stringify(wealthEntry);
-      const data = new Map<string, string>();
-      data.set(key, wealthEntryString);
-      await sp.profileManager.updateData(data);
+    async function spWriteWealthEntry(sp: Base, key: string, wealth: string, token: string) {
+        const wealthEntry = new WealthEntry();
+        wealthEntry.wealth = wealth;
+        wealthEntry.token = token;
+        const wealthEntryString = JSON.stringify(wealthEntry);
+        const data = new Map<string, string>();
+        data.set(key, wealthEntryString);
+        await sp.profileManager.updateData(data);
     }
 
     before(async () => {
@@ -280,15 +280,15 @@ describe('BASE API test: Protocol Flow', async () => {
             grantFields.clear();
             grantFields.set(tokenKey, AccessRight.R);
             await baseUser.dataRequestManager.grantAccessForClient(accValidator.publicKey, grantFields);
-            
+
             // Test Validator receives the token
             recordsForValidator = await baseValidator.dataRequestManager.getRequests(
-              accValidator.publicKey, accUser.publicKey
+                accValidator.publicKey, accUser.publicKey
             );
 
             recordsForValidator.length.should.be.equal(1);
             const tokenMap: Map<string, string> = await baseValidator.profileManager.getAuthorizedData(
-              recordsForValidator[0].toPk, recordsForValidator[0].responseData
+                recordsForValidator[0].toPk, recordsForValidator[0].responseData
             );
 
             // Step 12: Validator write signed token and processed data
@@ -303,19 +303,21 @@ describe('BASE API test: Protocol Flow', async () => {
 
             // Test Business receives the wealth data and verified it with the signed token
             recordsForBusiness = await baseBusiness.dataRequestManager.getRequests(
-              accBusiness.publicKey, accValidator.publicKey
+                accBusiness.publicKey, accValidator.publicKey
             );
             recordsForBusiness.length.should.be.equal(1);
 
             // Step 15: get wealth entry and verify the signed token
             const wealthEntryMap: Map<string, string> = await baseBusiness.profileManager.getAuthorizedData(
-              recordsForBusiness[0].toPk, recordsForBusiness[0].responseData
+                recordsForBusiness[0].toPk, recordsForBusiness[0].responseData
             );
             const wealthEntry: WealthEntry = JSON.parse(wealthEntryMap.get(wealthEntryKey));
             wealthEntry.wealth.should.be.equal(wealth);
             const signedToken: SignedMessage = JSON.parse(wealthEntry.token);
 
             // Business verify the signature of the token
+            const Message = require('bitcore-message');
+            const bitcore = require('bitcore-lib');
             const addrUser = bitcore.Address(bitcore.PublicKey(accUser.publicKey));
             Message(signedToken.message).verify(addrUser, signedToken.signature).should.be.true;
 
@@ -328,13 +330,13 @@ describe('BASE API test: Protocol Flow', async () => {
             token.nonce.should.be.equal(nonceValue);
 
             // Business verify the data hash from token
-            token.hash.should.be.equal(crypto.createHash(HASH_ALG).update(processedData).digest('hex'));
+            token.hash.should.be.equal(getHash(processedData));
 
             // Business read the timestamp from token
             var timestampDate = new Date();
             timestampDate.setTime(Number(token.timestamp));
             console.log("Business received token timestamp: " + timestampDate.toString());
-            
+
         } catch (e) {
             console.log(e);
             throw e;
