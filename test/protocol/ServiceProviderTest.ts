@@ -91,8 +91,8 @@ describe('BASE API test: Protocol Flow', async () => {
 
     function createBase(): Base {
         return new Base(
-            'http://localhost:8080',
-            //'https://base2-bitclva-com.herokuapp.com',
+            //'http://localhost:8080',
+            'https://base2-bitclva-com.herokuapp.com',
             'localhost',
             RepositoryStrategyType.Postgres,
             rpcSignerHost
