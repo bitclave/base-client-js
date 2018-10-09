@@ -10,6 +10,7 @@
     "testProfile": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/profile/*Test.ts\"",
     "testValidator": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/system/ExtValidatorTest.ts\"",
     "testRequest": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/requests/*Test.ts\"",
+    "testProtocol": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/protocol/ServiceProviderTest.ts\"",
     "coverage": "nyc npm run test",
     "coveralls": "npm run coverage && cat coverage/lcov.info | coveralls",
     "preBuild": "tsc --outDir dist -d",
@@ -70,8 +71,6 @@
     "node-fetch": "^2.2.0"
   },
   "devDependencies": {
-    "bs58": "^4.0.1",
-    "buffer-compare": "^1.1.1",
     "@babel/core": "^7.0.0-beta.44",
     "@babel/preset-env": "^7.0.0-beta.44",
     "@types/chai": "^4.1.2",
@@ -80,6 +79,8 @@
     "babel-loader": "^7.1.4",
     "babel-plugin-istanbul": "^4.1.6",
     "babel-preset-es2015": "^6.24.1",
+    "bs58": "^4.0.1",
+    "buffer-compare": "^1.1.1",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "coveralls": "^3.0.0",
@@ -89,7 +90,7 @@
     "nyc": "^11.6.0",
     "ts-loader": "^3.5.0",
     "ts-node": "^4.1.0",
-    "typedoc": "^0.9.0",
+    "typedoc": "^0.5.10",
     "typedoc-webpack-plugin": "^1.1.4",
     "typescript": "^2.8.1",
     "webpack": "^3.11.0"
