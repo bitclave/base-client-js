@@ -335,7 +335,7 @@ describe('BASE API test: Protocol Flow', async () => {
             // Business read the timestamp from token
             var timestampDate = new Date();
             timestampDate.setTime(Number(token.timestamp));
-            console.log("Business received token timestamp: " + timestampDate.toString());
+            // console.log("Business received token timestamp: " + timestampDate.toString());
 
         } catch (e) {
             console.log(e);
