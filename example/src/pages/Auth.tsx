@@ -65,12 +65,12 @@ export default class Auth extends React.Component<Props, State> {
                         </Button>
                     </FormGroup>
                     <FormGroup>
-                        <Button block={true} size="lg" color="primary" onClick={e => this.onSingUp()}>
+                        <Button block={true} size="lg" color="primary" onClick={e => this.onSignUp()}>
                             Sign Up
                         </Button>
                     </FormGroup>
                     <FormGroup>
-                        <Button block={true} size="lg" color="primary" onClick={e => this.onSingIn()}>
+                        <Button block={true} size="lg" color="primary" onClick={e => this.onSignIn()}>
                             Sign In
                         </Button>
                     </FormGroup>
@@ -92,7 +92,7 @@ export default class Auth extends React.Component<Props, State> {
     }
 
     private onSubmit(e: FormEvent<HTMLFormElement>) {
-        this.onSingIn();
+        this.onSignIn();
         e.preventDefault();
     }
 
@@ -111,7 +111,7 @@ export default class Auth extends React.Component<Props, State> {
             })
     }
 
-    private onSingUp() {
+    private onSignUp() {
         const {history} = this.props;
         if (this.state.mnemonicPhrase.length < 5) {
             alert('Minimum 5 symbols!');
@@ -128,7 +128,7 @@ export default class Auth extends React.Component<Props, State> {
             });
     }
 
-    private onSingIn() {
+    private onSignIn() {
         const {history} = this.props;
         if (this.state.mnemonicPhrase.length < 5) {
             alert('Minimum 5 symbols!');
