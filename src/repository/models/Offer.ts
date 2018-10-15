@@ -31,6 +31,23 @@ export default class Offer {
               return new OfferPrice(e.id, e.description, e.worth, offerRules);
           });
         }
+        else
+        {
+            if (offer.compare.size>0)
+            {
+                let key: String = Array.from(offer.compare.keys())[0]
+                let val: String = offer.compare.get(key) || ""
+
+                offer.offerPrices = [
+                    
+                    new OfferPrice(
+                        0, "default", offer.worth, [
+                            new OfferPriceRules(0, key.toString(), val.toString(), offer.rules[0])
+                        ]
+                    )
+                ]
+            }
+        }
         return offer;
     }
 
@@ -52,6 +69,21 @@ export default class Offer {
         this.compare = compare;
         this.rules = rules;
         this.offerPrices = offerPrices;
+
+        if (this.offerPrices.length==0 && this.compare.size>0)
+        {
+            let key: String = Array.from(compare.keys())[0]
+            let val: String = compare.get(key) || ""
+
+            this.offerPrices = [
+                
+                new OfferPrice(
+                    0, "default", worth, [
+                        new OfferPriceRules(0, key.toString(), val.toString(), rules[0])
+                    ]
+                )
+            ]
+        }
     }
 
     public toJson(): any {

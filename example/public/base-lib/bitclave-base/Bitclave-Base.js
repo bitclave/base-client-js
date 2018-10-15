@@ -708,7 +708,7 @@ var isArrayLike_1 = __webpack_require__(92);
 var isPromise_1 = __webpack_require__(93);
 var isObject_1 = __webpack_require__(88);
 var Observable_1 = __webpack_require__(0);
-var iterator_1 = __webpack_require__(31);
+var iterator_1 = __webpack_require__(32);
 var InnerSubscriber_1 = __webpack_require__(250);
 var observable_1 = __webpack_require__(45);
 function subscribeToResult(outerSubscriber, result, outerValue, outerIndex) {
@@ -1553,8 +1553,8 @@ exports.subscribeToResult = subscribeToResult;
 
 "use strict";
 
-var AsyncAction_1 = __webpack_require__(36);
-var AsyncScheduler_1 = __webpack_require__(37);
+var AsyncAction_1 = __webpack_require__(37);
+var AsyncScheduler_1 = __webpack_require__(38);
 /**
  *
  * Async Scheduler
@@ -6423,7 +6423,7 @@ exports.RpcToken = RpcToken;
 
 
 var assert = __webpack_require__(26);
-var inherits = __webpack_require__(30);
+var inherits = __webpack_require__(31);
 
 exports.inherits = inherits;
 
@@ -7950,11 +7950,33 @@ function unescapeJsonPointer(str) {
 /* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(628).inherits
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Permissions = /** @class */ (function () {
+    function Permissions(fields) {
+        if (fields === void 0) { fields = new Map(); }
+        this.fields = fields;
+    }
+    return Permissions;
+}());
+exports.Permissions = Permissions;
+var AccessRight;
+(function (AccessRight) {
+    AccessRight[AccessRight["R"] = 0] = "R";
+    AccessRight[AccessRight["RW"] = 1] = "RW";
+})(AccessRight = exports.AccessRight || (exports.AccessRight = {}));
 
 
 /***/ }),
 /* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(628).inherits
+
+
+/***/ }),
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7998,7 +8020,7 @@ exports.$$iterator = exports.iterator;
 //# sourceMappingURL=iterator.js.map
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8115,7 +8137,7 @@ exports.concat = concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8248,7 +8270,7 @@ exports.Notification = Notification;
 //# sourceMappingURL=Notification.js.map
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8427,7 +8449,7 @@ exports.MergeMapSubscriber = MergeMapSubscriber;
 //# sourceMappingURL=mergeMap.js.map
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8445,7 +8467,7 @@ exports.isNumeric = isNumeric;
 //# sourceMappingURL=isNumeric.js.map
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8593,7 +8615,7 @@ exports.AsyncAction = AsyncAction;
 //# sourceMappingURL=AsyncAction.js.map
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8650,7 +8672,7 @@ exports.AsyncScheduler = AsyncScheduler;
 //# sourceMappingURL=AsyncScheduler.js.map
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8745,7 +8767,7 @@ var MapSubscriber = (function (_super) {
 //# sourceMappingURL=map.js.map
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8779,7 +8801,7 @@ exports.ArgumentOutOfRangeError = ArgumentOutOfRangeError;
 //# sourceMappingURL=ArgumentOutOfRangeError.js.map
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8852,28 +8874,6 @@ function reduce(accumulator, seed) {
 }
 exports.reduce = reduce;
 //# sourceMappingURL=reduce.js.map
-
-/***/ }),
-/* 41 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Permissions = /** @class */ (function () {
-    function Permissions(fields) {
-        if (fields === void 0) { fields = new Map(); }
-        this.fields = fields;
-    }
-    return Permissions;
-}());
-exports.Permissions = Permissions;
-var AccessRight;
-(function (AccessRight) {
-    AccessRight[AccessRight["R"] = 0] = "R";
-    AccessRight[AccessRight["RW"] = 1] = "RW";
-})(AccessRight = exports.AccessRight || (exports.AccessRight = {}));
-
 
 /***/ }),
 /* 42 */
@@ -9295,7 +9295,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Subscriber_1 = __webpack_require__(1);
-var Notification_1 = __webpack_require__(33);
+var Notification_1 = __webpack_require__(34);
 /**
  *
  * Re-emits all notifications from source Observable with specified scheduler.
@@ -9410,7 +9410,7 @@ exports.ObserveOnMessage = ObserveOnMessage;
 
 "use strict";
 
-var mergeMap_1 = __webpack_require__(34);
+var mergeMap_1 = __webpack_require__(35);
 var identity_1 = __webpack_require__(98);
 /**
  * Converts a higher-order Observable into a first-order Observable which
@@ -9587,7 +9587,7 @@ var isArray_1 = __webpack_require__(15);
 var Subscriber_1 = __webpack_require__(1);
 var OuterSubscriber_1 = __webpack_require__(2);
 var subscribeToResult_1 = __webpack_require__(3);
-var iterator_1 = __webpack_require__(31);
+var iterator_1 = __webpack_require__(32);
 /* tslint:enable:max-line-length */
 /**
  * @param observables
@@ -10180,6 +10180,15 @@ var Offer = /** @class */ (function () {
         this.compare = compare;
         this.rules = rules;
         this.offerPrices = offerPrices;
+        if (this.offerPrices.length == 0 && this.compare.size > 0) {
+            var key = Array.from(compare.keys())[0];
+            var val = compare.get(key) || "";
+            this.offerPrices = [
+                new OfferPrice_1.OfferPrice(0, "default", worth, [
+                    new OfferPriceRules_1.OfferPriceRules(0, key.toString(), val.toString(), rules[0])
+                ])
+            ];
+        }
     }
     Offer.fromJson = function (json) {
         var offer = Object.assign(new Offer(), json);
@@ -10193,6 +10202,17 @@ var Offer = /** @class */ (function () {
                     : Array();
                 return new OfferPrice_1.OfferPrice(e.id, e.description, e.worth, offerRules);
             });
+        }
+        else {
+            if (offer.compare.size > 0) {
+                var key = Array.from(offer.compare.keys())[0];
+                var val = offer.compare.get(key) || "";
+                offer.offerPrices = [
+                    new OfferPrice_1.OfferPrice(0, "default", offer.worth, [
+                        new OfferPriceRules_1.OfferPriceRules(0, key.toString(), val.toString(), offer.rules[0])
+                    ])
+                ];
+            }
         }
         return offer;
     };
@@ -10967,7 +10987,7 @@ var OnErrorResumeNextSubscriber = (function (_super) {
 
 "use strict";
 
-var mergeMap_1 = __webpack_require__(34);
+var mergeMap_1 = __webpack_require__(35);
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to an Observable which is merged in the output
@@ -11700,7 +11720,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Subscriber_1 = __webpack_require__(1);
-var ArgumentOutOfRangeError_1 = __webpack_require__(39);
+var ArgumentOutOfRangeError_1 = __webpack_require__(40);
 var EmptyObservable_1 = __webpack_require__(22);
 /**
  * Emits only the last `count` values emitted by the source Observable.
@@ -12049,7 +12069,7 @@ var SwitchMapSubscriber = (function (_super) {
 "use strict";
 
 var async_1 = __webpack_require__(5);
-var map_1 = __webpack_require__(38);
+var map_1 = __webpack_require__(39);
 /**
  * @param scheduler
  * @return {Observable<Timestamp<any>>|WebSocketSubject<T>|Observable<T>}
@@ -13113,7 +13133,7 @@ var PromiseObservable_1 = __webpack_require__(97);
 var IteratorObservable_1 = __webpack_require__(252);
 var ArrayObservable_1 = __webpack_require__(21);
 var ArrayLikeObservable_1 = __webpack_require__(253);
-var iterator_1 = __webpack_require__(31);
+var iterator_1 = __webpack_require__(32);
 var Observable_1 = __webpack_require__(0);
 var observeOn_1 = __webpack_require__(49);
 var observable_1 = __webpack_require__(45);
@@ -13388,7 +13408,7 @@ var tryCatch_1 = __webpack_require__(10);
 var errorObject_1 = __webpack_require__(8);
 var Observable_1 = __webpack_require__(0);
 var Subscriber_1 = __webpack_require__(1);
-var map_1 = __webpack_require__(38);
+var map_1 = __webpack_require__(39);
 function getCORSRequest() {
     if (root_1.root.XMLHttpRequest) {
         return new root_1.root.XMLHttpRequest();
@@ -14746,8 +14766,8 @@ exports.combineAll = combineAll;
 
 "use strict";
 
-var concat_1 = __webpack_require__(32);
-var concat_2 = __webpack_require__(32);
+var concat_1 = __webpack_require__(33);
+var concat_2 = __webpack_require__(33);
 exports.concatStatic = concat_2.concat;
 /* tslint:enable:max-line-length */
 /**
@@ -15348,7 +15368,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 var async_1 = __webpack_require__(5);
 var isDate_1 = __webpack_require__(52);
 var Subscriber_1 = __webpack_require__(1);
-var Notification_1 = __webpack_require__(33);
+var Notification_1 = __webpack_require__(34);
 /**
  * Delays the emission of items from the source Observable by a given timeout or
  * until a given Date.
@@ -16400,7 +16420,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Subscriber_1 = __webpack_require__(1);
-var ArgumentOutOfRangeError_1 = __webpack_require__(39);
+var ArgumentOutOfRangeError_1 = __webpack_require__(40);
 /**
  * Emits the single value at the specified `index` in a sequence of emissions
  * from the source Observable.
@@ -17477,7 +17497,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Subscriber_1 = __webpack_require__(1);
-var Notification_1 = __webpack_require__(33);
+var Notification_1 = __webpack_require__(34);
 /**
  * Represents all of the notifications from the source Observable as `next`
  * emissions marked with their original types within {@link Notification}
@@ -17569,7 +17589,7 @@ var MaterializeSubscriber = (function (_super) {
 
 "use strict";
 
-var reduce_1 = __webpack_require__(40);
+var reduce_1 = __webpack_require__(41);
 /**
  * The Max operator operates on an Observable that emits numbers (or items that can be compared with a provided function),
  * and when source Observable completes it emits a single item: the item with the largest value.
@@ -17978,7 +17998,7 @@ exports.MergeScanSubscriber = MergeScanSubscriber;
 
 "use strict";
 
-var reduce_1 = __webpack_require__(40);
+var reduce_1 = __webpack_require__(41);
 /**
  * The Min operator operates on an Observable that emits numbers (or items that can be compared with a provided function),
  * and when source Observable completes it emits a single item: the item with the smallest value.
@@ -18343,7 +18363,7 @@ exports.partition = partition;
 
 "use strict";
 
-var map_1 = __webpack_require__(38);
+var map_1 = __webpack_require__(39);
 /**
  * Maps each source value (an object) to its specified nested property.
  *
@@ -19554,7 +19574,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Subscriber_1 = __webpack_require__(1);
-var ArgumentOutOfRangeError_1 = __webpack_require__(39);
+var ArgumentOutOfRangeError_1 = __webpack_require__(40);
 /**
  * Skip the last `count` values emitted by the source Observable.
  *
@@ -19799,7 +19819,7 @@ var SkipWhileSubscriber = (function (_super) {
 var ArrayObservable_1 = __webpack_require__(21);
 var ScalarObservable_1 = __webpack_require__(62);
 var EmptyObservable_1 = __webpack_require__(22);
-var concat_1 = __webpack_require__(32);
+var concat_1 = __webpack_require__(33);
 var isScheduler_1 = __webpack_require__(14);
 /* tslint:enable:max-line-length */
 /**
@@ -20046,7 +20066,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Subscriber_1 = __webpack_require__(1);
-var ArgumentOutOfRangeError_1 = __webpack_require__(39);
+var ArgumentOutOfRangeError_1 = __webpack_require__(40);
 var EmptyObservable_1 = __webpack_require__(22);
 /**
  * Emits only the first `count` values emitted by the source Observable.
@@ -20831,7 +20851,7 @@ var TimeoutWithSubscriber = (function (_super) {
 
 "use strict";
 
-var reduce_1 = __webpack_require__(40);
+var reduce_1 = __webpack_require__(41);
 function toArrayReducer(arr, item, index) {
     if (index === 0) {
         return [item];
@@ -21116,7 +21136,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 var Subject_1 = __webpack_require__(7);
 var async_1 = __webpack_require__(5);
 var Subscriber_1 = __webpack_require__(1);
-var isNumeric_1 = __webpack_require__(35);
+var isNumeric_1 = __webpack_require__(36);
 var isScheduler_1 = __webpack_require__(14);
 function windowTime(windowTimeSpan) {
     var scheduler = async_1.async;
@@ -21815,8 +21835,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var AsyncAction_1 = __webpack_require__(36);
-var AsyncScheduler_1 = __webpack_require__(37);
+var AsyncAction_1 = __webpack_require__(37);
+var AsyncScheduler_1 = __webpack_require__(38);
 var VirtualTimeScheduler = (function (_super) {
     __extends(VirtualTimeScheduler, _super);
     function VirtualTimeScheduler(SchedulerAction, maxFrames) {
@@ -24737,7 +24757,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var BaseTypes_1 = __webpack_require__(85);
 var Account_1 = __webpack_require__(19);
 var WalletUtils_1 = __webpack_require__(218);
-var Permissions_1 = __webpack_require__(41);
+var Permissions_1 = __webpack_require__(30);
 var WalletManagerImpl = /** @class */ (function () {
     function WalletManagerImpl(profileManager, dataRequestManager, baseSchema, messageSigner, authAccountBehavior) {
         this.account = new Account_1.default();
@@ -26682,7 +26702,7 @@ var EthereumUtils_1 = __webpack_require__(219);
 exports.EthereumUtils = EthereumUtils_1.EthereumUtils;
 var KeyPair_1 = __webpack_require__(84);
 exports.KeyPair = KeyPair_1.KeyPair;
-var Permissions_1 = __webpack_require__(41);
+var Permissions_1 = __webpack_require__(30);
 exports.Permissions = Permissions_1.Permissions;
 exports.AccessRight = Permissions_1.AccessRight;
 var AcceptedField_1 = __webpack_require__(212);
@@ -27045,11 +27065,11 @@ var BehaviorSubject_1 = __webpack_require__(146);
 exports.BehaviorSubject = BehaviorSubject_1.BehaviorSubject;
 var ConnectableObservable_1 = __webpack_require__(140);
 exports.ConnectableObservable = ConnectableObservable_1.ConnectableObservable;
-var Notification_1 = __webpack_require__(33);
+var Notification_1 = __webpack_require__(34);
 exports.Notification = Notification_1.Notification;
 var EmptyError_1 = __webpack_require__(55);
 exports.EmptyError = EmptyError_1.EmptyError;
-var ArgumentOutOfRangeError_1 = __webpack_require__(39);
+var ArgumentOutOfRangeError_1 = __webpack_require__(40);
 exports.ArgumentOutOfRangeError = ArgumentOutOfRangeError_1.ArgumentOutOfRangeError;
 var ObjectUnsubscribedError_1 = __webpack_require__(46);
 exports.ObjectUnsubscribedError = ObjectUnsubscribedError_1.ObjectUnsubscribedError;
@@ -27076,7 +27096,7 @@ var async_1 = __webpack_require__(5);
 var queue_1 = __webpack_require__(101);
 var animationFrame_1 = __webpack_require__(529);
 var rxSubscriber_1 = __webpack_require__(44);
-var iterator_1 = __webpack_require__(31);
+var iterator_1 = __webpack_require__(32);
 var observable_1 = __webpack_require__(45);
 var _operators = __webpack_require__(533);
 exports.operators = _operators;
@@ -27931,7 +27951,7 @@ exports.InnerSubscriber = InnerSubscriber;
 "use strict";
 
 var Observable_1 = __webpack_require__(0);
-var concat_1 = __webpack_require__(32);
+var concat_1 = __webpack_require__(33);
 Observable_1.Observable.concat = concat_1.concat;
 //# sourceMappingURL=concat.js.map
 
@@ -27948,7 +27968,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var root_1 = __webpack_require__(11);
 var Observable_1 = __webpack_require__(0);
-var iterator_1 = __webpack_require__(31);
+var iterator_1 = __webpack_require__(32);
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -29253,7 +29273,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var isNumeric_1 = __webpack_require__(35);
+var isNumeric_1 = __webpack_require__(36);
 var Observable_1 = __webpack_require__(0);
 var async_1 = __webpack_require__(5);
 /**
@@ -30036,7 +30056,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var isNumeric_1 = __webpack_require__(35);
+var isNumeric_1 = __webpack_require__(36);
 var Observable_1 = __webpack_require__(0);
 var async_1 = __webpack_require__(5);
 var isScheduler_1 = __webpack_require__(14);
@@ -30468,7 +30488,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var AsyncAction_1 = __webpack_require__(36);
+var AsyncAction_1 = __webpack_require__(37);
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -30523,7 +30543,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var AsyncScheduler_1 = __webpack_require__(37);
+var AsyncScheduler_1 = __webpack_require__(38);
 var QueueScheduler = (function (_super) {
     __extends(QueueScheduler, _super);
     function QueueScheduler() {
@@ -31129,7 +31149,7 @@ Observable_1.Observable.prototype.concat = concat_1.concat;
 "use strict";
 
 var concat_1 = __webpack_require__(109);
-var concat_2 = __webpack_require__(32);
+var concat_2 = __webpack_require__(33);
 exports.concatStatic = concat_2.concat;
 /* tslint:enable:max-line-length */
 /**
@@ -33291,7 +33311,7 @@ Observable_1.Observable.prototype.map = map_1.map;
 
 "use strict";
 
-var map_1 = __webpack_require__(38);
+var map_1 = __webpack_require__(39);
 /**
  * Applies a given `project` function to each value emitted by the source
  * Observable, and emits the resulting values as an Observable.
@@ -33668,7 +33688,7 @@ Observable_1.Observable.prototype.flatMap = mergeMap_1.mergeMap;
 
 "use strict";
 
-var mergeMap_1 = __webpack_require__(34);
+var mergeMap_1 = __webpack_require__(35);
 /* tslint:enable:max-line-length */
 /**
  * Projects each source value to an Observable which is merged in the output
@@ -34580,7 +34600,7 @@ Observable_1.Observable.prototype.reduce = reduce_1.reduce;
 
 "use strict";
 
-var reduce_1 = __webpack_require__(40);
+var reduce_1 = __webpack_require__(41);
 /* tslint:enable:max-line-length */
 /**
  * Applies an accumulator function over the source Observable, and returns the
@@ -35457,7 +35477,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Observable_1 = __webpack_require__(0);
 var asap_1 = __webpack_require__(165);
-var isNumeric_1 = __webpack_require__(35);
+var isNumeric_1 = __webpack_require__(36);
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -35513,7 +35533,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Immediate_1 = __webpack_require__(480);
-var AsyncAction_1 = __webpack_require__(36);
+var AsyncAction_1 = __webpack_require__(37);
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @ignore
@@ -35788,7 +35808,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var AsyncScheduler_1 = __webpack_require__(37);
+var AsyncScheduler_1 = __webpack_require__(38);
 var AsapScheduler = (function (_super) {
     __extends(AsapScheduler, _super);
     function AsapScheduler() {
@@ -36806,7 +36826,7 @@ Observable_1.Observable.prototype.windowTime = windowTime_1.windowTime;
 "use strict";
 
 var async_1 = __webpack_require__(5);
-var isNumeric_1 = __webpack_require__(35);
+var isNumeric_1 = __webpack_require__(36);
 var isScheduler_1 = __webpack_require__(14);
 var windowTime_1 = __webpack_require__(180);
 function windowTime(windowTimeSpan) {
@@ -37104,7 +37124,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
-var Notification_1 = __webpack_require__(33);
+var Notification_1 = __webpack_require__(34);
 var ColdObservable_1 = __webpack_require__(527);
 var HotObservable_1 = __webpack_require__(528);
 var SubscriptionLog_1 = __webpack_require__(186);
@@ -37479,7 +37499,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var AsyncAction_1 = __webpack_require__(36);
+var AsyncAction_1 = __webpack_require__(37);
 var AnimationFrame_1 = __webpack_require__(531);
 /**
  * We need this JSDoc comment for affecting ESDoc.
@@ -37580,7 +37600,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var AsyncScheduler_1 = __webpack_require__(37);
+var AsyncScheduler_1 = __webpack_require__(38);
 var AnimationFrameScheduler = (function (_super) {
     __extends(AnimationFrameScheduler, _super);
     function AnimationFrameScheduler() {
@@ -37694,7 +37714,7 @@ var isEmpty_1 = __webpack_require__(129);
 exports.isEmpty = isEmpty_1.isEmpty;
 var last_1 = __webpack_require__(131);
 exports.last = last_1.last;
-var map_1 = __webpack_require__(38);
+var map_1 = __webpack_require__(39);
 exports.map = map_1.map;
 var mapTo_1 = __webpack_require__(133);
 exports.mapTo = mapTo_1.mapTo;
@@ -37706,9 +37726,9 @@ var merge_1 = __webpack_require__(136);
 exports.merge = merge_1.merge;
 var mergeAll_1 = __webpack_require__(50);
 exports.mergeAll = mergeAll_1.mergeAll;
-var mergeMap_1 = __webpack_require__(34);
+var mergeMap_1 = __webpack_require__(35);
 exports.mergeMap = mergeMap_1.mergeMap;
-var mergeMap_2 = __webpack_require__(34);
+var mergeMap_2 = __webpack_require__(35);
 exports.flatMap = mergeMap_2.mergeMap;
 var mergeMapTo_1 = __webpack_require__(137);
 exports.mergeMapTo = mergeMapTo_1.mergeMapTo;
@@ -37738,7 +37758,7 @@ var publishReplay_1 = __webpack_require__(147);
 exports.publishReplay = publishReplay_1.publishReplay;
 var race_1 = __webpack_require__(149);
 exports.race = race_1.race;
-var reduce_1 = __webpack_require__(40);
+var reduce_1 = __webpack_require__(41);
 exports.reduce = reduce_1.reduce;
 var repeat_1 = __webpack_require__(150);
 exports.repeat = repeat_1.repeat;
@@ -43878,7 +43898,7 @@ var __read = (this && this.__read) || function (o, n) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var CryptoUtils_1 = __webpack_require__(81);
 var KeyPair_1 = __webpack_require__(84);
-var Permissions_1 = __webpack_require__(41);
+var Permissions_1 = __webpack_require__(30);
 var JsonUtils_1 = __webpack_require__(20);
 var AcceptedField_1 = __webpack_require__(212);
 var bitcore = __webpack_require__(213);
@@ -47591,7 +47611,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var RpcAccessData_1 = __webpack_require__(610);
-var Permissions_1 = __webpack_require__(41);
+var Permissions_1 = __webpack_require__(30);
 var ClientData = /** @class */ (function (_super) {
     __extends(ClientData, _super);
     function ClientData(publicKey, accessToken, origin, expireDate, permissions) {
@@ -47626,7 +47646,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Permissions_1 = __webpack_require__(41);
+var Permissions_1 = __webpack_require__(30);
 var RpcToken_1 = __webpack_require__(16);
 var AccessData = /** @class */ (function (_super) {
     __extends(AccessData, _super);
@@ -48050,6 +48070,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var JsonUtils_1 = __webpack_require__(20);
+var Permissions_1 = __webpack_require__(30);
 var DataRequestManagerImpl = /** @class */ (function () {
     function DataRequestManagerImpl(dataRequestRepository, authAccountBehavior, encrypt, decrypt) {
         this.dataRequestRepository = dataRequestRepository;
@@ -48193,6 +48214,8 @@ var DataRequestManagerImpl = /** @class */ (function () {
      */
     DataRequestManagerImpl.prototype.grantAccessForOffer = function (offerSearchId, offerOwner, acceptedFields, priceId) {
         var _this = this;
+        // automatically grant access to eth_wallets
+        acceptedFields.set('eth_wallets', Permissions_1.AccessRight.R);
         return this.encrypt
             .encryptPermissionsFields(offerOwner, acceptedFields)
             .then(function (encrypted) { return _this.dataRequestRepository.grantAccessForOffer(offerSearchId, _this.account.publicKey, encrypted, priceId); });
@@ -48686,7 +48709,7 @@ module.exports = __webpack_require__(221)(__webpack_require__(224)('keccak'))
 
 var Buffer = __webpack_require__(23).Buffer
 var Transform = __webpack_require__(223).Transform
-var inherits = __webpack_require__(30)
+var inherits = __webpack_require__(31)
 
 module.exports = function (KeccakState) {
   function Keccak (rate, capacity, delimitedSuffix, hashBitLength, options) {
@@ -48783,7 +48806,7 @@ module.exports = require("util");
 
 var Buffer = __webpack_require__(23).Buffer
 var Transform = __webpack_require__(223).Transform
-var inherits = __webpack_require__(30)
+var inherits = __webpack_require__(31)
 
 module.exports = function (KeccakState) {
   function Shake (rate, capacity, delimitedSuffix, options) {
@@ -50691,7 +50714,7 @@ BasePoint.prototype.dblp = function dblp(k) {
 var curve = __webpack_require__(59);
 var elliptic = __webpack_require__(13);
 var BN = __webpack_require__(12);
-var inherits = __webpack_require__(30);
+var inherits = __webpack_require__(31);
 var Base = curve.base;
 
 var assert = elliptic.utils.assert;
@@ -51635,7 +51658,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
 
 var curve = __webpack_require__(59);
 var BN = __webpack_require__(12);
-var inherits = __webpack_require__(30);
+var inherits = __webpack_require__(31);
 var Base = curve.base;
 
 var elliptic = __webpack_require__(13);
@@ -51823,7 +51846,7 @@ Point.prototype.getX = function getX() {
 var curve = __webpack_require__(59);
 var elliptic = __webpack_require__(13);
 var BN = __webpack_require__(12);
-var inherits = __webpack_require__(30);
+var inherits = __webpack_require__(31);
 var Base = curve.base;
 
 var assert = elliptic.utils.assert;

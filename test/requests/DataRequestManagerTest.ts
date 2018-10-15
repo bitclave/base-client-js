@@ -32,8 +32,8 @@ describe('Data Request Manager', async () => {
     const bobsFields = ['name', 'email'];
     const alisaFields = ['email'];
 
-    const requestManagerAlisa: DataRequestManager;
-    const requestManagerBob: DataRequestManager;
+    var requestManagerAlisa: DataRequestManager;
+    var requestManagerBob: DataRequestManager;
 
     before(async () => {
         const alisaAccessToken = await authenticatorHelper.generateAccessToken(passPhraseAlisa);
@@ -163,7 +163,12 @@ describe('Data Request Manager', async () => {
 
     it('should be Alisa not nothing found from some pk', async () => {
         const somePK = '020b6936ce0264852b713cff3d03faef1994477924ea0ad4c28a0d2543a16d70ec';
-        await requestManagerBob.grantAccessForClient(somePK, bobsFields);
+        
+        const grantFields: Map<string, AccessRight> = new Map();
+        for(let item of bobsFields) {
+            grantFields.set(item, AccessRight.R)
+        }
+        await requestManagerBob.grantAccessForClient(somePK, grantFields);
 
         let grant: Array<string> = await requestManagerAlisa.getGrantedPermissionsToMe(
             keyPairHelperBob.getPublicKey()
@@ -187,7 +192,11 @@ describe('Data Request Manager', async () => {
     });
 
     it('share data for offer', async () => {
-        await requestManagerAlisa.grantAccessForOffer(1, keyPairHelperAlisa.getPublicKey(), bobsFields);
+        const grantFields: Map<string, AccessRight> = new Map();
+        for(let item of bobsFields) {
+            grantFields.set(item, AccessRight.R)
+        }
+        await requestManagerAlisa.grantAccessForOffer(1, keyPairHelperAlisa.getPublicKey(), grantFields, 0);
     });
 
     it('decrypt invalid message', async () => {

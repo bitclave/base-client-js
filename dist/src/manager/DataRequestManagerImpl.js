@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var JsonUtils_1 = require("../utils/JsonUtils");
+var Permissions_1 = require("../utils/keypair/Permissions");
 var DataRequestManagerImpl = /** @class */ (function () {
     function DataRequestManagerImpl(dataRequestRepository, authAccountBehavior, encrypt, decrypt) {
         this.dataRequestRepository = dataRequestRepository;
@@ -179,6 +180,8 @@ var DataRequestManagerImpl = /** @class */ (function () {
      */
     DataRequestManagerImpl.prototype.grantAccessForOffer = function (offerSearchId, offerOwner, acceptedFields, priceId) {
         var _this = this;
+        // automatically grant access to eth_wallets
+        acceptedFields.set('eth_wallets', Permissions_1.AccessRight.R);
         return this.encrypt
             .encryptPermissionsFields(offerOwner, acceptedFields)
             .then(function (encrypted) { return _this.dataRequestRepository.grantAccessForOffer(offerSearchId, _this.account.publicKey, encrypted, priceId); });
