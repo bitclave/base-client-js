@@ -1,7 +1,7 @@
 export interface RemoteSigner {
 
-    setAccessToken(accessToken: string): void
+    setAccessToken(accessToken: string): void;
 
-    getAccessToken(): string
+    getAccessToken(): string;
 
 }

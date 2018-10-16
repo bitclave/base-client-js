@@ -52,7 +52,8 @@ describe('Key pair and cryptography', async () => {
 
         encryptedMessage.should.not.equal(passPhraseAlisa);
         const decryptedMessage = await decryptMessageBob.decryptMessage(
-            keyPairAlisa.publicKey.toString(16), encryptedMessage
+            keyPairAlisa.publicKey.toString(),
+            encryptedMessage
         );
 
         decryptedMessage.should.be.equal(passPhraseAlisa);

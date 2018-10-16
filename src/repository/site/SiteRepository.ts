@@ -2,6 +2,6 @@ import { Site } from '../models/Site';
 
 export interface SiteRepository {
 
-    getSiteData(origin: string): Promise<Site>
+    getSiteData(origin: string): Promise<Site>;
 
 }

@@ -23,7 +23,7 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
                 this.DATA_REQUEST,
                 HttpMethod.Post,
                 data
-            ).then((response) => parseInt(response.json.toString()));
+            ).then((response) => parseInt(response.json.toString(), 10));
     }
 
     grantAccessForClient(fromPk: string, toPk: string, encryptedResponse: string): Promise<number> {
@@ -36,7 +36,7 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
                 this.GRANT_ACCESS_FOR_CLIENT,
                 HttpMethod.Post,
                 data
-            ).then((response) => parseInt(response.json.toString()));
+            ).then((response) => parseInt(response.json.toString(), 10));
     }
 
     getRequests(fromPk: string | null, toPk: string | null): Promise<Array<DataRequest>> {
@@ -54,18 +54,17 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
             ).then((response) => Object.assign([], response.json));
     }
 
-    grantAccessForOffer(offerSearchId: number, clientPk: string, encryptedClientResponse: string, priceId: number): Promise<void> {
+    grantAccessForOffer(offerSearchId: number, clientPk: string, encryptedClientResponse: string, priceId: number): Promise<any> {
         const shareData = new OfferShareData(offerSearchId, encryptedClientResponse, priceId);
         return this.transport
-            .sendRequest(this.GRANT_ACCESS_FOR_OFFER, HttpMethod.Post, shareData)
-            .then(() => {});
+            .sendRequest(this.GRANT_ACCESS_FOR_OFFER, HttpMethod.Post, shareData);
     }
 
     private joinParams(params: Map<string, any>): string {
         let result: Array<string> = [];
         params.forEach((value, key) => {
             if (!this.isEmpty(value)) {
-                result.push(`${key}=${value}`)
+                result.push(`${key}=${value}`);
             }
         });
 
@@ -73,7 +72,7 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
     }
 
     private isEmpty(value: string | null): boolean {
-        return value == null || value == undefined || value.trim().length === 0;
+        return value == null || value === undefined || value.trim().length === 0;
     }
 
 }

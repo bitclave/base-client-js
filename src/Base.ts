@@ -224,7 +224,7 @@ export default class Base {
                                 permissionSource: PermissionsSource,
                                 siteDataSource: SiteDataSource,
                                 siteOrigin: string): KeyPairHelper {
-        return (signerHost.length == 0)
+        return (signerHost.length === 0)
             ? KeyPairFactory.createDefaultKeyPair(permissionSource, siteDataSource, siteOrigin)
             : KeyPairFactory.createRpcKeyPair(TransportFactory.createJsonRpcHttpTransport(signerHost));
     }

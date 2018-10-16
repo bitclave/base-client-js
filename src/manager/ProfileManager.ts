@@ -1,6 +1,6 @@
 export interface ProfileManager {
 
-    signMessage(data: any): Promise<string>
+    signMessage(data: any): Promise<string>;
 
     /**
      * Returns decrypted data of the authorized user.

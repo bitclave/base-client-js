@@ -37,19 +37,7 @@ export default class BaseManager {
             .then(account => this.account = account);
     }
 
-    private getUniqueMessageForSigFromServerSide(): Promise<string> {
-        return new Promise<string>(resolve => {
-            let text = '';
-            const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-            for (let i = 0; i < 64; i++) {
-                text += possible.charAt(Math.floor(Math.random() * possible.length));
-            }
-
-            console.log('unique message from server side:', text);
-            resolve(text);
-        });
-    }
 
     public sendAccountToServerSide(account: Account): Promise<Account> {
         return new Promise<Account>(resolve => {
@@ -131,7 +119,7 @@ export default class BaseManager {
 
     async grandPermissions(from: string, fields: Array<string>): Promise<Array<string>> {
         const grantedFields = fields;
-        //get old granted permissions
+        // get old granted permissions
         // const grantedFields = await this.base.dataRequestManager.getGrantedPermissionsToMe(from);
         //
         // fields.forEach(value => {
@@ -144,7 +132,7 @@ export default class BaseManager {
         const accessFields: Map<string, AccessRight> = new Map();
 
         grantedFields.forEach(value => {
-            accessFields.set(value, AccessRight.R)
+            accessFields.set(value, AccessRight.R);
         });
 
         await this.base.dataRequestManager.grantAccessForClient(from, accessFields);
@@ -159,5 +147,19 @@ export default class BaseManager {
     logout() {
         this.account = null;
     }
+
+    private getUniqueMessageForSigFromServerSide(): Promise<string> {
+      return new Promise<string>(resolve => {
+          let text = '';
+          const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+          for (let i = 0; i < 64; i++) {
+              text += possible.charAt(Math.floor(Math.random() * possible.length));
+          }
+
+          console.log('unique message from server side:', text);
+          resolve(text);
+      });
+  }
 
 }

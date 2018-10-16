@@ -32,7 +32,7 @@ async function createUser(user: Base, pass: string): Promise<Account> {
         await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
         await user.accountManager.unsubscribe();
     } catch (e) {
-        console.log('check createUser', e);
+        // console.log('check createUser', e);
         // ignore error if user not exist
     }
 

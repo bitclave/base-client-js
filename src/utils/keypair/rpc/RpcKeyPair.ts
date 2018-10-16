@@ -29,7 +29,7 @@ export class RpcKeyPair implements KeyPairHelper, RemoteSigner {
         return this.rpcTransport.request('checkAccessToken', new RpcToken(this.accessToken))
             .then((response: any) => this.clientData = Object.assign(new RpcClientData(), response))
             .then((response: RpcClientData) => new KeyPair('', response.publicKey));
-    };
+    }
 
     public generateMnemonicPhrase(): Promise<string> {
         return new Promise<string>(resolve => {

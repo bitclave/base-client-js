@@ -12,10 +12,10 @@ export interface SearchManager {
 
     deleteRequest(id: number): Promise<number>;
 
-    getSearchResult(searchRequestId: number): Promise<Array<OfferSearchResultItem>>
+    getSearchResult(searchRequestId: number): Promise<Array<OfferSearchResultItem>>;
 
-    complainToSearchItem(searchResultId: number): Promise<void>
+    complainToSearchItem(searchResultId: number): Promise<void>;
 
-    addResultItem(offerSearch: OfferSearch): Promise<void>
+    addResultItem(offerSearch: OfferSearch): Promise<void>;
 
 }

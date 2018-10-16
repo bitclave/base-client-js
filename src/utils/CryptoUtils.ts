@@ -3,19 +3,19 @@ const CryptoJS = require('crypto-js');
 export class CryptoUtils {
 
     public static keccak256(message: string): string {
-        const array: any = CryptoJS.SHA3(message, {outputLength: 256});
+        const array = CryptoJS.SHA3(message, {outputLength: 256});
 
         return array.toString(CryptoJS.enc.Hex);
     }
 
     public static sha384(message: string): string {
-        const array: any = CryptoJS.SHA384(message);
+        const array = CryptoJS.SHA384(message);
 
         return array.toString(CryptoJS.enc.Hex);
     }
 
     public static encryptAes256(message: string, pass: string): string {
-        const ciphertext: any = CryptoJS.AES.encrypt(message, pass, {outputLength: 256});
+        const ciphertext = CryptoJS.AES.encrypt(message, pass, {outputLength: 256});
 
         return ciphertext.toString();
     }
@@ -26,7 +26,7 @@ export class CryptoUtils {
         return bytes.toString(CryptoJS.enc.Utf8);
     }
 
-    public static PBKDF2(password: string, keySize: number): string { //for generate private key
+    public static PBKDF2(password: string, keySize: number): string { // for generate private key
         return CryptoJS.PBKDF2(
             password,
             CryptoUtils.sha384(CryptoUtils.sha384(password)),

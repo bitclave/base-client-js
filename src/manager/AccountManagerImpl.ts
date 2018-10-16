@@ -118,14 +118,15 @@ export class AccountManagerImpl implements AccountManager {
     }
 
     private checkSigMessage(message: string) {
-        if (message == null || message == undefined || message.length < 10) {
+        if (message == null || message === undefined || message.length < 10) {
             throw 'message for signature should be have min 10 symbols';
         }
     }
 
     private syncAccount(account: Account, message: string): Promise<Account> {
-        return this.accountRepository.checkAccount(account)
-            .then(account => this.onGetAccount(account, message));
+        return this.accountRepository
+            .checkAccount(account)
+            .then(checkedAccount => this.onGetAccount(checkedAccount, message));
     }
 
     private generateAccount(keyPair: KeyPair): Promise<Account> {

@@ -69,6 +69,7 @@ export interface DataRequestManager {
      *
      * @returns {Promise<void>}
      */
+    // tslint:disable-next-line:max-line-length
     grantAccessForOffer(offerSearchId: number, offerOwner: string, acceptedFields: Map<string, AccessRight>, priceId: number): Promise<void>;
 
     /**

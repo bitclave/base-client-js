@@ -7,7 +7,7 @@ export class EthereumUtils {
     }
 
     public static createSig(privateKey: string, data: any): string {
-        return sigUtil.personalSign(Buffer.from(privateKey, 'hex'), data)
+        return sigUtil.personalSign(Buffer.from(privateKey, 'hex'), data);
     }
 
 }

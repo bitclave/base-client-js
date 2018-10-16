@@ -6,8 +6,8 @@ import { InterceptorCortege } from './InterceptorCortege';
 
 let XMLHttpRequest: any;
 
-if ((typeof window !== 'undefined' && (<any>window).XMLHttpRequest)) {
-    XMLHttpRequest = (<any>window).XMLHttpRequest;
+if ((typeof window !== 'undefined' && (<any> window).XMLHttpRequest)) {
+    XMLHttpRequest = (<any> window).XMLHttpRequest;
 } else {
     XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 }

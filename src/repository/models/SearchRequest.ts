@@ -8,7 +8,7 @@ export default class SearchRequest {
 
     public static fromJson(json: any): SearchRequest {
         const searchRequest: SearchRequest = Object.assign(new SearchRequest(), json);
-        searchRequest.tags = JsonUtils.jsonToMap(json['tags']);
+        searchRequest.tags = JsonUtils.jsonToMap(json.tags);
 
         return searchRequest;
     }
@@ -17,10 +17,10 @@ export default class SearchRequest {
         this.tags = tags;
     }
 
-    public toJson(): any {
+    public toJson() {
         const jsonStr = JSON.stringify(this);
         const json = JSON.parse(jsonStr);
-        json['tags'] = JsonUtils.mapToJson(this.tags);
+        json.tags = JsonUtils.mapToJson(this.tags);
 
         return json;
     }

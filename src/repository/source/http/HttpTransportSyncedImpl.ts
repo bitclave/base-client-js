@@ -7,8 +7,8 @@ import Transaction from './Transaction';
 
 let XMLHttpRequest: any;
 
-if ((typeof window !== 'undefined' && (<any>window).XMLHttpRequest)) {
-    XMLHttpRequest = (<any>window).XMLHttpRequest;
+if ((typeof window !== 'undefined' && (<any> window).XMLHttpRequest)) {
+    XMLHttpRequest = (<any> window).XMLHttpRequest;
 } else {
     XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 }
@@ -35,26 +35,13 @@ export class HttpTransportSyncedImpl implements HttpTransport {
 
         return this;
     }
-
-    private acceptInterceptor(interceptorCortege: InterceptorCortege,
-                              interceptorIndex: number = 0): Promise<InterceptorCortege> {
-        return (interceptorIndex >= this.interceptors.length)
-            ? Promise.resolve(interceptorCortege)
-
-            : this.interceptors[interceptorIndex]
-                .onIntercept(interceptorCortege)
-                .then(interceptorCortegeResult =>
-                    this.acceptInterceptor(interceptorCortegeResult, ++interceptorIndex)
-                );
-    }
-
-    sendRequest(method: HttpMethod, data?: any): Promise<Response>
+    sendRequest(method: HttpMethod, data?: any): Promise<Response>;
     sendRequest(path: string, method: HttpMethod, data?: any): Promise<Response> {
         return new Promise<Response>((resolve, reject) => {
             const cortege: InterceptorCortege = new InterceptorCortege(path, method, this.headers, data);
             this.transactions.push(new Transaction(resolve, reject, cortege));
 
-            if (this.transactions.length == 1) {
+            if (this.transactions.length === 1) {
                 this.runTransaction(this.transactions[0]);
             }
         });
@@ -63,10 +50,17 @@ export class HttpTransportSyncedImpl implements HttpTransport {
     getHost(): string {
         return this.host;
     }
+    private acceptInterceptor(interceptorCortege: InterceptorCortege, interceptorIndex: number = 0): Promise<InterceptorCortege> {
+        return (interceptorIndex >= this.interceptors.length)
+            ? Promise.resolve(interceptorCortege)
+            : this.interceptors[interceptorIndex].onIntercept(interceptorCortege).then(interceptorCortegeResult =>
+                this.acceptInterceptor(interceptorCortegeResult, ++interceptorIndex)
+            );
+    }
 
     private runTransaction(transaction: Transaction) {
         this.acceptInterceptor(transaction.cortege)
-            .then((cortege: InterceptorCortege) => new Promise<void>((resolve, reject) => {
+            .then((someCortege: InterceptorCortege) => new Promise<void>((resolve, reject) => {
                 try {
                     const cortege: InterceptorCortege = transaction.cortege;
 
