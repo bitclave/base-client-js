@@ -13,7 +13,8 @@
     "coverage": "nyc npm run test",
     "coveralls": "npm run coverage && cat coverage/lcov.info | coveralls",
     "preBuild": "tsc --outDir dist -d",
-    "build": "webpack"
+    "build": "webpack",
+    "checkCode": "tslint -p tslint.json"
   },
   "types": "dist/src/Base.d.ts",
   "files": [
