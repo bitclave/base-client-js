@@ -25,23 +25,12 @@ var HttpTransportSyncedImpl = /** @class */ (function () {
         }
         return this;
     };
-    HttpTransportSyncedImpl.prototype.acceptInterceptor = function (interceptorCortege, interceptorIndex) {
-        var _this = this;
-        if (interceptorIndex === void 0) { interceptorIndex = 0; }
-        return (interceptorIndex >= this.interceptors.length)
-            ? Promise.resolve(interceptorCortege)
-            : this.interceptors[interceptorIndex]
-                .onIntercept(interceptorCortege)
-                .then(function (interceptorCortegeResult) {
-                return _this.acceptInterceptor(interceptorCortegeResult, ++interceptorIndex);
-            });
-    };
     HttpTransportSyncedImpl.prototype.sendRequest = function (path, method, data) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             var cortege = new InterceptorCortege_1.InterceptorCortege(path, method, _this.headers, data);
             _this.transactions.push(new Transaction_1.default(resolve, reject, cortege));
-            if (_this.transactions.length == 1) {
+            if (_this.transactions.length === 1) {
                 _this.runTransaction(_this.transactions[0]);
             }
         });
@@ -49,16 +38,25 @@ var HttpTransportSyncedImpl = /** @class */ (function () {
     HttpTransportSyncedImpl.prototype.getHost = function () {
         return this.host;
     };
+    HttpTransportSyncedImpl.prototype.acceptInterceptor = function (interceptorCortege, interceptorIndex) {
+        var _this = this;
+        if (interceptorIndex === void 0) { interceptorIndex = 0; }
+        return (interceptorIndex >= this.interceptors.length)
+            ? Promise.resolve(interceptorCortege)
+            : this.interceptors[interceptorIndex].onIntercept(interceptorCortege).then(function (interceptorCortegeResult) {
+                return _this.acceptInterceptor(interceptorCortegeResult, ++interceptorIndex);
+            });
+    };
     HttpTransportSyncedImpl.prototype.runTransaction = function (transaction) {
         var _this = this;
         this.acceptInterceptor(transaction.cortege)
-            .then(function (cortege) { return new Promise(function (resolve, reject) {
+            .then(function (someCortege) { return new Promise(function (resolve, reject) {
             try {
-                var cortege_1 = transaction.cortege;
-                var url = cortege_1.path ? _this.getHost() + cortege_1.path : _this.getHost();
+                var cortege = transaction.cortege;
+                var url = cortege.path ? _this.getHost() + cortege.path : _this.getHost();
                 var request_1 = new XMLHttpRequest();
-                request_1.open(cortege_1.method, url);
-                cortege_1.headers.forEach(function (value, key) {
+                request_1.open(cortege.method, url);
+                cortege.headers.forEach(function (value, key) {
                     request_1.setRequestHeader(key, value);
                 });
                 request_1.onload = function () {
@@ -80,7 +78,7 @@ var HttpTransportSyncedImpl = /** @class */ (function () {
                     transaction.reject(result);
                     _this.callNextRequest();
                 };
-                request_1.send(JSON.stringify(cortege_1.data ? cortege_1.data : {}));
+                request_1.send(JSON.stringify(cortege.data ? cortege.data : {}));
             }
             catch (e) {
                 reject();

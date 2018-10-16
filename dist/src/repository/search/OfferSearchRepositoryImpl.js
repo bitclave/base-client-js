@@ -65,12 +65,12 @@ var OfferSearchRepositoryImpl = /** @class */ (function () {
     OfferSearchRepositoryImpl.prototype.complainToSearchItem = function (clientId, searchResultId) {
         return this.transport.sendRequest(this.OFFER_SEARCH_API
             // .replace('{clientId}', clientId)
-            .replace('{id}', searchResultId.toString()) + ("?searchResultId=" + searchResultId), HttpMethod_1.HttpMethod.Patch, searchResultId).then(function (response) { });
+            .replace('{id}', searchResultId.toString()) + ("?searchResultId=" + searchResultId), HttpMethod_1.HttpMethod.Patch, searchResultId);
     };
     OfferSearchRepositoryImpl.prototype.addResultItem = function (clientId, offerSearch) {
         return this.transport.sendRequest(
         // this.OFFER_SEARCH_ADD_API.replace('{clientId}', clientId),
-        this.OFFER_SEARCH_ADD_API, HttpMethod_1.HttpMethod.Post, offerSearch).then(function (response) { });
+        this.OFFER_SEARCH_ADD_API, HttpMethod_1.HttpMethod.Post, offerSearch);
     };
     OfferSearchRepositoryImpl.prototype.jsonToListResult = function (json) {
         return __awaiter(this, void 0, void 0, function () {
@@ -80,7 +80,7 @@ var OfferSearchRepositoryImpl = /** @class */ (function () {
                 try {
                     for (json_1 = __values(json), json_1_1 = json_1.next(); !json_1_1.done; json_1_1 = json_1.next()) {
                         item = json_1_1.value;
-                        result.push(new OfferSearchResultItem_1.default(Object.assign(new OfferSearch_1.default(), item['offerSearch']), Offer_1.default.fromJson(item['offer'])));
+                        result.push(new OfferSearchResultItem_1.default(Object.assign(new OfferSearch_1.default(), item.offerSearch), Offer_1.default.fromJson(item.offer)));
                     }
                 }
                 catch (e_1_1) { e_1 = { error: e_1_1 }; }

@@ -10,13 +10,13 @@ var SearchRequest = /** @class */ (function () {
     }
     SearchRequest.fromJson = function (json) {
         var searchRequest = Object.assign(new SearchRequest(), json);
-        searchRequest.tags = JsonUtils_1.JsonUtils.jsonToMap(json['tags']);
+        searchRequest.tags = JsonUtils_1.JsonUtils.jsonToMap(json.tags);
         return searchRequest;
     };
     SearchRequest.prototype.toJson = function () {
         var jsonStr = JSON.stringify(this);
         var json = JSON.parse(jsonStr);
-        json['tags'] = JsonUtils_1.JsonUtils.mapToJson(this.tags);
+        json.tags = JsonUtils_1.JsonUtils.mapToJson(this.tags);
         return json;
     };
     return SearchRequest;
