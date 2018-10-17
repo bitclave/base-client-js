@@ -26,8 +26,6 @@ const httpTransport = TransportFactory.createHttpTransport(baseNodeUrl);
 const rpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
 const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
-
-
 async function createUser(user: Base, pass: string): Promise<Account> {
     let accessToken: string = '';
     try {

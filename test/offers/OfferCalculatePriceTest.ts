@@ -181,7 +181,6 @@ describe('Offer, local price matching', async () => {
           prices[0].worth.should.be.eql('1.5');
           prices[1].worth.should.be.eql('1.7');
 
-
       } catch (e) {
           console.log(e);
           throw e;
