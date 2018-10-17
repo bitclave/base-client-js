@@ -21,7 +21,7 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
 
     async requestPermissions(toPk: string, encryptedRequest: string): Promise<number> {
         const requests: Array<DataRequest> = await this.findRequest(this.fromPK, toPk, false);
-        let request = requests.length > 0 ? requests[0] : new DataRequest(toPk, encryptedRequest);
+        const request = requests.length > 0 ? requests[0] : new DataRequest(toPk, encryptedRequest);
 
         request.fromPk = this.fromPK;
         request.requestData = encryptedRequest;
