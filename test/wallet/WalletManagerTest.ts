@@ -109,7 +109,7 @@ describe('Wallet manager test', async () => {
         );
     });
 
-    beforeEach(async done => {
+    beforeEach(async () => {
         clientRepository.clearData();
     });
 
