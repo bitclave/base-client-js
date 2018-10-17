@@ -9410,13 +9410,8 @@ exports.ObserveOnMessage = ObserveOnMessage;
 
 "use strict";
 
-<<<<<<< HEAD
-var mergeMap_1 = __webpack_require__(34);
-var identity_1 = __webpack_require__(99);
-=======
 var mergeMap_1 = __webpack_require__(35);
 var identity_1 = __webpack_require__(98);
->>>>>>> origin/master
 /**
  * Converts a higher-order Observable into a first-order Observable which
  * concurrently delivers all values that are emitted on the inner Observables.
@@ -18089,7 +18084,7 @@ var refCount_1 = __webpack_require__(74);
  */
 var ConnectableObservable = (function (_super) {
     __extends(ConnectableObservable, _super);
-    function ConnectableObservable(/** @deprecated internal use only */ source, 
+    function ConnectableObservable(/** @deprecated internal use only */ source,
         /** @deprecated internal use only */ subjectFactory) {
         _super.call(this);
         this.source = source;
@@ -22443,7 +22438,7 @@ exports.XMLHttpRequest = function() {
   this.responseXML = "";
   this.status = null;
   this.statusText = null;
-  
+
   // Whether cross-site Access-Control requests should be made using
   // credentials such as cookies or authorization headers
   this.withCredentials = false;
@@ -55734,7 +55729,7 @@ var OfferSearchRepositoryImpl = /** @class */ (function () {
     }
     OfferSearchRepositoryImpl.prototype.getSearchResult = function (clientId, searchRequestId) {
         var _this = this;
-        return this.transport.sendRequest(this.OFFER_SEARCH_ADD_API + ("?searchRequestId=" + searchRequestId), 
+        return this.transport.sendRequest(this.OFFER_SEARCH_ADD_API + ("?searchRequestId=" + searchRequestId),
         // .replace('{clientId}', clientId)
         // .replace('{id}', '') + `?searchRequestId=${searchRequestId}`,
         HttpMethod_1.HttpMethod.Get).then(function (response) { return _this.jsonToListResult(response.json); });
