@@ -45,6 +45,26 @@
           "BASE_NODE_URL":"http://localhost:8080"
         }
       },
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "root test",
+        "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+        "args": [
+          "-u",
+          "tdd",
+          "--timeout",
+          "999999",
+          "--colors",
+          "--require",
+          "ts-node/register",
+          "${workspaceFolder}/test/*.ts"
+        ],
+        "internalConsoleOptions": "openOnSessionStart",
+        "env": {
+          "BASE_NODE_URL":"http://localhost:8080"
+        }
+      },
         {
             "type": "node",
             "request": "launch",
