@@ -37,9 +37,9 @@ var Offer = /** @class */ (function () {
     }
     Offer.fromJson = function (json) {
         var offer = Object.assign(new Offer(), json);
-        offer.tags = JsonUtils_1.JsonUtils.jsonToMap(json['tags']);
-        offer.compare = JsonUtils_1.JsonUtils.jsonToMap(json['compare']);
-        offer.rules = JsonUtils_1.JsonUtils.jsonToMap(json['rules']);
+        offer.tags = JsonUtils_1.JsonUtils.jsonToMap(json.tags);
+        offer.compare = JsonUtils_1.JsonUtils.jsonToMap(json.compare);
+        offer.rules = JsonUtils_1.JsonUtils.jsonToMap(json.rules);
         if (json.offerPrices && json.offerPrices.length) {
             offer.offerPrices = json.offerPrices.map(function (e) {
                 var offerRules = e.rules && e.rules.length
@@ -64,12 +64,12 @@ var Offer = /** @class */ (function () {
     Offer.prototype.toJson = function () {
         var jsonStr = JSON.stringify(this);
         var json = JSON.parse(jsonStr);
-        json['tags'] = JsonUtils_1.JsonUtils.mapToJson(this.tags);
-        json['compare'] = JsonUtils_1.JsonUtils.mapToJson(this.compare);
-        json['rules'] = JsonUtils_1.JsonUtils.mapToJson(this.rules);
-        for (var item in json['rules']) {
-            if (typeof json['rules'][item] == 'number') {
-                json['rules'][item] = CompareAction_1.CompareAction[json['rules'][item]].toString();
+        json.tags = JsonUtils_1.JsonUtils.mapToJson(this.tags);
+        json.compare = JsonUtils_1.JsonUtils.mapToJson(this.compare);
+        json.rules = JsonUtils_1.JsonUtils.mapToJson(this.rules);
+        for (var item in json.rules) {
+            if (typeof json.rules[item] === 'number') {
+                json.rules[item] = CompareAction_1.CompareAction[json.rules[item]].toString();
             }
         }
         json.offerPrices = this.offerPrices.map(function (e) {
