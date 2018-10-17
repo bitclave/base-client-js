@@ -10,7 +10,7 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
     requestPermissions(toPk: string, encryptedRequest: string): Promise<number>;
     grantAccessForClient(fromPk: string, toPk: string, encryptedResponse: string): Promise<number>;
     getRequests(fromPk: string | null, toPk: string | null): Promise<Array<DataRequest>>;
-    grantAccessForOffer(offerSearchId: number, clientPk: string, encryptedClientResponse: string, priceId: number): Promise<void>;
+    grantAccessForOffer(offerSearchId: number, clientPk: string, encryptedClientResponse: string, priceId: number): Promise<any>;
     private joinParams;
     private isEmpty;
 }

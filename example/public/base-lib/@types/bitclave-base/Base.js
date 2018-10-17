@@ -161,7 +161,7 @@ var Base = /** @class */ (function () {
         return new AssistantNodeRepository_1.AssistantNodeRepository(accountRepository, dataRequestRepository, siteRepository);
     };
     Base.prototype.createKeyPairHelper = function (signerHost, permissionSource, siteDataSource, siteOrigin) {
-        return (signerHost.length == 0)
+        return (signerHost.length === 0)
             ? KeyPairFactory_1.KeyPairFactory.createDefaultKeyPair(permissionSource, siteDataSource, siteOrigin)
             : KeyPairFactory_1.KeyPairFactory.createRpcKeyPair(TransportFactory_1.TransportFactory.createJsonRpcHttpTransport(signerHost));
     };

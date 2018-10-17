@@ -8,7 +8,7 @@ export declare class OfferSearchRepositoryImpl implements OfferSearchRepository 
     private transport;
     constructor(transport: HttpTransport);
     getSearchResult(clientId: string, searchRequestId: number): Promise<Array<OfferSearchResultItem>>;
-    complainToSearchItem(clientId: string, searchResultId: number): Promise<void>;
-    addResultItem(clientId: string, offerSearch: OfferSearch): Promise<void>;
+    complainToSearchItem(clientId: string, searchResultId: number): Promise<any>;
+    addResultItem(clientId: string, offerSearch: OfferSearch): Promise<any>;
     private jsonToListResult;
 }

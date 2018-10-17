@@ -9411,7 +9411,7 @@ exports.ObserveOnMessage = ObserveOnMessage;
 "use strict";
 
 var mergeMap_1 = __webpack_require__(35);
-var identity_1 = __webpack_require__(98);
+var identity_1 = __webpack_require__(99);
 /**
  * Converts a higher-order Observable into a first-order Observable which
  * concurrently delivers all values that are emitted on the inner Observables.
@@ -10192,9 +10192,9 @@ var Offer = /** @class */ (function () {
     }
     Offer.fromJson = function (json) {
         var offer = Object.assign(new Offer(), json);
-        offer.tags = JsonUtils_1.JsonUtils.jsonToMap(json['tags']);
-        offer.compare = JsonUtils_1.JsonUtils.jsonToMap(json['compare']);
-        offer.rules = JsonUtils_1.JsonUtils.jsonToMap(json['rules']);
+        offer.tags = JsonUtils_1.JsonUtils.jsonToMap(json.tags);
+        offer.compare = JsonUtils_1.JsonUtils.jsonToMap(json.compare);
+        offer.rules = JsonUtils_1.JsonUtils.jsonToMap(json.rules);
         if (json.offerPrices && json.offerPrices.length) {
             offer.offerPrices = json.offerPrices.map(function (e) {
                 var offerRules = e.rules && e.rules.length
@@ -10219,12 +10219,12 @@ var Offer = /** @class */ (function () {
     Offer.prototype.toJson = function () {
         var jsonStr = JSON.stringify(this);
         var json = JSON.parse(jsonStr);
-        json['tags'] = JsonUtils_1.JsonUtils.mapToJson(this.tags);
-        json['compare'] = JsonUtils_1.JsonUtils.mapToJson(this.compare);
-        json['rules'] = JsonUtils_1.JsonUtils.mapToJson(this.rules);
-        for (var item in json['rules']) {
-            if (typeof json['rules'][item] == 'number') {
-                json['rules'][item] = CompareAction_1.CompareAction[json['rules'][item]].toString();
+        json.tags = JsonUtils_1.JsonUtils.mapToJson(this.tags);
+        json.compare = JsonUtils_1.JsonUtils.mapToJson(this.compare);
+        json.rules = JsonUtils_1.JsonUtils.mapToJson(this.rules);
+        for (var item in json.rules) {
+            if (typeof json.rules[item] === 'number') {
+                json.rules[item] = CompareAction_1.CompareAction[json.rules[item]].toString();
             }
         }
         json.offerPrices = this.offerPrices.map(function (e) {
@@ -18084,7 +18084,7 @@ var refCount_1 = __webpack_require__(74);
  */
 var ConnectableObservable = (function (_super) {
     __extends(ConnectableObservable, _super);
-    function ConnectableObservable(/** @deprecated internal use only */ source,
+    function ConnectableObservable(/** @deprecated internal use only */ source, 
         /** @deprecated internal use only */ subjectFactory) {
         _super.call(this);
         this.source = source;
@@ -22164,13 +22164,13 @@ var SearchRequest = /** @class */ (function () {
     }
     SearchRequest.fromJson = function (json) {
         var searchRequest = Object.assign(new SearchRequest(), json);
-        searchRequest.tags = JsonUtils_1.JsonUtils.jsonToMap(json['tags']);
+        searchRequest.tags = JsonUtils_1.JsonUtils.jsonToMap(json.tags);
         return searchRequest;
     };
     SearchRequest.prototype.toJson = function () {
         var jsonStr = JSON.stringify(this);
         var json = JSON.parse(jsonStr);
-        json['tags'] = JsonUtils_1.JsonUtils.mapToJson(this.tags);
+        json.tags = JsonUtils_1.JsonUtils.mapToJson(this.tags);
         return json;
     };
     return SearchRequest;
@@ -22438,7 +22438,7 @@ exports.XMLHttpRequest = function() {
   this.responseXML = "";
   this.status = null;
   this.statusText = null;
-
+  
   // Whether cross-site Access-Control requests should be made using
   // credentials such as cookies or authorization headers
   this.withCredentials = false;
@@ -24641,7 +24641,6 @@ var RpcKeyPair = /** @class */ (function () {
             .then(function (response) { return _this.clientData = Object.assign(new RpcClientData_1.default(), response); })
             .then(function (response) { return new KeyPair_1.KeyPair('', response.publicKey); });
     };
-    ;
     RpcKeyPair.prototype.generateMnemonicPhrase = function () {
         return new Promise(function (resolve) {
             var mnemonic = new Mnemonic(Mnemonic.Words.ENGLISH).toString();
@@ -24758,11 +24757,11 @@ var WalletManagerImpl = /** @class */ (function () {
                         try {
                             for (wallets_1 = __values(wallets), wallets_1_1 = wallets_1.next(); !wallets_1_1.done; wallets_1_1 = wallets_1.next()) {
                                 msg = wallets_1_1.value;
-                                if ((WalletUtils_1.WalletUtils.verifyAddressRecord(msg) != WalletUtils_1.WalletVerificationCodes.RC_OK) &&
-                                    (WalletUtils_1.WalletUtils.verifyAddressRecord(msg) != WalletUtils_1.WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
+                                if ((WalletUtils_1.WalletUtils.verifyAddressRecord(msg) !== WalletUtils_1.WalletVerificationCodes.RC_OK) &&
+                                    (WalletUtils_1.WalletUtils.verifyAddressRecord(msg) !== WalletUtils_1.WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
                                     throw 'invalid eth record: ' + msg;
                                 }
-                                if (baseID != JSON.parse(msg.data).baseID) {
+                                if (baseID !== JSON.parse(msg.data).baseID) {
                                     throw 'baseID missmatch';
                                 }
                             }
@@ -24932,13 +24931,13 @@ var WalletUtils = /** @class */ (function () {
         catch (err) {
             return WalletVerificationCodes.RC_GENERAL_ERROR;
         }
-        return (signerAddr == JSON.parse(record.data).ethAddr)
+        return (signerAddr === JSON.parse(record.data).ethAddr)
             ? WalletVerificationCodes.RC_OK
             : WalletVerificationCodes.RC_ADDR_WRONG_SIGNATURE;
     };
     WalletUtils.validateWallets = function (key, val, baseID) {
         var result = new WalletVerificationStatus();
-        if (key != WalletManagerImpl_1.WalletManagerImpl.DATA_KEY_ETH_WALLETS) {
+        if (key !== WalletManagerImpl_1.WalletManagerImpl.DATA_KEY_ETH_WALLETS) {
             result.err = 'The \<key\> is expected to be "' + WalletManagerImpl_1.WalletManagerImpl.DATA_KEY_ETH_WALLETS + '"';
             result.rc = WalletVerificationCodes.RC_GENERAL_ERROR;
             return result;
@@ -24959,10 +24958,10 @@ var WalletUtils = /** @class */ (function () {
             for (var _b = __values(msg.data), _c = _b.next(); !_c.done; _c = _b.next()) {
                 var item = _c.value;
                 var pubKey = JSON.parse(item.data).baseID;
-                if (pubKey != baseID) {
+                if (pubKey !== baseID) {
                     status.details.push(WalletVerificationCodes.RC_BASEID_MISSMATCH);
                 }
-                else if ((resultCode = this.verifyAddressRecord(item)) != WalletVerificationCodes.RC_OK) {
+                else if ((resultCode = this.verifyAddressRecord(item)) !== WalletVerificationCodes.RC_OK) {
                     status.details.push(resultCode);
                 }
                 else {
@@ -24983,8 +24982,9 @@ var WalletUtils = /** @class */ (function () {
         try {
             if (msg.sig.length > 0) {
                 sigCheck = Message(JSON.stringify(msg.data)).verify(baseAddr, msg.sig);
-                if (!sigCheck)
+                if (!sigCheck) {
                     status.rc = WalletVerificationCodes.RC_ADDR_WRONG_SIGNATURE;
+                }
             }
             else {
                 status.rc = WalletVerificationCodes.RC_ADDR_NOT_VERIFIED;
@@ -26789,7 +26789,7 @@ var Base = /** @class */ (function () {
         return new AssistantNodeRepository_1.AssistantNodeRepository(accountRepository, dataRequestRepository, siteRepository);
     };
     Base.prototype.createKeyPairHelper = function (signerHost, permissionSource, siteDataSource, siteOrigin) {
-        return (signerHost.length == 0)
+        return (signerHost.length === 0)
             ? KeyPairFactory_1.KeyPairFactory.createDefaultKeyPair(permissionSource, siteDataSource, siteOrigin)
             : KeyPairFactory_1.KeyPairFactory.createRpcKeyPair(TransportFactory_1.TransportFactory.createJsonRpcHttpTransport(signerHost));
     };
@@ -26833,7 +26833,7 @@ var AccountRepositoryImpl = /** @class */ (function () {
     AccountRepositoryImpl.prototype.getNonce = function (account) {
         return this.transport
             .sendRequest(this.GET_NONCE + account.publicKey, HttpMethod_1.HttpMethod.Get)
-            .then(function (response) { return parseInt(response.json.toString()); });
+            .then(function (response) { return parseInt(response.json.toString(), 10); });
     };
     return AccountRepositoryImpl;
 }());
@@ -31136,13 +31136,8 @@ Observable_1.Observable.prototype.concat = concat_1.concat;
 
 "use strict";
 
-<<<<<<< HEAD
 var concat_1 = __webpack_require__(110);
-var concat_2 = __webpack_require__(32);
-=======
-var concat_1 = __webpack_require__(109);
 var concat_2 = __webpack_require__(33);
->>>>>>> origin/master
 exports.concatStatic = concat_2.concat;
 /* tslint:enable:max-line-length */
 /**
@@ -35469,13 +35464,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Observable_1 = __webpack_require__(0);
-<<<<<<< HEAD
 var asap_1 = __webpack_require__(166);
-var isNumeric_1 = __webpack_require__(35);
-=======
-var asap_1 = __webpack_require__(165);
 var isNumeric_1 = __webpack_require__(36);
->>>>>>> origin/master
 /**
  * We need this JSDoc comment for affecting ESDoc.
  * @extends {Ignored}
@@ -37861,7 +37851,7 @@ var SignInterceptor = /** @class */ (function () {
     }
     SignInterceptor.prototype.onIntercept = function (cortege) {
         var _this = this;
-        return (cortege.data === null || cortege.data == undefined)
+        return (cortege.data === null || cortege.data === undefined)
             ? Promise.resolve(cortege)
             : this.messageSigner.signMessage(JSON.stringify(cortege.data))
                 .then(function (sigResult) { return new Promise(function (resolve) {
@@ -37894,14 +37884,14 @@ var DataRequestRepositoryImpl = /** @class */ (function () {
     DataRequestRepositoryImpl.prototype.requestPermissions = function (toPk, encryptedRequest) {
         var data = new DataRequest_1.default(toPk, encryptedRequest);
         return this.transport
-            .sendRequest(this.DATA_REQUEST, HttpMethod_1.HttpMethod.Post, data).then(function (response) { return parseInt(response.json.toString()); });
+            .sendRequest(this.DATA_REQUEST, HttpMethod_1.HttpMethod.Post, data).then(function (response) { return parseInt(response.json.toString(), 10); });
     };
     DataRequestRepositoryImpl.prototype.grantAccessForClient = function (fromPk, toPk, encryptedResponse) {
         var data = new DataRequest_1.default(toPk, '');
         data.responseData = encryptedResponse;
         data.fromPk = fromPk;
         return this.transport
-            .sendRequest(this.GRANT_ACCESS_FOR_CLIENT, HttpMethod_1.HttpMethod.Post, data).then(function (response) { return parseInt(response.json.toString()); });
+            .sendRequest(this.GRANT_ACCESS_FOR_CLIENT, HttpMethod_1.HttpMethod.Post, data).then(function (response) { return parseInt(response.json.toString(), 10); });
     };
     DataRequestRepositoryImpl.prototype.getRequests = function (fromPk, toPk) {
         var params = new Map([
@@ -37915,8 +37905,7 @@ var DataRequestRepositoryImpl = /** @class */ (function () {
     DataRequestRepositoryImpl.prototype.grantAccessForOffer = function (offerSearchId, clientPk, encryptedClientResponse, priceId) {
         var shareData = new OfferShareData_1.default(offerSearchId, encryptedClientResponse, priceId);
         return this.transport
-            .sendRequest(this.GRANT_ACCESS_FOR_OFFER, HttpMethod_1.HttpMethod.Post, shareData)
-            .then(function () { });
+            .sendRequest(this.GRANT_ACCESS_FOR_OFFER, HttpMethod_1.HttpMethod.Post, shareData);
     };
     DataRequestRepositoryImpl.prototype.joinParams = function (params) {
         var _this = this;
@@ -37929,7 +37918,7 @@ var DataRequestRepositoryImpl = /** @class */ (function () {
         return result.join('&');
     };
     DataRequestRepositoryImpl.prototype.isEmpty = function (value) {
-        return value == null || value == undefined || value.trim().length === 0;
+        return value == null || value === undefined || value.trim().length === 0;
     };
     return DataRequestRepositoryImpl;
 }());
@@ -38084,7 +38073,7 @@ var SearchRequestRepositoryImpl = /** @class */ (function () {
         return this.transport.sendRequest(this.SEARCH_REQUEST_API.replace('{owner}', owner).replace('{id}', ''), HttpMethod_1.HttpMethod.Post, searchRequest.toJson()).then(function (response) { return SearchRequest_1.default.fromJson(response.json); });
     };
     SearchRequestRepositoryImpl.prototype.deleteById = function (owner, id) {
-        return this.transport.sendRequest(this.SEARCH_REQUEST_API.replace('{owner}', owner).replace('{id}', id.toString()), HttpMethod_1.HttpMethod.Delete, id).then(function (response) { return parseInt(response.json.toString()); });
+        return this.transport.sendRequest(this.SEARCH_REQUEST_API.replace('{owner}', owner).replace('{id}', id.toString()), HttpMethod_1.HttpMethod.Delete, id).then(function (response) { return parseInt(response.json.toString(), 10); });
     };
     SearchRequestRepositoryImpl.prototype.getSearchRequestByOwnerAndId = function (owner, id) {
         var _this = this;
@@ -43733,23 +43722,12 @@ var HttpTransportSyncedImpl = /** @class */ (function () {
         }
         return this;
     };
-    HttpTransportSyncedImpl.prototype.acceptInterceptor = function (interceptorCortege, interceptorIndex) {
-        var _this = this;
-        if (interceptorIndex === void 0) { interceptorIndex = 0; }
-        return (interceptorIndex >= this.interceptors.length)
-            ? Promise.resolve(interceptorCortege)
-            : this.interceptors[interceptorIndex]
-                .onIntercept(interceptorCortege)
-                .then(function (interceptorCortegeResult) {
-                return _this.acceptInterceptor(interceptorCortegeResult, ++interceptorIndex);
-            });
-    };
     HttpTransportSyncedImpl.prototype.sendRequest = function (path, method, data) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             var cortege = new InterceptorCortege_1.InterceptorCortege(path, method, _this.headers, data);
             _this.transactions.push(new Transaction_1.default(resolve, reject, cortege));
-            if (_this.transactions.length == 1) {
+            if (_this.transactions.length === 1) {
                 _this.runTransaction(_this.transactions[0]);
             }
         });
@@ -43757,16 +43735,25 @@ var HttpTransportSyncedImpl = /** @class */ (function () {
     HttpTransportSyncedImpl.prototype.getHost = function () {
         return this.host;
     };
+    HttpTransportSyncedImpl.prototype.acceptInterceptor = function (interceptorCortege, interceptorIndex) {
+        var _this = this;
+        if (interceptorIndex === void 0) { interceptorIndex = 0; }
+        return (interceptorIndex >= this.interceptors.length)
+            ? Promise.resolve(interceptorCortege)
+            : this.interceptors[interceptorIndex].onIntercept(interceptorCortege).then(function (interceptorCortegeResult) {
+                return _this.acceptInterceptor(interceptorCortegeResult, ++interceptorIndex);
+            });
+    };
     HttpTransportSyncedImpl.prototype.runTransaction = function (transaction) {
         var _this = this;
         this.acceptInterceptor(transaction.cortege)
-            .then(function (cortege) { return new Promise(function (resolve, reject) {
+            .then(function (someCortege) { return new Promise(function (resolve, reject) {
             try {
-                var cortege_1 = transaction.cortege;
-                var url = cortege_1.path ? _this.getHost() + cortege_1.path : _this.getHost();
+                var cortege = transaction.cortege;
+                var url = cortege.path ? _this.getHost() + cortege.path : _this.getHost();
                 var request_1 = new XMLHttpRequest();
-                request_1.open(cortege_1.method, url);
-                cortege_1.headers.forEach(function (value, key) {
+                request_1.open(cortege.method, url);
+                cortege.headers.forEach(function (value, key) {
                     request_1.setRequestHeader(key, value);
                 });
                 request_1.onload = function () {
@@ -43788,7 +43775,7 @@ var HttpTransportSyncedImpl = /** @class */ (function () {
                     transaction.reject(result);
                     _this.callNextRequest();
                 };
-                request_1.send(JSON.stringify(cortege_1.data ? cortege_1.data : {}));
+                request_1.send(JSON.stringify(cortege.data ? cortege.data : {}));
             }
             catch (e) {
                 reject();
@@ -43894,15 +43881,9 @@ var __read = (this && this.__read) || function (o, n) {
     return ar;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
 var CryptoUtils_1 = __webpack_require__(82);
 var KeyPair_1 = __webpack_require__(85);
-var Permissions_1 = __webpack_require__(41);
-=======
-var CryptoUtils_1 = __webpack_require__(81);
-var KeyPair_1 = __webpack_require__(84);
 var Permissions_1 = __webpack_require__(30);
->>>>>>> origin/master
 var JsonUtils_1 = __webpack_require__(20);
 var AcceptedField_1 = __webpack_require__(212);
 var bitcore = __webpack_require__(213);
@@ -44075,7 +44056,7 @@ var BitKeyPair = /** @class */ (function () {
                         return [4 /*yield*/, this.generatePasswordForField(key)];
                     case 4:
                         pass = _e.sent();
-                        if (pass != null && pass != undefined && pass.length > 0) {
+                        if (pass != null && pass !== undefined && pass.length > 0) {
                             changedValue = encrypt
                                 ? CryptoUtils_1.CryptoUtils.encryptAes256(value, pass)
                                 : CryptoUtils_1.CryptoUtils.decryptAes256(value, pass);
@@ -47650,13 +47631,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-<<<<<<< HEAD
-var Permissions_1 = __webpack_require__(41);
-var RpcToken_1 = __webpack_require__(17);
-=======
 var Permissions_1 = __webpack_require__(30);
-var RpcToken_1 = __webpack_require__(16);
->>>>>>> origin/master
+var RpcToken_1 = __webpack_require__(17);
 var AccessData = /** @class */ (function (_super) {
     __extends(AccessData, _super);
     function AccessData(accessToken, origin, expireDate, permissions) {
@@ -48007,14 +47983,15 @@ var AccountManagerImpl = /** @class */ (function () {
         return this.authAccountBehavior.getValue();
     };
     AccountManagerImpl.prototype.checkSigMessage = function (message) {
-        if (message == null || message == undefined || message.length < 10) {
+        if (message == null || message === undefined || message.length < 10) {
             throw 'message for signature should be have min 10 symbols';
         }
     };
     AccountManagerImpl.prototype.syncAccount = function (account, message) {
         var _this = this;
-        return this.accountRepository.checkAccount(account)
-            .then(function (account) { return _this.onGetAccount(account, message); });
+        return this.accountRepository
+            .checkAccount(account)
+            .then(function (checkedAccount) { return _this.onGetAccount(checkedAccount, message); });
     };
     AccountManagerImpl.prototype.generateAccount = function (keyPair) {
         return new Promise(function (resolve) {
@@ -55729,7 +55706,7 @@ var OfferSearchRepositoryImpl = /** @class */ (function () {
     }
     OfferSearchRepositoryImpl.prototype.getSearchResult = function (clientId, searchRequestId) {
         var _this = this;
-        return this.transport.sendRequest(this.OFFER_SEARCH_ADD_API + ("?searchRequestId=" + searchRequestId),
+        return this.transport.sendRequest(this.OFFER_SEARCH_ADD_API + ("?searchRequestId=" + searchRequestId), 
         // .replace('{clientId}', clientId)
         // .replace('{id}', '') + `?searchRequestId=${searchRequestId}`,
         HttpMethod_1.HttpMethod.Get).then(function (response) { return _this.jsonToListResult(response.json); });
@@ -55737,12 +55714,12 @@ var OfferSearchRepositoryImpl = /** @class */ (function () {
     OfferSearchRepositoryImpl.prototype.complainToSearchItem = function (clientId, searchResultId) {
         return this.transport.sendRequest(this.OFFER_SEARCH_API
             // .replace('{clientId}', clientId)
-            .replace('{id}', searchResultId.toString()) + ("?searchResultId=" + searchResultId), HttpMethod_1.HttpMethod.Patch, searchResultId).then(function (response) { });
+            .replace('{id}', searchResultId.toString()) + ("?searchResultId=" + searchResultId), HttpMethod_1.HttpMethod.Patch, searchResultId);
     };
     OfferSearchRepositoryImpl.prototype.addResultItem = function (clientId, offerSearch) {
         return this.transport.sendRequest(
         // this.OFFER_SEARCH_ADD_API.replace('{clientId}', clientId),
-        this.OFFER_SEARCH_ADD_API, HttpMethod_1.HttpMethod.Post, offerSearch).then(function (response) { });
+        this.OFFER_SEARCH_ADD_API, HttpMethod_1.HttpMethod.Post, offerSearch);
     };
     OfferSearchRepositoryImpl.prototype.jsonToListResult = function (json) {
         return __awaiter(this, void 0, void 0, function () {
@@ -55752,7 +55729,7 @@ var OfferSearchRepositoryImpl = /** @class */ (function () {
                 try {
                     for (json_1 = __values(json), json_1_1 = json_1.next(); !json_1_1.done; json_1_1 = json_1.next()) {
                         item = json_1_1.value;
-                        result.push(new OfferSearchResultItem_1.default(Object.assign(new OfferSearch_1.default(), item['offerSearch']), Offer_1.default.fromJson(item['offer'])));
+                        result.push(new OfferSearchResultItem_1.default(Object.assign(new OfferSearch_1.default(), item.offerSearch), Offer_1.default.fromJson(item.offer)));
                     }
                 }
                 catch (e_1_1) { e_1 = { error: e_1_1 }; }
