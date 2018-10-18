@@ -203,11 +203,14 @@ export class BitKeyPair implements KeyPairHelper {
 
     private generatePasswordForField(fieldName: string): Promise<string> {
         return new Promise<string>(resolve => {
-            const result: string = CryptoUtils.PBKDF2(
-                CryptoUtils.keccak256(this.privateKey.toString(16)) + fieldName.toLowerCase(),
-                384
-            );
-
+            // const result: string = CryptoUtils.PBKDF2(
+            //     CryptoUtils.keccak256(this.privateKey.toString(16)) + fieldName.toLowerCase(),
+            //     384
+            // );
+            const result: string = bitcore.crypto.Hash.sha256hmac(
+                bitcore.deps.Buffer(this.privateKey.toString(16)), 
+                bitcore.deps.Buffer(fieldName.toLowerCase())).toString('hex');
+            
             resolve(result);
         });
     }

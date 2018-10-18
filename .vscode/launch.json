@@ -25,6 +25,23 @@
       {
         "type": "node",
         "request": "launch",
+        "name": "perf test",
+        "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+        "args": [
+          "-u",
+          "tdd",
+          "--timeout",
+          "999999",
+          "--colors",
+          "--require",
+          "ts-node/register",
+          "${workspaceFolder}/test/system/PerfTester.ts"
+        ],
+        "internalConsoleOptions": "openOnSessionStart"
+      },
+      {
+        "type": "node",
+        "request": "launch",
         "name": "All test",
         "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
         "args": [

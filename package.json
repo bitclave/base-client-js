@@ -9,6 +9,7 @@
     "test": "mocha --timeout 100000 --recursive --require ts-node/register \"./test/**/*Test.ts\"",
     "testProfile": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/profile/*Test.ts\"",
     "testValidator": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/system/ExtValidatorTest.ts\"",
+    "testPerf": "mocha --prof --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/system/PerfTester.ts\"",
     "testRequest": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/requests/*Test.ts\"",
     "testProtocol": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/protocol/ServiceProviderTest.ts\"",
     "coverage": "nyc npm run test",
@@ -66,9 +67,10 @@
     "bitcore-mnemonic": "^1.5.0",
     "crypto-js": "^3.1.9-1",
     "eth-sig-util": "^1.4.2",
+    "node-fetch": "^2.2.0",
     "rxjs": "^5.5.10",
-    "xmlhttprequest": "^1.8.0",
-    "node-fetch": "^2.2.0"
+    "v8-profiler": "^5.7.0",
+    "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.44",
