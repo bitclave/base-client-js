@@ -7,5 +7,6 @@ export interface WalletManager {
     addWealthValidator(validatorPbKey: string): Promise<void>;
 
     refreshWealthPtr(): Promise<WealthPtr>;
+    validateWallets(walletRecords: WalletsRecords): boolean;
 
 }

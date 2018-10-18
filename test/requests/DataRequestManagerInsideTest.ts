@@ -92,9 +92,6 @@ describe('Data Request Manager: permissions for inside signer', async () => {
             assistant, assistant, 'localhost'
         );
 
-        const requestManagerAlisa: DataRequestManager;
-        const requestManagerBob: DataRequestManager;
-
         await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
         await keyPairHelperLocalSite.createKeyPair(passPhraseBob);
 
@@ -124,9 +121,6 @@ describe('Data Request Manager: permissions for inside signer', async () => {
             assistant, assistant, 'bobSite'
         );
 
-        const requestManagerAlisa: DataRequestManager;
-        const requestManagerBob: DataRequestManager;
-
         await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
         await keyPairHelperBobSite.createKeyPair(passPhraseBob);
 
@@ -138,14 +132,14 @@ describe('Data Request Manager: permissions for inside signer', async () => {
 
         dataRepository.setPK(keyPairHelperAlisa.getPublicKey(), keyPairHelperBobSite.getPublicKey());
 
-        requestManagerAlisa = new DataRequestManagerImpl(
+        const requestManagerAlisa = new DataRequestManagerImpl(
             dataRepository,
             authAccountBehaviorAlisa,
             keyPairHelperAlisa,
             keyPairHelperAlisa
         );
 
-        requestManagerBob = new DataRequestManagerImpl(
+        const requestManagerBob = new DataRequestManagerImpl(
             dataRepository,
             authAccountBehaviorBob,
             keyPairHelperBobSite,

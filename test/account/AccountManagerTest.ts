@@ -34,14 +34,13 @@ describe('Account Manager', async () => {
     const keyPairHelper: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
     const accountRepository: AccountRepository = new AccountRepositoryImplMock();
 
-    const accountAlisa: Account;
-    const accountBob: Account;
-    const accountManager: AccountManager;
+    let accountAlisa: Account;
+    let accountBob: Account;
+    let accountManager: AccountManager;
 
     const messageForSigAlisa = 'some random message for Alisa';
     const messageForSigBob = 'some random message for Bob';
 
-    let accountManager: AccountManager;
     let alisaAccessToken: string;
     let bobAccessToken: string;
 
@@ -49,6 +48,9 @@ describe('Account Manager', async () => {
         alisaAccessToken = await authenticatorHelper.generateAccessToken(passPhraseAlisa);
         bobAccessToken = await authenticatorHelper.generateAccessToken(passPhraseBob);
 
+        // KeyPairFactory.createRpcKeyPair creates instance of class RpcKeyPair
+        // which implements both RemoteSigner and KeyPairHelper interfaces
+        // it's not ok but better way stay it
         (keyPairHelperAlisa as RemoteSigner).setAccessToken(alisaAccessToken);
         (keyPairHelperBob as RemoteSigner).setAccessToken(bobAccessToken);
 
@@ -76,9 +78,9 @@ describe('Account Manager', async () => {
         const account = authAccountBehavior.getValue();
         account.publicKey.should.be.equal(accountAlisa.publicKey);
         account.message.should.be.equal(messageForSigAlisa);
-        (await keyPairHelperAlisa.checkSig(messageForSigAlisa, account.sig)).should.be.true;
-        (await keyPairHelperAlisa.checkSig(messageForSigAlisa, 'some fake sig')).should.be.false;
-        (await keyPairHelperAlisa.checkSig(messageForSigBob, account.sig)).should.be.false;
+        (await keyPairHelperAlisa.checkSig(messageForSigAlisa, account.sig)).should.be.equal(true);
+        (await keyPairHelperAlisa.checkSig(messageForSigAlisa, 'some fake sig')).should.be.equal(false);
+        (await keyPairHelperAlisa.checkSig(messageForSigBob, account.sig)).should.be.equal(false);
     });
 
     it('should valid public key from sig (with empty message) in registration and check account', async () => {

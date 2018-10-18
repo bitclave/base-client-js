@@ -24,7 +24,7 @@ var OfferRepositoryImpl = /** @class */ (function () {
         return this.transport.sendRequest(this.OFFER_API.replace('{owner}', owner).replace('{id}', id.toString()), HttpMethod_1.HttpMethod.Put, offer.toJson()).then(function (response) { return Offer_1.default.fromJson(response.json); });
     };
     OfferRepositoryImpl.prototype.deleteById = function (owner, id) {
-        return this.transport.sendRequest(this.OFFER_API.replace('{owner}', owner).replace('{id}', id.toString()), HttpMethod_1.HttpMethod.Delete, id).then(function (response) { return parseInt(response.json.toString()); });
+        return this.transport.sendRequest(this.OFFER_API.replace('{owner}', owner).replace('{id}', id.toString()), HttpMethod_1.HttpMethod.Delete, id).then(function (response) { return parseInt(response.json.toString(), 10); });
     };
     OfferRepositoryImpl.prototype.getOfferByOwnerAndId = function (owner, id) {
         var _this = this;

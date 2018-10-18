@@ -36,12 +36,12 @@ export default class BaseEthUtils {
     public static async createEthWalletsRecordWithSigner(baseID: string, signedRecords: Array<AddrRecord>,
                                                          privKey: string): Promise<WalletsRecords> {
         for (let record of signedRecords) {
-            if ((WalletUtils.verifyAddressRecord(record) != WalletVerificationCodes.RC_OK) &&
-                (WalletUtils.verifyAddressRecord(record) != WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
+            if ((WalletUtils.verifyAddressRecord(record) !== WalletVerificationCodes.RC_OK) &&
+                (WalletUtils.verifyAddressRecord(record) !== WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
                 throw 'invalid eth record: ' + record;
             }
 
-            if (baseID != JSON.parse(record.data).baseID) {
+            if (baseID !== JSON.parse(record.data).baseID) {
                 throw 'baseID missmatch';
             }
         }
@@ -80,10 +80,10 @@ export default class BaseEthUtils {
         // verify all baseID keys are the same in ETH records
         for (let item of msg.data) {
             const pubKey = JSON.parse(item.data).baseID;
-            if (pubKey != basePubKey) {
+            if (pubKey !== basePubKey) {
                 status.details.push(EthWalletVerificationCodes.RC_BASEID_MISSMATCH);
 
-            } else if ((resultCode = this.verifyEthAddrRecord(item)) != EthWalletVerificationCodes.RC_OK) {
+            } else if ((resultCode = this.verifyEthAddrRecord(item)) !== EthWalletVerificationCodes.RC_OK) {
                 status.details.push(resultCode);
 
             } else {
@@ -98,8 +98,9 @@ export default class BaseEthUtils {
         try {
             if (msg.sig.length > 0) {
                 sigCheck = Message(JSON.stringify(msg.data)).verify(baseAddr, msg.sig);
-                if (!sigCheck)
+                if (!sigCheck) {
                     status.rc = EthWalletVerificationCodes.RC_ETH_ADDR_WRONG_SIGNATURE;
+                }
             } else {
                 status.rc = EthWalletVerificationCodes.RC_ETH_ADDR_NOT_VERIFIED;
             }
@@ -110,4 +111,17 @@ export default class BaseEthUtils {
         return status;
     }
 
+}
+export declare enum EthWalletVerificationCodes {
+  RC_OK = 0,
+  RC_BASEID_MISSMATCH = -1,
+  RC_ETH_ADDR_NOT_VERIFIED = -2,
+  RC_ETH_ADDR_WRONG_SIGNATURE = -3,
+  RC_ETH_ADDR_SCHEMA_MISSMATCH = -4,
+  RC_GENERAL_ERROR = -100,
+}
+export declare class EthWalletVerificationStatus {
+  rc: EthWalletVerificationCodes;
+  err: string;
+  details: Array<number>;
 }

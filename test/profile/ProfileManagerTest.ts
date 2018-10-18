@@ -4,10 +4,7 @@ import { BehaviorSubject } from 'rxjs/Rx';
 import Account from '../../src/repository/models/Account';
 import { ProfileManager } from '../../src/manager/ProfileManager';
 import ClientDataRepositoryImplMock from './ClientDataRepositoryImplMock';
-import { CryptoUtils } from '../../src/utils/CryptoUtils';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
-import { EthWalletVerificationCodes } from '../../src/utils/types/BaseEthUtils';
-import { EthAddrRecord, EthWallets } from '../../src/utils/types/BaseTypes';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
@@ -31,10 +28,10 @@ describe('Profile Manager', async () => {
 
     const clientRepository: ClientDataRepositoryImplMock = new ClientDataRepositoryImplMock();
 
-    const accountAlisa: Account;
-    const authAccountBehaviorAlisa: BehaviorSubject<Account>;
+    let accountAlisa: Account;
+    let authAccountBehaviorAlisa: BehaviorSubject<Account>;
 
-    const profileManager: ProfileManager;
+    let profileManager: ProfileManager;
 
     before(async () => {
         const alisaAccessToken = await authenticatorHelper.generateAccessToken(passPhraseAlisa);
@@ -58,9 +55,8 @@ describe('Profile Manager', async () => {
         );
     });
 
-    beforeEach(function (done) {
+    beforeEach(async () => {
         clientRepository.clearData();
-        done();
     });
 
     after(async () => {

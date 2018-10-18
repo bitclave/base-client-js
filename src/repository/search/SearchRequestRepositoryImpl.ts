@@ -26,7 +26,7 @@ export default class SearchRequestRepositoryImpl implements SearchRequestReposit
             this.SEARCH_REQUEST_API.replace('{owner}', owner).replace('{id}', id.toString()),
             HttpMethod.Delete,
             id,
-        ).then((response) => parseInt(response.json.toString()));
+        ).then((response) => parseInt(response.json.toString(), 10));
     }
 
     public getSearchRequestByOwnerAndId(owner: string, id: number): Promise<Array<SearchRequest>> {

@@ -19,6 +19,7 @@ exports.OfferPrice = OfferPrice_1.OfferPrice;
 var OfferPriceRules_1 = require("./repository/models/OfferPriceRules");
 exports.OfferPriceRules = OfferPriceRules_1.OfferPriceRules;
 var HttpTransportImpl_1 = require("./repository/source/http/HttpTransportImpl");
+exports.HttpTransportImpl = HttpTransportImpl_1.HttpTransportImpl;
 var NonceInterceptor_1 = require("./repository/source/http/NonceInterceptor");
 var BaseSchema_1 = require("./utils/types/BaseSchema");
 var AssistantNodeRepository_1 = require("./repository/assistant/AssistantNodeRepository");
@@ -33,6 +34,7 @@ var SearchManagerImpl_1 = require("./manager/SearchManagerImpl");
 var WalletManagerImpl_1 = require("./manager/WalletManagerImpl");
 exports.WalletManagerImpl = WalletManagerImpl_1.WalletManagerImpl;
 var OfferSearchRepositoryImpl_1 = require("./repository/search/OfferSearchRepositoryImpl");
+exports.OfferSearchRepositoryImpl = OfferSearchRepositoryImpl_1.OfferSearchRepositoryImpl;
 var OfferSearchResultItem_1 = require("./repository/models/OfferSearchResultItem");
 exports.OfferSearchResultItem = OfferSearchResultItem_1.default;
 var OfferSearch_1 = require("./repository/models/OfferSearch");
@@ -40,6 +42,8 @@ exports.OfferSearch = OfferSearch_1.default;
 exports.OfferResultAction = OfferSearch_1.OfferResultAction;
 var OfferShareData_1 = require("./repository/models/OfferShareData");
 exports.OfferShareData = OfferShareData_1.default;
+var OfferShareDataRepositoryImpl_1 = require("./repository/offer/OfferShareDataRepositoryImpl");
+exports.OfferShareDataRepositoryImpl = OfferShareDataRepositoryImpl_1.default;
 var RepositoryStrategyType_2 = require("./repository/RepositoryStrategyType");
 exports.RepositoryStrategyType = RepositoryStrategyType_2.RepositoryStrategyType;
 var CompareAction_1 = require("./repository/models/CompareAction");
@@ -157,7 +161,7 @@ var Base = /** @class */ (function () {
         return new AssistantNodeRepository_1.AssistantNodeRepository(accountRepository, dataRequestRepository, siteRepository);
     };
     Base.prototype.createKeyPairHelper = function (signerHost, permissionSource, siteDataSource, siteOrigin) {
-        return (signerHost.length == 0)
+        return (signerHost.length === 0)
             ? KeyPairFactory_1.KeyPairFactory.createDefaultKeyPair(permissionSource, siteDataSource, siteOrigin)
             : KeyPairFactory_1.KeyPairFactory.createRpcKeyPair(TransportFactory_1.TransportFactory.createJsonRpcHttpTransport(signerHost));
     };

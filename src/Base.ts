@@ -47,8 +47,10 @@ import { WalletManagerImpl } from './manager/WalletManagerImpl';
 import { OfferSearchRepository } from './repository/search/OfferSearchRepository';
 import { OfferSearchRepositoryImpl } from './repository/search/OfferSearchRepositoryImpl';
 import  OfferSearchResultItem  from './repository/models/OfferSearchResultItem';
-import OfferSearch, {OfferResultAction} from './repository/models/OfferSearch';
+import OfferSearch, { OfferResultAction } from './repository/models/OfferSearch';
 import  OfferShareData  from './repository/models/OfferShareData';
+import { OfferShareDataRepository } from './repository/offer/OfferShareDataRepository';
+import OfferShareDataRepositoryImpl from './repository/offer/OfferShareDataRepositoryImpl';
 
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
@@ -93,7 +95,12 @@ export {
     OfferSearch,
     OfferSearchResultItem,
     OfferResultAction,
-    OfferShareData
+    OfferShareData,
+    OfferShareDataRepository,
+    OfferShareDataRepositoryImpl,
+    OfferSearchRepository,
+    OfferSearchRepositoryImpl,
+    HttpTransportImpl
 };
 
 export default class Base {
@@ -217,7 +224,7 @@ export default class Base {
                                 permissionSource: PermissionsSource,
                                 siteDataSource: SiteDataSource,
                                 siteOrigin: string): KeyPairHelper {
-        return (signerHost.length == 0)
+        return (signerHost.length === 0)
             ? KeyPairFactory.createDefaultKeyPair(permissionSource, siteDataSource, siteOrigin)
             : KeyPairFactory.createRpcKeyPair(TransportFactory.createJsonRpcHttpTransport(signerHost));
     }

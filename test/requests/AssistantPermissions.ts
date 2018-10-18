@@ -2,12 +2,13 @@ import { PermissionsSource } from '../../src/repository/assistant/PermissionsSou
 import { SiteDataSource } from '../../src/repository/assistant/SiteDataSource';
 import { DataRequestRepository } from '../../src/repository/requests/DataRequestRepository';
 import { Site } from '../../src/repository/models/Site';
+import DataRequest from '../../src/repository/models/DataRequest';
 
 export class AssistantPermissions implements PermissionsSource, SiteDataSource {
 
     private dataRequestRepository: DataRequestRepository;
     private siteDataMap: Map<string, Site>;
-    
+
     constructor(dataRequestRepository: DataRequestRepository) {
         this.siteDataMap = new Map();
         this.dataRequestRepository = dataRequestRepository;
@@ -26,6 +27,6 @@ export class AssistantPermissions implements PermissionsSource, SiteDataSource {
     }
 
     public clearData() {
-        this.siteDataMap.clear()
+        this.siteDataMap.clear();
     }
 }

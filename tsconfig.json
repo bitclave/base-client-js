@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./",
+    "outDir": "./dist",
     "module": "commonjs",
     "target": "es5",
     "baseUrl": ".",

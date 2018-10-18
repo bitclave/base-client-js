@@ -21,7 +21,7 @@ var SearchRequestRepositoryImpl = /** @class */ (function () {
         return this.transport.sendRequest(this.SEARCH_REQUEST_API.replace('{owner}', owner).replace('{id}', ''), HttpMethod_1.HttpMethod.Post, searchRequest.toJson()).then(function (response) { return SearchRequest_1.default.fromJson(response.json); });
     };
     SearchRequestRepositoryImpl.prototype.deleteById = function (owner, id) {
-        return this.transport.sendRequest(this.SEARCH_REQUEST_API.replace('{owner}', owner).replace('{id}', id.toString()), HttpMethod_1.HttpMethod.Delete, id).then(function (response) { return parseInt(response.json.toString()); });
+        return this.transport.sendRequest(this.SEARCH_REQUEST_API.replace('{owner}', owner).replace('{id}', id.toString()), HttpMethod_1.HttpMethod.Delete, id).then(function (response) { return parseInt(response.json.toString(), 10); });
     };
     SearchRequestRepositoryImpl.prototype.getSearchRequestByOwnerAndId = function (owner, id) {
         var _this = this;

@@ -92,6 +92,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_repository_models_offer_.offer.html#description" class="tsd-kind-icon">description</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_repository_models_offer_.offer.html#id" class="tsd-kind-icon">id</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_repository_models_offer_.offer.html#imageurl" class="tsd-kind-icon">image<wbr>Url</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_repository_models_offer_.offer.html#offerprices" class="tsd-kind-icon">offer<wbr>Prices</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_repository_models_offer_.offer.html#owner" class="tsd-kind-icon">owner</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_repository_models_offer_.offer.html#rules" class="tsd-kind-icon">rules</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_repository_models_offer_.offer.html#tags" class="tsd-kind-icon">tags</a></li>
@@ -102,7 +103,9 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_models_offer_.offer.html#getpricebyid" class="tsd-kind-icon">get<wbr>Price<wbr>ById</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_models_offer_.offer.html#tojson" class="tsd-kind-icon">to<wbr>Json</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_repository_models_offer_.offer.html#validprices" class="tsd-kind-icon">valid<wbr>Prices</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_repository_models_offer_.offer.html#fromjson" class="tsd-kind-icon">from<wbr>Json</a></li>
 							</ul>
 						</section>
@@ -115,13 +118,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Offer<span class="tsd-signature-symbol">(</span>description<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, title<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, imageUrl<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, worth<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, tags<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">&gt;</span>, compare<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">&gt;</span>, rules<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">, </span><a href="../enums/_repository_models_compareaction_.compareaction.html" class="tsd-signature-type">CompareAction</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_repository_models_offer_.offer.html" class="tsd-signature-type">Offer</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Offer<span class="tsd-signature-symbol">(</span>description<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, title<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, imageUrl<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, worth<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, tags<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">&gt;</span>, compare<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">&gt;</span>, rules<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">, </span><a href="../enums/_repository_models_compareaction_.compareaction.html" class="tsd-signature-type">CompareAction</a><span class="tsd-signature-symbol">&gt;</span>, offerPrices<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_offerprice_.offerprice.html" class="tsd-signature-type">OfferPrice</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_repository_models_offer_.offer.html" class="tsd-signature-type">Offer</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/f1605fd/src/repository/models/Offer.ts#L23">repository/models/Offer.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/31fe45e/src/repository/models/Offer.ts#L52">repository/models/Offer.ts:52</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -147,6 +150,9 @@
 								<li>
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> rules: <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">, </span><a href="../enums/_repository_models_compareaction_.compareaction.html" class="tsd-signature-type">CompareAction</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Map()</span></h5>
 								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> offerPrices: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_offerprice_.offerprice.html" class="tsd-signature-type">OfferPrice</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Array&lt;OfferPrice&gt;()</span></h5>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_repository_models_offer_.offer.html" class="tsd-signature-type">Offer</a></h4>
 						</li>
@@ -161,7 +167,7 @@
 					<div class="tsd-signature tsd-kind-icon">compare<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/f1605fd/src/repository/models/Offer.ts#L13">repository/models/Offer.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/31fe45e/src/repository/models/Offer.ts#L15">repository/models/Offer.ts:15</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -171,7 +177,7 @@
 					<div class="tsd-signature tsd-kind-icon">description<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/f1605fd/src/repository/models/Offer.ts#L8">repository/models/Offer.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/31fe45e/src/repository/models/Offer.ts#L10">repository/models/Offer.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -181,7 +187,7 @@
 					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/f1605fd/src/repository/models/Offer.ts#L6">repository/models/Offer.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/31fe45e/src/repository/models/Offer.ts#L8">repository/models/Offer.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -191,7 +197,17 @@
 					<div class="tsd-signature tsd-kind-icon">image<wbr>Url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/f1605fd/src/repository/models/Offer.ts#L10">repository/models/Offer.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/31fe45e/src/repository/models/Offer.ts#L12">repository/models/Offer.ts:12</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="offerprices" class="tsd-anchor"></a>
+					<h3>offer<wbr>Prices</h3>
+					<div class="tsd-signature tsd-kind-icon">offer<wbr>Prices<span class="tsd-signature-symbol">:</span> <a href="_repository_models_offerprice_.offerprice.html" class="tsd-signature-type">OfferPrice</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;new Array&lt;OfferPrice&gt;()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/31fe45e/src/repository/models/Offer.ts#L17">repository/models/Offer.ts:17</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -201,7 +217,7 @@
 					<div class="tsd-signature tsd-kind-icon">owner<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;0x0&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/f1605fd/src/repository/models/Offer.ts#L7">repository/models/Offer.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/31fe45e/src/repository/models/Offer.ts#L9">repository/models/Offer.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -211,7 +227,7 @@
 					<div class="tsd-signature tsd-kind-icon">rules<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">, </span><a href="../enums/_repository_models_compareaction_.compareaction.html" class="tsd-signature-type">CompareAction</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/f1605fd/src/repository/models/Offer.ts#L14">repository/models/Offer.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/31fe45e/src/repository/models/Offer.ts#L16">repository/models/Offer.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -221,7 +237,7 @@
 					<div class="tsd-signature tsd-kind-icon">tags<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/f1605fd/src/repository/models/Offer.ts#L12">repository/models/Offer.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/31fe45e/src/repository/models/Offer.ts#L14">repository/models/Offer.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -231,7 +247,7 @@
 					<div class="tsd-signature tsd-kind-icon">title<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/f1605fd/src/repository/models/Offer.ts#L9">repository/models/Offer.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/31fe45e/src/repository/models/Offer.ts#L11">repository/models/Offer.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -241,13 +257,39 @@
 					<div class="tsd-signature tsd-kind-icon">worth<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/f1605fd/src/repository/models/Offer.ts#L11">repository/models/Offer.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/31fe45e/src/repository/models/Offer.ts#L13">repository/models/Offer.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getpricebyid" class="tsd-anchor"></a>
+					<h3>get<wbr>Price<wbr>ById</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Price<wbr>ById<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_repository_models_offerprice_.offerprice.html" class="tsd-signature-type">OfferPrice</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/31fe45e/src/repository/models/Offer.ts#L111">repository/models/Offer.ts:111</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>id: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_repository_models_offerprice_.offerprice.html" class="tsd-signature-type">OfferPrice</a>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">undefined</span>
+							</h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="tojson" class="tsd-anchor"></a>
 					<h3>to<wbr>Json</h3>
@@ -258,10 +300,33 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/f1605fd/src/repository/models/Offer.ts#L42">repository/models/Offer.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/31fe45e/src/repository/models/Offer.ts#L89">repository/models/Offer.ts:89</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="validprices" class="tsd-anchor"></a>
+					<h3>valid<wbr>Prices</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">valid<wbr>Prices<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_offerprice_.offerprice.html" class="tsd-signature-type">OfferPrice</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/31fe45e/src/repository/models/Offer.ts#L106">repository/models/Offer.ts:106</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>data: <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_repository_models_offerprice_.offerprice.html" class="tsd-signature-type">OfferPrice</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -275,7 +340,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/f1605fd/src/repository/models/Offer.ts#L16">repository/models/Offer.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/31fe45e/src/repository/models/Offer.ts#L19">repository/models/Offer.ts:19</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -324,6 +389,9 @@
 								<a href="_repository_models_offer_.offer.html#imageurl" class="tsd-kind-icon">image<wbr>Url</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_repository_models_offer_.offer.html#offerprices" class="tsd-kind-icon">offer<wbr>Prices</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_repository_models_offer_.offer.html#owner" class="tsd-kind-icon">owner</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
@@ -339,7 +407,13 @@
 								<a href="_repository_models_offer_.offer.html#worth" class="tsd-kind-icon">worth</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_repository_models_offer_.offer.html#getpricebyid" class="tsd-kind-icon">get<wbr>Price<wbr>ById</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_repository_models_offer_.offer.html#tojson" class="tsd-kind-icon">to<wbr>Json</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_repository_models_offer_.offer.html#validprices" class="tsd-kind-icon">valid<wbr>Prices</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="_repository_models_offer_.offer.html#fromjson" class="tsd-kind-icon">from<wbr>Json</a>

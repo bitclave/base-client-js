@@ -18,30 +18,30 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
 
     public getSearchResult(clientId: string, searchRequestId: number): Promise<Array<OfferSearchResultItem>> {
         return this.transport.sendRequest(
-            this.OFFER_SEARCH_API
+            this.OFFER_SEARCH_ADD_API + `?searchRequestId=${searchRequestId}`,
                 // .replace('{clientId}', clientId)
-                .replace('{id}', '') + `?searchRequestId=${searchRequestId}`,
+                // .replace('{id}', '') + `?searchRequestId=${searchRequestId}`,
             HttpMethod.Get
         ).then((response) => this.jsonToListResult(response.json));
     }
 
-    public complainToSearchItem(clientId: string, searchResultId: number): Promise<void> {
+    public complainToSearchItem(clientId: string, searchResultId: number): Promise<any> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_API
                 // .replace('{clientId}', clientId)
                 .replace('{id}', searchResultId.toString()) + `?searchResultId=${searchResultId}`,
             HttpMethod.Patch,
             searchResultId
-        ).then((response) => {});
+        );
     }
 
-    public addResultItem(clientId: string, offerSearch: OfferSearch): Promise<void> {
+    public addResultItem(clientId: string, offerSearch: OfferSearch): Promise<any> {
         return this.transport.sendRequest(
             // this.OFFER_SEARCH_ADD_API.replace('{clientId}', clientId),
             this.OFFER_SEARCH_ADD_API,
             HttpMethod.Post,
             offerSearch
-        ).then((response) => {});
+        );
     }
 
     private async jsonToListResult(json: any): Promise<Array<OfferSearchResultItem>> {
@@ -49,8 +49,8 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
 
         for (let item of json) {
             result.push(new OfferSearchResultItem(
-                Object.assign(new OfferSearch(), item['offerSearch']),
-                Offer.fromJson(item['offer'])
+                Object.assign(new OfferSearch(), item.offerSearch),
+                Offer.fromJson(item.offer)
             ));
         }
 

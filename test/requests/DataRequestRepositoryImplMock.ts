@@ -1,6 +1,5 @@
 import { DataRequestRepository } from '../../src/repository/requests/DataRequestRepository';
 import DataRequest from '../../src/repository/models/DataRequest';
-import { DataRequestState } from '../../src/repository/models/DataRequestState';
 import OfferShareData from '../../src/repository/models/OfferShareData';
 
 export default class DataRequestRepositoryImplMock implements DataRequestRepository {
@@ -55,6 +54,13 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
         return this.findRequest(fromPk, toPk);
     }
 
+    grantAccessForOffer(offerId: number, clientPk: string, encryptedClientResponse: string, priceId: number): Promise<void> {
+      return new Promise<void>(resolve => {
+          this._shareData.add(new OfferShareData(offerId, encryptedClientResponse, priceId));
+          resolve();
+      });
+  }
+
     private async findRequest(fromPk: string | null,
                               toPk: string | null,
                               makeUnique: boolean = true): Promise<Array<DataRequest>> {
@@ -62,26 +68,17 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
         const result: Array<DataRequest> = [];
 
         this._data.forEach(item => {
-            if ((fromPk == null || fromPk == undefined) && item.toPk === toPk ||
-                (toPk == null || toPk == undefined) && item.fromPk === fromPk ||
-                (fromPk != null && fromPk != undefined && toPk != null && fromPk != undefined) &&
-                item.toPk === toPk && item.fromPk === fromPk)
-
-                if (makeUnique) {
+            if ((fromPk == null || fromPk === undefined) && item.toPk === toPk ||
+                (toPk == null || toPk === undefined) && item.fromPk === fromPk ||
+                (fromPk != null && fromPk !== undefined && toPk != null && fromPk !== undefined) &&
+                item.toPk === toPk && item.fromPk === fromPk) {
+                  if (makeUnique) {
                     result.push(Object.assign(new DataRequest(), item));
-                } else {
-                    result.push(item);
+                  } else {
+                      result.push(item);
+                  }
                 }
         });
-
         return result;
     }
-
-    grantAccessForOffer(offerId: number, clientPk: string, clientResponse: string): Promise<void> {
-        return new Promise<void>(resolve => {
-            this._shareData.add(new OfferShareData(offerId, clientPk, clientResponse));
-            resolve();
-        });
-    }
-
 }

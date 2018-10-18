@@ -13,14 +13,14 @@ var DataRequestRepositoryImpl = /** @class */ (function () {
     DataRequestRepositoryImpl.prototype.requestPermissions = function (toPk, encryptedRequest) {
         var data = new DataRequest_1.default(toPk, encryptedRequest);
         return this.transport
-            .sendRequest(this.DATA_REQUEST, HttpMethod_1.HttpMethod.Post, data).then(function (response) { return parseInt(response.json.toString()); });
+            .sendRequest(this.DATA_REQUEST, HttpMethod_1.HttpMethod.Post, data).then(function (response) { return parseInt(response.json.toString(), 10); });
     };
     DataRequestRepositoryImpl.prototype.grantAccessForClient = function (fromPk, toPk, encryptedResponse) {
         var data = new DataRequest_1.default(toPk, '');
         data.responseData = encryptedResponse;
         data.fromPk = fromPk;
         return this.transport
-            .sendRequest(this.GRANT_ACCESS_FOR_CLIENT, HttpMethod_1.HttpMethod.Post, data).then(function (response) { return parseInt(response.json.toString()); });
+            .sendRequest(this.GRANT_ACCESS_FOR_CLIENT, HttpMethod_1.HttpMethod.Post, data).then(function (response) { return parseInt(response.json.toString(), 10); });
     };
     DataRequestRepositoryImpl.prototype.getRequests = function (fromPk, toPk) {
         var params = new Map([
@@ -34,8 +34,7 @@ var DataRequestRepositoryImpl = /** @class */ (function () {
     DataRequestRepositoryImpl.prototype.grantAccessForOffer = function (offerSearchId, clientPk, encryptedClientResponse, priceId) {
         var shareData = new OfferShareData_1.default(offerSearchId, encryptedClientResponse, priceId);
         return this.transport
-            .sendRequest(this.GRANT_ACCESS_FOR_OFFER, HttpMethod_1.HttpMethod.Post, shareData)
-            .then(function () { });
+            .sendRequest(this.GRANT_ACCESS_FOR_OFFER, HttpMethod_1.HttpMethod.Post, shareData);
     };
     DataRequestRepositoryImpl.prototype.joinParams = function (params) {
         var _this = this;
@@ -48,7 +47,7 @@ var DataRequestRepositoryImpl = /** @class */ (function () {
         return result.join('&');
     };
     DataRequestRepositoryImpl.prototype.isEmpty = function (value) {
-        return value == null || value == undefined || value.trim().length === 0;
+        return value == null || value === undefined || value.trim().length === 0;
     };
     return DataRequestRepositoryImpl;
 }());

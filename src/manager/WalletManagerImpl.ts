@@ -40,12 +40,12 @@ export class WalletManagerImpl implements WalletManager {
 
     public async createWalletsRecords(wallets: AddrRecord[], baseID: string): Promise<WalletsRecords> {
         for (let msg of wallets) {
-            if ((WalletUtils.verifyAddressRecord(msg) != WalletVerificationCodes.RC_OK) &&
-                (WalletUtils.verifyAddressRecord(msg) != WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
+            if ((WalletUtils.verifyAddressRecord(msg) !== WalletVerificationCodes.RC_OK) &&
+                (WalletUtils.verifyAddressRecord(msg) !== WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
                 throw 'invalid eth record: ' + msg;
             }
 
-            if (baseID != JSON.parse(msg.data).baseID) {
+            if (baseID !== JSON.parse(msg.data).baseID) {
                 throw 'baseID missmatch';
             }
         }
@@ -124,6 +124,9 @@ export class WalletManagerImpl implements WalletManager {
         return wealthPtr;
     }
 
+    public validateWallets(walletRecords: WalletsRecords): boolean {
+      return this.baseSchema.validateWallets(walletRecords);
+    }
     private onChangeAccount(account: Account) {
         this.account = account;
     }

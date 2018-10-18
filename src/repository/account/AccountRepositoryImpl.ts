@@ -37,7 +37,7 @@ export default class AccountRepositoryImpl implements AccountRepository {
     getNonce(account: Account): Promise<number> {
         return this.transport
             .sendRequest(this.GET_NONCE + account.publicKey, HttpMethod.Get)
-            .then((response) => parseInt(response.json.toString()));
+            .then((response) => parseInt(response.json.toString(), 10));
     }
 
 }

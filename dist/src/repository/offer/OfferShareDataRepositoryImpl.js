@@ -45,45 +45,41 @@ var __values = (this && this.__values) || function (o) {
     };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Base_1 = require("./../../Base");
-var fetch = require('node-fetch');
+var OfferShareData_1 = require("./../models/OfferShareData");
+var HttpMethod_1 = require("../source/http/HttpMethod");
 var OfferShareDataRepositoryImpl = /** @class */ (function () {
-    function OfferShareDataRepositoryImpl(host, base) {
+    function OfferShareDataRepositoryImpl(transport, accountManager, profileManager) {
         this.SHARE_DATA_API = '/v1/data/offer/';
         this.NONCE_DATA_API = '/v1/nonce/';
-        this.host = host;
-        this.base = base;
+        this.transport = transport;
+        this.accountManager = accountManager;
+        this.profileManager = profileManager;
     }
     OfferShareDataRepositoryImpl.prototype.getShareData = function (owner, accepted) {
         return __awaiter(this, void 0, void 0, function () {
-            var e_1, _a, url, response, json, result, json_1, json_1_1, item;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        url = this.host + this.SHARE_DATA_API +
-                            ("?owner=" + owner + "&accepted=" + accepted.toString());
-                        return [4 /*yield*/, fetch(url, { method: 'GET' })];
-                    case 1:
-                        response = _b.sent();
-                        return [4 /*yield*/, response.json()];
-                    case 2:
-                        json = _b.sent();
-                        result = [];
+            var url;
+            return __generator(this, function (_a) {
+                url = this.SHARE_DATA_API + ("?owner=" + owner + "&accepted=" + accepted.toString());
+                return [2 /*return*/, this.transport
+                        .sendRequest(url, HttpMethod_1.HttpMethod.Get)
+                        .then(function (response) {
+                        var e_1, _a;
+                        var result = [];
                         try {
-                            for (json_1 = __values(json), json_1_1 = json_1.next(); !json_1_1.done; json_1_1 = json_1.next()) {
-                                item = json_1_1.value;
-                                result.push(Object.assign(new Base_1.OfferShareData(0, '', 0), item));
+                            for (var _b = __values(response.json), _c = _b.next(); !_c.done; _c = _b.next()) {
+                                var item = _c.value;
+                                result.push(Object.assign(new OfferShareData_1.default(0, '', 0), item));
                             }
                         }
                         catch (e_1_1) { e_1 = { error: e_1_1 }; }
                         finally {
                             try {
-                                if (json_1_1 && !json_1_1.done && (_a = json_1.return)) _a.call(json_1);
+                                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                             }
                             finally { if (e_1) throw e_1.error; }
                         }
-                        return [2 /*return*/, result];
-                }
+                        return result;
+                    })];
             });
         });
     };
@@ -93,33 +89,28 @@ var OfferShareDataRepositoryImpl = /** @class */ (function () {
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        publicKey = this.base
-                            .accountManager
+                        publicKey = this.accountManager
                             .getAccount()
                             .publicKey;
-                        nonceUrl = this.host + this.NONCE_DATA_API + publicKey;
-                        return [4 /*yield*/, fetch(nonceUrl, { method: 'GET' })];
+                        nonceUrl = this.NONCE_DATA_API + publicKey;
+                        return [4 /*yield*/, this.transport.sendRequest(nonceUrl, HttpMethod_1.HttpMethod.Get)];
                     case 1:
                         nonceResponse = _c.sent();
                         _a = parseInt;
-                        return [4 /*yield*/, nonceResponse.json()];
+                        return [4 /*yield*/, nonceResponse.json.toString()];
                     case 2:
-                        nonce = _a.apply(void 0, [_c.sent()]);
-                        acceptUrl = this.host + this.SHARE_DATA_API + ("?offerSearchId=" + searchId);
+                        nonce = _a.apply(void 0, [_c.sent(), 10]);
+                        acceptUrl = this.SHARE_DATA_API + ("?offerSearchId=" + searchId);
                         _b = {
                             data: worth,
                             pk: publicKey
                         };
-                        return [4 /*yield*/, this.base.profileManager.signMessage(worth)];
+                        return [4 /*yield*/, this.profileManager.signMessage(worth)];
                     case 3:
                         data = (_b.sig = _c.sent(),
                             _b.nonce = ++nonce,
                             _b);
-                        return [4 /*yield*/, fetch(acceptUrl, {
-                                headers: { 'Content-Type': 'application/json' },
-                                method: 'PATCH',
-                                body: JSON.stringify(data)
-                            })];
+                        return [4 /*yield*/, this.transport.sendRequest(acceptUrl, HttpMethod_1.HttpMethod.Patch, data)];
                     case 4:
                         _c.sent();
                         return [2 /*return*/];

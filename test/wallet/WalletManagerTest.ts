@@ -49,15 +49,15 @@ describe('Wallet manager test', async () => {
     const clientRepository: ClientDataRepositoryImplMock = new ClientDataRepositoryImplMock();
     const dataRepository: DataRequestRepositoryImplMock = new DataRequestRepositoryImplMock();
 
-    const accountAlisa: Account;
-    const authAccountBehaviorAlisa: BehaviorSubject<Account>;
-    const accountBob: Account;
-    const authAccountBehaviorBob: BehaviorSubject<Account>;
+    let accountAlisa: Account;
+    let authAccountBehaviorAlisa: BehaviorSubject<Account>;
+    let accountBob: Account;
+    let authAccountBehaviorBob: BehaviorSubject<Account>;
 
-    const profileManager: ProfileManager;
-    const profileManagerBob: ProfileManager;
-    const walletManager: WalletManager;
-    const requestManager: DataRequestManager;
+    let profileManager: ProfileManager;
+    let profileManagerBob: ProfileManager;
+    let walletManager: WalletManager;
+    let requestManager: DataRequestManager;
 
     before(async () => {
         const alisaAccessToken = await authenticatorHelper.generateAccessToken(passPhraseAlisa);
@@ -109,9 +109,8 @@ describe('Wallet manager test', async () => {
         );
     });
 
-    beforeEach(function (done) {
+    beforeEach(async () => {
         clientRepository.clearData();
-        done();
     });
 
     after(async () => {
@@ -157,7 +156,7 @@ describe('Wallet manager test', async () => {
         const result: string = await keyPairHelperAlisa.decryptMessage(keyPairHelperBob.getPublicKey(), encryptedMessage);
         const map: Map<string, AcceptedField> = JsonUtils.jsonToMap(JSON.parse(result));
 
-        const data: any = (await profileManager.getAuthorizedEncryptionKeys(
+        const data = (await profileManager.getAuthorizedEncryptionKeys(
             keyPairHelperBob.getPublicKey(), encryptedMessage
         )).get('name');
 
@@ -165,8 +164,8 @@ describe('Wallet manager test', async () => {
     });
 
     it('verify ETH address low level', async () => {
-        //BASE (BitCoin-like) signature verification
-        const keyPairHelper: KeyPairHelper = KeyPairFactory.createDefaultKeyPair();
+        // BASE (BitCoin-like) signature verification
+        const keyPairHelper: KeyPairHelper = KeyPairFactory.createDefaultKeyPair(null, null, '');
         const messageSigner: MessageSigner = keyPairHelper;
 
         // create BASE user for tesing
@@ -204,8 +203,10 @@ describe('Wallet manager test', async () => {
         pub1.should.be.equal(ethAddr1.toLowerCase());
 
         var dataForAddr1 = '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996_0x42cb8ae103896daee71ebb5dca5367f16727164a';
-        // you can get this signature externally by using https://www.myetherwallet.com/signmsg.html with private key ethPrvKey1 and dataForAddr1
+        // you can get this signature externally by using
+        // https://www.myetherwallet.com/signmsg.html with private key ethPrvKey1 and dataForAddr1
         // or if you import ethPrvKey1 into MetaMask and sign with MetaMask
+        // tslint:disable-next-line:max-line-length
         var sigForAddr1 = '0x5f9c14ab9613c4d4d604f9f6ed241ec736db1f2f1e3443da95dca23affc239df7e304553ea3a42469e2d56d51113979c2cb56cce2e3579f1c6fb23dd993fdbfc1b';
         msgParams1.data.should.be.equal(dataForAddr1);
         msgParams1.sig.should.be.equal(sigForAddr1);
@@ -226,7 +227,7 @@ describe('Wallet manager test', async () => {
         };
 
         finalMsg.sig = await messageSigner.signMessage(JSON.stringify(finalMsg.data));
-        Message(JSON.stringify(finalMsg.data)).verify(baseUserAddr, finalMsg.sig).should.be.true;
+        Message(JSON.stringify(finalMsg.data)).verify(baseUserAddr, finalMsg.sig).should.be.equal(true);
     });
 
     it('create ETH address record by BASE interface', function () {
@@ -243,11 +244,12 @@ describe('Wallet manager test', async () => {
         here is the exact string for message - pay attention to " " and "\n"
         "{\n  \"baseID\": \"02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41\",\n  \"ethAddr\": \"0x42cb8ae103896daee71ebb5dca5367f16727164a\"\n}"
          */
-        //b4ea5b297db8f178e15ef0afb6df240f6e56e67d3d3cb4ada162a677d7a36807
-        //0x29F2EF2D5948de8b192Cb67672DD170d4e44D543
+        // b4ea5b297db8f178e15ef0afb6df240f6e56e67d3d3cb4ada162a677d7a36807
+        // 0x29F2EF2D5948de8b192Cb67672DD170d4e44D543
 
-        //0x29F2EF2D5948de8b192Cb67672DD170d4e44D543
-        //0x7d530570d312f51a739d9f632bd3997721c463113ae2d04d45bf5c56426b98f610775dab97f8e3ea0601089312b5e6e720e29ee514b8e6ff372649a402d5eb1e1b
+        // 0x29F2EF2D5948de8b192Cb67672DD170d4e44D543
+        // tslint:disable-next-line:max-line-length
+        // 0x7d530570d312f51a739d9f632bd3997721c463113ae2d04d45bf5c56426b98f610775dab97f8e3ea0601089312b5e6e720e29ee514b8e6ff372649a402d5eb1e1b
         WalletUtils.verifyAddressRecord(
             {
                 'data': JSON.stringify(
@@ -255,6 +257,7 @@ describe('Wallet manager test', async () => {
                         baseID: '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
                         ethAddr: '0x42cb8ae103896daee71ebb5dca5367f16727164a'
                     }),
+                // tslint:disable-next-line:max-line-length
                 'sig': '0x273f63c3c0da0bde3448a5dc24865cd25e936d6a210f548fdf7fcfd3f8fc2f9d5089fd6fc2ce2c778a04a4a464de09d9f781c2f1f42914eb33f168c3f8e5e2351c'
             }
         ).should.be.equal(WalletVerificationCodes.RC_OK);
@@ -266,6 +269,7 @@ describe('Wallet manager test', async () => {
                         _baseID: '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
                         ethAddr: '0x42cb8ae103896daee71ebb5dca5367f16727164a'
                     }),
+                // tslint:disable-next-line:max-line-length
                 'sig': '0x273f63c3c0da0bde3448a5dc24865cd25e936d6a210f548fdf7fcfd3f8fc2f9d5089fd6fc2ce2c778a04a4a464de09d9f781c2f1f42914eb33f168c3f8e5e2351c'
             }
         ).should.be.not.equal(WalletVerificationCodes.RC_OK);
@@ -277,23 +281,28 @@ describe('Wallet manager test', async () => {
                         baseID: '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
                         ethAddr: '0x42cb8ae103896daee71ebb5dca5367f16727164a'
                     }),
+                // tslint:disable-next-line:max-line-length
                 'sig': '0x373f63c3c0da0bde3448a5dc24865cd25e936d6a210f548fdf7fcfd3f8fc2f9d5089fd6fc2ce2c778a04a4a464de09d9f781c2f1f42914eb33f168c3f8e5e2351c'
             }
         ).should.be.not.equal(WalletVerificationCodes.RC_OK);
     });
 
     it('create ETH Wallets record by BASE interface', async () => {
+        let msg;
+        let rc;
+        let ethAddrRecord: AddrRecord;
+
         const baseUser = await KeyPairFactory.createRpcKeyPair(rpcTransport);
         const baseUserAccessToken: string = await authenticatorHelper.generateAccessToken(
             'mnemonic for BASE user for testing'
         );
 
-        baseUser.setAccessToken(baseUserAccessToken);
+        (baseUser as RemoteSigner).setAccessToken(baseUserAccessToken);
         await baseUser.createKeyPair('');
 
         baseUser.getPublicKey().should.be.equal('03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996');
 
-        var msg = await BaseEthUtils.createEthWalletsRecordWithSigner(
+        msg = await BaseEthUtils.createEthWalletsRecordWithSigner(
             '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
             [
                 WalletUtils.createEthereumAddersRecord(
@@ -310,7 +319,7 @@ describe('Wallet manager test', async () => {
             '17e326f9ebad9ee205ade59c23d3a2d49f87b587f20b1667ee089abe5eb9453b'
         );
 
-        var rc = WalletUtils.validateWallets(WalletManagerImpl.DATA_KEY_ETH_WALLETS, msg, baseUser.getPublicKey());
+        rc = WalletUtils.validateWallets(WalletManagerImpl.DATA_KEY_ETH_WALLETS, msg, baseUser.getPublicKey());
         JSON.stringify(rc).should.be.equal(JSON.stringify(
             {
                 rc: WalletVerificationCodes.RC_OK,
@@ -321,7 +330,7 @@ describe('Wallet manager test', async () => {
                 ]
             }));
 
-        var msg = await BaseEthUtils.createEthWalletsRecordDebug(
+        msg = await BaseEthUtils.createEthWalletsRecordDebug(
             '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
             [
                 WalletUtils.createEthereumAddersRecord(
@@ -338,7 +347,7 @@ describe('Wallet manager test', async () => {
             '17e326f9ebad9ee205ade59c23d3a2d49f87b587f20b1667ee089abe5eb9453b'
         );
 
-        var rc = WalletUtils.validateWallets(WalletManagerImpl.DATA_KEY_ETH_WALLETS, msg, baseUser.getPublicKey());
+        rc = WalletUtils.validateWallets(WalletManagerImpl.DATA_KEY_ETH_WALLETS, msg, baseUser.getPublicKey());
         JSON.stringify(rc).should.be.equal(JSON.stringify(
             {
                 rc: WalletVerificationCodes.RC_OK,
@@ -349,10 +358,10 @@ describe('Wallet manager test', async () => {
                 ]
             }));
 
-        var rc = WalletUtils.validateWallets('error_eth_wallets', msg, baseUser.getPublicKey());
+        rc = WalletUtils.validateWallets('error_eth_wallets', msg, baseUser.getPublicKey());
         rc.rc.should.be.equal(WalletVerificationCodes.RC_GENERAL_ERROR);
 
-        const ethAddrRecord: AddrRecord = WalletUtils.createEthereumAddersRecord(
+        ethAddrRecord = WalletUtils.createEthereumAddersRecord(
             '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
             '0x42cb8ae103896daee71ebb5dca5367f16727164a',
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
@@ -366,13 +375,16 @@ describe('Wallet manager test', async () => {
 
         sawException.should.be.equal(true);
 
-        const ethAddrRecord: AddrRecord = WalletUtils.createEthereumAddersRecord(
+        ethAddrRecord = WalletUtils.createEthereumAddersRecord(
             '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
             '0x42cb8ae103896daee71ebb5dca5367f16727164a',
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
         );
 
-        let walletsRecords: WalletsRecords = await walletManager.createWalletsRecords([ethAddrRecord], '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996');
+        let walletsRecords: WalletsRecords = await walletManager.createWalletsRecords(
+          [ethAddrRecord],
+          '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996'
+        );
         walletsRecords.data.length.should.be.equal(1);
     });
 

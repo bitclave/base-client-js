@@ -68,11 +68,11 @@ var WalletManagerImpl = /** @class */ (function () {
                         try {
                             for (wallets_1 = __values(wallets), wallets_1_1 = wallets_1.next(); !wallets_1_1.done; wallets_1_1 = wallets_1.next()) {
                                 msg = wallets_1_1.value;
-                                if ((WalletUtils_1.WalletUtils.verifyAddressRecord(msg) != WalletUtils_1.WalletVerificationCodes.RC_OK) &&
-                                    (WalletUtils_1.WalletUtils.verifyAddressRecord(msg) != WalletUtils_1.WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
+                                if ((WalletUtils_1.WalletUtils.verifyAddressRecord(msg) !== WalletUtils_1.WalletVerificationCodes.RC_OK) &&
+                                    (WalletUtils_1.WalletUtils.verifyAddressRecord(msg) !== WalletUtils_1.WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
                                     throw 'invalid eth record: ' + msg;
                                 }
-                                if (baseID != JSON.parse(msg.data).baseID) {
+                                if (baseID !== JSON.parse(msg.data).baseID) {
                                     throw 'baseID missmatch';
                                 }
                             }
@@ -164,6 +164,9 @@ var WalletManagerImpl = /** @class */ (function () {
                 }
             });
         });
+    };
+    WalletManagerImpl.prototype.validateWallets = function (walletRecords) {
+        return this.baseSchema.validateWallets(walletRecords);
     };
     WalletManagerImpl.prototype.onChangeAccount = function (account) {
         this.account = account;

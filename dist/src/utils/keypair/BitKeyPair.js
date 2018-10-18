@@ -236,7 +236,7 @@ var BitKeyPair = /** @class */ (function () {
                         return [4 /*yield*/, this.generatePasswordForField(key)];
                     case 4:
                         pass = _e.sent();
-                        if (pass != null && pass != undefined && pass.length > 0) {
+                        if (pass != null && pass !== undefined && pass.length > 0) {
                             changedValue = encrypt
                                 ? CryptoUtils_1.CryptoUtils.encryptAes256(value, pass)
                                 : CryptoUtils_1.CryptoUtils.decryptAes256(value, pass);

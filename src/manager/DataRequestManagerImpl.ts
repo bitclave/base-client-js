@@ -118,10 +118,10 @@ export class DataRequestManagerImpl implements DataRequestManager {
         offerSearchId: number,
         offerOwner: string,
         acceptedFields: Map<string, AccessRight>,
-        priceId: number): Promise<void>
-    {
+        priceId: number): Promise<void> {
+
         // automatically grant access to eth_wallets
-        acceptedFields.set('eth_wallets', AccessRight.R)
+        acceptedFields.set('eth_wallets', AccessRight.R);
 
         return this.encrypt
             .encryptPermissionsFields(offerOwner, acceptedFields)
@@ -169,7 +169,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
     private async getDecodeGrantPermissions(requests: Array<DataRequest>, clientPk: string): Promise<Array<string>> {
         if (requests.length > 0 && requests[0].responseData.trim().length > 0) {
             const strDecrypt: string = await this.decrypt.decryptMessage(clientPk, requests[0].responseData);
-            const jsonDecrypt: any = JSON.parse(strDecrypt);
+            const jsonDecrypt = JSON.parse(strDecrypt);
             const mapResponse: Map<string, string> = JsonUtils.jsonToMap(jsonDecrypt);
 
             return Array.from(mapResponse.keys());

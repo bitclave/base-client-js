@@ -93,14 +93,15 @@ var AccountManagerImpl = /** @class */ (function () {
         return this.authAccountBehavior.getValue();
     };
     AccountManagerImpl.prototype.checkSigMessage = function (message) {
-        if (message == null || message == undefined || message.length < 10) {
+        if (message == null || message === undefined || message.length < 10) {
             throw 'message for signature should be have min 10 symbols';
         }
     };
     AccountManagerImpl.prototype.syncAccount = function (account, message) {
         var _this = this;
-        return this.accountRepository.checkAccount(account)
-            .then(function (account) { return _this.onGetAccount(account, message); });
+        return this.accountRepository
+            .checkAccount(account)
+            .then(function (checkedAccount) { return _this.onGetAccount(checkedAccount, message); });
     };
     AccountManagerImpl.prototype.generateAccount = function (keyPair) {
         return new Promise(function (resolve) {

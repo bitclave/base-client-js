@@ -37,7 +37,7 @@ export interface DataRequestManager {
      * @param {string} requestedFromPk id (baseID) of the client whose permissions were requested
      * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
-    getRequestedPermissions(requestedFromPk: string): Promise<Array<string>>
+    getRequestedPermissions(requestedFromPk: string): Promise<Array<string>>;
 
     /**
      * Returns list of fields requested for access by the client from <me>
@@ -69,6 +69,7 @@ export interface DataRequestManager {
      *
      * @returns {Promise<void>}
      */
+    // tslint:disable-next-line:max-line-length
     grantAccessForOffer(offerSearchId: number, offerOwner: string, acceptedFields: Map<string, AccessRight>, priceId: number): Promise<void>;
 
     /**

@@ -56,13 +56,13 @@ var WalletUtils = /** @class */ (function () {
         catch (err) {
             return WalletVerificationCodes.RC_GENERAL_ERROR;
         }
-        return (signerAddr == JSON.parse(record.data).ethAddr)
+        return (signerAddr === JSON.parse(record.data).ethAddr)
             ? WalletVerificationCodes.RC_OK
             : WalletVerificationCodes.RC_ADDR_WRONG_SIGNATURE;
     };
     WalletUtils.validateWallets = function (key, val, baseID) {
         var result = new WalletVerificationStatus();
-        if (key != WalletManagerImpl_1.WalletManagerImpl.DATA_KEY_ETH_WALLETS) {
+        if (key !== WalletManagerImpl_1.WalletManagerImpl.DATA_KEY_ETH_WALLETS) {
             result.err = 'The \<key\> is expected to be "' + WalletManagerImpl_1.WalletManagerImpl.DATA_KEY_ETH_WALLETS + '"';
             result.rc = WalletVerificationCodes.RC_GENERAL_ERROR;
             return result;
@@ -83,10 +83,10 @@ var WalletUtils = /** @class */ (function () {
             for (var _b = __values(msg.data), _c = _b.next(); !_c.done; _c = _b.next()) {
                 var item = _c.value;
                 var pubKey = JSON.parse(item.data).baseID;
-                if (pubKey != baseID) {
+                if (pubKey !== baseID) {
                     status.details.push(WalletVerificationCodes.RC_BASEID_MISSMATCH);
                 }
-                else if ((resultCode = this.verifyAddressRecord(item)) != WalletVerificationCodes.RC_OK) {
+                else if ((resultCode = this.verifyAddressRecord(item)) !== WalletVerificationCodes.RC_OK) {
                     status.details.push(resultCode);
                 }
                 else {
@@ -107,8 +107,9 @@ var WalletUtils = /** @class */ (function () {
         try {
             if (msg.sig.length > 0) {
                 sigCheck = Message(JSON.stringify(msg.data)).verify(baseAddr, msg.sig);
-                if (!sigCheck)
+                if (!sigCheck) {
                     status.rc = WalletVerificationCodes.RC_ADDR_WRONG_SIGNATURE;
+                }
             }
             else {
                 status.rc = WalletVerificationCodes.RC_ADDR_NOT_VERIFIED;

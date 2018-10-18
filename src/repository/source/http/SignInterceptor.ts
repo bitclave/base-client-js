@@ -12,7 +12,7 @@ export default class SignInterceptor implements HttpInterceptor {
     }
 
     public onIntercept(cortege: InterceptorCortege): Promise<InterceptorCortege> {
-        return (cortege.data === null || cortege.data == undefined)
+        return (cortege.data === null || cortege.data === undefined)
             ? Promise.resolve(cortege)
 
             : this.messageSigner.signMessage(JSON.stringify(cortege.data))

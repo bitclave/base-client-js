@@ -22,7 +22,6 @@ var RpcKeyPair = /** @class */ (function () {
             .then(function (response) { return _this.clientData = Object.assign(new RpcClientData_1.default(), response); })
             .then(function (response) { return new KeyPair_1.KeyPair('', response.publicKey); });
     };
-    ;
     RpcKeyPair.prototype.generateMnemonicPhrase = function () {
         return new Promise(function (resolve) {
             var mnemonic = new Mnemonic(Mnemonic.Words.ENGLISH).toString();

@@ -35,8 +35,8 @@ export class BitKeyPair implements KeyPairHelper {
     public createKeyPair(passPhrase: string): Promise<KeyPair> {
         return new Promise<KeyPair>(resolve => {
             const pbkdf2: string = CryptoUtils.PBKDF2(passPhrase, 256);
-            const hash: any = bitcore.crypto.Hash.sha256(new bitcore.deps.Buffer(pbkdf2));
-            const bn: any = bitcore.crypto.BN.fromBuffer(hash);
+            const hash = bitcore.crypto.Hash.sha256(new bitcore.deps.Buffer(pbkdf2));
+            const bn = bitcore.crypto.BN.fromBuffer(hash);
             this.privateKey = new bitcore.PrivateKey(bn);
             this.publicKey = this.privateKey.toPublicKey();
             this.addr = this.privateKey.toAddress();
@@ -87,7 +87,7 @@ export class BitKeyPair implements KeyPairHelper {
 
     public encryptMessage(recipientPk: string, message: string): Promise<string> {
         return new Promise<string>(resolve => {
-            const ecies: any = new ECIES({noKey: true})
+            const ecies = new ECIES({noKey: true})
                 .privateKey(this.privateKey)
                 .publicKey(bitcore.PublicKey.fromString(recipientPk));
 
@@ -118,13 +118,13 @@ export class BitKeyPair implements KeyPairHelper {
             }
         }
 
-        const jsonMap: any = JsonUtils.mapToJson(resultMap);
+        const jsonMap = JsonUtils.mapToJson(resultMap);
 
         return await this.encryptMessage(recipient, JSON.stringify(jsonMap));
     }
 
     async decryptMessage(senderPk: string, encrypted: string): Promise<string> {
-        const ecies: any = new ECIES({noKey: true})
+        const ecies = new ECIES({noKey: true})
             .privateKey(this.privateKey)
             .publicKey(bitcore.PublicKey.fromString(senderPk));
 
@@ -152,7 +152,7 @@ export class BitKeyPair implements KeyPairHelper {
             }
 
             pass = await this.generatePasswordForField(key);
-            if (pass != null && pass != undefined && pass.length > 0) {
+            if (pass != null && pass !== undefined && pass.length > 0) {
                 changedValue = encrypt
                     ? CryptoUtils.encryptAes256(value, pass)
                     : CryptoUtils.decryptAes256(value, pass);
@@ -188,7 +188,7 @@ export class BitKeyPair implements KeyPairHelper {
 
                 for (let request of requests) {
                     const strDecrypt: string = await this.decryptMessage(site.publicKey, request.responseData);
-                    const jsonDecrypt: any = JSON.parse(strDecrypt);
+                    const jsonDecrypt = JSON.parse(strDecrypt);
                     const resultMap: Map<string, AcceptedField> = JsonUtils.jsonToMap(jsonDecrypt);
 
                     this.permissions.fields.clear();

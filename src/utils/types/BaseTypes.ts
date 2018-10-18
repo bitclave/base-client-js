@@ -47,7 +47,7 @@ class WealthPtr {
     public validator: string;
     public decryptKey: string;
 
-    constructor(validator?: string, decryptKey?: string){
+    constructor(validator?: string, decryptKey?: string) {
         this.validator = validator || '';
         this.decryptKey = decryptKey || '';
     }
@@ -58,6 +58,7 @@ class ProfileUser {
     baseID: string;
     email: string;
     wealth: WealthPtr;
+    // tslint:disable-next-line:variable-name
     eth_wallets: WalletsRecords;
 }
 

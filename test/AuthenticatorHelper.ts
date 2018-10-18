@@ -13,7 +13,7 @@ export default class AuthenticatorHelper {
 
     constructor(rpcTransport: RpcTransport) {
         this.rpcTransport = rpcTransport;
-        this.keyHelper = KeyPairFactory.createDefaultKeyPair();
+        this.keyHelper = KeyPairFactory.createDefaultKeyPair(null, null, '');
     }
 
     public async generateAccessToken(passPhrase: string): Promise<string> {
@@ -32,7 +32,7 @@ export default class AuthenticatorHelper {
         return accessToken;
     }
 
-    private async initKeyPair(): void {
+    private async initKeyPair() {
         this.keyPair = await this.keyHelper.createKeyPair('TestAuthenticatorService');
     }
 
@@ -40,8 +40,9 @@ export default class AuthenticatorHelper {
         let text = '';
         const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-        for (let i = 0; i < 32; i++)
+        for (let i = 0; i < 32; i++) {
             text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
 
         return text;
     }

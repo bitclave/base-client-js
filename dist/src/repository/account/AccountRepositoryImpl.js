@@ -28,7 +28,7 @@ var AccountRepositoryImpl = /** @class */ (function () {
     AccountRepositoryImpl.prototype.getNonce = function (account) {
         return this.transport
             .sendRequest(this.GET_NONCE + account.publicKey, HttpMethod_1.HttpMethod.Get)
-            .then(function (response) { return parseInt(response.json.toString()); });
+            .then(function (response) { return parseInt(response.json.toString(), 10); });
     };
     return AccountRepositoryImpl;
 }());

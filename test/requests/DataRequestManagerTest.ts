@@ -121,8 +121,8 @@ describe('Data Request Manager', async () => {
         await requestManagerAlisa.requestPermissions(keyPairHelperBob.getPublicKey(), bobsFields);
 
         const grantFields: Map<string, AccessRight> = new Map();
-        for(let item of bobsFields) {
-            grantFields.set(item, AccessRight.R)
+        for (let item of bobsFields) {
+            grantFields.set(item, AccessRight.R);
         }
 
         await requestManagerBob.grantAccessForClient(keyPairHelperAlisa.getPublicKey(), grantFields);
@@ -142,8 +142,8 @@ describe('Data Request Manager', async () => {
 
     it('grand access to field without requested permissions', async () => {
         const grantFields: Map<string, AccessRight> = new Map();
-        for(let item of bobsFields) {
-            grantFields.set(item, AccessRight.R)
+        for (let item of bobsFields) {
+            grantFields.set(item, AccessRight.R);
         }
 
         await requestManagerBob.grantAccessForClient(keyPairHelperAlisa.getPublicKey(), grantFields);
@@ -163,10 +163,10 @@ describe('Data Request Manager', async () => {
 
     it('should be Alisa not nothing found from some pk', async () => {
         const somePK = '020b6936ce0264852b713cff3d03faef1994477924ea0ad4c28a0d2543a16d70ec';
-        
+
         const grantFields: Map<string, AccessRight> = new Map();
-        for(let item of bobsFields) {
-            grantFields.set(item, AccessRight.R)
+        for (let item of bobsFields) {
+            grantFields.set(item, AccessRight.R);
         }
         await requestManagerBob.grantAccessForClient(somePK, grantFields);
 
@@ -193,15 +193,15 @@ describe('Data Request Manager', async () => {
 
     it('share data for offer', async () => {
         const grantFields: Map<string, AccessRight> = new Map();
-        for(let item of bobsFields) {
-            grantFields.set(item, AccessRight.R)
+        for (let item of bobsFields) {
+            grantFields.set(item, AccessRight.R);
         }
         await requestManagerAlisa.grantAccessForOffer(1, keyPairHelperAlisa.getPublicKey(), grantFields, 0);
     });
 
     it('decrypt invalid message', async () => {
         const message: string = 'invalid string';
-        const result: any = await requestManagerAlisa.decryptMessage(
+        const result = await requestManagerAlisa.decryptMessage(
             keyPairHelperAlisa.getPublicKey(),
             message
         );

@@ -32,7 +32,7 @@ async function createUser(user: Base, pass: string): Promise<Account> {
         await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
         await user.accountManager.unsubscribe();
     } catch (e) {
-        console.log('check createUser', e);
+        // console.log('check createUser', e);
         // ignore error if user not exist
     }
 
@@ -180,7 +180,6 @@ describe('Offer, local price matching', async () => {
           prices.length.should.be.eql(2);
           prices[0].worth.should.be.eql('1.5');
           prices[1].worth.should.be.eql('1.7');
-
 
       } catch (e) {
           console.log(e);

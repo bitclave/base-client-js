@@ -6,10 +6,10 @@ export declare interface HttpTransport {
 
     getHost(): string;
 
-    sendRequest(method: HttpMethod, data?: any): Promise<Response>
+    sendRequest(method: HttpMethod, data?: any): Promise<Response>;
 
-    sendRequest(path: string, method: HttpMethod, data?: any): Promise<Response>
+    sendRequest(path: string, method: HttpMethod, data?: any): Promise<Response>;
 
-    addInterceptor(interceptor: HttpInterceptor): HttpTransport
+    addInterceptor(interceptor: HttpInterceptor): HttpTransport;
 
 }

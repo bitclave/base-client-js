@@ -34,7 +34,7 @@ export default class OfferRepositoryImpl implements OfferRepository {
             this.OFFER_API.replace('{owner}', owner).replace('{id}', id.toString()),
             HttpMethod.Delete,
             id,
-        ).then((response) => parseInt(response.json.toString()));
+        ).then((response) => parseInt(response.json.toString(), 10));
     }
 
     public getOfferByOwnerAndId(owner: string, id: number): Promise<Array<Offer>> {
