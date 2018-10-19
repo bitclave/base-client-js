@@ -78,17 +78,11 @@ describe('Data Request Manager', async () => {
         rpcTransport.disconnect();
     });
 
-    it('request for permissions data', async () => {
+    it.only('request for permissions data', async () => {
         await requestManagerAlisa.requestPermissions(keyPairHelperBob.getPublicKey(), bobsFields);
 
-        const requestsByFrom = await requestManagerAlisa.getRequests(
-            keyPairHelperAlisa.getPublicKey(),
-            ''
-        );
-        const requestsByTo = await requestManagerAlisa.getRequests(
-            '',
-            keyPairHelperBob.getPublicKey()
-        );
+        const requestsByFrom = await requestManagerAlisa.getRequests(keyPairHelperAlisa.getPublicKey(), null);
+        const requestsByTo = await requestManagerAlisa.getRequests(null, keyPairHelperBob.getPublicKey());
 
         requestsByFrom.should.be.deep.equal(requestsByTo);
 
