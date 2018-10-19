@@ -20,7 +20,7 @@ const should = require('chai').use(require('chai-as-promised')).should();
 const someSigMessage = 'some unique message for signature';
 
 const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
-const rpcSignerHost: string = 'http://localhost:3545';
+const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
 
 const httpTransport = TransportFactory.createHttpTransport(baseNodeUrl);
 const rpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
