@@ -12,9 +12,10 @@
     "testRequest": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/requests/*Test.ts\"",
     "coverage": "nyc npm run test",
     "coveralls": "npm run coverage && cat coverage/lcov.info | coveralls",
-    "preBuild": "tsc --outDir dist -d",
     "build": "webpack",
-    "checkCode": "tslint -p tslint.json"
+    "checkTestCode": "tsc --noEmit test/**/*.ts test/*.ts",
+    "checkSourceCode": "tsc --noEmit"
+
   },
   "types": "dist/src/Base.d.ts",
   "files": [
