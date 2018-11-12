@@ -11,7 +11,6 @@
     "diagnostics": true,
     "sourceMap": true,
     "moduleResolution": "node",
-    "rootDir": "./",
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "removeComments": false,

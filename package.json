@@ -2,7 +2,8 @@
   "name": "@bitclave/base-client-js",
   "version": "0.1.1",
   "description": "Base JS library for BASE-platform",
-  "main": "dist/Bitclave-Base.js",
+  "main": "dist/Base.js",
+  "types": "dist/Base.d.ts",
   "scripts": {
     "prepublich": "npm run build",
     "postinstall": "node remove-bitcore-lib-dep.js",
@@ -17,7 +18,7 @@
     "checkSourceCode": "tsc --noEmit"
 
   },
-  "types": "dist/src/Base.d.ts",
+
   "files": [
     "dist/Bitclave-Base.js",
     "dist/Bitclave-Base.js.map",
