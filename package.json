@@ -1,11 +1,10 @@
 {
   "name": "@antbat/base-client-js",
-  "version": "0.1.4",
+  "version": "0.1.7",
   "description": "Base JS library for BASE-platform lite version",
   "main": "lib/Base.js",
   "types": "lib/Base.d.ts",
   "scripts": {
-    "prepublich": "npm run build",
     "postinstall": "node remove-bitcore-lib-dep.js",
     "test": "mocha --timeout 100000 --recursive --require ts-node/register \"./test/**/*Test.ts\"",
     "testProfile": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/profile/*Test.ts\"",

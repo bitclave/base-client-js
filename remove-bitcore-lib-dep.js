@@ -3,12 +3,14 @@ const Path = require('path');
 
 const mode = process.env.NODE_ENV;
 
-const prefix = mode === ('development') ? './' : '../../';
+const prefix = mode === ('development') ? './' : './../../../';
 
 const pathsToClean = [
     Path.resolve(prefix + 'node_modules/bitcore-ecies/node_modules/bitcore-lib'),
     Path.resolve(prefix + 'node_modules/bitcore-message/node_modules/bitcore-lib'),
 ];
+
+console.log(pathsToClean);
 
 (function () {
     function deleteFolderRecursive(path) {
