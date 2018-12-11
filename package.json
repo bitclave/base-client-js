@@ -16,9 +16,8 @@
     "build": "tsc",
     "checkTestCode": "tsc --noEmit test/**/*.ts test/*.ts",
     "checkSourceCode": "tsc --noEmit",
-    "prepare" : "npm run build"
+    "prepare": "npm run build"
   },
-
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bitclave/base-js.git"
