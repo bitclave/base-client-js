@@ -7,6 +7,16 @@ export class OfferPriceRules {
     public static fromJson(data: any): OfferPriceRules {
       let rule: CompareAction;
       switch (data.rule) {
+
+        // adding these as some cases were failing
+        case CompareAction.EQUALLY: rule = CompareAction.EQUALLY; break;
+        case CompareAction.NOT_EQUAL: rule = CompareAction.NOT_EQUAL; break;
+        case CompareAction.LESS_OR_EQUAL: rule = CompareAction.LESS_OR_EQUAL; break;
+        case CompareAction.MORE_OR_EQUAL: rule = CompareAction.MORE_OR_EQUAL; break;
+        case CompareAction.MORE: rule = CompareAction.MORE; break;
+        case CompareAction.LESS: rule = CompareAction.LESS; break;
+        // ~adding these as some cases were failing
+
         case 'EQUALLY': rule = CompareAction.EQUALLY; break;
         case 'NOT_EQUAL': rule = CompareAction.NOT_EQUAL; break;
         case 'LESS_OR_EQUAL': rule = CompareAction.LESS_OR_EQUAL; break;
