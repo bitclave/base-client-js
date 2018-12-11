@@ -1,10 +1,10 @@
 {
   "name": "@bitclave/base-client-js",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "Base JS library for BASE-platform",
-  "main": "dist/Bitclave-Base.js",
+  "main": "lib/Base.js",
+  "types": "lib/Base.d.ts",
   "scripts": {
-    "prepublich": "npm run build",
     "postinstall": "node remove-bitcore-lib-dep.js",
     "test": "mocha --timeout 100000 --recursive --require ts-node/register \"./test/**/*Test.ts\"",
     "testProfile": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/profile/*Test.ts\"",
@@ -13,35 +13,12 @@
     "testProtocol": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/protocol/ServiceProviderTest.ts\"",
     "coverage": "nyc npm run test",
     "coveralls": "npm run coverage && cat coverage/lcov.info | coveralls",
-    "preBuild": "tsc --outDir dist -d",
-    "build": "webpack",
-    "checkCode": "tslint -p tslint.json"
+    "build": "tsc",
+    "checkTestCode": "tsc --noEmit test/**/*.ts test/*.ts",
+    "checkSourceCode": "tsc --noEmit",
+    "prepare" : "npm run build"
   },
-  "types": "dist/src/Base.d.ts",
-  "files": [
-    "dist/Bitclave-Base.js",
-    "dist/Bitclave-Base.js.map",
-    "remove-bitcore-lib-dep.js"
-  ],
-  "nyc": {
-    "extension": [
-      ".ts"
-    ],
-    "include": [
-      "src/**/*.ts"
-    ],
-    "exclude": [
-      "remove-bitcore-lib-dep.js",
-      "**/*.d.ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ],
-    "reporter": [
-      "lcov",
-      "text"
-    ]
-  },
+
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bitclave/base-js.git"
