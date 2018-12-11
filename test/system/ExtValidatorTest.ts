@@ -16,7 +16,7 @@ const should = require('chai')
     .use(require('chai-as-promised'))
     .should();
 const someSigMessage = 'some unique message for signature';
-const rpcSignerHost: string = 'http://localhost:3545';
+const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
 const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
 const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
