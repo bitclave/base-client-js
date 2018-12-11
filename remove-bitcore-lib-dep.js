@@ -3,7 +3,8 @@ const Path = require('path');
 
 const mode = process.env.NODE_ENV;
 
-const prefix = mode === ('development') ? './' : './../../../';
+// const prefix = mode === ('development') ? './' : './../../../';
+const prefix = './';
 
 const pathsToClean = [
     Path.resolve(prefix + 'node_modules/bitcore-ecies/node_modules/bitcore-lib'),
