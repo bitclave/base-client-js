@@ -13,7 +13,7 @@
     "testRequest": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/requests/*Test.ts\"",
     "coverage": "nyc npm run test",
     "coveralls": "npm run coverage && cat coverage/lcov.info | coveralls",
-    "build": "tsc",
+    "build": "npm run preinstall && tsc",
     "checkTestCode": "tsc --noEmit test/**/*.ts test/*.ts",
     "checkSourceCode": "tsc --noEmit",
     "prepare": "npm run build"

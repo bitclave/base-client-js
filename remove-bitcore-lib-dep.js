@@ -1,7 +1,7 @@
 const fs = require('fs');
 const Path = require('path');
 
-const mode = process.env.NODE_ENV;
+const mode = process.env.NODE_ENV || 'development';
 
 const prefix = mode === ('development') ? './' : './../../../';
 

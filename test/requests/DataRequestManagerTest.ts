@@ -78,7 +78,7 @@ describe('Data Request Manager', async () => {
         rpcTransport.disconnect();
     });
 
-    it.only('request for permissions data', async () => {
+    it('request for permissions data', async () => {
         await requestManagerAlisa.requestPermissions(keyPairHelperBob.getPublicKey(), bobsFields);
 
         const requestsByFrom = await requestManagerAlisa.getRequests(keyPairHelperAlisa.getPublicKey(), null);
