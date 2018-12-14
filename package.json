@@ -13,11 +13,12 @@
     "testProtocol": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/protocol/ServiceProviderTest.ts\"",
     "coverage": "nyc npm run test",
     "coveralls": "npm run coverage && cat coverage/lcov.info | coveralls",
-    "build": "npm run cleanup && tsc",
+    "build": "npm run cleanup && tsc && npm run documentation",
     "checkTestCode": "tsc --noEmit test/**/*.ts test/*.ts",
     "checkSourceCode": "tsc --noEmit",
     "cleanup": "rm -rf lib",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "documentation": "webpack && rm ./lib/main.js"
   },
   "repository": {
     "type": "git",
