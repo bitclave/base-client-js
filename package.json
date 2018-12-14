@@ -20,6 +20,25 @@
     "prepare": "npm run build",
     "documentation": "webpack && rm ./lib/main.js"
   },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "remove-bitcore-lib-dep.js",
+      "**/*.d.ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "lcov",
+      "text"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bitclave/base-js.git"
