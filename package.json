@@ -6,7 +6,6 @@
   "types": "lib/Base.d.ts",
   "scripts": {
     "postinstall": "node remove-bitcore-lib-dep.js",
-    "preinstall": "rm -rf lib",
     "test": "mocha --timeout 100000 --recursive --require ts-node/register \"./test/**/*Test.ts\"",
     "testProfile": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/profile/*Test.ts\"",
     "testValidator": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/system/ExtValidatorTest.ts\"",
@@ -14,9 +13,10 @@
     "testProtocol": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/protocol/ServiceProviderTest.ts\"",
     "coverage": "nyc npm run test",
     "coveralls": "npm run coverage && cat coverage/lcov.info | coveralls",
-    "build": "tsc",
+    "build": "npm run cleanup && tsc",
     "checkTestCode": "tsc --noEmit test/**/*.ts test/*.ts",
     "checkSourceCode": "tsc --noEmit",
+    "cleanup": "rm -rf lib",
     "prepare": "npm run build"
   },
   "repository": {
