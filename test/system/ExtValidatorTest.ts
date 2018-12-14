@@ -53,6 +53,7 @@ describe('BASE API test: External Validator', async () => {
     var accDesearch: Account;
     var accValidator: Account;
 
+    
     function createBase(): Base {
         return new Base(
             // 'http://localhost:8080',
