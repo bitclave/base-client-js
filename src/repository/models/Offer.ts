@@ -106,6 +106,8 @@ export default class Offer {
     public validPrices(data: Map<string, string>): Array<OfferPrice> {
 
         let mostRelevantPrice =  this.offerPrices.filter( price => price.isRelevant(data));
+        mostRelevantPrice.sort((a,b) => a.id-b.id);
+
         return mostRelevantPrice;
     }
     getPriceById(id: number): OfferPrice | undefined {

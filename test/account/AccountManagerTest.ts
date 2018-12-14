@@ -24,7 +24,7 @@ describe('Account Manager', async () => {
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
 
     const authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
-    const rpcSignerHost: string = 'http://localhost:3545';
+    const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
 
     const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
     const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);

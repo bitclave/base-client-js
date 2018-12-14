@@ -25,6 +25,13 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         ).then((response) => this.jsonToListResult(response.json));
     }
 
+    public getSearchResultByOfferSearchId(clientId: string, offerSearchId: number): Promise<Array<OfferSearchResultItem>> {
+        return this.transport.sendRequest(
+            this.OFFER_SEARCH_ADD_API + `?offerSearchId=${offerSearchId}`,
+            HttpMethod.Get
+        ).then((response) => this.jsonToListResult(response.json));
+    }
+
     public complainToSearchItem(clientId: string, searchResultId: number): Promise<any> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_API
