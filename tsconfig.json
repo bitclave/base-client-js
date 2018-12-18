@@ -29,6 +29,8 @@
     "node_modules",
     "test",
     "dist",
-    "example"
+    "example",
+    "base-client-js",
+    "lib"
   ]
 }

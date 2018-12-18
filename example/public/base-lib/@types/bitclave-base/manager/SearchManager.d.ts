@@ -7,6 +7,7 @@ export interface SearchManager {
     getAllRequests(): Promise<Array<SearchRequest>>;
     deleteRequest(id: number): Promise<number>;
     getSearchResult(searchRequestId: number): Promise<Array<OfferSearchResultItem>>;
+    getSearchResultByOfferSearchId(offerSearchId: number): Promise<Array<OfferSearchResultItem>>;
     complainToSearchItem(searchResultId: number): Promise<void>;
     addResultItem(offerSearch: OfferSearch): Promise<void>;
 }
