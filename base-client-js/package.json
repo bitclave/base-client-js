@@ -19,8 +19,8 @@
   },
   "homepage": "https://github.com/bitclave/base-auth-frontend#readme",
   "devDependencies": {
-    "webpack": "^4.5.0",
-    "webpack-cli": "^2.0.13"
+    "webpack": "^4.27.0",
+    "webpack-cli": "^3.1.2"
   },
   "dependencies": {}
 }

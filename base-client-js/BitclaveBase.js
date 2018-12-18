@@ -1,4 +1,4 @@
-import Base from 'bitclave-base';
+import Base from 'dist/bitclave-base';
 
-export * from 'bitclave-base';
+export * from 'dist/bitclave-base';
 export { Base };
