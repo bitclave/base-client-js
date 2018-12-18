@@ -9,7 +9,8 @@ const prefix = './';
 const pathsToClean = [
     Path.resolve(prefix + 'node_modules/bitcore-ecies/node_modules/bitcore-lib'),
     Path.resolve(prefix + 'node_modules/bitcore-message/node_modules/bitcore-lib'),
-    Path.resolve(prefix + 'node_modules/bitcore-mnemonic/node_modules/bitcore-lib')
+    Path.resolve(prefix + 'node_modules/bitcore-mnemonic/node_modules/bitcore-lib'),
+    ];
 
 console.log(pathsToClean);
 
