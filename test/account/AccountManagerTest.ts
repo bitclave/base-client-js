@@ -26,6 +26,8 @@ describe('Account Manager', async () => {
     const authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
     const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
 
+    console.log("Signer: " + rpcSignerHost);
+
     const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
     const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
