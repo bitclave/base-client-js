@@ -1990,7 +1990,7 @@ exports.errorObject = { e: {} };
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(25));
+		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(24));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -6976,74 +6976,6 @@ exports.EmptyObservable = EmptyObservable;
 /* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* eslint-disable node/no-deprecated-api */
-var buffer = __webpack_require__(222)
-var Buffer = buffer.Buffer
-
-// alternative to using Object.keys for old browsers
-function copyProps (src, dst) {
-  for (var key in src) {
-    dst[key] = src[key]
-  }
-}
-if (Buffer.from && Buffer.alloc && Buffer.allocUnsafe && Buffer.allocUnsafeSlow) {
-  module.exports = buffer
-} else {
-  // Copy properties from require('buffer')
-  copyProps(buffer, exports)
-  exports.Buffer = SafeBuffer
-}
-
-function SafeBuffer (arg, encodingOrOffset, length) {
-  return Buffer(arg, encodingOrOffset, length)
-}
-
-// Copy static methods from Buffer
-copyProps(Buffer, SafeBuffer)
-
-SafeBuffer.from = function (arg, encodingOrOffset, length) {
-  if (typeof arg === 'number') {
-    throw new TypeError('Argument must not be a number')
-  }
-  return Buffer(arg, encodingOrOffset, length)
-}
-
-SafeBuffer.alloc = function (size, fill, encoding) {
-  if (typeof size !== 'number') {
-    throw new TypeError('Argument must be a number')
-  }
-  var buf = Buffer(size)
-  if (fill !== undefined) {
-    if (typeof encoding === 'string') {
-      buf.fill(fill, encoding)
-    } else {
-      buf.fill(fill)
-    }
-  } else {
-    buf.fill(0)
-  }
-  return buf
-}
-
-SafeBuffer.allocUnsafe = function (size) {
-  if (typeof size !== 'number') {
-    throw new TypeError('Argument must be a number')
-  }
-  return Buffer(size)
-}
-
-SafeBuffer.allocUnsafeSlow = function (size) {
-  if (typeof size !== 'number') {
-    throw new TypeError('Argument must be a number')
-  }
-  return buffer.SlowBuffer(size)
-}
-
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
 "use strict";
 
 var ConnectableObservable_1 = __webpack_require__(140);
@@ -7106,7 +7038,7 @@ exports.MulticastOperator = MulticastOperator;
 //# sourceMappingURL=multicast.js.map
 
 /***/ }),
-/* 25 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 ;(function (root, factory, undef) {
@@ -7241,6 +7173,74 @@ exports.MulticastOperator = MulticastOperator;
 	return CryptoJS.EvpKDF;
 
 }));
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* eslint-disable node/no-deprecated-api */
+var buffer = __webpack_require__(222)
+var Buffer = buffer.Buffer
+
+// alternative to using Object.keys for old browsers
+function copyProps (src, dst) {
+  for (var key in src) {
+    dst[key] = src[key]
+  }
+}
+if (Buffer.from && Buffer.alloc && Buffer.allocUnsafe && Buffer.allocUnsafeSlow) {
+  module.exports = buffer
+} else {
+  // Copy properties from require('buffer')
+  copyProps(buffer, exports)
+  exports.Buffer = SafeBuffer
+}
+
+function SafeBuffer (arg, encodingOrOffset, length) {
+  return Buffer(arg, encodingOrOffset, length)
+}
+
+// Copy static methods from Buffer
+copyProps(Buffer, SafeBuffer)
+
+SafeBuffer.from = function (arg, encodingOrOffset, length) {
+  if (typeof arg === 'number') {
+    throw new TypeError('Argument must not be a number')
+  }
+  return Buffer(arg, encodingOrOffset, length)
+}
+
+SafeBuffer.alloc = function (size, fill, encoding) {
+  if (typeof size !== 'number') {
+    throw new TypeError('Argument must be a number')
+  }
+  var buf = Buffer(size)
+  if (fill !== undefined) {
+    if (typeof encoding === 'string') {
+      buf.fill(fill, encoding)
+    } else {
+      buf.fill(fill)
+    }
+  } else {
+    buf.fill(0)
+  }
+  return buf
+}
+
+SafeBuffer.allocUnsafe = function (size) {
+  if (typeof size !== 'number') {
+    throw new TypeError('Argument must be a number')
+  }
+  return Buffer(size)
+}
+
+SafeBuffer.allocUnsafeSlow = function (size) {
+  if (typeof size !== 'number') {
+    throw new TypeError('Argument must be a number')
+  }
+  return buffer.SlowBuffer(size)
+}
+
 
 /***/ }),
 /* 26 */
@@ -18407,7 +18407,7 @@ function plucker(props, length) {
 "use strict";
 
 var Subject_1 = __webpack_require__(7);
-var multicast_1 = __webpack_require__(24);
+var multicast_1 = __webpack_require__(23);
 /* tslint:enable:max-line-length */
 /**
  * Returns a ConnectableObservable, which is a variety of Observable that waits until its connect method is called
@@ -18437,7 +18437,7 @@ exports.publish = publish;
 "use strict";
 
 var BehaviorSubject_1 = __webpack_require__(146);
-var multicast_1 = __webpack_require__(24);
+var multicast_1 = __webpack_require__(23);
 /**
  * @param value
  * @return {ConnectableObservable<T>}
@@ -18512,7 +18512,7 @@ exports.BehaviorSubject = BehaviorSubject;
 "use strict";
 
 var ReplaySubject_1 = __webpack_require__(54);
-var multicast_1 = __webpack_require__(24);
+var multicast_1 = __webpack_require__(23);
 /* tslint:enable:max-line-length */
 function publishReplay(bufferSize, windowTime, selectorOrScheduler, scheduler) {
     if (selectorOrScheduler && typeof selectorOrScheduler !== 'function') {
@@ -18532,7 +18532,7 @@ exports.publishReplay = publishReplay;
 "use strict";
 
 var AsyncSubject_1 = __webpack_require__(47);
-var multicast_1 = __webpack_require__(24);
+var multicast_1 = __webpack_require__(23);
 function publishLast() {
     return function (source) { return multicast_1.multicast(new AsyncSubject_1.AsyncSubject())(source); };
 }
@@ -19310,7 +19310,7 @@ var SequenceEqualCompareToSubscriber = (function (_super) {
 
 "use strict";
 
-var multicast_1 = __webpack_require__(24);
+var multicast_1 = __webpack_require__(23);
 var refCount_1 = __webpack_require__(74);
 var Subject_1 = __webpack_require__(7);
 function shareSubjectFactory() {
@@ -23237,6 +23237,14 @@ module.exports = function generate_validate(it, $keyword, $ruleType) {
   var $errorKeyword;
   var $typeSchema = it.schema.type,
     $typeIsArray = Array.isArray($typeSchema);
+  if ($typeSchema && it.opts.nullable && it.schema.nullable === true) {
+    if ($typeIsArray) {
+      if ($typeSchema.indexOf('null') == -1) $typeSchema = $typeSchema.concat('null');
+    } else if ($typeSchema != 'null') {
+      $typeSchema = [$typeSchema, 'null'];
+      $typeIsArray = true;
+    }
+  }
   if ($typeIsArray && $typeSchema.length == 1) {
     $typeSchema = $typeSchema[0];
     $typeIsArray = false;
@@ -23784,7 +23792,7 @@ module.exports = function generate__limitItems(it, $keyword, $ruleType) {
       if ($keyword == 'maxItems') {
         out += 'more';
       } else {
-        out += 'less';
+        out += 'fewer';
       }
       out += ' than ';
       if ($isData) {
@@ -23955,7 +23963,7 @@ module.exports = function generate__limitProperties(it, $keyword, $ruleType) {
       if ($keyword == 'maxProperties') {
         out += 'more';
       } else {
-        out += 'less';
+        out += 'fewer';
       }
       out += ' than ';
       if ($isData) {
@@ -25039,7 +25047,7 @@ var assert = __webpack_require__(233);
 var rlp = __webpack_require__(665);
 var BN = __webpack_require__(12);
 var createHash = __webpack_require__(227);
-var Buffer = __webpack_require__(23).Buffer;
+var Buffer = __webpack_require__(25).Buffer;
 Object.assign(exports, __webpack_require__(666));
 
 /**
@@ -33933,7 +33941,7 @@ Observable_1.Observable.prototype.multicast = multicast_1.multicast;
 
 "use strict";
 
-var multicast_1 = __webpack_require__(24);
+var multicast_1 = __webpack_require__(23);
 /* tslint:enable:max-line-length */
 /**
  * Allows source Observable to be subscribed only once with a Subject of choice,
@@ -37716,7 +37724,7 @@ var mergeScan_1 = __webpack_require__(138);
 exports.mergeScan = mergeScan_1.mergeScan;
 var min_1 = __webpack_require__(139);
 exports.min = min_1.min;
-var multicast_1 = __webpack_require__(24);
+var multicast_1 = __webpack_require__(23);
 exports.multicast = multicast_1.multicast;
 var observeOn_1 = __webpack_require__(49);
 exports.observeOn = observeOn_1.observeOn;
@@ -38231,8 +38239,9 @@ function Ajv(opts) {
   this._metaOpts = getMetaSchemaOptions(this);
 
   if (opts.formats) addInitialFormats(this);
-  addDraft6MetaSchema(this);
+  addDefaultMetaSchema(this);
   if (typeof opts.meta == 'object') this.addMetaSchema(opts.meta);
+  if (opts.nullable) this.addKeyword('nullable', {metaSchema: {const: true}});
   addInitialSchemas(this);
 }
 
@@ -38604,7 +38613,7 @@ function addFormat(name, format) {
 }
 
 
-function addDraft6MetaSchema(self) {
+function addDefaultMetaSchema(self) {
   var $dataSchema;
   if (self._opts.$data) {
     $dataSchema = __webpack_require__(577);
@@ -40677,7 +40686,7 @@ formats.full = {
   'uri-reference': URIREF,
   'uri-template': URITEMPLATE,
   url: URL,
-  email: /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&''*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i,
+  email: /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i,
   hostname: hostname,
   ipv4: /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$/,
   ipv6: /^\s*(?:(?:(?:[0-9a-f]{1,4}:){7}(?:[0-9a-f]{1,4}|:))|(?:(?:[0-9a-f]{1,4}:){6}(?::[0-9a-f]{1,4}|(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){5}(?:(?:(?::[0-9a-f]{1,4}){1,2})|:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(?:(?:[0-9a-f]{1,4}:){4}(?:(?:(?::[0-9a-f]{1,4}){1,3})|(?:(?::[0-9a-f]{1,4})?:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){3}(?:(?:(?::[0-9a-f]{1,4}){1,4})|(?:(?::[0-9a-f]{1,4}){0,2}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){2}(?:(?:(?::[0-9a-f]{1,4}){1,5})|(?:(?::[0-9a-f]{1,4}){0,3}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?:(?:[0-9a-f]{1,4}:){1}(?:(?:(?::[0-9a-f]{1,4}){1,6})|(?:(?::[0-9a-f]{1,4}){0,4}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(?::(?:(?:(?::[0-9a-f]{1,4}){1,7})|(?:(?::[0-9a-f]{1,4}){0,5}:(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(?:%.+)?\s*$/i,
@@ -42648,6 +42657,7 @@ module.exports = function generate_propertyNames(it, $keyword, $ruleType) {
   var $closingBraces = '';
   $it.level++;
   var $nextValid = 'valid' + $it.level;
+  out += 'var ' + ($errs) + ' = errors;';
   if (it.util.schemaHasRules($schema, it.RULES.all)) {
     $it.schema = $schema;
     $it.schemaPath = $schemaPath;
@@ -42661,7 +42671,6 @@ module.exports = function generate_propertyNames(it, $keyword, $ruleType) {
       $dataProperties = 'dataProperties' + $lvl,
       $ownProperties = it.opts.ownProperties,
       $currentBaseId = it.baseId;
-    out += ' var ' + ($errs) + ' = errors; ';
     if ($ownProperties) {
       out += ' var ' + ($dataProperties) + ' = undefined; ';
     }
@@ -44170,7 +44179,7 @@ exports.BitKeyPair = BitKeyPair;
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(58), __webpack_require__(585), __webpack_require__(586), __webpack_require__(28), __webpack_require__(29), __webpack_require__(82), __webpack_require__(210), __webpack_require__(587), __webpack_require__(211), __webpack_require__(588), __webpack_require__(589), __webpack_require__(590), __webpack_require__(83), __webpack_require__(591), __webpack_require__(25), __webpack_require__(9), __webpack_require__(592), __webpack_require__(593), __webpack_require__(594), __webpack_require__(595), __webpack_require__(596), __webpack_require__(597), __webpack_require__(598), __webpack_require__(599), __webpack_require__(600), __webpack_require__(601), __webpack_require__(602), __webpack_require__(603), __webpack_require__(604), __webpack_require__(605), __webpack_require__(606), __webpack_require__(607));
+		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(58), __webpack_require__(585), __webpack_require__(586), __webpack_require__(28), __webpack_require__(29), __webpack_require__(82), __webpack_require__(210), __webpack_require__(587), __webpack_require__(211), __webpack_require__(588), __webpack_require__(589), __webpack_require__(590), __webpack_require__(83), __webpack_require__(591), __webpack_require__(24), __webpack_require__(9), __webpack_require__(592), __webpack_require__(593), __webpack_require__(594), __webpack_require__(595), __webpack_require__(596), __webpack_require__(597), __webpack_require__(598), __webpack_require__(599), __webpack_require__(600), __webpack_require__(601), __webpack_require__(602), __webpack_require__(603), __webpack_require__(604), __webpack_require__(605), __webpack_require__(606), __webpack_require__(607));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -46026,7 +46035,7 @@ exports.BitKeyPair = BitKeyPair;
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(28), __webpack_require__(29), __webpack_require__(25), __webpack_require__(9));
+		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(28), __webpack_require__(29), __webpack_require__(24), __webpack_require__(9));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -46263,7 +46272,7 @@ exports.BitKeyPair = BitKeyPair;
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(28), __webpack_require__(29), __webpack_require__(25), __webpack_require__(9));
+		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(28), __webpack_require__(29), __webpack_require__(24), __webpack_require__(9));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -47038,7 +47047,7 @@ exports.BitKeyPair = BitKeyPair;
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(28), __webpack_require__(29), __webpack_require__(25), __webpack_require__(9));
+		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(28), __webpack_require__(29), __webpack_require__(24), __webpack_require__(9));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -47182,7 +47191,7 @@ exports.BitKeyPair = BitKeyPair;
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(28), __webpack_require__(29), __webpack_require__(25), __webpack_require__(9));
+		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(28), __webpack_require__(29), __webpack_require__(24), __webpack_require__(9));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -47379,7 +47388,7 @@ exports.BitKeyPair = BitKeyPair;
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(28), __webpack_require__(29), __webpack_require__(25), __webpack_require__(9));
+		module.exports = exports = factory(__webpack_require__(4), __webpack_require__(28), __webpack_require__(29), __webpack_require__(24), __webpack_require__(9));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -48684,7 +48693,7 @@ module.exports = __webpack_require__(221)(__webpack_require__(224)('keccak'))
 
 "use strict";
 
-var Buffer = __webpack_require__(23).Buffer
+var Buffer = __webpack_require__(25).Buffer
 var Transform = __webpack_require__(223).Transform
 var inherits = __webpack_require__(30)
 
@@ -48781,7 +48790,7 @@ module.exports = require("util");
 
 "use strict";
 
-var Buffer = __webpack_require__(23).Buffer
+var Buffer = __webpack_require__(25).Buffer
 var Transform = __webpack_require__(223).Transform
 var inherits = __webpack_require__(30)
 
@@ -48878,7 +48887,7 @@ module.exports = __webpack_require__(221)(__webpack_require__(632))
 
 "use strict";
 
-var Buffer = __webpack_require__(23).Buffer
+var Buffer = __webpack_require__(25).Buffer
 var keccakState = __webpack_require__(633)
 
 function Keccak () {
@@ -49487,7 +49496,7 @@ exports.isNumberInInterval = function (number, x, y, message) {
 
 "use strict";
 
-var Buffer = __webpack_require__(23).Buffer
+var Buffer = __webpack_require__(25).Buffer
 var bip66 = __webpack_require__(640)
 
 var EC_PRIVKEY_EXPORT_DER_COMPRESSED = Buffer.from([
@@ -49689,7 +49698,7 @@ exports.signatureImportLax = function (sig) {
 // Format: 0x30 [total-length] 0x02 [R-length] [R] 0x02 [S-length] [S]
 // NOTE: SIGHASH byte ignored AND restricted, truncate before use
 
-var Buffer = __webpack_require__(23).Buffer
+var Buffer = __webpack_require__(25).Buffer
 
 function check (buffer) {
   if (buffer.length < 8) return false
@@ -49806,7 +49815,7 @@ module.exports = {
 
 "use strict";
 
-var Buffer = __webpack_require__(23).Buffer
+var Buffer = __webpack_require__(25).Buffer
 var createHash = __webpack_require__(227)
 var BN = __webpack_require__(12)
 var EC = __webpack_require__(13).ec
@@ -50099,7 +50108,7 @@ module.exports = function(module) {
 /* 643 */
 /***/ (function(module, exports) {
 
-module.exports = {"_from":"elliptic@=6.4.0","_id":"elliptic@6.4.0","_inBundle":false,"_integrity":"sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@=6.4.0","name":"elliptic","escapedName":"elliptic","rawSpec":"=6.4.0","saveSpec":null,"fetchSpec":"=6.4.0"},"_requiredBy":["/bitcore-lib","/browserify-sign","/create-ecdh","/secp256k1"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz","_shasum":"cac9af8762c85836187003c8dfe193e5e2eae5df","_spec":"elliptic@=6.4.0","_where":"/Users/mark/bitclave/repo/base-client-js/node_modules/bitcore-lib","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"bundleDependencies":false,"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"deprecated":false,"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.0"}
+module.exports = {"_args":[["elliptic@6.4.0","/Users/antonbatalin/Documents/Development/2018/bitClave/base-client-js"]],"_from":"elliptic@6.4.0","_id":"elliptic@6.4.0","_inBundle":false,"_integrity":"sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@6.4.0","name":"elliptic","escapedName":"elliptic","rawSpec":"6.4.0","saveSpec":null,"fetchSpec":"6.4.0"},"_requiredBy":["/bitcore-lib","/bitcore-mnemonic/bitcore-lib","/browserify-sign","/create-ecdh","/secp256k1"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz","_spec":"6.4.0","_where":"/Users/antonbatalin/Documents/Development/2018/bitClave/base-client-js","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.0"}
 
 /***/ }),
 /* 644 */
@@ -54573,7 +54582,6 @@ module.exports = Signature;
 /***/ (function(module, exports, __webpack_require__) {
 
 const assert = __webpack_require__(233)
-const Buffer = __webpack_require__(23).Buffer
 /**
  * RLP Encoding based on: https://github.com/ethereum/wiki/wiki/%5BEnglish%5D-RLP
  * This function takes in a data, convert it to buffer if not, and a length for recursion
@@ -54609,12 +54617,12 @@ function safeParseInt (v, base) {
 
 function encodeLength (len, offset) {
   if (len < 56) {
-    return Buffer.from([len + offset])
+    return new Buffer([len + offset])
   } else {
     var hexLength = intToHex(len)
     var lLength = hexLength.length / 2
     var firstByte = intToHex(offset + 55 + lLength)
-    return Buffer.from(firstByte + hexLength, 'hex')
+    return new Buffer(firstByte + hexLength, 'hex')
   }
 }
 
@@ -54625,7 +54633,7 @@ function encodeLength (len, offset) {
  **/
 exports.decode = function (input, stream) {
   if (!input || input.length === 0) {
-    return Buffer.from([])
+    return new Buffer([])
   }
 
   input = toBuffer(input)
@@ -54641,7 +54649,7 @@ exports.decode = function (input, stream) {
 
 exports.getLength = function (input) {
   if (!input || input.length === 0) {
-    return Buffer.from([])
+    return new Buffer([])
   }
 
   input = toBuffer(input)
@@ -54681,7 +54689,7 @@ function _decode (input) {
 
     // set 0x80 null to 0
     if (firstByte === 0x80) {
-      data = Buffer.from([])
+      data = new Buffer([])
     } else {
       data = input.slice(1, length)
     }
@@ -54774,28 +54782,28 @@ function padToEven (a) {
 
 function intToBuffer (i) {
   var hex = intToHex(i)
-  return Buffer.from(hex, 'hex')
+  return new Buffer(hex, 'hex')
 }
 
 function toBuffer (v) {
   if (!Buffer.isBuffer(v)) {
     if (typeof v === 'string') {
       if (isHexPrefixed(v)) {
-        v = Buffer.from(padToEven(stripHexPrefix(v)), 'hex')
+        v = new Buffer(padToEven(stripHexPrefix(v)), 'hex')
       } else {
-        v = Buffer.from(v)
+        v = new Buffer(v)
       }
     } else if (typeof v === 'number') {
       if (!v) {
-        v = Buffer.from([])
+        v = new Buffer([])
       } else {
         v = intToBuffer(v)
       }
     } else if (v === null || v === undefined) {
-      v = Buffer.from([])
+      v = new Buffer([])
     } else if (v.toArray) {
       // converts a BN to a Buffer
-      v = Buffer.from(v.toArray())
+      v = new Buffer(v.toArray())
     } else {
       throw new Error('invalid type')
     }
@@ -55400,21 +55408,7 @@ ABI.rawEncode = function (types, values) {
   var output = []
   var data = []
 
-  var headLength = 0
-
-  types.forEach(function (type) {
-    if (isArray(type)) {
-      var size = parseTypeArray(type)
-
-      if (size !== 'dynamic') {
-        headLength += 32 * size
-      } else {
-        headLength += 32
-      }
-    } else {
-      headLength += 32
-    }
-  })
+  var headLength = 32 * types.length
 
   for (var i in types) {
     var type = elementaryName(types[i])
