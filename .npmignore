@@ -4,3 +4,9 @@ external
 tsconfig.json
 tslint.json
 travis.yml
+.nyc_output
+.vscode
+base-client-js
+coverage
+dist
+external
