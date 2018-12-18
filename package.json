@@ -6,6 +6,7 @@
   "types": "lib/Base.d.ts",
   "scripts": {
     "postinstall": "node remove-bitcore-lib-dep.js",
+    "testRemoteSigner": "SIGNER=\"http://base-signer-staging.herokuapp.com:3545\" mocha --timeout 100000 --recursive --require ts-node/register \"./test/**/*Test.ts\"",
     "test": "mocha --timeout 100000 --recursive --require ts-node/register \"./test/**/*Test.ts\"",
     "testProfile": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/profile/*Test.ts\"",
     "testValidator": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/system/ExtValidatorTest.ts\"",
