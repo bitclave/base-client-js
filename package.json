@@ -1,6 +1,6 @@
 {
   "name": "@antbat/base-client-js",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "Base JS library for BASE-platform",
   "main": "lib/Base.js",
   "types": "lib/Base.d.ts",

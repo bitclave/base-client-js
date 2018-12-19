@@ -1,6 +1,6 @@
 base_client_js_url = git@github.com:bitclave/base-client-js.git
 # base_client_js_dir = /tmp/base-client-js
-base_client_js_dir = '/Users/antonbatalin/Documents/Development/2018/bitClave/base-client-js'
+base_client_js_dir = './..'
 
 postinstall: update_base_client_js
 
@@ -17,4 +17,4 @@ build:
 	rm -rf node_modules/bitclave-base
 	npm install
 	npm run build
-	rm -rf $(base_client_js_dir)
+	# rm -rf $(base_client_js_dir)
