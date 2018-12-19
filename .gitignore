@@ -9,3 +9,4 @@ npm-debug.log
 /lib
 /base-client-js/dist/@types
 /example/public/base-lib/bitclave-base/node_modules/
+*.sh

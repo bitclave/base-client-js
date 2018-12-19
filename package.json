@@ -1,6 +1,6 @@
 {
   "name": "@antbat/base-client-js",
-  "version": "0.2.9",
+  "version": "0.2.14",
   "description": "Base JS library for BASE-platform",
   "main": "lib/Base.js",
   "types": "lib/Base.d.ts",
@@ -13,7 +13,7 @@
     "testProtocol": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/protocol/ServiceProviderTest.ts\"",
     "coverage": "nyc npm run test",
     "coveralls": "npm run coverage && cat coverage/lcov.info | coveralls",
-    "preBuild": "tsc --outDir dist -d",
+    "preBuild": "tsc --outDir lib -d",
     "build": "webpack"
   },
   "repository": {

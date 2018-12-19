@@ -2,7 +2,8 @@
 
 pushd .
 
-cp -R ./base-client-js/dist/@types ./lib/
-cp ./base-client-js/dist/BitclaveBase.js ./lib/
+# fill up the libarary folder
+cp -R ./dist/docs ./lib
+cp -R ./base-client-js/dist/BitclaveBase.* ./lib
 
 popd
