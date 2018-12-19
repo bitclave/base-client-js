@@ -2,7 +2,7 @@
 
 pushd .
 npm install       #postinstall: node remove-bitcore-lib-dep.js
-npm run preBuild  #tsc --outDir dist -d
+# npm run preBuild  #tsc --outDir dist -d
 npm run build     # webpack
 
 cp ./dist/Bitclave-Base.js* example/public/base-lib/bitclave-base
