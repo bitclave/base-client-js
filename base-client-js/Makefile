@@ -1,6 +1,6 @@
 base_client_js_url = git@github.com:bitclave/base-client-js.git
 # base_client_js_dir = /tmp/base-client-js
-base_client_js_dir = './..'
+base_client_js_dir = ./..
 
 postinstall: update_base_client_js
 
