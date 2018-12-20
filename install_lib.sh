@@ -19,10 +19,10 @@ cp -R ./dist/lib/* example/public/base-lib/@types/bitclave-base
 mv ./example/public/base-lib/@types/bitclave-base/Base.d.ts ./example/public/base-lib/@types/bitclave-base/index.d.ts
 cp example/package.json example/public/base-lib/bitclave-base/
 
-cd base-client-js && make build && cd ..
+cd base-client-js-bundle && make build && cd ..
 
 cp -R ./dist/docs ./lib
-cp -R ./base-client-js/dist/BitclaveBase.* ./lib
+cp -R ./base-client-js-bundle/dist/BitclaveBase.* ./lib
 
 rm -rf example/public
 
