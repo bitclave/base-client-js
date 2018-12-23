@@ -32,7 +32,3 @@ node ./external/Signer.js --authPK 02e2d9c04891bf7f9934041d7171ade343e540f5d18bd
 npm test
 ```
 
-# Env variables for test
-+ SIGNER
-+ BASE_NODE_URL
-

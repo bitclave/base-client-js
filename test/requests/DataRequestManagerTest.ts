@@ -13,8 +13,6 @@ import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
 import { AccessRight } from '../../src/utils/keypair/Permissions';
 import { DataRequestManagerImpl } from '../../src/manager/DataRequestManagerImpl';
 
-const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
-
 const should = require('chai')
     .use(require('chai-as-promised'))
     .should();
@@ -23,6 +21,7 @@ describe('Data Request Manager', async () => {
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
 
+    const rpcSignerHost: string = 'http://localhost:3545';
     const rpcTransport: RpcTransport = new RpcTransportImpl(new HttpTransportImpl(rpcSignerHost));
     const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
@@ -81,8 +80,14 @@ describe('Data Request Manager', async () => {
     it('request for permissions data', async () => {
         await requestManagerAlisa.requestPermissions(keyPairHelperBob.getPublicKey(), bobsFields);
 
-        const requestsByFrom = await requestManagerAlisa.getRequests(keyPairHelperAlisa.getPublicKey(), null);
-        const requestsByTo = await requestManagerAlisa.getRequests(null, keyPairHelperBob.getPublicKey());
+        const requestsByFrom = await requestManagerAlisa.getRequests(
+            keyPairHelperAlisa.getPublicKey(),
+            null
+        );
+        const requestsByTo = await requestManagerAlisa.getRequests(
+            null,
+            keyPairHelperBob.getPublicKey()
+        );
 
         requestsByFrom.should.be.deep.equal(requestsByTo);
 

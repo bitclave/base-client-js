@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./lib",
+    "outDir": "./dist",
     "module": "commonjs",
     "target": "es5",
     "baseUrl": ".",
@@ -11,10 +11,11 @@
     "diagnostics": true,
     "sourceMap": true,
     "moduleResolution": "node",
+    "rootDir": "./",
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "removeComments": false,
-    "declaration": true,
+    "declaration": false,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
@@ -29,8 +30,6 @@
     "node_modules",
     "test",
     "dist",
-    "example",
-    "base-client-js-bundle",
-    "lib"
+    "example"
   ]
 }

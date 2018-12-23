@@ -46,11 +46,19 @@ import { SearchManagerImpl } from './manager/SearchManagerImpl';
 import { WalletManagerImpl } from './manager/WalletManagerImpl';
 import { OfferSearchRepository } from './repository/search/OfferSearchRepository';
 import { OfferSearchRepositoryImpl } from './repository/search/OfferSearchRepositoryImpl';
-import  OfferSearchResultItem  from './repository/models/OfferSearchResultItem';
+import OfferSearchResultItem from './repository/models/OfferSearchResultItem';
 import OfferSearch, { OfferResultAction } from './repository/models/OfferSearch';
-import  OfferShareData  from './repository/models/OfferShareData';
+import OfferShareData from './repository/models/OfferShareData';
 import { OfferShareDataRepository } from './repository/offer/OfferShareDataRepository';
 import OfferShareDataRepositoryImpl from './repository/offer/OfferShareDataRepositoryImpl';
+import { SubscriptionManager } from './manager/SubscriptionManager';
+import { SubscriptionManagerImpl } from './manager/SubscriptionManagerImpl';
+import GeneralService from './repository/service/GeneralService';
+import SubscriptionPointer from './repository/service/SubscriptionPointer';
+import ServiceType from './repository/service/ServiceType';
+import { ShareDataRepository } from './repository/offer/ShareDataRepository';
+import ShareDataRepositoryImpl from './repository/offer/ShareDataRepositoryImpl';
+
 
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
@@ -70,6 +78,8 @@ export { Permissions, AccessRight } from './utils/keypair/Permissions';
 export { AcceptedField } from './utils/keypair/AcceptedField';
 export { RpcToken } from './utils/keypair/rpc/RpcToken';
 export { RpcAuth } from './utils/keypair/rpc/RpcAuth';
+export { Service, ServiceInfo } from './repository/service/Service';
+export { TokenPointer } from './repository/offer/TokenPointer';
 
 export {
     BaseAddrPair,
@@ -88,6 +98,11 @@ export {
     SearchManager,
     WalletManager,
     WalletManagerImpl,
+    SubscriptionManager,
+    SubscriptionManagerImpl,
+    GeneralService,
+    ServiceType,
+    SubscriptionPointer,
     Offer,
     OfferPrice,
     OfferPriceRules,
@@ -100,7 +115,9 @@ export {
     OfferShareDataRepositoryImpl,
     OfferSearchRepository,
     OfferSearchRepositoryImpl,
-    HttpTransportImpl
+    HttpTransportImpl,
+    ShareDataRepository,
+    ShareDataRepositoryImpl,
 };
 
 export default class Base {
@@ -111,13 +128,14 @@ export default class Base {
     private _dataRequestManager: DataRequestManager;
     private _offerManager: OfferManager;
     private _searchManager: SearchManager;
+    private _subscriptionManager: SubscriptionManager;
     private _authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
     private _repositoryStrategyInterceptor: RepositoryStrategyInterceptor;
 
     constructor(nodeHost: string,
-                siteOrigin: string,
-                strategy: RepositoryStrategyType = RepositoryStrategyType.Postgres,
-                signerHost: string = '') {
+        siteOrigin: string,
+        strategy: RepositoryStrategyType = RepositoryStrategyType.Postgres,
+        signerHost: string = '') {
 
         this._repositoryStrategyInterceptor = new RepositoryStrategyInterceptor(strategy);
 
@@ -182,6 +200,12 @@ export default class Base {
             messageSigner,
             this._authAccountBehavior.asObservable()
         );
+
+        this._subscriptionManager = new SubscriptionManagerImpl(
+            this.profileManager,
+            this.dataRequestManager,
+            this._authAccountBehavior.asObservable()
+        );
     }
 
     changeStrategy(strategy: RepositoryStrategyType) {
@@ -212,6 +236,10 @@ export default class Base {
         return this._searchManager;
     }
 
+    get subscriptionManager(): SubscriptionManager {
+        return this._subscriptionManager;
+    }
+
     private createNodeAssistant(httpTransport: HttpTransport): AssistantNodeRepository {
         const accountRepository: AccountRepository = new AccountRepositoryImpl(httpTransport);
         const dataRequestRepository: DataRequestRepository = new DataRequestRepositoryImpl(httpTransport);
@@ -221,9 +249,9 @@ export default class Base {
     }
 
     private createKeyPairHelper(signerHost: string,
-                                permissionSource: PermissionsSource,
-                                siteDataSource: SiteDataSource,
-                                siteOrigin: string): KeyPairHelper {
+        permissionSource: PermissionsSource,
+        siteDataSource: SiteDataSource,
+        siteOrigin: string): KeyPairHelper {
         return (signerHost.length === 0)
             ? KeyPairFactory.createDefaultKeyPair(permissionSource, siteDataSource, siteOrigin)
             : KeyPairFactory.createRpcKeyPair(TransportFactory.createJsonRpcHttpTransport(signerHost));

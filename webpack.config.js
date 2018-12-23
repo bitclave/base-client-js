@@ -6,7 +6,9 @@ module.exports = {
     devtool: 'source-map',
     node: {
         fs: 'empty',
-        child_process: 'empty'
+        child_process: 'empty',
+        __dirname: false,
+        __filename: false
     },
     target: 'node',
     externals: {
