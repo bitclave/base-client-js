@@ -4,6 +4,8 @@ import { Response } from './Response';
 import { HttpInterceptor } from './HttpInterceptor';
 import { InterceptorCortege } from './InterceptorCortege';
 
+const FormData = require('form-data');
+const req = require('request');
 let XMLHttpRequest: any;
 
 if ((typeof window !== 'undefined' && (<any> window).XMLHttpRequest)) {
@@ -61,8 +63,63 @@ export class HttpTransportImpl implements HttpTransport {
                         const result: Response = new Response(request.responseText, request.status);
                         reject(result);
                     };
-
                     request.send(JSON.stringify(cortege.data ? cortege.data : {}));
+                } catch (e) {
+                    reject(e);
+                }
+            }));
+    }
+
+    sendBlobRequest(path: string, method: HttpMethod, headers: Map<string, string>, data?: any, file?: File,): Promise<Response> {
+        return this.acceptInterceptor(new InterceptorCortege(path, method, headers, data, file))
+            .then((cortege: InterceptorCortege) => new Promise<Response>((resolve, reject) => {
+                try {
+                    const url = cortege.path ? this.getHost() + cortege.path : this.getHost();
+
+                    if(cortege.file) {
+                        var formData = {
+                            signature: JSON.stringify(cortege.data ? cortege.data : {}),
+                            data: cortege.file,
+                          };
+
+                        req.post({url:url, formData: formData}, function optionalCallback(err: any, httpResponse: any, body: any) {
+                            if (err) {
+                                const result: Response = new Response(err, httpResponse.statusCode);
+                                reject(result);
+                            } else {
+                                const result: Response = new Response(body, httpResponse.statusCode);
+                                if (result.status >= 200 && result.status < 300) {
+                                    resolve(result);
+    
+                                } else {
+                                    reject(result);
+                                }
+                            }
+                        }); 
+                    } else {
+                        const request: XMLHttpRequest = new XMLHttpRequest();
+                        request.open(method, url);
+
+                        cortege.headers.forEach((value, key) => {
+                            request.setRequestHeader(key, value);
+                        });
+
+                        request.onload = () => {
+                            const result: Response = new Response(request.responseText, request.status);
+                            if (request.status >= 200 && request.status < 300) {
+                                resolve(result);
+    
+                            } else {
+                                reject(result);
+                            }
+                        };
+
+                        request.onerror = () => {
+                            const result: Response = new Response(request.responseText, request.status);
+                            reject(result);
+                        };
+                        request.send(JSON.stringify(cortege.data ? cortege.data : {}));
+                    }
                 } catch (e) {
                     reject(e);
                 }

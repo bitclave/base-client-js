@@ -6,12 +6,14 @@ export class InterceptorCortege {
     method: HttpMethod;
     headers: Map<string, string>;
     data?: any;
+    file?: File;
 
-    constructor(path: string, method: HttpMethod, headers: Map<string, string>, data?: any) {
+    constructor(path: string, method: HttpMethod, headers: Map<string, string>, data?: any, file?: File) {
         this.path = path;
         this.method = method;
         this.headers = headers;
         this.data = data;
+        this.file = file;
     }
 
     isTransaction(): boolean {

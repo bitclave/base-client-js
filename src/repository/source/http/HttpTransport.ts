@@ -10,6 +10,8 @@ export declare interface HttpTransport {
 
     sendRequest(path: string, method: HttpMethod, data?: any): Promise<Response>;
 
+    sendBlobRequest(path: string, method: HttpMethod, headers: Map<string, string>, data?: any, file?: File): Promise<Response>;
+
     addInterceptor(interceptor: HttpInterceptor): HttpTransport;
 
 }
