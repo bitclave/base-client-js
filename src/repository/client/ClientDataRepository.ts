@@ -6,7 +6,7 @@ export interface ClientDataRepository {
 
     updateData(id: string, data: Map<string, string>): Promise<Map<string, string>>;
 
-    getFile(id: string, fileId: number): Promise<Blob>;
+    getFile(id: string, fileId: number): Promise<Buffer>;
 
     uploadFile(id: string, file: File, fileId?: number): Promise<FileMeta>;
 

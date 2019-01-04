@@ -138,6 +138,7 @@ export class ProfileManagerImpl implements ProfileManager {
      * @returns {Promise<FileMeta>} Encrypted FileMeta.
      */
     public uploadFile(file: File, key: string): Promise<FileMeta> {
+        //return this.encrypt.encryptFile(file).then(encryptedFile => 
         return this.getFileMetaWithGivenKey(key)
             .then(meta => this.clientDataRepository.uploadFile(this.account.publicKey, file, meta.id)
                 .then(updatedMeta => this.updateFileMetaWithGivenKey(key, updatedMeta)))
@@ -151,7 +152,7 @@ export class ProfileManagerImpl implements ProfileManager {
      *
      * @returns {Promise<File>} decrypted file blob data.
      */
-    public downloadFile(id: number): Promise<Blob> {
+    public downloadFile(id: number): Promise<Buffer> {
         return this.clientDataRepository.getFile(this.account.publicKey, id);
     }
 

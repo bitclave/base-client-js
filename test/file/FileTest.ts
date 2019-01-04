@@ -100,11 +100,12 @@ describe('File CRUD', async () => {
             console.log(e);
             throw e;
         }
-    });
+    }); 
 
     it('should download existed file', async () => {
         try {
             const fileToUpload = fs.createReadStream('./test/asset/test.png');
+            const actualFile = fs.readFileSync('./test/asset/test.png');
             const fileMetaUploaded: FileMeta = await baseAlice.profileManager.uploadFile(fileToUpload, key);
             fileMetaUploaded.id.should.exist;
 
@@ -112,9 +113,10 @@ describe('File CRUD', async () => {
 
             savedFileMeta.should.be.deep.equal(fileMetaUploaded);
 
-            const file: Blob = await baseAlice.profileManager.downloadFile(fileMetaUploaded.id);
+            const file: Buffer = await baseAlice.profileManager.downloadFile(fileMetaUploaded.id);
 
             file.should.exist;
+            actualFile.equals(file);
 
         } catch (e) {
             console.log(e);

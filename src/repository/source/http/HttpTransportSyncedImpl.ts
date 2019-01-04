@@ -5,6 +5,9 @@ import { HttpInterceptor } from './HttpInterceptor';
 import { InterceptorCortege } from './InterceptorCortege';
 import Transaction from './Transaction';
 
+// const MemoryFileSystem = require("memory-fs");
+// const fs = new MemoryFileSystem();
+const fs = require('fs');
 const FormData = require('form-data');
 const req = require('request');
 let XMLHttpRequest: any;
@@ -90,7 +93,6 @@ export class HttpTransportSyncedImpl implements HttpTransport {
                             signature: JSON.stringify(cortege.data ? cortege.data : {}),
                             data: cortege.file,
                           };
-
                         let _this = this;
                         req.post({url:url, formData: formData}, function optionalCallback(err: any, httpResponse: any, body: any) {
                             if (err) {
@@ -112,6 +114,35 @@ export class HttpTransportSyncedImpl implements HttpTransport {
                                 }
                             }
                         }); 
+                    } else if(cortege.path.includes('/v1/file/')) {
+                        let _this = this;
+                        let r = req.get({url:url, body:JSON.stringify(cortege.data ? cortege.data : {})}).on('response', function(res:any) {
+                                var filename: string = '', contentDisp = res.headers['content-disposition'];
+                                if (contentDisp && /^attachment/i.test(contentDisp)) {
+                                    filename = contentDisp.toLowerCase()
+                                        .split('filename=')[1]
+                                        .split(';')[0]
+                                        .replace(/"/g, '');
+                                }
+                                let stream = r.pipe(fs.createWriteStream(`/${filename}`));
+                                //fs.writeFileSync(`/${Key}`,result.Body);
+
+                                stream.on("finish", function() {
+                                    const file = fs.readFileSync(`/${filename}`);
+                                    const result: Response = new Response(file, res.statusCode);
+                                    if (result.status >= 200 && result.status < 300) {
+                                        resolve();
+                                        transaction.resolve(result);
+                                        _this.callNextRequest();
+        
+                                    } else {
+                                        reject();
+                                        transaction.reject(result);
+                                        _this.callNextRequest();
+                                    } 
+                                });
+                            }
+                        ); 
                     } else {
                         request.open(cortege.method, url);
 

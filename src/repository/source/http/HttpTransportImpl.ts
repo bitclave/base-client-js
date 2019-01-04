@@ -58,11 +58,11 @@ export class HttpTransportImpl implements HttpTransport {
                             reject(result);
                         }
                     };
-
                     request.onerror = () => {
                         const result: Response = new Response(request.responseText, request.status);
                         reject(result);
                     };
+                    debugger
                     request.send(JSON.stringify(cortege.data ? cortege.data : {}));
                 } catch (e) {
                     reject(e);
@@ -70,7 +70,7 @@ export class HttpTransportImpl implements HttpTransport {
             }));
     }
 
-    sendBlobRequest(path: string, method: HttpMethod, headers: Map<string, string>, data?: any, file?: File,): Promise<Response> {
+    sendBlobRequest(path: string, method: HttpMethod, headers: Map<string, string>, data?: any, file?: File): Promise<Response> {
         return this.acceptInterceptor(new InterceptorCortege(path, method, headers, data, file))
             .then((cortege: InterceptorCortege) => new Promise<Response>((resolve, reject) => {
                 try {

@@ -62,7 +62,7 @@ export interface ProfileManager {
      *
      * @returns {Promise<File>} decrypted file blob data.
      */
-    downloadFile(id: number): Promise<Blob>;
+    downloadFile(id: number): Promise<Buffer>;
 
     /**
      * Returns given key's decrypted value of authorized user's data.

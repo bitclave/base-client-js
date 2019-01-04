@@ -35,7 +35,7 @@ export default class ClientDataRepositoryImpl implements ClientDataRepository {
             .then((response) => JsonUtils.jsonToMap<string, string>(response.json));
     }
 
-    getFile(pk: string, fileId: number): Promise<Blob> {
+    getFile(pk: string, fileId: number): Promise<Buffer> {
         return this.transport
             .sendBlobRequest(
                 this.FILE_GET_FILE.replace('{pk}', pk).replace('{fileId}', fileId.toString()),
@@ -45,10 +45,11 @@ export default class ClientDataRepositoryImpl implements ClientDataRepository {
                 ]),
                 pk
             )
-            .then((response) => response.json as Blob);
+            .then((response) => response.json as Buffer);
     }
 
     uploadFile(pk: string, file: File, fileId?: number): Promise<FileMeta> {
+
         let path: string = this.FILE_UPLOAD_FILE.replace('{pk}', pk);
         if(fileId! > 0) {
             path += fileId!.toString() + '/';

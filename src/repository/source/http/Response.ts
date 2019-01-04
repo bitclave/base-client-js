@@ -3,7 +3,7 @@ export class Response {
     private _json: any;
     private _status: number;
 
-    constructor(json: string, status: number) {
+    constructor(json: any, status: number) {
         try {
             this._json = JSON.parse(json);
         } catch (e) {
