@@ -49,12 +49,10 @@ export default class ClientDataRepositoryImpl implements ClientDataRepository {
     }
 
     uploadFile(pk: string, file: File, fileId?: number): Promise<FileMeta> {
-
         let path: string = this.FILE_UPLOAD_FILE.replace('{pk}', pk);
         if(fileId! > 0) {
             path += fileId!.toString() + '/';
         }
-
         return this.transport
             .sendBlobRequest(
                 path,

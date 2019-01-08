@@ -5,13 +5,15 @@ export class InterceptorCortege {
     path: string;
     method: HttpMethod;
     headers: Map<string, string>;
+    blobRequest: boolean;
     data?: any;
     file?: File;
 
-    constructor(path: string, method: HttpMethod, headers: Map<string, string>, data?: any, file?: File) {
+    constructor(path: string, method: HttpMethod, headers: Map<string, string>, blobRequest: boolean, data?: any, file?: File) {
         this.path = path;
         this.method = method;
         this.headers = headers;
+        this.blobRequest = blobRequest;
         this.data = data;
         this.file = file;
     }

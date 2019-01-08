@@ -15,8 +15,8 @@ const should = require('chai')
 const fs = require('fs');
 
 const someSigMessage = 'some unique message for signature';
-const baseNodeUrl = process.env.BASE_NODE_URL || 'http://localhost:8080';
-const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
+const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
+const rpcSignerHost = process.env.SIGNER || ''; // use internal SIGNER
 const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
 const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
@@ -35,7 +35,9 @@ async function createUser(user: Base, pass: string): Promise<Account> {
 }
 
 describe('File CRUD', async () => {
-    const key: string = 'dl_file';
+    const new_key: string = 'new_file';
+    const update_key: string = 'update_file';
+    const download_key: string = 'download_file';
     const passPhraseAlisa: string = 'Alice'; // need 5 symbols
 
     const baseAlice: Base = createBase();
@@ -51,8 +53,12 @@ describe('File CRUD', async () => {
         );
     }
 
-    beforeEach(async () => {
+    before(async () => {
         accAlice = await createUser(baseAlice, passPhraseAlisa);
+    });
+
+    beforeEach(async () => {
+        //accAlice = await createUser(baseAlice, passPhraseAlisa);
     });
 
     after(async () => {
@@ -66,10 +72,10 @@ describe('File CRUD', async () => {
     it('should upload simple file with key', async () => {
         try {
             const fileToUpload = fs.createReadStream('./test/asset/test.png');
-            const fileMetaUploaded: FileMeta = await baseAlice.profileManager.uploadFile(fileToUpload, key);
+            const fileMetaUploaded: FileMeta = await baseAlice.profileManager.uploadFile(fileToUpload, new_key);
             fileMetaUploaded.id.should.exist;
 
-            const savedFileMeta = await baseAlice.profileManager.getFileMetaWithGivenKey(key);
+            const savedFileMeta = await baseAlice.profileManager.getFileMetaWithGivenKey(new_key);
 
             savedFileMeta.should.be.deep.equal(fileMetaUploaded);
         } catch (e) {
@@ -80,20 +86,21 @@ describe('File CRUD', async () => {
 
     it('should update key\'s existed file', async () => {
         try {
+            debugger
             const fileToUpload = fs.createReadStream('./test/asset/test.png');
-            const fileMetaUploaded: FileMeta = await baseAlice.profileManager.uploadFile(fileToUpload, key);
+            const fileMetaUploaded: FileMeta = await baseAlice.profileManager.uploadFile(fileToUpload, update_key);
             fileMetaUploaded.id.should.exist;
 
-            const savedFileMeta = await baseAlice.profileManager.getFileMetaWithGivenKey(key);
+            const savedFileMeta = await baseAlice.profileManager.getFileMetaWithGivenKey(update_key);
 
             savedFileMeta.should.be.deep.equal(fileMetaUploaded);
 
             const fileToUpdate = fs.createReadStream('./test/asset/test.png');
-            const fileMetaUpdated: FileMeta = await baseAlice.profileManager.uploadFile(fileToUpdate, key);
+            const fileMetaUpdated: FileMeta = await baseAlice.profileManager.uploadFile(fileToUpdate, update_key);
             fileMetaUpdated.id.should.exist;
             fileMetaUpdated.id.should.be.eql(fileMetaUploaded.id);
 
-            const updatedFileMeta = await baseAlice.profileManager.getFileMetaWithGivenKey(key);
+            const updatedFileMeta = await baseAlice.profileManager.getFileMetaWithGivenKey(update_key);
 
             updatedFileMeta.should.be.deep.equal(fileMetaUpdated);
         } catch (e) {
@@ -106,10 +113,10 @@ describe('File CRUD', async () => {
         try {
             const fileToUpload = fs.createReadStream('./test/asset/test.png');
             const actualFile = fs.readFileSync('./test/asset/test.png');
-            const fileMetaUploaded: FileMeta = await baseAlice.profileManager.uploadFile(fileToUpload, key);
+            const fileMetaUploaded: FileMeta = await baseAlice.profileManager.uploadFile(fileToUpload, download_key);
             fileMetaUploaded.id.should.exist;
 
-            const savedFileMeta = await baseAlice.profileManager.getFileMetaWithGivenKey(key);
+            const savedFileMeta = await baseAlice.profileManager.getFileMetaWithGivenKey(download_key);
 
             savedFileMeta.should.be.deep.equal(fileMetaUploaded);
 

@@ -13,6 +13,8 @@ const bitcore = require('bitcore-lib');
 const Message = require('bitcore-message');
 const ECIES = require('bitcore-ecies');
 const Mnemonic = require('bitcore-mnemonic');
+const Crypto = require('crypto');
+const fs = require('fs');
 
 export class BitKeyPair implements KeyPairHelper {
 
@@ -24,6 +26,8 @@ export class BitKeyPair implements KeyPairHelper {
     private siteDataSource: SiteDataSource;
     private origin: string;
     private isConfidential: boolean = false;
+    private encipher: any;
+    private decipher: any
 
     constructor(permissionsSource: PermissionsSource, siteDataSource: SiteDataSource, origin: string) {
         this.permissions = new Permissions();
@@ -121,6 +125,23 @@ export class BitKeyPair implements KeyPairHelper {
         const jsonMap = JsonUtils.mapToJson(resultMap);
 
         return await this.encryptMessage(recipient, JSON.stringify(jsonMap));
+    }
+
+    async encryptFile(file: any): Promise<any> {
+        const iv = await this.generatePasswordForField(this.getAddr());
+        this.encipher = Crypto.createCipheriv('aes-256-ctr', this.getPublicKey().slice(0, 32), iv.slice(0, 16));
+        return new Promise<any>(resolve => {
+            let stream = file.pipe(this.encipher).pipe(fs.createWriteStream(`/${file.path.split('/').slice(-1).pop()}`));
+            stream.on("finish", () => { resolve(fs.createReadStream(`/${file.path.split('/').slice(-1).pop()}`)); });
+        });
+    }
+
+    async decryptFile(file: any): Promise<any> {
+        const iv = await this.generatePasswordForField(this.getAddr());
+        this.decipher = Crypto.createDecipheriv('aes-256-ctr', this.getPublicKey().slice(0, 32), iv.slice(0, 16));
+        return new Promise<any>(resolve => {
+            resolve (Buffer.concat([this.decipher.update(file) , this.decipher.final()]));
+        });
     }
 
     async decryptMessage(senderPk: string, encrypted: string): Promise<string> {
