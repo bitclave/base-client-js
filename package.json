@@ -1,6 +1,6 @@
 {
   "name": "@bitclave/base-client-js",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Base JS library for BASE-platform",
   "main": "lib/Base.js",
   "types": "lib/Base.d.ts",
@@ -14,12 +14,10 @@
     "testProtocol": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/protocol/ServiceProviderTest.ts\"",
     "coverage": "nyc npm run test",
     "coveralls": "npm run coverage && cat coverage/lcov.info | coveralls",
-    "build": "npm run cleanup && tsc && npm run documentation",
+    "preBuild": "tsc --outDir lib -d",
+    "build": "webpack",
     "checkTestCode": "tsc --noEmit test/**/*.ts test/*.ts",
-    "checkSourceCode": "tsc --noEmit",
-    "cleanup": "rm -rf lib",
-    "prepare": "npm run build",
-    "documentation": "webpack && rm ./lib/main.js"
+    "checkSourceCode": "tsc --noEmit"
   },
   "nyc": {
     "extension": [
@@ -66,6 +64,7 @@
     "bitcore-mnemonic": "^1.5.0",
     "crypto-js": "^3.1.9-1",
     "eth-sig-util": "^1.4.2",
+    "ethereumjs-abi": "^0.6.5",
     "node-fetch": "^2.2.0",
     "rxjs": "^5.5.10",
     "xmlhttprequest": "^1.8.0"

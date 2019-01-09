@@ -1,0 +1,26 @@
+{
+  "name": "base-auth-frontend.base-client-js",
+  "version": "1.0.0",
+  "description": "base-auth-frontend.base-client-js =========",
+  "private": true,
+  "scripts": {
+    "postinstall": "make postinstall",
+    "build": "webpack --mode production",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitclave/base-auth-frontend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/bitclave/base-auth-frontend/issues"
+  },
+  "homepage": "https://github.com/bitclave/base-auth-frontend#readme",
+  "devDependencies": {
+    "webpack": "^4.27.0",
+    "webpack-cli": "^3.1.2"
+  },
+  "dependencies": {}
+}
