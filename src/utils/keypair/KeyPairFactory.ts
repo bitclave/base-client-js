@@ -13,8 +13,8 @@ export class KeyPairFactory {
         return new BitKeyPair(permissionsSource, siteDataSource, origin);
     }
 
-    public static createRpcKeyPair(rpcTransport: RpcTransport): KeyPairHelper {
-        return new RpcKeyPair(rpcTransport);
+    public static createRpcKeyPair(rpcTransport: RpcTransport, accessToken: string = ''): KeyPairHelper {
+        return new RpcKeyPair(rpcTransport, accessToken);
     }
 
 }

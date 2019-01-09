@@ -21,7 +21,8 @@ export class RpcKeyPair implements KeyPairHelper, RemoteSigner {
     private clientData: RpcClientData;
     private accessToken: string = '';
 
-    constructor(rpcTransport: RpcTransport) {
+    constructor(rpcTransport: RpcTransport, accessToken: string = '') {
+        this.accessToken = accessToken;
         this.rpcTransport = rpcTransport;
     }
 

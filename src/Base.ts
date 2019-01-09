@@ -117,7 +117,8 @@ export default class Base {
     constructor(nodeHost: string,
                 siteOrigin: string,
                 strategy: RepositoryStrategyType = RepositoryStrategyType.Postgres,
-                signerHost: string = '') {
+                signerHost: string = '',
+                accessToken: string = '') {
 
         this._repositoryStrategyInterceptor = new RepositoryStrategyInterceptor(strategy);
 
@@ -127,7 +128,7 @@ export default class Base {
         const nodeAssistant: AssistantNodeRepository = this.createNodeAssistant(assistantHttpTransport);
 
         const keyPairHelper: KeyPairHelper =
-            this.createKeyPairHelper(signerHost, nodeAssistant, nodeAssistant, siteOrigin);
+            this.createKeyPairHelper(signerHost, nodeAssistant, nodeAssistant, siteOrigin, accessToken);
 
         const messageSigner: MessageSigner = keyPairHelper;
         const encryptMessage: MessageEncrypt = keyPairHelper;
@@ -223,10 +224,11 @@ export default class Base {
     private createKeyPairHelper(signerHost: string,
                                 permissionSource: PermissionsSource,
                                 siteDataSource: SiteDataSource,
-                                siteOrigin: string): KeyPairHelper {
+                                siteOrigin: string,
+                                accessToken: string = ''): KeyPairHelper {
         return (signerHost.length === 0)
             ? KeyPairFactory.createDefaultKeyPair(permissionSource, siteDataSource, siteOrigin)
-            : KeyPairFactory.createRpcKeyPair(TransportFactory.createJsonRpcHttpTransport(signerHost));
+            : KeyPairFactory.createRpcKeyPair(TransportFactory.createJsonRpcHttpTransport(signerHost), accessToken);
     }
 
 }
