@@ -86,6 +86,15 @@ export class RpcKeyPair implements KeyPairHelper, RemoteSigner {
         ).then((response) => JsonUtils.jsonToMap<string, string>(response));
     }
 
+    async encryptFile(file: any): Promise<any> {
+        console.log('encryptFile API is not supported for RpcKeyPair');
+        return new Promise<any>(resolve => {throw 'encryptFile API is not supported for RpcKeyPair'});
+    }
+
+    async decryptFile(file: any): Promise<any> {
+        console.log('decryptFile API is not supported for RpcKeyPair');
+        return new Promise<any>(resolve => {throw 'decryptFile API is not supported for RpcKeyPair'});
+    }
     public setAccessToken(accessToken: string) {
         this.accessToken = accessToken;
     }

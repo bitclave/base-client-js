@@ -8,6 +8,7 @@ import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
 import { AcceptedField } from '../utils/keypair/AcceptedField';
 import { ProfileManager } from './ProfileManager';
+import FileMeta from '../repository/models/FileMeta';
 
 export class ProfileManagerImpl implements ProfileManager {
 
@@ -124,6 +125,57 @@ export class ProfileManagerImpl implements ProfileManager {
 
     private onChangeAccount(account: Account) {
         this.account = account;
+    }
+
+    /**
+     * Encrypts and stores file in BASE.
+     * @param {File} file the actual file blob data
+     * @param {String} key the key of FileMeta value in profile data
+     * @param {number?} id not encrypted file id
+     * If the fileId is undefined, creates a new file, added associated FileMeta to Profile data with the key and returns FileMeta. 
+     * If not then updates the existing file and its FileMeta in Profile data and returns updated FileMeta
+     *
+     * @returns {Promise<FileMeta>} Encrypted FileMeta.
+     */
+    public uploadFile(file: File, key: string): Promise<FileMeta> {
+        return this.encrypt.encryptFile(file).then(encryptedFile => 
+            this.getFileMetaWithGivenKey(key)
+        //return this.getFileMetaWithGivenKey(key)
+            .then(meta => this.clientDataRepository.uploadFile(this.account.publicKey, encryptedFile, meta.id)
+                .then(updatedMeta => this.updateFileMetaWithGivenKey(key, updatedMeta)))
+            .catch(notExist => this.clientDataRepository.uploadFile(this.account.publicKey, encryptedFile)
+                .then(newMeta => this.updateFileMetaWithGivenKey(key, newMeta))));
+    }
+
+    /**
+     * Returns decrypted file blob data of the authorized user based on provided file id.
+     * @param {number} id not encrypted file id
+     *
+     * @returns {Promise<File>} decrypted file blob data.
+     */
+    public downloadFile(id: number): Promise<Buffer> {
+        return this.clientDataRepository.getFile(this.account.publicKey, id).then(file =>
+            this.decrypt.decryptFile(file));
+    }
+
+    public async getFileMetaWithGivenKey(key: string): Promise<FileMeta> {
+        const myData: Map<string, string> = await this.getData();
+        let fileMeta: FileMeta;
+        if (myData.has(key)) {
+            const meta: string = myData.get(key) || '';
+            fileMeta = Object.assign(new FileMeta(), JSON.parse(meta));
+        } else {
+            throw key + ' data not exist!';
+        }
+
+        return fileMeta;
+    }
+
+    private async updateFileMetaWithGivenKey(key: string, fileMeta: FileMeta): Promise<FileMeta> {
+         const myData: Map<string, string> = await this.getData();
+         myData.set(key, JSON.stringify(fileMeta));
+         await this.updateData(myData);
+         return fileMeta;
     }
 
 }
