@@ -56,6 +56,14 @@ export class SearchManagerImpl implements SearchManager {
         return this.offerSearchRepository.complainToSearchItem(this.account.publicKey, searchResultId);
     }
 
+    public rejectSearchItem(searchResultId: number): Promise<void> {
+        return this.offerSearchRepository.rejectSearchItem(this.account.publicKey, searchResultId);
+    }
+
+    public evaluateSearchItem(searchResultId: number): Promise<void> {
+        return this.offerSearchRepository.evaluateSearchItem(this.account.publicKey, searchResultId);
+    }
+
     public addResultItem(offerSearch: OfferSearch): Promise<void> {
         return this.offerSearchRepository.addResultItem(this.account.publicKey, offerSearch);
     }
