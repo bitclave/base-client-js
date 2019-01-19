@@ -10,6 +10,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     private readonly OFFER_SEARCH_API = '/v1/search/result/{id}';
     private readonly OFFER_SEARCH_REJECT_API = '/v1/search/result/reject/{id}';
     private readonly OFFER_SEARCH_EVALUATE_API = '/v1/search/result/evaluate/{id}';
+    private readonly OFFER_SEARCH_CONFIRM_API = '/v1/search/result/confirm/{id}';
     private readonly OFFER_SEARCH_ADD_API = '/v1/search/result/';
 
     private transport: HttpTransport;
@@ -57,6 +58,15 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_EVALUATE_API
                 .replace('{id}', searchResultId.toString()) + `?searchResultId=${searchResultId}`,
+            HttpMethod.Patch,
+            searchResultId
+        );
+    }
+
+    public confirmSearchItem(clientId: string, searchResultId: number): Promise<any> {
+        return this.transport.sendRequest(
+            this.OFFER_SEARCH_CONFIRM_API
+                .replace('{id}', searchResultId.toString()) + `?searchResultId=${searchResultId+1}`,
             HttpMethod.Patch,
             searchResultId
         );

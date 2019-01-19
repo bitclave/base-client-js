@@ -7,6 +7,7 @@ export interface OfferSearchRepository {
     complainToSearchItem(clientId: string, searchResultId: number): Promise<void>;
     rejectSearchItem(clientId: string, searchResultId: number): Promise<void>;
     evaluateSearchItem(clientId: string, searchResultId: number): Promise<void>;
+    confirmSearchItem(clientId: string, searchResultId: number): Promise<void>;
     addResultItem(clientId: string, offerSearch: OfferSearch): Promise<void>;
 
 }

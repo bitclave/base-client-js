@@ -64,6 +64,10 @@ export class SearchManagerImpl implements SearchManager {
         return this.offerSearchRepository.evaluateSearchItem(this.account.publicKey, searchResultId);
     }
 
+    public confirmSearchItem(searchResultId: number): Promise<void> {
+        return this.offerSearchRepository.confirmSearchItem(this.account.publicKey, searchResultId);
+    }
+    
     public addResultItem(offerSearch: OfferSearch): Promise<void> {
         return this.offerSearchRepository.addResultItem(this.account.publicKey, offerSearch);
     }
