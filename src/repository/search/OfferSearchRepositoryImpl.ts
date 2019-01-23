@@ -77,7 +77,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
             // this.OFFER_SEARCH_ADD_API.replace('{clientId}', clientId),
             this.OFFER_SEARCH_ADD_API,
             HttpMethod.Post,
-            offerSearch
+            offerSearch.toJson()
         );
     }
 
