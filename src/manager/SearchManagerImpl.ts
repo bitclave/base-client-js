@@ -67,9 +67,13 @@ export class SearchManagerImpl implements SearchManager {
     public confirmSearchItem(searchResultId: number): Promise<void> {
         return this.offerSearchRepository.confirmSearchItem(this.account.publicKey, searchResultId);
     }
-    
+
     public addResultItem(offerSearch: OfferSearch): Promise<void> {
         return this.offerSearchRepository.addResultItem(this.account.publicKey, offerSearch);
+    }
+
+    public addEventToOfferSearch(event: string, offerSearchId: number): Promise<void> {
+        return this.offerSearchRepository.addEventToOfferSearch(event, offerSearchId);
     }
 
     private onChangeAccount(account: Account) {
