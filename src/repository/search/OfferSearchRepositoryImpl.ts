@@ -12,6 +12,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     private readonly OFFER_SEARCH_EVALUATE_API = '/v1/search/result/evaluate/{id}';
     private readonly OFFER_SEARCH_CONFIRM_API = '/v1/search/result/confirm/{id}';
     private readonly OFFER_SEARCH_ADD_API = '/v1/search/result/';
+    private readonly OFFER_SEARCH_ADD_EVENT_API = '/v1/search/result/event/{id}';
 
     private transport: HttpTransport;
 
@@ -78,6 +79,15 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
             this.OFFER_SEARCH_ADD_API,
             HttpMethod.Post,
             offerSearch.toJson()
+        );
+    }
+
+    public addEventToOfferSearch(clientId: string, event: string, offerSearchId: number): Promise<any> {
+        return this.transport.sendRequest(
+            this.OFFER_SEARCH_ADD_EVENT_API.
+                replace('{id}', offerSearchId.toString()),
+            HttpMethod.Patch,
+            event
         );
     }
 

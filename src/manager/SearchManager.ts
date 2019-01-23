@@ -21,5 +21,6 @@ export interface SearchManager {
     confirmSearchItem(searchResultId: number): Promise<void>;
 
     addResultItem(offerSearch: OfferSearch): Promise<void>;
+    addEventToOfferSearch(event: string, offerSearchId: number): Promise<void>;
 
 }
