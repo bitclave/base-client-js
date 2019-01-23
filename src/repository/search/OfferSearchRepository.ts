@@ -9,6 +9,6 @@ export interface OfferSearchRepository {
     evaluateSearchItem(clientId: string, searchResultId: number): Promise<void>;
     confirmSearchItem(clientId: string, searchResultId: number): Promise<void>;
     addResultItem(clientId: string, offerSearch: OfferSearch): Promise<void>;
-    addEventToOfferSearch(clientId: string, event: string, offerSearchId: number): Promise<void>;
+    addEventToOfferSearch(event: string, offerSearchId: number): Promise<void>;
 
 }

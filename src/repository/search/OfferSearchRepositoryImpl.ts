@@ -82,7 +82,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         );
     }
 
-    public addEventToOfferSearch(clientId: string, event: string, offerSearchId: number): Promise<any> {
+    public addEventToOfferSearch(event: string, offerSearchId: number): Promise<any> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_ADD_EVENT_API.
                 replace('{id}', offerSearchId.toString()),

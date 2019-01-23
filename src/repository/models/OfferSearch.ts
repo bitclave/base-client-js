@@ -18,15 +18,12 @@ export default class OfferSearch {
         this.lastUpdated = Date().toString();
         this.info = 'from base-client-demo';
         this.events = events;
-
-        this.events.push('string1');
-        this.events.push('string2');
     }
 
     public toJson() {
         const jsonStr = JSON.stringify(this);
         const json = JSON.parse(jsonStr);
-    
+
         return json;
     }
 }
