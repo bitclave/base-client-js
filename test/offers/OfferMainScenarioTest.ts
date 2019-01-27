@@ -198,7 +198,7 @@ describe('Offer main scenario', async () => {
         }
     });
 
-    it.only('should add events to offerSearch', async () => {
+    it('should add events to offerSearch', async () => {
       try {
 
       // Business:
