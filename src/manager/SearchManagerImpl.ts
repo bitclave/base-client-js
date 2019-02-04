@@ -27,6 +27,10 @@ export class SearchManagerImpl implements SearchManager {
         return this.requestRepository.create(this.account.publicKey, searchRequest);
     }
 
+    public cloneRequest(searchRequest: SearchRequest): Promise<SearchRequest> {
+        return this.requestRepository.clone(this.account.publicKey, searchRequest);
+    }
+
     public getMyRequests(id: number = 0): Promise<Array<SearchRequest>> {
         if (id > 0) {
             return this.requestRepository.getSearchRequestByOwnerAndId(this.account.publicKey, id);

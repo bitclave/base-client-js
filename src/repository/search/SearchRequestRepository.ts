@@ -4,6 +4,8 @@ export interface SearchRequestRepository {
 
     create(owner: string, searchRequest: SearchRequest): Promise<SearchRequest>;
 
+    clone(owner: string, searchRequest: SearchRequest): Promise<SearchRequest>;
+
     deleteById(owner: string, id: number): Promise<number>;
 
     getSearchRequestByOwnerAndId(owner: string, id: number): Promise<Array<SearchRequest>>;
