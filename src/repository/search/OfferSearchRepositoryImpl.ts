@@ -22,9 +22,9 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     }
 
     
-    public getUserOfferSearches(): Promise<any> {
+    public getUserOfferSearches(clientId: string): Promise<any> {
         return this.transport.sendRequest(
-            this.OFFER_SEARCH_ADD_API + 'user',
+            this.OFFER_SEARCH_ADD_API + `user?owner=${clientId}`,
             HttpMethod.Get
         ).then((response) => this.jsonToListResult(response.json));
     }

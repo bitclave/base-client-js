@@ -53,7 +53,7 @@ export class SearchManagerImpl implements SearchManager {
     }
 
     public getUserOfferSearches(): Promise<Array<OfferSearchResultItem>> {
-        return this.offerSearchRepository.getUserOfferSearches();
+        return this.offerSearchRepository.getUserOfferSearches(this.account.publicKey);
     }
 
     public getSearchResultByOfferSearchId(offerSearchId: number): Promise<Array<OfferSearchResultItem>> {
