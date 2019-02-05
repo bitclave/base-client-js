@@ -27,6 +27,10 @@ export class SearchManagerImpl implements SearchManager {
         return this.requestRepository.create(this.account.publicKey, searchRequest);
     }
 
+    public cloneRequest(searchRequest: SearchRequest): Promise<SearchRequest> {
+        return this.requestRepository.clone(this.account.publicKey, searchRequest);
+    }
+
     public getMyRequests(id: number = 0): Promise<Array<SearchRequest>> {
         if (id > 0) {
             return this.requestRepository.getSearchRequestByOwnerAndId(this.account.publicKey, id);
@@ -60,8 +64,28 @@ export class SearchManagerImpl implements SearchManager {
         return this.offerSearchRepository.complainToSearchItem(this.account.publicKey, searchResultId);
     }
 
+    public rejectSearchItem(searchResultId: number): Promise<void> {
+        return this.offerSearchRepository.rejectSearchItem(this.account.publicKey, searchResultId);
+    }
+
+    public evaluateSearchItem(searchResultId: number): Promise<void> {
+        return this.offerSearchRepository.evaluateSearchItem(this.account.publicKey, searchResultId);
+    }
+
+    public confirmSearchItem(searchResultId: number): Promise<void> {
+        return this.offerSearchRepository.confirmSearchItem(this.account.publicKey, searchResultId);
+    }
+
+    public claimPurchaseForSearchItem(searchResultId: number): Promise<void> {
+        return this.offerSearchRepository.claimPurchaseForSearchItem(this.account.publicKey, searchResultId);
+    }
+
     public addResultItem(offerSearch: OfferSearch): Promise<void> {
         return this.offerSearchRepository.addResultItem(this.account.publicKey, offerSearch);
+    }
+
+    public addEventToOfferSearch(event: string, offerSearchId: number): Promise<void> {
+        return this.offerSearchRepository.addEventToOfferSearch(event, offerSearchId);
     }
 
     private onChangeAccount(account: Account) {

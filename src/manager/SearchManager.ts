@@ -6,6 +6,8 @@ export interface SearchManager {
 
     createRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
 
+    cloneRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
+
     getMyRequests(id: number): Promise<Array<SearchRequest>>;
 
     getAllRequests(): Promise<Array<SearchRequest>>;
@@ -17,7 +19,12 @@ export interface SearchManager {
     getUserOfferSearches(): Promise<Array<OfferSearchResultItem>>;
 
     complainToSearchItem(searchResultId: number): Promise<void>;
+    rejectSearchItem(searchResultId: number): Promise<void>;
+    evaluateSearchItem(searchResultId: number): Promise<void>;
+    confirmSearchItem(searchResultId: number): Promise<void>;
+    claimPurchaseForSearchItem(searchResultId: number): Promise<void>;
 
     addResultItem(offerSearch: OfferSearch): Promise<void>;
+    addEventToOfferSearch(event: string, offerSearchId: number): Promise<void>;
 
 }

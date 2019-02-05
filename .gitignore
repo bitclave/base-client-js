@@ -7,3 +7,6 @@ npm-debug.log
 /coverage/
 /dist
 /lib
+/base-client-js-bundle/dist/@types
+/example/public/
+

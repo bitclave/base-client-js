@@ -29,7 +29,7 @@ async function createUser(user: Base, pass: string): Promise<Account> {
         await user.accountManager.unsubscribe();
     } catch (e) {
         console.log('check createUser', e);
-        //ignore error if user not exist
+        // ignore error if user not exist
     }
 
     return await user.accountManager.registration(pass, someSigMessage); // this method private.
@@ -138,7 +138,6 @@ describe('Offer CRUD', async () => {
             createdOffer.offerPrices[0].description = updatedPriceDescription;
             const ruleId = createdOffer.offerPrices[0].rules[0].id;
             createdOffer.offerPrices[0].rules[0].rule = CompareAction.MORE_OR_EQUAL;
-
 
             const updated = await baseSeller.offerManager.saveOffer(createdOffer);
 

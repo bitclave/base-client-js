@@ -8,7 +8,7 @@
       {
         "type": "node",
         "request": "launch",
-        "name": "Offer test",
+        "name": "Single test",
         "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
         "args": [
           "-u",
@@ -18,7 +18,7 @@
           "--colors",
           "--require",
           "ts-node/register",
-          "${workspaceFolder}/test/offers/*.ts"
+          "${workspaceFolder}/test/file/*.ts"
         ],
         "internalConsoleOptions": "openOnSessionStart",
         "env": {
@@ -42,7 +42,7 @@
         ],
         "internalConsoleOptions": "openOnSessionStart",
         "env": {
-          "BASE_NODE_URL":"http://localhost:8080"
+          "BASE_NODE_URL":"http://localhost:8090"
         }
       },
       {

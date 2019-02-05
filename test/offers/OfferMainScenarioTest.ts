@@ -197,4 +197,51 @@ describe('Offer main scenario', async () => {
             throw e;
         }
     });
+
+    it('should add events to offerSearch', async () => {
+      try {
+
+      // Business:
+      // create offer
+      const offer = offerFactory(true);
+      const businessOffer = await businessBase.offerManager.saveOffer(offer);
+
+      // User:
+      // create user private data and upload ones to server
+      await userBase.profileManager.updateData(new Map([['age', '40']]));
+      await userBase.profileManager.updateData(new Map([['sex', 'male']]));
+
+      // User:
+      // create search request and upload one to server
+      const request = requestFactory();
+      const userSearchRequest = await userBase.searchManager.createRequest(request);
+
+      // User:
+      // retrieve private data
+      const userData = await userBase.profileManager.getData();
+
+      // External Matcher:
+      // match the offer and the searchRequest
+      const offerSearch = new OfferSearch(userSearchRequest.id, businessOffer.id);
+      await userBase.searchManager.addResultItem(offerSearch);
+
+      // User:
+      // get OfferSearch (matched offer and searchRequesr data)
+      // select a proper offer
+      const searchResults = await userBase.searchManager.getSearchResult(userSearchRequest.id);
+      const searchResult: OfferSearch = searchResults[0].offerSearch;
+      const selectedOffer: Offer = searchResults[0].offer;
+
+      await userBase.searchManager.addEventToOfferSearch('tram-param-pam', searchResult.id);
+      await userBase.searchManager.addEventToOfferSearch('ta-da-bada', searchResult.id);
+      const updated = await userBase.searchManager.getSearchResult(userSearchRequest.id);
+
+      updated[0].offerSearch.events[0].should.be.eql('tram-param-pam');
+      updated[0].offerSearch.events[1].should.be.eql('ta-da-bada');
+    } catch (e) {
+        console.log(e);
+        throw e;
+    }
+  });
+
 });

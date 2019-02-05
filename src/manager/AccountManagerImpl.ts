@@ -33,12 +33,17 @@ export class AccountManagerImpl implements AccountManager {
      *
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
-    public authenticationByPassPhrase(passPhrase: string, message: string): Promise<Account> {
+    public async authenticationByPassPhrase(passPhrase: string, message: string): Promise<Account> {
         this.checkSigMessage(message);
 
         if (!(this.keyPairCreator instanceof RpcKeyPair)) {
-            return this.checkAccount(passPhrase, message)
-                .catch(reason => this.registration(passPhrase, message));
+            let acc: Account;
+            try {
+                acc = await this.checkAccount(passPhrase, message);
+            } catch (err) {
+                acc = await this.registration(passPhrase, message);
+            }
+            return acc;
         }
         throw 'key pair helper does not support pass-phrase authentication';
     }
@@ -61,7 +66,11 @@ export class AccountManagerImpl implements AccountManager {
             return this.keyPairCreator.createKeyPair('')
                 .then(this.generateAccount)
                 .then(account => this.accountRepository.checkAccount(account))
-                .then(account => this.onGetAccount(account, message));
+                .then(account => this.onGetAccount(account, message))
+                .catch(err => {
+                    console.log(err);
+                    throw err;
+                });
         }
 
         throw 'key pair helper does not support token authentication';
@@ -81,7 +90,11 @@ export class AccountManagerImpl implements AccountManager {
         return this.keyPairCreator.createKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
             .then((account) => this.accountRepository.registration(account))
-            .then(account => this.onGetAccount(account, message));
+            .then(account => this.onGetAccount(account, message))
+            .catch(err => {
+                console.log(err);
+                throw err;
+            });
     }
 
     /**
@@ -97,7 +110,11 @@ export class AccountManagerImpl implements AccountManager {
 
         return this.keyPairCreator.createKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
-            .then(account => this.syncAccount(account, message));
+            .then(account => this.syncAccount(account, message))
+            .catch(err => {
+                console.log(err);
+                throw err;
+            });
     }
 
     /**
@@ -106,7 +123,11 @@ export class AccountManagerImpl implements AccountManager {
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
     public unsubscribe(): Promise<Account> {
-        return this.accountRepository.unsubscribe(this.authAccountBehavior.getValue());
+        return this.accountRepository.unsubscribe(this.authAccountBehavior.getValue())
+            .catch(err => {
+                console.log(err);
+                throw err;
+            });
     }
 
     public getNewMnemonic(): Promise<string> {

@@ -1,10 +1,8 @@
 const fs = require('fs');
 const Path = require('path');
 
-const mode = process.env.NODE_ENV;
-
-// const prefix = mode === ('development') ? './' : './../../../';
-const prefix = './';
+const prefix = (__dirname.indexOf('node_modules') === -1) ? './' : './../../../';
+console.log('remove-bitcore-lib-dep started with prefix: ', prefix);
 
 const pathsToClean = [
     Path.resolve(prefix + 'node_modules/bitcore-ecies/node_modules/bitcore-lib'),
