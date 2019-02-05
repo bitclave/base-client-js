@@ -14,6 +14,7 @@ export interface SearchManager {
 
     getSearchResult(searchRequestId: number): Promise<Array<OfferSearchResultItem>>;
     getSearchResultByOfferSearchId(offerSearchId: number): Promise<Array<OfferSearchResultItem>>;
+    getUserOfferSearches(): Promise<Array<OfferSearchResultItem>>;
 
     complainToSearchItem(searchResultId: number): Promise<void>;
 
