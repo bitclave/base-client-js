@@ -1,6 +1,7 @@
 export default class OfferSearch {
 
     id: number = 0;
+    readonly owner: string = '0x0';
     searchRequestId: number = 0;
     offerId: number = 0;
     state: OfferResultAction = OfferResultAction.NONE;
