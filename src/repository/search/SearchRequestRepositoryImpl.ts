@@ -21,6 +21,14 @@ export default class SearchRequestRepositoryImpl implements SearchRequestReposit
         ).then((response) => SearchRequest.fromJson(response.json));
     }
 
+    public update(owner: string, id: number, searchRequest: SearchRequest): Promise<SearchRequest> {
+        return this.transport.sendRequest(
+            this.SEARCH_REQUEST_API.replace('{owner}', owner).replace('{id}', id.toString()),
+            HttpMethod.Post,
+            searchRequest.toJson()
+        ).then((response) => SearchRequest.fromJson(response.json));
+    }
+
     public clone(owner: string, searchRequest: SearchRequest): Promise<SearchRequest> {
         return this.transport.sendRequest(
             this.SEARCH_REQUEST_API.replace('{owner}', owner).replace('{id}', ''),
