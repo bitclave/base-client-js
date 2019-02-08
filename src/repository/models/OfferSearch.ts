@@ -9,6 +9,11 @@ export default class OfferSearch {
     info: string;
     events: Array<string>;
 
+    public static fromJson(json: any): OfferSearch {
+        const offerSearch: OfferSearch = Object.assign(new OfferSearch(), json);
+        return offerSearch;
+    }
+
     constructor(
         searchRequestId: number = 0,
         offerId: number = 0,
