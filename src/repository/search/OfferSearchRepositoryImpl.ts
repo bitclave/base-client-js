@@ -4,6 +4,7 @@ import OfferSearch from '../models/OfferSearch';
 import { HttpTransport } from '../source/http/HttpTransport';
 import { HttpMethod } from '../source/http/HttpMethod';
 import Offer from '../models/Offer';
+import SearchRequest from '../models/SearchRequest';
 
 export class OfferSearchRepositoryImpl implements OfferSearchRepository {
 
@@ -109,6 +110,14 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         );
     }
 
+    public clone(owner: string, id: number, searchRequest: SearchRequest): Promise<Array<OfferSearch>> {
+        return this.transport.sendRequest(
+            this.OFFER_SEARCH_ADD_API +  owner + '/' + id,
+            HttpMethod.Put,
+            searchRequest.toJson()
+        ).then((response) => this.jsonToOfferSearchList(response.json));
+    }
+
     private async jsonToListResult(json: any): Promise<Array<OfferSearchResultItem>> {
         const result: Array<OfferSearchResultItem> = [];
 
@@ -117,6 +126,16 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
                 Object.assign(new OfferSearch(), item.offerSearch),
                 Offer.fromJson(item.offer)
             ));
+        }
+
+        return result;
+    }
+
+    private async jsonToOfferSearchList(json: any): Promise<Array<OfferSearch>> {
+        const result: Array<OfferSearch> = [];
+
+        for (let item of json) {
+            result.push(OfferSearch.fromJson(item));
         }
 
         return result;

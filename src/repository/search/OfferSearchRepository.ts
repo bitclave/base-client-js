@@ -1,5 +1,6 @@
 import OfferSearchResultItem from '../models/OfferSearchResultItem';
 import OfferSearch from '../models/OfferSearch';
+import SearchRequest from '../models/SearchRequest';
 
 export interface OfferSearchRepository {
     getUserOfferSearches(clientId: string): Promise<Array<OfferSearchResultItem>>;
@@ -12,5 +13,5 @@ export interface OfferSearchRepository {
     claimPurchaseForSearchItem(clientId: string, searchResultId: number): Promise<void>;
     addResultItem(clientId: string, offerSearch: OfferSearch): Promise<void>;
     addEventToOfferSearch(event: string, offerSearchId: number): Promise<void>;
-
+    clone(owner: string, id: number, searchRequest: SearchRequest): Promise<Array<OfferSearch>>;
 }
