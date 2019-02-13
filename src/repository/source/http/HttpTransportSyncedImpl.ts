@@ -148,7 +148,7 @@ export class HttpTransportSyncedImpl implements HttpTransport {
                                 this.callNextRequest();
 
                             } else {
-                                reject();
+                                resolve();
                                 transaction.reject(result);
                                 this.callNextRequest();
                             }
