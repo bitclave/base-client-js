@@ -13,4 +13,9 @@ export default class Account extends SimpleAccount {
         return new SimpleAccount(this.publicKey, this.nonce);
     }
 
+    public static fromJson(json: any): Account {
+        const account: Account = Object.assign(new Account(), json);
+        return account;
+    }
+
 }

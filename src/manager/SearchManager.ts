@@ -9,7 +9,7 @@ export interface SearchManager {
     updateRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
 
     cloneRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
-    cloneOfferSearch(id: number, searchRequest: SearchRequest): Promise<OfferSearch>;
+    cloneOfferSearch(id: number, searchRequest: SearchRequest): Promise<OfferSearch[]>;
 
     getMyRequests(id: number): Promise<Array<SearchRequest>>;
 

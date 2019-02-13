@@ -30,6 +30,7 @@ import { OfferPriceRules } from './repository/models/OfferPriceRules';
 import { HttpTransportImpl } from './repository/source/http/HttpTransportImpl';
 import NonceInterceptor from './repository/source/http/NonceInterceptor';
 import { WalletManager } from './manager/WalletManager';
+import { VerifyManager } from './manager/VerifyManager';
 import { BaseSchema } from './utils/types/BaseSchema';
 import { AssistantNodeRepository } from './repository/assistant/AssistantNodeRepository';
 import { TransportFactory } from './repository/source/TransportFactory';
@@ -51,6 +52,9 @@ import OfferSearch, { OfferResultAction } from './repository/models/OfferSearch'
 import  OfferShareData  from './repository/models/OfferShareData';
 import { OfferShareDataRepository } from './repository/offer/OfferShareDataRepository';
 import OfferShareDataRepositoryImpl from './repository/offer/OfferShareDataRepositoryImpl';
+import { VerifyManagerImpl } from './manager/VerifyManagerImpl';
+import { VerifyRepository } from './repository/verify/VerifyRepository';
+import { VerifyRepositoryImpl } from './repository/verify/VerifyRepositoryImpl';
 
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
@@ -88,6 +92,7 @@ export {
     SearchManager,
     WalletManager,
     WalletManagerImpl,
+    VerifyManager,
     Offer,
     OfferPrice,
     OfferPriceRules,
@@ -111,6 +116,7 @@ export default class Base {
     private _dataRequestManager: DataRequestManager;
     private _offerManager: OfferManager;
     private _searchManager: SearchManager;
+    private _verifyManager: VerifyManager;
     private _authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
     private _repositoryStrategyInterceptor: RepositoryStrategyInterceptor;
 
@@ -144,6 +150,7 @@ export default class Base {
         const offerRepository: OfferRepository = new OfferRepositoryImpl(transport);
         const searchRequestRepository: SearchRequestRepository = new SearchRequestRepositoryImpl(transport);
         const offerSearchRepository: OfferSearchRepository = new OfferSearchRepositoryImpl(transport);
+        const verifyRepository: VerifyRepository = new VerifyRepositoryImpl(transport);
 
         this._accountManager = new AccountManagerImpl(
             accountRepository,
@@ -182,6 +189,10 @@ export default class Base {
             messageSigner,
             this._authAccountBehavior.asObservable()
         );
+
+        this._verifyManager = new VerifyManagerImpl(
+            verifyRepository
+        );
     }
 
     changeStrategy(strategy: RepositoryStrategyType) {
@@ -210,6 +221,10 @@ export default class Base {
 
     get searchManager(): SearchManager {
         return this._searchManager;
+    }
+
+    get verfiyManager(): VerifyManager {
+        return this._verifyManager;
     }
 
     private createNodeAssistant(httpTransport: HttpTransport): AssistantNodeRepository {
