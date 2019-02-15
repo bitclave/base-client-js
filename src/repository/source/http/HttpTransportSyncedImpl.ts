@@ -145,6 +145,7 @@ export class HttpTransportSyncedImpl implements HttpTransport {
                             ); 
                         }
                     } else {
+                        let _this = this;
                         request.open(cortege.method, url);
 
                         request.onload = () => {
@@ -156,7 +157,7 @@ export class HttpTransportSyncedImpl implements HttpTransport {
 
                             } else {
                                 resolve();
-                                this.logger && this.logger.errorClient('Error runTransaction request', result);
+                                _this.logger && _this.logger.errorClient('Error runTransaction request', result);
                                 transaction.reject(result);
                                 this.callNextRequest();
                             }
