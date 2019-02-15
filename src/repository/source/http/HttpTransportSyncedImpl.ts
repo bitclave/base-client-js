@@ -108,7 +108,7 @@ export class HttpTransportSyncedImpl implements HttpTransport {
         
                                     } else {
                                         reject();
-                                        _this.logger.error('Error runTransaction postBlobRequest', result);
+                                        _this.logger && _this.logger.errorClient('Error runTransaction postBlobRequest', result);
                                         transaction.reject(result);
                                         _this.callNextRequest();
                                     }
@@ -136,7 +136,7 @@ export class HttpTransportSyncedImpl implements HttpTransport {
             
                                         } else {
                                             reject();
-                                            _this.logger.error('Error runTransaction getBlobRequest', result);
+                                            _this.logger && _this.logger.errorClient('Error runTransaction getBlobRequest', result);
                                             transaction.reject(result);
                                             _this.callNextRequest();
                                         } 
@@ -156,7 +156,7 @@ export class HttpTransportSyncedImpl implements HttpTransport {
 
                             } else {
                                 resolve();
-                                this.logger.error('Error runTransaction request', result);
+                                this.logger && this.logger.errorClient('Error runTransaction request', result);
                                 transaction.reject(result);
                                 this.callNextRequest();
                             }

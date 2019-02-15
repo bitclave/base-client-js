@@ -46,7 +46,6 @@ export class ProfileManagerImpl implements ProfileManager {
         return this.getRawData(this.account.publicKey)
             .then((rawData: Map<string, string>) => this.decrypt.decryptFields(rawData))
             .catch(err => {
-                console.log(err);
                 throw err;
             });
     }
@@ -126,7 +125,6 @@ export class ProfileManagerImpl implements ProfileManager {
         return this.encrypt.encryptFields(data)
             .then(encrypted => this.clientDataRepository.updateData(this.account.publicKey, encrypted))
             .catch(err => {
-                console.log(err);
                 throw err;
             });
     }
@@ -154,7 +152,6 @@ export class ProfileManagerImpl implements ProfileManager {
             .catch(notExist => this.clientDataRepository.uploadFile(this.account.publicKey, encryptedFile)
                 .then(newMeta => this.updateFileMetaWithGivenKey(key, newMeta))))
                 .catch(err => {
-                    console.log(err);
                     throw err;
                 });
     }
@@ -170,7 +167,6 @@ export class ProfileManagerImpl implements ProfileManager {
             .then(file =>
                 this.decrypt.decryptFile(file))
             .catch(err => {
-                console.log(err);
                 throw err;
             });
     }

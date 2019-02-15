@@ -40,7 +40,6 @@ export class DataRequestManagerImpl implements DataRequestManager {
             .encryptMessage(recipientPk, JSON.stringify(fields).toLowerCase())
             .then((encrypted: string) => this.dataRequestRepository.requestPermissions(recipientPk, encrypted))
             .catch(err => {
-                console.log(err);
                 throw err;
             });
     }
@@ -136,7 +135,6 @@ export class DataRequestManagerImpl implements DataRequestManager {
                 priceId
             ))
             .catch(err => {
-                console.log(err);
                 throw err;
             });
     }
