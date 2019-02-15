@@ -55,6 +55,7 @@ import OfferShareDataRepositoryImpl from './repository/offer/OfferShareDataRepos
 import { VerifyManagerImpl } from './manager/VerifyManagerImpl';
 import { VerifyRepository } from './repository/verify/VerifyRepository';
 import { VerifyRepositoryImpl } from './repository/verify/VerifyRepositoryImpl';
+import { BasicLogger } from './utils/BasicLogger';
 
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
@@ -123,7 +124,12 @@ export default class Base {
     constructor(nodeHost: string,
                 siteOrigin: string,
                 strategy: RepositoryStrategyType = RepositoryStrategyType.Postgres,
-                signerHost: string = '') {
+                signerHost: string = '',
+                loggerService? : any) {
+
+        if (!loggerService) {
+            loggerService = new BasicLogger();
+        }
 
         this._repositoryStrategyInterceptor = new RepositoryStrategyInterceptor(strategy);
 
@@ -139,7 +145,7 @@ export default class Base {
         const encryptMessage: MessageEncrypt = keyPairHelper;
         const decryptMessage: MessageDecrypt = keyPairHelper;
 
-        const transport: HttpTransport = TransportFactory.createHttpTransport(nodeHost)
+        const transport: HttpTransport = TransportFactory.createHttpTransport(nodeHost, loggerService)
             .addInterceptor(new SignInterceptor(messageSigner))
             .addInterceptor(new NonceInterceptor(messageSigner, nodeAssistant))
             .addInterceptor(this._repositoryStrategyInterceptor);

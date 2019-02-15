@@ -6,8 +6,8 @@ import { HttpTransportSyncedImpl } from './http/HttpTransportSyncedImpl';
 
 export class TransportFactory {
 
-    public static createHttpTransport(host: string): HttpTransport {
-        return new HttpTransportSyncedImpl(host);
+    public static createHttpTransport(host: string, loggerService? :any): HttpTransport {
+        return new HttpTransportSyncedImpl(host, loggerService);
     }
 
     public static createJsonRpcHttpTransport(host: string): RpcTransport {

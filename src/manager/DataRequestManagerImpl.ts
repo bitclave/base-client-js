@@ -38,7 +38,10 @@ export class DataRequestManagerImpl implements DataRequestManager {
     public requestPermissions(recipientPk: string, fields: Array<string>): Promise<number> {
         return this.encrypt
             .encryptMessage(recipientPk, JSON.stringify(fields).toLowerCase())
-            .then((encrypted: string) => this.dataRequestRepository.requestPermissions(recipientPk, encrypted));
+            .then((encrypted: string) => this.dataRequestRepository.requestPermissions(recipientPk, encrypted))
+            .catch(err => {
+                throw err;
+            });
     }
 
     /**
@@ -130,7 +133,10 @@ export class DataRequestManagerImpl implements DataRequestManager {
                 this.account.publicKey,
                 encrypted,
                 priceId
-            ));
+            ))
+            .catch(err => {
+                throw err;
+            });
     }
 
     /**

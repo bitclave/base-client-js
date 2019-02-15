@@ -68,7 +68,6 @@ export class AccountManagerImpl implements AccountManager {
                 .then(account => this.accountRepository.checkAccount(account))
                 .then(account => this.onGetAccount(account, message))
                 .catch(err => {
-                    console.log(err);
                     throw err;
                 });
         }
@@ -92,7 +91,6 @@ export class AccountManagerImpl implements AccountManager {
             .then((account) => this.accountRepository.registration(account))
             .then(account => this.onGetAccount(account, message))
             .catch(err => {
-                console.log(err);
                 throw err;
             });
     }
@@ -112,7 +110,6 @@ export class AccountManagerImpl implements AccountManager {
             .then(this.generateAccount)
             .then(account => this.syncAccount(account, message))
             .catch(err => {
-                console.log(err);
                 throw err;
             });
     }
@@ -125,7 +122,6 @@ export class AccountManagerImpl implements AccountManager {
     public unsubscribe(): Promise<Account> {
         return this.accountRepository.unsubscribe(this.authAccountBehavior.getValue())
             .catch(err => {
-                console.log(err);
                 throw err;
             });
     }
@@ -147,7 +143,10 @@ export class AccountManagerImpl implements AccountManager {
     private syncAccount(account: Account, message: string): Promise<Account> {
         return this.accountRepository
             .checkAccount(account)
-            .then(checkedAccount => this.onGetAccount(checkedAccount, message));
+            .then(checkedAccount => this.onGetAccount(checkedAccount, message))
+            .catch(err => {
+                throw err;
+            });
     }
 
     private generateAccount(keyPair: KeyPair): Promise<Account> {
