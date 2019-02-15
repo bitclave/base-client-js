@@ -116,6 +116,18 @@ export class AccountManagerImpl implements AccountManager {
                 throw err;
             });
     }
+     
+    public checkAccountTEST(mnemonicPhrase: string, message: string): Promise<Account> {
+        this.checkSigMessage(message);
+
+        return this.keyPairCreator.createKeyPair(mnemonicPhrase)
+            .then(this.generateAccount)
+            .then(account => this.syncAccount(account, message))
+            .catch(err => {
+                console.log(err);
+                throw err;
+            });
+    }
 
     /**
      * Allows user to unsubscribe from BASE. Delets all his data
@@ -147,7 +159,11 @@ export class AccountManagerImpl implements AccountManager {
     private syncAccount(account: Account, message: string): Promise<Account> {
         return this.accountRepository
             .checkAccount(account)
-            .then(checkedAccount => this.onGetAccount(checkedAccount, message));
+            .then(checkedAccount => this.onGetAccount(checkedAccount, message))
+            .catch(err => {
+                console.log(err);
+                throw err;
+            });
     }
 
     private generateAccount(keyPair: KeyPair): Promise<Account> {

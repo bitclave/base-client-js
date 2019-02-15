@@ -123,7 +123,8 @@ export default class Base {
     constructor(nodeHost: string,
                 siteOrigin: string,
                 strategy: RepositoryStrategyType = RepositoryStrategyType.Postgres,
-                signerHost: string = '') {
+                signerHost: string = '',
+                loggerService? : any) {
 
         this._repositoryStrategyInterceptor = new RepositoryStrategyInterceptor(strategy);
 
@@ -139,7 +140,7 @@ export default class Base {
         const encryptMessage: MessageEncrypt = keyPairHelper;
         const decryptMessage: MessageDecrypt = keyPairHelper;
 
-        const transport: HttpTransport = TransportFactory.createHttpTransport(nodeHost)
+        const transport: HttpTransport = TransportFactory.createHttpTransport(nodeHost, loggerService)
             .addInterceptor(new SignInterceptor(messageSigner))
             .addInterceptor(new NonceInterceptor(messageSigner, nodeAssistant))
             .addInterceptor(this._repositoryStrategyInterceptor);

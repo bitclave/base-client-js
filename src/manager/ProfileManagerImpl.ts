@@ -44,7 +44,11 @@ export class ProfileManagerImpl implements ProfileManager {
      */
     public getData(): Promise<Map<string, string>> {
         return this.getRawData(this.account.publicKey)
-            .then((rawData: Map<string, string>) => this.decrypt.decryptFields(rawData));
+            .then((rawData: Map<string, string>) => this.decrypt.decryptFields(rawData))
+            .catch(err => {
+                console.log(err);
+                throw err;
+            });
     }
 
     /**
@@ -120,7 +124,11 @@ export class ProfileManagerImpl implements ProfileManager {
      */
     public updateData(data: Map<string, string>): Promise<Map<string, string>> {
         return this.encrypt.encryptFields(data)
-            .then(encrypted => this.clientDataRepository.updateData(this.account.publicKey, encrypted));
+            .then(encrypted => this.clientDataRepository.updateData(this.account.publicKey, encrypted))
+            .catch(err => {
+                console.log(err);
+                throw err;
+            });
     }
 
     private onChangeAccount(account: Account) {
@@ -144,7 +152,11 @@ export class ProfileManagerImpl implements ProfileManager {
             .then(meta => this.clientDataRepository.uploadFile(this.account.publicKey, encryptedFile, meta.id)
                 .then(updatedMeta => this.updateFileMetaWithGivenKey(key, updatedMeta)))
             .catch(notExist => this.clientDataRepository.uploadFile(this.account.publicKey, encryptedFile)
-                .then(newMeta => this.updateFileMetaWithGivenKey(key, newMeta))));
+                .then(newMeta => this.updateFileMetaWithGivenKey(key, newMeta))))
+                .catch(err => {
+                    console.log(err);
+                    throw err;
+                });
     }
 
     /**
@@ -154,8 +166,13 @@ export class ProfileManagerImpl implements ProfileManager {
      * @returns {Promise<File>} decrypted file blob data.
      */
     public downloadFile(id: number): Promise<Buffer> {
-        return this.clientDataRepository.getFile(this.account.publicKey, id).then(file =>
-            this.decrypt.decryptFile(file));
+        return this.clientDataRepository.getFile(this.account.publicKey, id)
+            .then(file =>
+                this.decrypt.decryptFile(file))
+            .catch(err => {
+                console.log(err);
+                throw err;
+            });
     }
 
     public async getFileMetaWithGivenKey(key: string): Promise<FileMeta> {
