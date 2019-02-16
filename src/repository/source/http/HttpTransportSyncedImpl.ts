@@ -165,7 +165,8 @@ export class HttpTransportSyncedImpl implements HttpTransport {
 
                         request.onerror = () => {
                             const result: Response = new Response(request.responseText, request.status);
-                            reject();
+                            _this.logger && _this.logger.errorClient('Error runTransaction onErrorRequest', result);
+                            resolve();
                             transaction.reject(result);
                             this.callNextRequest();
                         };
