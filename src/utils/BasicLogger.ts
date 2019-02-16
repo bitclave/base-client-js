@@ -12,4 +12,10 @@ export class BasicLogger {
     errorClient(message: any, ...args: any[]) {
         console.error(message, args);
     }
+    infoClient(message: any, ...args: any[]) {
+        console.error(message, args);
+    }
+    debugClient(message: any, ...args: any[]) {
+        console.error(message, args);
+    }
 }
