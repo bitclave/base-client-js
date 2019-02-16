@@ -116,7 +116,10 @@ export class AccountManagerImpl implements AccountManager {
 
         return this.keyPairCreator.createKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
-            .then(account => this.syncAccount(account, message))
+            .then(account => {
+                this.logger && this.logger.debugClient(`base-client-js:checkAccount user login  ${account.publicKey}`);
+                return this.syncAccount(account, message);
+            })
             .catch(err => {
                 throw err;
             });
