@@ -14,15 +14,20 @@ export class AccountManagerImpl implements AccountManager {
     private keyPairCreator: KeyPairHelper;
     private messageSigner: MessageSigner;
     private authAccountBehavior: BehaviorSubject<Account>;
+    private logger: any;
 
     constructor(auth: AccountRepository,
                 keyPairCreator: KeyPairHelper,
                 messageSigner: MessageSigner,
-                authAccountBehavior: BehaviorSubject<Account>) {
+                authAccountBehavior: BehaviorSubject<Account>,
+                loggerService?: any) {
         this.accountRepository = auth;
         this.keyPairCreator = keyPairCreator;
         this.messageSigner = messageSigner;
         this.authAccountBehavior = authAccountBehavior;
+        if (loggerService) {
+            this.logger = loggerService;
+        }
     }
 
     /**
@@ -43,6 +48,9 @@ export class AccountManagerImpl implements AccountManager {
             } catch (err) {
                 acc = await this.registration(passPhrase, message);
             }
+
+            this.logger && this.logger.infoClient(`New user logged via  base-client-js ${acc.publicKey}`);
+
             return acc;
         }
         throw 'key pair helper does not support pass-phrase authentication';

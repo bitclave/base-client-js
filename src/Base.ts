@@ -162,7 +162,8 @@ export default class Base {
             accountRepository,
             keyPairHelper,
             messageSigner,
-            this._authAccountBehavior
+            this._authAccountBehavior,
+            loggerService
         );
 
         this._dataRequestManager = new DataRequestManagerImpl(
