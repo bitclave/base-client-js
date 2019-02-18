@@ -125,7 +125,7 @@ export default class Base {
                 siteOrigin: string,
                 strategy: RepositoryStrategyType = RepositoryStrategyType.Postgres,
                 signerHost: string = '',
-                loggerService? : Logger) {
+                loggerService?: Logger) {
 
         if (!loggerService) {
             loggerService = new BasicLogger();

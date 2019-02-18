@@ -4,7 +4,7 @@ import { Response } from './Response';
 import { HttpInterceptor } from './HttpInterceptor';
 import { InterceptorCortege } from './InterceptorCortege';
 import Transaction from './Transaction';
-import { Logger } from './../../../utils/BasicLogger';
+import { BasicLogger, Logger } from './../../../utils/BasicLogger';
 
 // const MemoryFileSystem = require("memory-fs");
 // const fs = new MemoryFileSystem();
@@ -32,11 +32,13 @@ export class HttpTransportSyncedImpl implements HttpTransport {
 
     private logger: Logger;
 
-    constructor(host: string, loggerService : Logger) {
+    constructor(host: string, loggerService: Logger) {
         this.host = host;
-        if (loggerService) {
-            this.logger = loggerService;
+        if (!loggerService) {
+            loggerService = new BasicLogger();
         }
+
+        this.logger = loggerService;
     }
 
     addInterceptor(interceptor: HttpInterceptor): HttpTransport {
@@ -109,7 +111,7 @@ export class HttpTransportSyncedImpl implements HttpTransport {
         
                                     } else {
                                         reject();
-                                        _this.logger && _this.logger.error('Error runTransaction postBlobRequest', result);
+                                        _this.logger.error('Error runTransaction postBlobRequest', result);
                                         transaction.reject(result);
                                         _this.callNextRequest();
                                     }
@@ -137,7 +139,7 @@ export class HttpTransportSyncedImpl implements HttpTransport {
             
                                         } else {
                                             reject();
-                                            _this.logger && _this.logger.error('Error runTransaction getBlobRequest', result);
+                                            _this.logger.error('Error runTransaction getBlobRequest', result);
                                             transaction.reject(result);
                                             _this.callNextRequest();
                                         } 
@@ -158,7 +160,7 @@ export class HttpTransportSyncedImpl implements HttpTransport {
 
                             } else {
                                 resolve();
-                                _this.logger && _this.logger.error('Error runTransaction request', result);
+                                _this.logger.error('Error runTransaction request', result);
                                 transaction.reject(result);
                                 this.callNextRequest();
                             }
@@ -166,7 +168,7 @@ export class HttpTransportSyncedImpl implements HttpTransport {
 
                         request.onerror = () => {
                             const result: Response = new Response(request.responseText, request.status);
-                            _this.logger && _this.logger.error('Error runTransaction onErrorRequest', result);
+                            _this.logger.error('Error runTransaction onErrorRequest', result);
                             resolve();
                             transaction.reject(result);
                             this.callNextRequest();

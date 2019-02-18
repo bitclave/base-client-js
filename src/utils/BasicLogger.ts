@@ -4,7 +4,7 @@ export interface Logger {
     debug(message: any, ...args: any[]): void;
 }
 
-export class BasicLogger implements Logger{
+export class BasicLogger implements Logger {
 
     error(message: any, ...args: any[]) {
         console.error('[error]' + message, args);
