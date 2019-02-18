@@ -7,6 +7,7 @@ import { MessageSigner } from '../utils/keypair/MessageSigner';
 import { RemoteSigner } from '../utils/keypair/RemoteSigner';
 import { RpcKeyPair } from '../utils/keypair/rpc/RpcKeyPair';
 import { AccountManager } from './AccountManager';
+import { Logger } from './../utils/BasicLogger';
 
 export class AccountManagerImpl implements AccountManager {
 
@@ -14,13 +15,13 @@ export class AccountManagerImpl implements AccountManager {
     private keyPairCreator: KeyPairHelper;
     private messageSigner: MessageSigner;
     private authAccountBehavior: BehaviorSubject<Account>;
-    private logger: any;
+    private logger: Logger;
 
     constructor(auth: AccountRepository,
                 keyPairCreator: KeyPairHelper,
                 messageSigner: MessageSigner,
                 authAccountBehavior: BehaviorSubject<Account>,
-                loggerService?: any) {
+                loggerService?: Logger) {
         this.accountRepository = auth;
         this.keyPairCreator = keyPairCreator;
         this.messageSigner = messageSigner;
@@ -49,7 +50,7 @@ export class AccountManagerImpl implements AccountManager {
                 acc = await this.registration(passPhrase, message);
             }
 
-            this.logger && this.logger.infoClient(`New user logged via  base-client-js ${acc.publicKey}`);
+            this.logger && this.logger.info(`New user logged via  base-client-js ${acc.publicKey}`);
 
             return acc;
         }
@@ -117,7 +118,7 @@ export class AccountManagerImpl implements AccountManager {
         return this.keyPairCreator.createKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
             .then(account => {
-                this.logger && this.logger.debugClient(`base-client-js:checkAccount user login  ${account.publicKey}`);
+                this.logger && this.logger.debug(`base-client-js:checkAccount user login  ${account.publicKey}`);
                 return this.syncAccount(account, message);
             })
             .catch(err => {
