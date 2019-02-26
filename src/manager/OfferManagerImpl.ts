@@ -44,6 +44,14 @@ export class OfferManagerImpl implements OfferManager {
         return this.offerRepository.deleteById(this.account.publicKey, id);
     }
 
+    public getOffersByOwnerAndTag(owner: string, tag: string): Promise<Array<Offer>> {
+        return this.offerRepository.getOffersByOwnerAndTag(owner, tag);
+    }
+
+    public getMyOffersByTag(tag: string): Promise<Array<Offer>> {
+        return this.offerRepository.getOffersByOwnerAndTag(this.account.publicKey, tag);
+    }
+
     private onChangeAccount(account: Account) {
         this.account = account;
     }

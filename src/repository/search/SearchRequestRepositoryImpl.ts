@@ -66,6 +66,13 @@ export default class SearchRequestRepositoryImpl implements SearchRequestReposit
         ).then((response) => this.jsonToListSearchRequests(response.json));
     }
 
+    public getSearchRequestsByOwnerAndTag(owner: string, tag: string): Promise<Array<SearchRequest>> {
+        return this.transport.sendRequest(
+            this.SEARCH_REQUEST_API.replace('{owner}', owner).replace('{id}', 'tag/' + tag),
+            HttpMethod.Get
+        ).then((response) => this.jsonToListSearchRequests(response.json));
+    }
+
     private jsonToListSearchRequests(json: any): Array<SearchRequest> {
         const result: Array<SearchRequest> = [];
 
