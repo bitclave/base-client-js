@@ -100,4 +100,12 @@ export class SearchManagerImpl implements SearchManager {
         this.account = account;
     }
 
+    public getSearchRequestsByOwnerAndTag(owner: string, tag: string): Promise<Array<SearchRequest>> {
+        return this.requestRepository.getSearchRequestsByOwnerAndTag(owner, tag);
+    }
+
+    public getMySearchRequestsByTag(tag: string): Promise<Array<SearchRequest>> {
+        return this.requestRepository.getSearchRequestsByOwnerAndTag(this.account.publicKey, tag);
+    }
+
 }
