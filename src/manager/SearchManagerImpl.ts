@@ -95,17 +95,17 @@ export class SearchManagerImpl implements SearchManager {
     public addEventToOfferSearch(event: string, offerSearchId: number): Promise<void> {
         return this.offerSearchRepository.addEventToOfferSearch(event, offerSearchId);
     }
-
-    private onChangeAccount(account: Account) {
-        this.account = account;
-    }
-
+    
     public getSearchRequestsByOwnerAndTag(owner: string, tag: string): Promise<Array<SearchRequest>> {
         return this.requestRepository.getSearchRequestsByOwnerAndTag(owner, tag);
     }
 
     public getMySearchRequestsByTag(tag: string): Promise<Array<SearchRequest>> {
         return this.requestRepository.getSearchRequestsByOwnerAndTag(this.account.publicKey, tag);
+    }
+
+    private onChangeAccount(account: Account) {
+        this.account = account;
     }
 
 }
