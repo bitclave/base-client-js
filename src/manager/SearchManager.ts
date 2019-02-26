@@ -6,6 +6,8 @@ export interface SearchManager {
 
     createRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
 
+    createRequestByQuery(query: string, searchRequestId: number): Promise<SearchRequest>;
+
     updateRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
 
     cloneRequest(searchRequest: SearchRequest): Promise<SearchRequest>;

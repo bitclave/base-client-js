@@ -6,6 +6,7 @@ import { HttpTransport } from '../source/http/HttpTransport';
 export default class SearchRequestRepositoryImpl implements SearchRequestRepository {
 
     private readonly SEARCH_REQUEST_API: string = '/v1/client/{owner}/search/request/{id}';
+    private readonly SEARCH_BY_QUERY_REQUEST_API: string = '/v1/client/{owner}/search/request/{id}/query/';
 
     private transport: HttpTransport;
 
@@ -18,6 +19,16 @@ export default class SearchRequestRepositoryImpl implements SearchRequestReposit
             this.SEARCH_REQUEST_API.replace('{owner}', owner).replace('{id}', ''),
             HttpMethod.Post,
             searchRequest.toJson()
+        ).then((response) => SearchRequest.fromJson(response.json));
+    }
+
+    public createByQuery(owner: string, query: string, searchRequestId: number): Promise<SearchRequest> {
+        return this.transport.sendRequest(
+            this.SEARCH_BY_QUERY_REQUEST_API
+                .replace('{owner}', owner)
+                .replace('{id}', searchRequestId.toString()),
+            HttpMethod.Post,
+            query
         ).then((response) => SearchRequest.fromJson(response.json));
     }
 
