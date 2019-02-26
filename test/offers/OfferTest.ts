@@ -175,4 +175,19 @@ describe('Offer CRUD', async () => {
             throw e;
         }
     });
+    it('should get existed offer with tag', async () => {
+        try {
+
+            const offer = offerFactory();
+            const createdOffer = await baseSeller.offerManager.saveOffer(offer);
+
+            let existedOffers = await baseSeller.offerManager.getMyOffersByTag('product');
+
+            existedOffers.length.should.be.eql(1);
+
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    });
 });
