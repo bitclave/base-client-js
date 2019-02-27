@@ -28,7 +28,7 @@ async function createUser(user: Base, pass: string): Promise<Account> {
     return await user.accountManager.registration(pass, someSigMessage); // this method private.
 }
 
-describe('BASE API test: External Validator', async () => {
+describe('Verify Manager', async () => {
     const passPhraseAlisa: string = 'Alice';
 
     const baseAlice: Base = createBase();
