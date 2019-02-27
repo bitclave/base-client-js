@@ -6,7 +6,7 @@ export interface SearchManager {
 
     createRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
 
-    createRequestByQuery(query: string, searchRequestId: number): Promise<SearchRequest>;
+    createRequestByQuery(query: string, searchRequestId: number): Promise<Array<OfferSearchResultItem>>;
 
     updateRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
 
