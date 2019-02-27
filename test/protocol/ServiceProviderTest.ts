@@ -90,9 +90,9 @@ describe('BASE API test: Protocol Flow', async () => {
     var accValidator: Account;
 
     function createBase(): Base {
+        const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
         return new Base(
-            //'http://localhost:8080',
-            'https://base2-bitclva-com.herokuapp.com',
+            baseNodeUrl,
             'localhost',
             RepositoryStrategyType.Postgres,
             rpcSignerHost
