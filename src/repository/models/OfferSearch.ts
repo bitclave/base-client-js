@@ -1,5 +1,3 @@
-import { DateUtils } from '../../utils/DateUtils';
-
 export default class OfferSearch {
 
     id: number = 0;
@@ -36,8 +34,8 @@ export default class OfferSearch {
     public toJson() {
         const jsonStr = JSON.stringify(this);
         const json = JSON.parse(jsonStr);
-        json.createdAt = DateUtils.toCorrectIso8601(this.createdAt);
-        json.updatedAt = DateUtils.toCorrectIso8601(this.updatedAt);
+        json.createdAt = this.createdAt.toUTCString();
+        json.updatedAt = this.updatedAt.toUTCString();
 
         return json;
     }
