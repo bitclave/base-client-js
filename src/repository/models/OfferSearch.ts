@@ -34,8 +34,8 @@ export default class OfferSearch {
     public toJson() {
         const jsonStr = JSON.stringify(this);
         const json = JSON.parse(jsonStr);
-        json.createdAt = this.createdAt.toUTCString();
-        json.updatedAt = this.updatedAt.toUTCString();
+        json.createdAt = this.createdAt.toJSON();
+        json.updatedAt = this.updatedAt.toJSON();
 
         return json;
     }

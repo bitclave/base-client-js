@@ -94,8 +94,8 @@ export default class Offer {
         json.tags = JsonUtils.mapToJson(this.tags);
         json.compare = JsonUtils.mapToJson(this.compare);
         json.rules = JsonUtils.mapToJson(this.rules);
-        json.createdAt = this.createdAt.toUTCString();
-        json.updatedAt = this.updatedAt.toUTCString();
+        json.createdAt = this.createdAt.toJSON();
+        json.updatedAt = this.updatedAt.toJSON();
 
         for (let item in json.rules) {
             if (typeof json.rules[item] === 'number') {

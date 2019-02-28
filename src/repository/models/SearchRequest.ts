@@ -25,8 +25,8 @@ export default class SearchRequest {
         const jsonStr = JSON.stringify(this);
         const json = JSON.parse(jsonStr);
         json.tags = JsonUtils.mapToJson(this.tags);
-        json.createdAt = this.createdAt.toUTCString();
-        json.updatedAt = this.updatedAt.toUTCString();
+        json.createdAt = this.createdAt.toJSON();
+        json.updatedAt = this.updatedAt.toJSON();
 
         return json;
     }
