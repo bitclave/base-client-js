@@ -58,6 +58,13 @@ export default class OfferRepositoryImpl implements OfferRepository {
         ).then((response) => this.jsonToListOffers(response.json));
     }
 
+    public getOffersByOwnerAndTag(owner: string, tag: string): Promise<Array<Offer>> {
+        return this.transport.sendRequest(
+            this.OFFER_API.replace('{owner}', owner).replace('{id}', 'tag/' + tag),
+            HttpMethod.Get
+        ).then((response) => this.jsonToListOffers(response.json));
+    }
+
     private jsonToListOffers(json: any): Array<Offer> {
         const result: Array<Offer> = [];
 
