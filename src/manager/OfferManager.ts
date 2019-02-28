@@ -10,4 +10,8 @@ export interface OfferManager {
 
     deleteOffer(id: number): Promise<number>;
 
+    getOffersByOwnerAndTag(owner: string, tag: string): Promise<Array<Offer>>;
+
+    getMyOffersByTag(tag: string): Promise<Array<Offer>>;
+
 }

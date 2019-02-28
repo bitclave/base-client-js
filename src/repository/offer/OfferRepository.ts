@@ -14,4 +14,6 @@ export interface OfferRepository {
 
     getAllOffer(): Promise<Array<Offer>>;
 
+    getOffersByOwnerAndTag(owner: string, tag: string): Promise<Array<Offer>>;
+
 }
