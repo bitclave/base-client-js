@@ -125,7 +125,7 @@ describe('Search Manager', async () => {
             insertedSearchRequest = await userBase.searchManager.createRequest(searchRequest);
 
             let searchRequests = await userBase.searchManager.getAllRequests();
-            searchRequests.length.should.be.eql(2);
+            searchRequests.length.should.be.gte(2);
 
             searchRequests = await userBase.searchManager.getMySearchRequestsByTag('product');
             searchRequests.length.should.be.eql(2);
