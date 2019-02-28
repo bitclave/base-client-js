@@ -2,6 +2,7 @@ import { CompareAction } from './CompareAction';
 import { OfferPrice } from './OfferPrice';
 import { OfferPriceRules } from './OfferPriceRules';
 import { JsonUtils } from '../../utils/JsonUtils';
+import { DateUtils } from '../../utils/DateUtils';
 
 export default class Offer {
 
@@ -15,6 +16,8 @@ export default class Offer {
     compare: Map<String, String>;
     rules: Map<String, CompareAction>;
     offerPrices = new Array<OfferPrice>();
+    createdAt: Date = new Date();
+    updatedAt: Date = new Date();
 
     public static fromJson(json: any): Offer {
         const offer: Offer = Object.assign(new Offer(), json);
@@ -22,6 +25,8 @@ export default class Offer {
         offer.tags = JsonUtils.jsonToMap(json.tags);
         offer.compare = JsonUtils.jsonToMap(json.compare);
         offer.rules = JsonUtils.jsonToMap(json.rules);
+        offer.createdAt = new Date(json.createdAt);
+        offer.updatedAt = new Date(json.updatedAt);
 
         if (json.offerPrices && json.offerPrices.length) {
           offer.offerPrices = json.offerPrices.map( (e: OfferPrice) => {
@@ -35,11 +40,11 @@ export default class Offer {
         {
             if (offer.compare.size>0)
             {
-                let key: String = Array.from(offer.compare.keys())[0]
-                let val: String = offer.compare.get(key) || ""
+                let key: String = Array.from(offer.compare.keys())[0];
+                let val: String = offer.compare.get(key) || "";
 
                 offer.offerPrices = [
-                    
+
                     new OfferPrice(
                         0, "default", offer.worth, [
                             new OfferPriceRules(0, key.toString(), val.toString(), offer.rules[0])
@@ -69,14 +74,16 @@ export default class Offer {
         this.compare = compare;
         this.rules = rules;
         this.offerPrices = offerPrices;
+        this.createdAt = new Date();
+        this.updatedAt  = new Date();
 
         if (this.offerPrices.length==0 && this.compare.size>0)
         {
-            let key: String = Array.from(compare.keys())[0]
-            let val: String = compare.get(key) || ""
+            let key: String = Array.from(compare.keys())[0];
+            let val: String = compare.get(key) || "";
 
             this.offerPrices = [
-                
+
                 new OfferPrice(
                     0, "default", worth, [
                         new OfferPriceRules(0, key.toString(), val.toString(), rules[0])
@@ -92,6 +99,9 @@ export default class Offer {
         json.tags = JsonUtils.mapToJson(this.tags);
         json.compare = JsonUtils.mapToJson(this.compare);
         json.rules = JsonUtils.mapToJson(this.rules);
+        json.createdAt = DateUtils.toCorrectIso8601(this.createdAt);
+        json.updatedAt = DateUtils.toCorrectIso8601(this.updatedAt);
+
         for (let item in json.rules) {
             if (typeof json.rules[item] === 'number') {
                 json.rules[item] = CompareAction[json.rules[item]].toString();
