@@ -5,12 +5,16 @@ export default class OfferSearch {
     searchRequestId: number = 0;
     offerId: number = 0;
     state: OfferResultAction = OfferResultAction.NONE;
-    lastUpdated: string;
     info: string;
     events: Array<string>;
+    createdAt: Date = new Date();
+    updatedAt: Date = new Date();
 
     public static fromJson(json: any): OfferSearch {
         const offerSearch: OfferSearch = Object.assign(new OfferSearch(), json);
+        offerSearch.createdAt = new Date(json.createdAt);
+        offerSearch.updatedAt = new Date(json.updatedAt);
+
         return offerSearch;
     }
 
@@ -21,7 +25,8 @@ export default class OfferSearch {
     ) {
         this.searchRequestId = searchRequestId;
         this.offerId = offerId;
-        this.lastUpdated = Date().toString();
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
         this.info = 'from base-client-demo';
         this.events = events;
     }
@@ -29,6 +34,8 @@ export default class OfferSearch {
     public toJson() {
         const jsonStr = JSON.stringify(this);
         const json = JSON.parse(jsonStr);
+        json.createdAt = this.createdAt.toJSON();
+        json.updatedAt = this.updatedAt.toJSON();
 
         return json;
     }

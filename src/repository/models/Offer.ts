@@ -15,6 +15,8 @@ export default class Offer {
     compare: Map<String, String>;
     rules: Map<String, CompareAction>;
     offerPrices = new Array<OfferPrice>();
+    createdAt: Date = new Date();
+    updatedAt: Date = new Date();
 
     public static fromJson(json: any): Offer {
         const offer: Offer = Object.assign(new Offer(), json);
@@ -22,30 +24,29 @@ export default class Offer {
         offer.tags = JsonUtils.jsonToMap(json.tags);
         offer.compare = JsonUtils.jsonToMap(json.compare);
         offer.rules = JsonUtils.jsonToMap(json.rules);
+        offer.createdAt = new Date(json.createdAt);
+        offer.updatedAt = new Date(json.updatedAt);
 
         if (json.offerPrices && json.offerPrices.length) {
-          offer.offerPrices = json.offerPrices.map( (e: OfferPrice) => {
-              const offerRules: Array<OfferPriceRules> = e.rules && e.rules.length
-                ? e.rules.map( r => OfferPriceRules.fromJson(r))
-                : Array<OfferPriceRules>();
-              return new OfferPrice(e.id, e.description, e.worth, offerRules);
-          });
-        }
-        else
-        {
-            if (offer.compare.size>0)
-            {
-                let key: String = Array.from(offer.compare.keys())[0]
-                let val: String = offer.compare.get(key) || ""
+            offer.offerPrices = json.offerPrices.map((e: OfferPrice) => {
+                const offerRules: Array<OfferPriceRules> = e.rules && e.rules.length
+                    ? e.rules.map(r => OfferPriceRules.fromJson(r))
+                    : Array<OfferPriceRules>();
+                return new OfferPrice(e.id, e.description, e.worth, offerRules);
+            });
+        } else {
+            if (offer.compare.size > 0) {
+                let key: String = Array.from(offer.compare.keys())[0];
+                let val: String = offer.compare.get(key) || '';
 
                 offer.offerPrices = [
-                    
+
                     new OfferPrice(
-                        0, "default", offer.worth, [
+                        0, 'default', offer.worth, [
                             new OfferPriceRules(0, key.toString(), val.toString(), offer.rules[0])
                         ]
                     )
-                ]
+                ];
             }
         }
         return offer;
@@ -69,20 +70,21 @@ export default class Offer {
         this.compare = compare;
         this.rules = rules;
         this.offerPrices = offerPrices;
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
 
-        if (this.offerPrices.length==0 && this.compare.size>0)
-        {
-            let key: String = Array.from(compare.keys())[0]
-            let val: String = compare.get(key) || ""
+        if (this.offerPrices.length == 0 && this.compare.size > 0) {
+            let key: String = Array.from(compare.keys())[0];
+            let val: String = compare.get(key) || '';
 
             this.offerPrices = [
-                
+
                 new OfferPrice(
-                    0, "default", worth, [
+                    0, 'default', worth, [
                         new OfferPriceRules(0, key.toString(), val.toString(), rules[0])
                     ]
                 )
-            ]
+            ];
         }
     }
 
@@ -92,28 +94,32 @@ export default class Offer {
         json.tags = JsonUtils.mapToJson(this.tags);
         json.compare = JsonUtils.mapToJson(this.compare);
         json.rules = JsonUtils.mapToJson(this.rules);
+        json.createdAt = this.createdAt.toJSON();
+        json.updatedAt = this.updatedAt.toJSON();
+
         for (let item in json.rules) {
             if (typeof json.rules[item] === 'number') {
                 json.rules[item] = CompareAction[json.rules[item]].toString();
             }
         }
         json.offerPrices = this.offerPrices.map(e =>
-            e.toJson()
+                                                    e.toJson()
         );
         return json;
     }
 
     public validPrices(data: Map<string, string>): Array<OfferPrice> {
 
-        let mostRelevantPrice =  this.offerPrices.filter( price => price.isRelevant(data));
-        mostRelevantPrice.sort((a,b) => a.id-b.id);
+        let mostRelevantPrice = this.offerPrices.filter(price => price.isRelevant(data));
+        mostRelevantPrice.sort((a, b) => a.id - b.id);
 
         return mostRelevantPrice;
     }
+
     getPriceById(id: number): OfferPrice | undefined {
         if (this.offerPrices && this.offerPrices.length > 0) {
-            const price = this.offerPrices.find( p =>
-                p.id === id
+            const price = this.offerPrices.find(p =>
+                                                    p.id === id
             );
             return price;
         } else {
