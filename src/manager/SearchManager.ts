@@ -30,4 +30,8 @@ export interface SearchManager {
     addResultItem(offerSearch: OfferSearch): Promise<void>;
     addEventToOfferSearch(event: string, offerSearchId: number): Promise<void>;
 
+    getSearchRequestsByOwnerAndTag(owner: string, tag: string): Promise<Array<SearchRequest>>;
+
+    getMySearchRequestsByTag(tag: string): Promise<Array<SearchRequest>>;
+
 }
