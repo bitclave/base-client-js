@@ -1,5 +1,4 @@
 import { JsonUtils } from '../../utils/JsonUtils';
-import { DateUtils } from '../../utils/DateUtils';
 
 export default class SearchRequest {
 
@@ -26,8 +25,8 @@ export default class SearchRequest {
         const jsonStr = JSON.stringify(this);
         const json = JSON.parse(jsonStr);
         json.tags = JsonUtils.mapToJson(this.tags);
-        json.createdAt = DateUtils.toCorrectIso8601(this.createdAt);
-        json.updatedAt = DateUtils.toCorrectIso8601(this.updatedAt);
+        json.createdAt = this.createdAt.toUTCString();
+        json.updatedAt = this.updatedAt.toUTCString();
 
         return json;
     }
