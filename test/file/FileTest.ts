@@ -54,12 +54,8 @@ describe('File CRUD', async () => {
         );
     }
 
-    before(async () => {
-        accAlice = await createUser(baseAlice, passPhraseAlisa);
-    });
-
     beforeEach(async () => {
-        //accAlice = await createUser(baseAlice, passPhraseAlisa);
+        accAlice = await createUser(baseAlice, passPhraseAlisa);
     });
 
     after(async () => {

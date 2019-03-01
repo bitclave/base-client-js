@@ -1,4 +1,4 @@
-import Base from '../../src/Base';
+import Base, { Offer, CompareAction, SearchRequest, OfferSearch } from '../../src/Base';
 import Account from '../../src/repository/models/Account';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import AuthenticatorHelper from '../AuthenticatorHelper';
@@ -28,11 +28,14 @@ async function createUser(user: Base, pass: string): Promise<Account> {
     return await user.accountManager.registration(pass, someSigMessage); // this method private.
 }
 
-describe('BASE API test: External Validator', async () => {
+describe('Verify Manager', async () => {
     const passPhraseAlisa: string = 'Alice';
+    const passPhraseSeller: string = 'Seller';
 
+    const businessBase: Base = createBase();
     const baseAlice: Base = createBase();
 
+    let businessAccount: Account;
     var accAlice: Account;
 
     function createBase(): Base {
@@ -43,9 +46,38 @@ describe('BASE API test: External Validator', async () => {
             rpcSignerHost
         );
     }
+    function offerFactory(): Offer {
+        const offerTags = new Map<String, String>([
+          ['product', 'car'],
+          ['color', 'red'],
+          ['producer', 'mazda'],
+          ['models', 'RX8']
+        ]);
+        const compareUserTag = new Map<String, String>([
+            ['age', '10']
+        ]);
+        const rules = new Map<String, CompareAction>([
+            ['age', CompareAction.MORE]
+        ]);
+        const offer = new Offer(
+          'it is offer description',
+          'it is title of offer',
+          '', '1', offerTags, compareUserTag, rules
+        );
+        return offer;
+    }
+    function requestFactory(): SearchRequest {
+        return new SearchRequest(new Map([
+            ['product', 'car'],
+            ['color', 'red'],
+            ['producer', 'mazda'],
+            ['models', 'RX8']
+        ]));
 
+    }
     beforeEach(async () => {
-       accAlice = await createUser(baseAlice, passPhraseAlisa);
+        businessAccount = await createUser(businessBase, passPhraseSeller);
+        accAlice = await createUser(baseAlice, passPhraseAlisa);
     });
 
     after(async () => {
@@ -54,8 +86,31 @@ describe('BASE API test: External Validator', async () => {
 
     it('should get offer search list by ids', async () => {
         try {
-            const offerSearches = await baseAlice.verfiyManager.getOfferSearchesByIds([1]);
-            offerSearches.length.should.be.equal(0);
+            // Business:
+            // create offer
+            const offer = offerFactory();
+            const businessOffer = await businessBase.offerManager.saveOffer(offer);
+            
+            const searchRequest = requestFactory();
+            const insertedSearchRequest = await baseAlice.searchManager.createRequest(searchRequest);
+
+            let offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
+            await baseAlice.searchManager.addResultItem(offerSearch);
+
+            let searchRequests = await baseAlice.searchManager.getSearchResult(insertedSearchRequest.id);
+            searchRequests.length.should.be.eql(1);
+
+            const offerSearches = await baseAlice.verfiyManager.getOfferSearchesByIds([searchRequests[0].offerSearch.id]);
+            offerSearches.length.should.be.equal(1);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    });
+    it('should get user list by publickeys', async () => {
+        try {
+            const users = await baseAlice.verfiyManager.getAccountsByPublicKeys([accAlice.publicKey]);
+            users.length.should.be.equal(1);
         } catch (e) {
             console.log(e);
             throw e;
