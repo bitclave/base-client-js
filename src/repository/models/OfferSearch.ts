@@ -44,7 +44,11 @@ export default class OfferSearch {
 export enum OfferResultAction {
 
     NONE = 'NONE',
-    ACCEPT = 'ACCEPT',
-    REJECT = 'REJECT'
-
+    ACCEPT = 'ACCEPT',              // set by ???
+    REJECT = 'REJECT',              // set by User when rejects the offer
+    EVALUATE = 'EVALUATE',          // set by User when following external redirect link
+    CONFIRMED = 'CONFIRMED',        // set by Offer Owner when user completed external action
+    REWARDED = 'REWARDED',          // set by Offer Owner when Owner paid out the promised reward
+    COMPLAIN = 'COMPLAIN',          // set by User when complains on the offer
+    CLAIMPURCHASE = 'CLAIMPURCHASE' // set by User to communicate that he mad the purchase for external offer
 }

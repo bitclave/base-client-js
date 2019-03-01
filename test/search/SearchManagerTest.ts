@@ -1,4 +1,4 @@
-import Base, { Offer, CompareAction, SearchRequest, OfferSearch } from '../../src/Base';
+import Base, { Offer, CompareAction, SearchRequest, OfferSearch, OfferResultAction } from '../../src/Base';
 import Account from '../../src/repository/models/Account';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import AuthenticatorHelper from '../AuthenticatorHelper';
@@ -90,7 +90,7 @@ describe('Search Manager', async () => {
             const searchRequest = requestFactory();
             let insertedSearchRequest = await userBase.searchManager.createRequest(searchRequest);
 
-            let searchRequests = await userBase.searchManager.getMyRequests(insertedSearchRequest.id);
+            let searchRequests = await userBase.searchManager.getMyRequests(0);
 
             searchRequests.length.should.be.eql(1);
 
@@ -130,7 +130,7 @@ describe('Search Manager', async () => {
             searchRequests = await userBase.searchManager.getMySearchRequestsByTag('product');
             searchRequests.length.should.be.eql(2);
 
-            searchRequests = await userBase.searchManager.getMySearchRequestsByTag('product');
+            searchRequests = await userBase.searchManager.getSearchRequestsByOwnerAndTag(userAccount.publicKey, 'product');
             searchRequests.length.should.be.eql(2);
 
         } catch (e) {
@@ -172,6 +172,57 @@ describe('Search Manager', async () => {
         }
     });
 
+    it('should change Offer Search state', async () => {
+        try {
+            // Business:
+            // create offer
+            const offer = offerFactory();
+            const businessOffer = await businessBase.offerManager.saveOffer(offer);
+            
+            const searchRequest = requestFactory();
+            const insertedSearchRequest = await userBase.searchManager.createRequest(searchRequest);
+
+            let offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch);
+            let searchRequests = await userBase.searchManager.getUserOfferSearches();
+            searchRequests.length.should.be.eql(1);
+
+            await userBase.searchManager.claimPurchaseForSearchItem(searchRequests[0].offerSearch.id);
+            searchRequests.length.should.be.eql(1);
+            searchRequests = await userBase.searchManager.getUserOfferSearches();
+            searchRequests.length.should.be.eql(1);
+            searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.CLAIMPURCHASE);
+
+            await userBase.searchManager.complainToSearchItem(searchRequests[0].offerSearch.id);
+            searchRequests.length.should.be.eql(1);
+            searchRequests = await userBase.searchManager.getUserOfferSearches();
+            searchRequests.length.should.be.eql(1);
+            searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.COMPLAIN);
+
+            await userBase.searchManager.evaluateSearchItem(searchRequests[0].offerSearch.id);
+            searchRequests.length.should.be.eql(1);
+            searchRequests = await userBase.searchManager.getUserOfferSearches();
+            searchRequests.length.should.be.eql(1);
+            searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.EVALUATE);
+
+            await userBase.searchManager.rejectSearchItem(searchRequests[0].offerSearch.id);
+            searchRequests.length.should.be.eql(1);
+            searchRequests = await userBase.searchManager.getUserOfferSearches();
+            searchRequests.length.should.be.eql(1);
+            searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.REJECT);
+
+            await businessBase.searchManager.confirmSearchItem(searchRequests[0].offerSearch.id);
+            searchRequests.length.should.be.eql(1);
+            searchRequests = await userBase.searchManager.getUserOfferSearches();
+            searchRequests.length.should.be.eql(1);
+            searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.CONFIRMED);
+
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    });
+
     it('should clone Search Request and Offer Search', async () => {
         try {
             // Business:
@@ -194,6 +245,10 @@ describe('Search Manager', async () => {
             searchRequests = await userBase.searchManager.getSearchResult(clonedSearchRequest.id);
             searchRequests.length.should.be.eql(1);
 
+            const clonedSearchRequest2 = await userBase.searchManager.cloneOfferSearch(clonedSearchRequest.id, searchRequest);
+            clonedSearchRequest2.length.should.be.eql(1);
+            clonedSearchRequest2[0].offerId.should.be.eql(businessOffer.id);
+            clonedSearchRequest2[0].id.should.not.eql(searchRequests[0].offerSearch.id);
         } catch (e) {
             console.log(e);
             throw e;
