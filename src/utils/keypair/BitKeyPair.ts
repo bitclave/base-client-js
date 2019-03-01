@@ -136,11 +136,12 @@ export class BitKeyPair implements KeyPairHelper {
         });
     }
 
-    async decryptFile(file: any): Promise<any> {
+    async decryptFile(file: Buffer): Promise<Buffer> {
         const iv = await this.generatePasswordForField(this.getAddr());
         this.decipher = Crypto.createDecipheriv('aes-256-ctr', this.getPublicKey().slice(0, 32), iv.slice(0, 16));
-        return new Promise<any>(resolve => {
-            resolve (Buffer.concat([this.decipher.update(file) , this.decipher.final()]));
+        let buffer: Buffer = new Buffer(file);
+        return new Promise<Buffer>(resolve => {
+            resolve (Buffer.concat([this.decipher.update(buffer) , this.decipher.final()]));
         });
     }
 
