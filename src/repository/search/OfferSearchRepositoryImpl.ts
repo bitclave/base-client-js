@@ -15,14 +15,22 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     private readonly OFFER_SEARCH_CLAIM_PURCHASE_API = '/v1/search/result/claimpurchase/{id}';
     private readonly OFFER_SEARCH_ADD_API = '/v1/search/result/';
     private readonly OFFER_SEARCH_ADD_EVENT_API = '/v1/search/result/event/{id}';
-
+    private readonly OFFER_SEARCH_CREATE_BY_QUERY_API: string = '/v1/search/query?q={query}';
     private transport: HttpTransport;
 
     constructor(transport: HttpTransport) {
         this.transport = transport;
     }
 
-    
+    public createByQuery(owner: string, query: string, searchRequestId: number): Promise<Array<OfferSearchResultItem>> {
+        return this.transport.sendRequest(
+            this.OFFER_SEARCH_CREATE_BY_QUERY_API
+                .replace('{query}', query),
+            HttpMethod.Post,
+            searchRequestId
+        ).then((response) => this.jsonToListResult(response.json));
+    }
+
     public getUserOfferSearches(clientId: string): Promise<any> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_ADD_API + `user?owner=${clientId}`,
@@ -33,8 +41,8 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     public getSearchResult(clientId: string, searchRequestId: number): Promise<Array<OfferSearchResultItem>> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_ADD_API + `?searchRequestId=${searchRequestId}`,
-                // .replace('{clientId}', clientId)
-                // .replace('{id}', '') + `?searchRequestId=${searchRequestId}`,
+            // .replace('{clientId}', clientId)
+            // .replace('{id}', '') + `?searchRequestId=${searchRequestId}`,
             HttpMethod.Get
         ).then((response) => this.jsonToListResult(response.json));
     }
@@ -49,7 +57,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     public complainToSearchItem(clientId: string, searchResultId: number): Promise<any> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_API
-                // .replace('{clientId}', clientId)
+            // .replace('{clientId}', clientId)
                 .replace('{id}', searchResultId.toString()) + `?searchResultId=${searchResultId}`,
             HttpMethod.Patch,
             searchResultId
@@ -77,7 +85,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     public confirmSearchItem(clientId: string, searchResultId: number): Promise<any> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_CONFIRM_API
-                .replace('{id}', searchResultId.toString()) + `?searchResultId=${searchResultId+1}`,
+                .replace('{id}', searchResultId.toString()) + `?searchResultId=${searchResultId + 1}`,
             HttpMethod.Patch,
             searchResultId
         );
@@ -86,7 +94,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     public claimPurchaseForSearchItem(clientId: string, searchResultId: number): Promise<any> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_CLAIM_PURCHASE_API
-                .replace('{id}', searchResultId.toString()) + `?searchResultId=${searchResultId+1}`,
+                .replace('{id}', searchResultId.toString()) + `?searchResultId=${searchResultId + 1}`,
             HttpMethod.Patch,
             searchResultId
         );
@@ -103,8 +111,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
 
     public addEventToOfferSearch(event: string, offerSearchId: number): Promise<any> {
         return this.transport.sendRequest(
-            this.OFFER_SEARCH_ADD_EVENT_API.
-                replace('{id}', offerSearchId.toString()),
+            this.OFFER_SEARCH_ADD_EVENT_API.replace('{id}', offerSearchId.toString()),
             HttpMethod.Patch,
             event
         );
@@ -112,7 +119,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
 
     public clone(owner: string, id: number, searchRequest: SearchRequest): Promise<Array<OfferSearch>> {
         return this.transport.sendRequest(
-            this.OFFER_SEARCH_ADD_API +  owner + '/' + id,
+            this.OFFER_SEARCH_ADD_API + owner + '/' + id,
             HttpMethod.Put,
             searchRequest.toJson()
         ).then((response) => this.jsonToOfferSearchList(response.json));

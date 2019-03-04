@@ -3,6 +3,7 @@ import OfferSearch from '../models/OfferSearch';
 import SearchRequest from '../models/SearchRequest';
 
 export interface OfferSearchRepository {
+    createByQuery(owner: string, query: string, searchRequestId: number): Promise<Array<OfferSearchResultItem>>;
     getUserOfferSearches(clientId: string): Promise<Array<OfferSearchResultItem>>;
     getSearchResult(clientId: string, searchRequestId: number): Promise<Array<OfferSearchResultItem>>;
     getSearchResultByOfferSearchId(clientId: string, offerSearchId: number): Promise<Array<OfferSearchResultItem>>;
