@@ -4,8 +4,6 @@ export interface SearchRequestRepository {
 
     create(owner: string, searchRequest: SearchRequest): Promise<SearchRequest>;
 
-    createByQuery(owner: string, query: string, searchRequestId: number): Promise<SearchRequest>;
-
     update(owner: string, id: number, searchRequest: SearchRequest): Promise<SearchRequest>;
 
     clone(owner: string, searchRequest: SearchRequest): Promise<SearchRequest>;
