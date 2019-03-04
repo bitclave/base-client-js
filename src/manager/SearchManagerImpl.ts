@@ -27,11 +27,6 @@ export class SearchManagerImpl implements SearchManager {
         return this.requestRepository.create(this.account.publicKey, searchRequest);
     }
 
-    public createRequestByQuery(query: string, searchRequestId: number): Promise<Array<OfferSearchResultItem>> {
-        return this.requestRepository.createByQuery(this.account.publicKey, query, searchRequestId)
-            .then( result => this.getSearchResult(searchRequestId));
-    }
-
     public updateRequest(searchRequest: SearchRequest): Promise<SearchRequest> {
         return this.requestRepository.update(this.account.publicKey, searchRequest.id, searchRequest);
     }
@@ -59,6 +54,10 @@ export class SearchManagerImpl implements SearchManager {
 
     public deleteRequest(id: number): Promise<number> {
         return this.requestRepository.deleteById(this.account.publicKey, id);
+    }
+
+    public createSearchResultByQuery(query: string, searchRequestId: number): Promise<Array<OfferSearchResultItem>> {
+        return this.offerSearchRepository.createByQuery(this.account.publicKey, query, searchRequestId)
     }
 
     public getSearchResult(searchRequestId: number): Promise<Array<OfferSearchResultItem>> {

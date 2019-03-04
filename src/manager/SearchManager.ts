@@ -6,8 +6,6 @@ export interface SearchManager {
 
     createRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
 
-    createRequestByQuery(query: string, searchRequestId: number): Promise<Array<OfferSearchResultItem>>;
-
     updateRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
 
     cloneRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
@@ -19,6 +17,7 @@ export interface SearchManager {
 
     deleteRequest(id: number): Promise<number>;
 
+    createSearchResultByQuery(query: string, searchRequestId: number): Promise<Array<OfferSearchResultItem>>;
     getSearchResult(searchRequestId: number): Promise<Array<OfferSearchResultItem>>;
     getSearchResultByOfferSearchId(offerSearchId: number): Promise<Array<OfferSearchResultItem>>;
     getUserOfferSearches(): Promise<Array<OfferSearchResultItem>>;
