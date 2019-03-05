@@ -2,7 +2,7 @@ const Path = require('path');
 const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
 
 module.exports = {
-    entry: './src/Base.ts',
+    entry: './ppp/src/Base.ts',
     devtool: 'source-map',
     node: {
         fs: 'empty',
@@ -28,7 +28,7 @@ module.exports = {
         ]
     },
     resolve: {
-        modules: [Path.resolve('./node_modules'), Path.resolve('./src')],
+        modules: [Path.resolve('./node_modules'), Path.resolve('./ppp/src')],
         extensions: ['.tsx', '.ts', '.js']
     },
     output: {
@@ -47,6 +47,6 @@ module.exports = {
             excludePrivate: true,
             experimentalDecorators: true,
             excludeExternals: true
-        }, './src/')
+        }, './ppp/src/')
     ]
 };

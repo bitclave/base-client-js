@@ -4,8 +4,10 @@ pushd .
 # cleanup lib folder
 rm -rf ./lib/*
 rm -rf dist
+rm -rf ppp
 rm -rf example/public
 
+./pp_for_logs.sh
 npm install       #postinstall: node remove-bitcore-lib-dep.js
 npm run preBuild  #tsc --outDir dist -d
 npm run build     # webpack
@@ -25,6 +27,7 @@ cp -R ./dist/docs ./lib
 cp -R ./base-client-js-bundle/dist/BitclaveBase.* ./lib
 
 rm -rf example/public
+rm -rf ppp
 
 echo base-client-js is ready for publishing
 
