@@ -57,8 +57,13 @@ export class SearchManagerImpl implements SearchManager {
         return this.requestRepository.deleteById(this.account.publicKey, id);
     }
 
-    public createSearchResultByQuery(query: string, searchRequestId: number): Promise<Page<OfferSearchResultItem>> {
-        return this.offerSearchRepository.createByQuery(this.account.publicKey, query, searchRequestId);
+    public createSearchResultByQuery(
+        query: string,
+        searchRequestId: number,
+        page?: number,
+        size?: number
+    ): Promise<Page<OfferSearchResultItem>> {
+        return this.offerSearchRepository.createByQuery(this.account.publicKey, query, searchRequestId, page, size);
     }
 
     public getSearchResult(searchRequestId: number): Promise<Array<OfferSearchResultItem>> {

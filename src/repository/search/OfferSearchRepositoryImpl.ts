@@ -16,17 +16,26 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     private readonly OFFER_SEARCH_CLAIM_PURCHASE_API = '/v1/search/result/claimpurchase/{id}';
     private readonly OFFER_SEARCH_ADD_API = '/v1/search/result/';
     private readonly OFFER_SEARCH_ADD_EVENT_API = '/v1/search/result/event/{id}';
-    private readonly OFFER_SEARCH_CREATE_BY_QUERY_API: string = '/v1/search/query?q={query}';
+    private readonly OFFER_SEARCH_CREATE_BY_QUERY_API: string = '/v1/search/query?q={query}&page={page}&size={size}';
     private transport: HttpTransport;
 
     constructor(transport: HttpTransport) {
         this.transport = transport;
     }
 
-    public createByQuery(owner: string, query: string, searchRequestId: number): Promise<Page<OfferSearchResultItem>> {
+    public createByQuery(
+        owner: string,
+        query: string,
+        searchRequestId: number,
+        page?: number,
+        size?: number
+    ): Promise<Page<OfferSearchResultItem>> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_CREATE_BY_QUERY_API
-                .replace('{query}', query),
+                .replace('{query}', query)
+                .replace('{page}', (page || 0).toString())
+                .replace('{size}', (size || 20).toString())
+            ,
             HttpMethod.Post,
             searchRequestId
         ).then((response) => Page.fromJson(response.json, OfferSearchResultItem));

@@ -4,7 +4,13 @@ import SearchRequest from '../models/SearchRequest';
 import { Page } from '../models/Page';
 
 export interface OfferSearchRepository {
-    createByQuery(owner: string, query: string, searchRequestId: number): Promise<Page<OfferSearchResultItem>>;
+    createByQuery(
+        owner: string,
+        query: string,
+        searchRequestId: number,
+        page?: number,
+        size?: number
+    ): Promise<Page<OfferSearchResultItem>>;
 
     getUserOfferSearches(clientId: string): Promise<Array<OfferSearchResultItem>>;
 

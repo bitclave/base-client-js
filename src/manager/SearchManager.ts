@@ -19,7 +19,12 @@ export interface SearchManager {
 
     deleteRequest(id: number): Promise<number>;
 
-    createSearchResultByQuery(query: string, searchRequestId: number): Promise<Page<OfferSearchResultItem>>;
+    createSearchResultByQuery(
+        query: string,
+        searchRequestId: number,
+        page?: number,
+        size?: number
+    ): Promise<Page<OfferSearchResultItem>>;
 
     getSearchResult(searchRequestId: number): Promise<Array<OfferSearchResultItem>>;
 
