@@ -6,6 +6,7 @@ import { SearchManager } from './SearchManager';
 import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import OfferSearch from '../repository/models/OfferSearch';
 import { OfferSearchRepository } from '../repository/search/OfferSearchRepository';
+import { Page } from '../repository/models/Page';
 
 export class SearchManagerImpl implements SearchManager {
 
@@ -56,8 +57,13 @@ export class SearchManagerImpl implements SearchManager {
         return this.requestRepository.deleteById(this.account.publicKey, id);
     }
 
-    public createSearchResultByQuery(query: string, searchRequestId: number): Promise<Array<OfferSearchResultItem>> {
-        return this.offerSearchRepository.createByQuery(this.account.publicKey, query, searchRequestId)
+    public createSearchResultByQuery(
+        query: string,
+        searchRequestId: number,
+        page?: number,
+        size?: number
+    ): Promise<Page<OfferSearchResultItem>> {
+        return this.offerSearchRepository.createByQuery(this.account.publicKey, query, searchRequestId, page, size);
     }
 
     public getSearchResult(searchRequestId: number): Promise<Array<OfferSearchResultItem>> {
@@ -99,7 +105,7 @@ export class SearchManagerImpl implements SearchManager {
     public addEventToOfferSearch(event: string, offerSearchId: number): Promise<void> {
         return this.offerSearchRepository.addEventToOfferSearch(event, offerSearchId);
     }
-    
+
     public getSearchRequestsByOwnerAndTag(owner: string, tag: string): Promise<Array<SearchRequest>> {
         return this.requestRepository.getSearchRequestsByOwnerAndTag(owner, tag);
     }
