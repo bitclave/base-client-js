@@ -38,7 +38,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
             ,
             HttpMethod.Post,
             searchRequestId
-        ).then((response) => Page.fromJson(response.json, OfferSearchResultItem));
+        ).then((response) => this.jsonToPageResultItem(response.json));
     }
 
     public getUserOfferSearches(clientId: string): Promise<any> {
@@ -135,12 +135,17 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         ).then((response) => this.jsonToOfferSearchList(response.json));
     }
 
+    private async jsonToPageResultItem(json: any): Promise<Page<OfferSearchResultItem>> {
+        json.content = await this.jsonToListResult(json.content);
+        return Page.fromJson(json, OfferSearchResultItem);
+    }
+
     private async jsonToListResult(json: any): Promise<Array<OfferSearchResultItem>> {
         const result: Array<OfferSearchResultItem> = [];
 
         for (let item of json) {
             result.push(new OfferSearchResultItem(
-                Object.assign(new OfferSearch(), item.offerSearch),
+                OfferSearch.fromJson(item.offerSearch),
                 Offer.fromJson(item.offer)
             ));
         }
