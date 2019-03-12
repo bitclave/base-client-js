@@ -66,6 +66,10 @@ export class SearchManagerImpl implements SearchManager {
         return this.offerSearchRepository.createByQuery(this.account.publicKey, query, searchRequestId, page, size);
     }
 
+    public getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>> {
+        return this.offerSearchRepository.getCountBySearchRequestIds(searchRequestIds);
+    }
+
     public getSearchResult(searchRequestId: number): Promise<Array<OfferSearchResultItem>> {
         return this.offerSearchRepository.getSearchResult(this.account.publicKey, searchRequestId);
     }

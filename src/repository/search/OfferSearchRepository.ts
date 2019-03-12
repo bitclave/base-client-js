@@ -18,6 +18,8 @@ export interface OfferSearchRepository {
 
     getSearchResultByOfferSearchId(clientId: string, offerSearchId: number): Promise<Array<OfferSearchResultItem>>;
 
+    getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>>;
+
     complainToSearchItem(clientId: string, searchResultId: number): Promise<void>;
 
     rejectSearchItem(clientId: string, searchResultId: number): Promise<void>;

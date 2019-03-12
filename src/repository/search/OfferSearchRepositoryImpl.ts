@@ -6,6 +6,7 @@ import { HttpMethod } from '../source/http/HttpMethod';
 import Offer from '../models/Offer';
 import SearchRequest from '../models/SearchRequest';
 import { Page } from '../models/Page';
+import { JsonUtils } from '../../utils/JsonUtils';
 
 export class OfferSearchRepositoryImpl implements OfferSearchRepository {
 
@@ -17,6 +18,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     private readonly OFFER_SEARCH_ADD_API = '/v1/search/result/';
     private readonly OFFER_SEARCH_ADD_EVENT_API = '/v1/search/result/event/{id}';
     private readonly OFFER_SEARCH_CREATE_BY_QUERY_API: string = '/v1/search/query?q={query}&page={page}&size={size}';
+    private readonly OFFER_SEARCH_COUNT_BY_REQUEST_IDS_API: string = '/v1/search/count?ids={ids}';
     private transport: HttpTransport;
 
     constructor(transport: HttpTransport) {
@@ -62,6 +64,14 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
             this.OFFER_SEARCH_ADD_API + `?offerSearchId=${offerSearchId}`,
             HttpMethod.Get
         ).then((response) => this.jsonToListResult(response.json));
+    }
+
+    public getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>> {
+        return this.transport.sendRequest(
+            this.OFFER_SEARCH_COUNT_BY_REQUEST_IDS_API
+                .replace('{ids}', searchRequestIds.join(',')),
+            HttpMethod.Get
+        ).then((response) => JsonUtils.jsonToMap<number, number>(response.json));
     }
 
     public complainToSearchItem(clientId: string, searchResultId: number): Promise<any> {
