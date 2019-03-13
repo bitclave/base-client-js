@@ -16,6 +16,8 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     private readonly OFFER_SEARCH_CONFIRM_API = '/v1/search/result/confirm/{id}';
     private readonly OFFER_SEARCH_CLAIM_PURCHASE_API = '/v1/search/result/claimpurchase/{id}';
     private readonly OFFER_SEARCH_ADD_API = '/v1/search/result/';
+    private readonly OFFER_SEARCH_BY_PARAMS_API =
+        '/v1/search/result/user?owner={owner}&group={group}&state={state}&unique={unique}&page={page}&size={size}';
     private readonly OFFER_SEARCH_ADD_EVENT_API = '/v1/search/result/event/{id}';
     private readonly OFFER_SEARCH_CREATE_BY_QUERY_API: string = '/v1/search/query?q={query}&page={page}&size={size}';
     private readonly OFFER_SEARCH_COUNT_BY_REQUEST_IDS_API: string = '/v1/search/count?ids={ids}';
@@ -29,25 +31,39 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         owner: string,
         query: string,
         searchRequestId: number,
-        page?: number,
-        size?: number
+        page: number = 0,
+        size: number = 20
     ): Promise<Page<OfferSearchResultItem>> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_CREATE_BY_QUERY_API
                 .replace('{query}', query)
-                .replace('{page}', (page || 0).toString())
-                .replace('{size}', (size || 20).toString())
+                .replace('{page}', page.toString())
+                .replace('{size}', size.toString())
             ,
             HttpMethod.Post,
             searchRequestId
         ).then((response) => this.jsonToPageResultItem(response.json));
     }
 
-    public getUserOfferSearches(clientId: string): Promise<any> {
+    public getUserOfferSearches(
+        clientId: string,
+        page: number = 0,
+        size: number = 20,
+        unique: boolean = false,
+        group: Array<string> = [],
+        state: Array<string> = []
+    ): Promise<Page<OfferSearchResultItem>> {
         return this.transport.sendRequest(
-            this.OFFER_SEARCH_ADD_API + `user?owner=${clientId}`,
+            this.OFFER_SEARCH_BY_PARAMS_API
+                .replace('{owner}', clientId)
+                .replace('{page}', page.toString())
+                .replace('{size}', size.toString())
+                .replace('{group}', group.join(','))
+                .replace('{state}', state.join(','))
+                .replace('{unique}', (unique ? '1' : '0'))
+            ,
             HttpMethod.Get
-        ).then((response) => this.jsonToListResult(response.json));
+        ).then((response) => this.jsonToPageResultItem(response.json));
     }
 
     public getSearchResult(clientId: string, searchRequestId: number): Promise<Array<OfferSearchResultItem>> {

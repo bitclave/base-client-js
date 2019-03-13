@@ -74,8 +74,15 @@ export class SearchManagerImpl implements SearchManager {
         return this.offerSearchRepository.getSearchResult(this.account.publicKey, searchRequestId);
     }
 
-    public getUserOfferSearches(): Promise<Array<OfferSearchResultItem>> {
-        return this.offerSearchRepository.getUserOfferSearches(this.account.publicKey);
+    public getUserOfferSearches(
+        page: number = 0,
+        size: number = 20,
+        unique: boolean = false,
+        group: Array<string> = [],
+        state: Array<string> = []
+    ): Promise<Page<OfferSearchResultItem>> {
+        return this.offerSearchRepository
+            .getUserOfferSearches(this.account.publicKey, page, size, unique, group, state);
     }
 
     public getSearchResultByOfferSearchId(offerSearchId: number): Promise<Array<OfferSearchResultItem>> {
