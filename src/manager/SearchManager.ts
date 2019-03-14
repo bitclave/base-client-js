@@ -26,9 +26,9 @@ export interface SearchManager {
         size?: number
     ): Promise<Page<OfferSearchResultItem>>;
 
-    getSearchResult(searchRequestId: number): Promise<Array<OfferSearchResultItem>>;
+    getSearchResult(searchRequestId: number): Promise<Page<OfferSearchResultItem>>;
 
-    getSearchResultByOfferSearchId(offerSearchId: number): Promise<Array<OfferSearchResultItem>>;
+    getSearchResultByOfferSearchId(offerSearchId: number): Promise<Page<OfferSearchResultItem>>;
 
     getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>>
 

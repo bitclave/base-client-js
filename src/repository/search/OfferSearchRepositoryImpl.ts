@@ -18,6 +18,8 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     private readonly OFFER_SEARCH_ADD_API = '/v1/search/result/';
     private readonly OFFER_SEARCH_BY_PARAMS_API =
         '/v1/search/result/user?owner={owner}&group={group}&state={state}&unique={unique}&page={page}&size={size}';
+    private readonly OFFER_SEARCH_GET_BY_REQUEST_OR_SEARCH_API =
+        '/v1/search/result?searchRequestId={searchRequestId}&offerSearchId={offerSearchId}';
     private readonly OFFER_SEARCH_ADD_EVENT_API = '/v1/search/result/event/{id}';
     private readonly OFFER_SEARCH_CREATE_BY_QUERY_API: string = '/v1/search/query?q={query}&page={page}&size={size}';
     private readonly OFFER_SEARCH_COUNT_BY_REQUEST_IDS_API: string = '/v1/search/count?ids={ids}';
@@ -66,20 +68,22 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         ).then((response) => this.jsonToPageResultItem(response.json));
     }
 
-    public getSearchResult(clientId: string, searchRequestId: number): Promise<Array<OfferSearchResultItem>> {
+    public getSearchResult(clientId: string, searchRequestId: number): Promise<Page<OfferSearchResultItem>> {
         return this.transport.sendRequest(
-            this.OFFER_SEARCH_ADD_API + `?searchRequestId=${searchRequestId}`,
-            // .replace('{clientId}', clientId)
-            // .replace('{id}', '') + `?searchRequestId=${searchRequestId}`,
+            this.OFFER_SEARCH_GET_BY_REQUEST_OR_SEARCH_API
+                .replace('{searchRequestId}', searchRequestId.toString())
+                .replace('{offerSearchId}', '0'),
             HttpMethod.Get
-        ).then((response) => this.jsonToListResult(response.json));
+        ).then((response) => this.jsonToPageResultItem(response.json));
     }
 
-    public getSearchResultByOfferSearchId(clientId: string, offerSearchId: number): Promise<Array<OfferSearchResultItem>> {
+    public getSearchResultByOfferSearchId(clientId: string, offerSearchId: number): Promise<Page<OfferSearchResultItem>> {
         return this.transport.sendRequest(
-            this.OFFER_SEARCH_ADD_API + `?offerSearchId=${offerSearchId}`,
+            this.OFFER_SEARCH_GET_BY_REQUEST_OR_SEARCH_API
+                .replace('{searchRequestId}', '0')
+                .replace('{offerSearchId}', offerSearchId.toString()),
             HttpMethod.Get
-        ).then((response) => this.jsonToListResult(response.json));
+        ).then((response) => this.jsonToPageResultItem(response.json));
     }
 
     public getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>> {

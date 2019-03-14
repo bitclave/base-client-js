@@ -160,7 +160,7 @@ describe('Offer main scenario', async () => {
             // User:
             // get OfferSearch (matched offer and searchRequesr data)
             // select a proper offer
-            const searchResults = await userBase.searchManager.getSearchResult(userSearchRequest.id);
+            const searchResults = (await userBase.searchManager.getSearchResult(userSearchRequest.id)).content;
             const searchResult: OfferSearch = searchResults[0].offerSearch;
             const selectedOffer: Offer = searchResults[0].offer;
 
@@ -228,13 +228,13 @@ describe('Offer main scenario', async () => {
       // User:
       // get OfferSearch (matched offer and searchRequesr data)
       // select a proper offer
-      const searchResults = await userBase.searchManager.getSearchResult(userSearchRequest.id);
+      const searchResults = (await userBase.searchManager.getSearchResult(userSearchRequest.id)).content;
       const searchResult: OfferSearch = searchResults[0].offerSearch;
       const selectedOffer: Offer = searchResults[0].offer;
 
       await userBase.searchManager.addEventToOfferSearch('tram-param-pam', searchResult.id);
       await userBase.searchManager.addEventToOfferSearch('ta-da-bada', searchResult.id);
-      const updated = await userBase.searchManager.getSearchResult(userSearchRequest.id);
+      const updated = (await userBase.searchManager.getSearchResult(userSearchRequest.id)).content;
 
       updated[0].offerSearch.events[0].should.be.eql('tram-param-pam');
       updated[0].offerSearch.events[1].should.be.eql('ta-da-bada');
