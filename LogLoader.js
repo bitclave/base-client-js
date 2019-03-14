@@ -7,7 +7,7 @@ module.exports = function (source, map) {
         const match = line.match(/(\.log\(|\.info\(|\.debug\(|\.warn\(|\.error\()/g);
         if (match) {
             match.forEach(item => {
-                separated[i] = separated[i].replace(item, `${item}\'${fileName}:${i + 1}\',`);
+                separated[i] = separated[i].replace(item, `${item}\'${fileName}:${i + 1}\ ' + `);
             });
         }
     }
