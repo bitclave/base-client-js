@@ -2,7 +2,7 @@ const Path = require('path');
 const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
 
 module.exports = {
-    entry: './ppp/src/Base.ts',
+    entry: './src/Base.ts',
     devtool: 'source-map',
     node: {
         fs: 'empty',
@@ -16,19 +16,20 @@ module.exports = {
         'bitcore-mnemonic': 'bitcore-mnemonic'
     },
     module: {
-        loaders: [
-            {test: /\.ts(x?)$/, loader: "babel-loader?presets[]=preset-env!ts-loader"}
-        ],
         rules: [
             {
                 test: /\.ts(x?)$/,
-                use: 'ts-loader',
+                use: [
+                    {loader: 'babel-loader'},
+                    {loader: 'ts-loader'},
+                    {loader: Path.join(__dirname, "./LogLoader.js")}
+                ],
                 exclude: /node_modules/
             }
         ]
     },
     resolve: {
-        modules: [Path.resolve('./node_modules'), Path.resolve('./ppp/src')],
+        modules: [Path.resolve('./node_modules'), Path.resolve('./src')],
         extensions: ['.tsx', '.ts', '.js']
     },
     output: {
@@ -47,6 +48,6 @@ module.exports = {
             excludePrivate: true,
             experimentalDecorators: true,
             excludeExternals: true
-        }, './ppp/src/')
+        }, './src/')
     ]
 };
