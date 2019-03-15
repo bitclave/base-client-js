@@ -32,7 +32,13 @@ export interface SearchManager {
 
     getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>>
 
-    getUserOfferSearches(): Promise<Array<OfferSearchResultItem>>;
+    getUserOfferSearches(
+        page?: number,
+        size?: number,
+        unique?: boolean,
+        group?: Array<string>,
+        state?: Array<string>
+    ): Promise<Page<OfferSearchResultItem>>;
 
     complainToSearchItem(searchResultId: number): Promise<void>;
 

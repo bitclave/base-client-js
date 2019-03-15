@@ -12,7 +12,14 @@ export interface OfferSearchRepository {
         size?: number
     ): Promise<Page<OfferSearchResultItem>>;
 
-    getUserOfferSearches(clientId: string): Promise<Array<OfferSearchResultItem>>;
+    getUserOfferSearches(
+        clientId: string,
+        page?: number,
+        size?: number,
+        unique?: boolean,
+        group?: Array<string>,
+        state?: Array<string>
+    ): Promise<Page<OfferSearchResultItem>>;
 
     getSearchResult(clientId: string, searchRequestId: number): Promise<Array<OfferSearchResultItem>>;
 
