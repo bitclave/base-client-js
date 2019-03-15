@@ -39,8 +39,8 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_CREATE_BY_QUERY_API
                 .replace('{query}', query)
-                .replace('{page}', (page | 0).toString())
-                .replace('{size}', (size | 20).toString())
+                .replace('{page}', (page || 0).toString())
+                .replace('{size}', (size || 20).toString())
             ,
             HttpMethod.Post,
             searchRequestId
@@ -55,16 +55,13 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         group: Array<string> = [],
         state: Array<string> = []
     ): Promise<Page<OfferSearchResultItem>> {
-        const validGroup = group ? group : [];
-        const validState = state ? state : [];
-
         return this.transport.sendRequest(
             this.OFFER_SEARCH_BY_PARAMS_API
                 .replace('{owner}', clientId)
-                .replace('{page}', (page | 0).toString())
-                .replace('{size}', (size | 20).toString())
-                .replace('{group}', validGroup.join(','))
-                .replace('{state}', validState.join(','))
+                .replace('{page}', (page || 0).toString())
+                .replace('{size}', (size || 20).toString())
+                .replace('{group}', (group || []).join(','))
+                .replace('{state}', (state || []).join(','))
                 .replace('{unique}', (unique ? '1' : '0'))
             ,
             HttpMethod.Get
