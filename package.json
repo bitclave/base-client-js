@@ -2,8 +2,9 @@
   "name": "@bitclave/base-client-js",
   "version": "0.3.8",
   "description": "Base JS library for BASE-platform",
-  "main": "lib/Base.js",
-  "types": "lib/Base.d.ts",
+  "main": "dist/Base.node.js",
+  "browser": "dist/Base.js",
+  "types": "dist/lib/Base.d.ts",
   "scripts": {
     "postinstall": "node remove-bitcore-lib-dep.js",
     "testRemoteSigner": "SIGNER=\"http://base-signer-staging.herokuapp.com:3545\" mocha --timeout 100000 --recursive --require ts-node/register \"./test/**/*Test.ts\"",
@@ -17,10 +18,11 @@
     "testSearch": "mocha --timeout 100000 --recursive --require ts-node/register $NODE_DEBUG_OPTION \"./test/search/*Test.ts\"",
     "coverage": "nyc npm run test",
     "coveralls": "npm run coverage && cat coverage/lcov.info | coveralls",
-    "preBuild": "tsc --outDir lib -d",
     "build": "webpack",
     "checkTestCode": "tsc --noEmit test/**/*.ts test/*.ts",
-    "checkSourceCode": "tsc --noEmit"
+    "checkSourceCode": "tsc --noEmit",
+    "bump:patch": "npm version patch",
+    "npm:deploy": "npm run postinstall && npm run build && npm run bump:patch && npm publish --access public"
   },
   "nyc": {
     "extension": [
@@ -43,7 +45,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bitclave/base-js.git"
+    "url": "git+https://github.com/bitclave/base-client-js.git"
   },
   "keywords": [
     "Bitclave",
@@ -55,9 +57,9 @@
   "author": "Bitclave",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bitclave/base-js/issues"
+    "url": "https://github.com/bitclave/base-client-js/issues"
   },
-  "homepage": "https://github.com/bitclave/base-js#readme",
+  "homepage": "https://github.com/bitclave/base-client-js#readme",
   "dependencies": {
     "@types/lodash": "^4.14.116",
     "ajv": "^6.3.0",
@@ -86,16 +88,18 @@
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "coveralls": "^3.0.0",
+    "deep-merge": "^1.0.0",
     "istanbul": "^0.4.5",
     "mocha": "^5.1.0",
     "mocha-lcov-reporter": "^1.3.0",
     "node-localstorage": "^1.3.1",
     "nyc": "^11.6.0",
-    "ts-loader": "^3.5.0",
+    "ts-loader": "^4.5.0",
     "ts-node": "^4.1.0",
     "typedoc": "^0.9.0",
     "typedoc-webpack-plugin": "^1.1.4",
     "typescript": "^2.8.1",
-    "webpack": "^3.11.0"
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
   }
 }
