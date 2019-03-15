@@ -152,10 +152,12 @@ describe('Search Manager', async () => {
             let offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
             await userBase.searchManager.addResultItem(offerSearch);
 
-            let searchRequests = await userBase.searchManager.getSearchResult(insertedSearchRequest.id);
+            let searchRequests = (await userBase.searchManager.getSearchResult(insertedSearchRequest.id)).content;
             searchRequests.length.should.be.eql(1);
 
-            searchRequests = await userBase.searchManager.getSearchResultByOfferSearchId(searchRequests[0].offerSearch.id);
+            searchRequests = (await userBase.searchManager
+                .getSearchResultByOfferSearchId(searchRequests[0].offerSearch.id)).content;
+
             searchRequests.length.should.be.eql(1);
 
             searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
@@ -236,13 +238,13 @@ describe('Search Manager', async () => {
             let offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
             await userBase.searchManager.addResultItem(offerSearch);
 
-            let searchRequests = await userBase.searchManager.getSearchResult(insertedSearchRequest.id);
+            let searchRequests = (await userBase.searchManager.getSearchResult(insertedSearchRequest.id)).content;
             searchRequests.length.should.be.eql(1);
 
             const clonedSearchRequest = await userBase.searchManager.cloneRequest(insertedSearchRequest);
             clonedSearchRequest.should.exist;
 
-            searchRequests = await userBase.searchManager.getSearchResult(clonedSearchRequest.id);
+            searchRequests = (await userBase.searchManager.getSearchResult(clonedSearchRequest.id)).content;
             searchRequests.length.should.be.eql(1);
 
             const clonedSearchRequest2 = await userBase.searchManager.cloneOfferSearch(clonedSearchRequest.id, searchRequest);

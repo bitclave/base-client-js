@@ -70,7 +70,7 @@ export class SearchManagerImpl implements SearchManager {
         return this.offerSearchRepository.getCountBySearchRequestIds(searchRequestIds);
     }
 
-    public getSearchResult(searchRequestId: number): Promise<Array<OfferSearchResultItem>> {
+    public getSearchResult(searchRequestId: number): Promise<Page<OfferSearchResultItem>> {
         return this.offerSearchRepository.getSearchResult(this.account.publicKey, searchRequestId);
     }
 
@@ -85,7 +85,7 @@ export class SearchManagerImpl implements SearchManager {
             .getUserOfferSearches(this.account.publicKey, page, size, unique, group, state);
     }
 
-    public getSearchResultByOfferSearchId(offerSearchId: number): Promise<Array<OfferSearchResultItem>> {
+    public getSearchResultByOfferSearchId(offerSearchId: number): Promise<Page<OfferSearchResultItem>> {
         return this.offerSearchRepository.getSearchResultByOfferSearchId(this.account.publicKey, offerSearchId);
     }
 

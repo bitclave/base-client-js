@@ -21,9 +21,9 @@ export interface OfferSearchRepository {
         state?: Array<string>
     ): Promise<Page<OfferSearchResultItem>>;
 
-    getSearchResult(clientId: string, searchRequestId: number): Promise<Array<OfferSearchResultItem>>;
+    getSearchResult(clientId: string, searchRequestId: number): Promise<Page<OfferSearchResultItem>>;
 
-    getSearchResultByOfferSearchId(clientId: string, offerSearchId: number): Promise<Array<OfferSearchResultItem>>;
+    getSearchResultByOfferSearchId(clientId: string, offerSearchId: number): Promise<Page<OfferSearchResultItem>>;
 
     getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>>;
 

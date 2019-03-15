@@ -97,7 +97,7 @@ describe('Verify Manager', async () => {
             let offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
             await baseAlice.searchManager.addResultItem(offerSearch);
 
-            let searchRequests = await baseAlice.searchManager.getSearchResult(insertedSearchRequest.id);
+            let searchRequests = (await baseAlice.searchManager.getSearchResult(insertedSearchRequest.id)).content;
             searchRequests.length.should.be.eql(1);
 
             const offerSearches = await baseAlice.verfiyManager.getOfferSearchesByIds([searchRequests[0].offerSearch.id]);
