@@ -1,3 +1,4 @@
 /*
 /*/
 !/dist/
+!remove-bitcore-lib-dep.js
