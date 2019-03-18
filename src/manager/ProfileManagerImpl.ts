@@ -162,7 +162,7 @@ export class ProfileManagerImpl implements ProfileManager {
      *
      * @returns {Promise<File>} decrypted file blob data.
      */
-    public downloadFile(id: number): Promise<Buffer> {
+    public downloadFile(id: number): Promise<any> {
         return this.clientDataRepository.getFile(this.account.publicKey, id)
             .then(file =>
                 this.decrypt.decryptFile(file))

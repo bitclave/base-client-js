@@ -35,7 +35,7 @@ export default class ClientDataRepositoryImpl implements ClientDataRepository {
             .then((response) => JsonUtils.jsonToMap<string, string>(response.json));
     }
 
-    getFile(pk: string, fileId: number): Promise<Buffer> {
+    getFile(pk: string, fileId: number): Promise<any> {
         return this.transport
             .sendBlobRequest(
                 this.FILE_GET_FILE.replace('{pk}', pk).replace('{fileId}', fileId.toString()),
