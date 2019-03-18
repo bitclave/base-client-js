@@ -1,61 +1,62 @@
-import { HttpTransport } from './repository/source/http/HttpTransport';
-import AccountRepositoryImpl from './repository/account/AccountRepositoryImpl';
-import { AccountRepository } from './repository/account/AccountRepository';
-import ClientDataRepositoryImpl from './repository/client/ClientDataRepositoryImpl';
-import { ClientDataRepository } from './repository/client/ClientDataRepository';
-import { AccountManager } from './manager/AccountManager';
 import { BehaviorSubject } from 'rxjs/Rx';
-import { ProfileManager } from './manager/ProfileManager';
-import Account from './repository/models/Account';
-import { KeyPairHelper } from './utils/keypair/KeyPairHelper';
-import SignInterceptor from './repository/source/http/SignInterceptor';
+import { AccountManager } from './manager/AccountManager';
+import { AccountManagerImpl } from './manager/AccountManagerImpl';
 import { DataRequestManager } from './manager/DataRequestManager';
-import DataRequestRepositoryImpl from './repository/requests/DataRequestRepositoryImpl';
-import { DataRequestRepository } from './repository/requests/DataRequestRepository';
-import { MessageEncrypt } from './utils/keypair/MessageEncrypt';
-import { MessageDecrypt } from './utils/keypair/MessageDecrypt';
-import { MessageSigner } from './utils/keypair/MessageSigner';
-import { RepositoryStrategyInterceptor } from './repository/source/http/RepositoryStrategyInterceptor';
-import { RepositoryStrategyType } from './repository/RepositoryStrategyType';
+import { DataRequestManagerImpl } from './manager/DataRequestManagerImpl';
 import { OfferManager } from './manager/OfferManager';
-import { OfferRepository } from './repository/offer/OfferRepository';
-import OfferRepositoryImpl from './repository/offer/OfferRepositoryImpl';
+import { OfferManagerImpl } from './manager/OfferManagerImpl';
+import { ProfileManager } from './manager/ProfileManager';
+import { ProfileManagerImpl } from './manager/ProfileManagerImpl';
 import { SearchManager } from './manager/SearchManager';
-import { SearchRequestRepository } from './repository/search/SearchRequestRepository';
-import SearchRequestRepositoryImpl from './repository/search/SearchRequestRepositoryImpl';
-import SearchRequest from './repository/models/SearchRequest';
+import { SearchManagerImpl } from './manager/SearchManagerImpl';
+import { VerifyManager } from './manager/VerifyManager';
+import { VerifyManagerImpl } from './manager/VerifyManagerImpl';
+import { WalletManager } from './manager/WalletManager';
+import { WalletManagerImpl } from './manager/WalletManagerImpl';
+import { AccountRepository } from './repository/account/AccountRepository';
+import AccountRepositoryImpl from './repository/account/AccountRepositoryImpl';
+import { AssistantNodeRepository } from './repository/assistant/AssistantNodeRepository';
+import { PermissionsSource } from './repository/assistant/PermissionsSource';
+import { SiteDataSource } from './repository/assistant/SiteDataSource';
+import { ClientDataRepository } from './repository/client/ClientDataRepository';
+import ClientDataRepositoryImpl from './repository/client/ClientDataRepositoryImpl';
+import Account from './repository/models/Account';
 import Offer from './repository/models/Offer';
 import { OfferPrice } from './repository/models/OfferPrice';
 import { OfferPriceRules } from './repository/models/OfferPriceRules';
-import { HttpTransportImpl } from './repository/source/http/HttpTransportImpl';
-import NonceInterceptor from './repository/source/http/NonceInterceptor';
-import { WalletManager } from './manager/WalletManager';
-import { VerifyManager } from './manager/VerifyManager';
-import { BaseSchema } from './utils/types/BaseSchema';
-import { AssistantNodeRepository } from './repository/assistant/AssistantNodeRepository';
-import { TransportFactory } from './repository/source/TransportFactory';
-import { PermissionsSource } from './repository/assistant/PermissionsSource';
-import { KeyPairFactory } from './utils/keypair/KeyPairFactory';
-import { SiteRepository } from './repository/site/SiteRepository';
-import { SiteRepositoryImpl } from './repository/site/SiteRepositoryImpl';
-import { SiteDataSource } from './repository/assistant/SiteDataSource';
-import { AccountManagerImpl } from './manager/AccountManagerImpl';
-import { DataRequestManagerImpl } from './manager/DataRequestManagerImpl';
-import { ProfileManagerImpl } from './manager/ProfileManagerImpl';
-import { OfferManagerImpl } from './manager/OfferManagerImpl';
-import { SearchManagerImpl } from './manager/SearchManagerImpl';
-import { WalletManagerImpl } from './manager/WalletManagerImpl';
-import { OfferSearchRepository } from './repository/search/OfferSearchRepository';
-import { OfferSearchRepositoryImpl } from './repository/search/OfferSearchRepositoryImpl';
-import OfferSearchResultItem from './repository/models/OfferSearchResultItem';
 import OfferSearch, { OfferResultAction } from './repository/models/OfferSearch';
+import OfferSearchResultItem from './repository/models/OfferSearchResultItem';
 import OfferShareData from './repository/models/OfferShareData';
+import { Page, Pageable } from './repository/models/Page';
+import SearchRequest from './repository/models/SearchRequest';
+import { OfferRepository } from './repository/offer/OfferRepository';
+import OfferRepositoryImpl from './repository/offer/OfferRepositoryImpl';
 import { OfferShareDataRepository } from './repository/offer/OfferShareDataRepository';
 import OfferShareDataRepositoryImpl from './repository/offer/OfferShareDataRepositoryImpl';
-import { VerifyManagerImpl } from './manager/VerifyManagerImpl';
+import { RepositoryStrategyType } from './repository/RepositoryStrategyType';
+import { DataRequestRepository } from './repository/requests/DataRequestRepository';
+import DataRequestRepositoryImpl from './repository/requests/DataRequestRepositoryImpl';
+import { OfferSearchRepository } from './repository/search/OfferSearchRepository';
+import { OfferSearchRepositoryImpl } from './repository/search/OfferSearchRepositoryImpl';
+import { SearchRequestRepository } from './repository/search/SearchRequestRepository';
+import SearchRequestRepositoryImpl from './repository/search/SearchRequestRepositoryImpl';
+import { SiteRepository } from './repository/site/SiteRepository';
+import { SiteRepositoryImpl } from './repository/site/SiteRepositoryImpl';
+import { HttpTransport } from './repository/source/http/HttpTransport';
+import { HttpTransportImpl } from './repository/source/http/HttpTransportImpl';
+import NonceInterceptor from './repository/source/http/NonceInterceptor';
+import { RepositoryStrategyInterceptor } from './repository/source/http/RepositoryStrategyInterceptor';
+import SignInterceptor from './repository/source/http/SignInterceptor';
+import { TransportFactory } from './repository/source/TransportFactory';
 import { VerifyRepository } from './repository/verify/VerifyRepository';
 import { VerifyRepositoryImpl } from './repository/verify/VerifyRepositoryImpl';
 import { BasicLogger, Logger } from './utils/BasicLogger';
+import { KeyPairFactory } from './utils/keypair/KeyPairFactory';
+import { KeyPairHelper } from './utils/keypair/KeyPairHelper';
+import { MessageDecrypt } from './utils/keypair/MessageDecrypt';
+import { MessageEncrypt } from './utils/keypair/MessageEncrypt';
+import { MessageSigner } from './utils/keypair/MessageSigner';
+import { BaseSchema } from './utils/types/BaseSchema';
 
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
@@ -86,8 +87,11 @@ export {
     ProfileWealthValidator
 } from './utils/types/BaseTypes';
 export {
+    Account,
     AccountManager,
     ProfileManager,
+    Page,
+    Pageable,
     DataRequestManager,
     OfferManager,
     SearchManager,
