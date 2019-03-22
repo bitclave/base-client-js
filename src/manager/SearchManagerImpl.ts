@@ -4,7 +4,7 @@ import { SearchRequestRepository } from '../repository/search/SearchRequestRepos
 import SearchRequest from '../repository/models/SearchRequest';
 import { SearchManager } from './SearchManager';
 import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
-import OfferSearch from '../repository/models/OfferSearch';
+import OfferSearch, { OfferResultAction } from '../repository/models/OfferSearch';
 import { OfferSearchRepository } from '../repository/search/OfferSearchRepository';
 import { Page } from '../repository/models/Page';
 
@@ -78,11 +78,11 @@ export class SearchManagerImpl implements SearchManager {
         page: number = 0,
         size: number = 20,
         unique: boolean = false,
-        group: Array<string> = [],
-        state: Array<string> = []
+        searchIds: Array<number> = [],
+        state: Array<OfferResultAction> = []
     ): Promise<Page<OfferSearchResultItem>> {
         return this.offerSearchRepository
-            .getUserOfferSearches(this.account.publicKey, page, size, unique, group, state);
+            .getUserOfferSearches(this.account.publicKey, page, size, unique, searchIds, state);
     }
 
     public getSearchResultByOfferSearchId(offerSearchId: number): Promise<Page<OfferSearchResultItem>> {
