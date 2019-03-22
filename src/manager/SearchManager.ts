@@ -1,6 +1,6 @@
 import SearchRequest from '../repository/models/SearchRequest';
 import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
-import OfferSearch from '../repository/models/OfferSearch';
+import OfferSearch, { OfferResultAction } from '../repository/models/OfferSearch';
 import { Page } from '../repository/models/Page';
 
 export interface SearchManager {
@@ -36,8 +36,8 @@ export interface SearchManager {
         page?: number,
         size?: number,
         unique?: boolean,
-        group?: Array<string>,
-        state?: Array<string>
+        searchIds?: Array<number>,
+        state?: Array<OfferResultAction>
     ): Promise<Page<OfferSearchResultItem>>;
 
     complainToSearchItem(searchResultId: number): Promise<void>;
