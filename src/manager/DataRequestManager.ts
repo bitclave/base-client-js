@@ -20,7 +20,7 @@ export interface DataRequestManager {
      *
      * @returns {Promise<Array<DataRequest>>}  List of {@link DataRequest}, or empty list
      */
-    getRequests(fromPk: string, toPk: string): Promise<Array<DataRequest>>;
+    getRequests(fromPk: string | null, toPk: string | null): Promise<Array<DataRequest>>;
 
     /**
      * Grants access to specific fields of my data to a client.

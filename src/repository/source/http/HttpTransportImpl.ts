@@ -1,8 +1,8 @@
+import { HttpInterceptor } from './HttpInterceptor';
 import { HttpMethod } from './HttpMethod';
 import { HttpTransport } from './HttpTransport';
-import { Response } from './Response';
-import { HttpInterceptor } from './HttpInterceptor';
 import { InterceptorCortege } from './InterceptorCortege';
+import { Response } from './Response';
 
 // const FormData = require('form-data');
 const req = require('request');
@@ -29,7 +29,7 @@ export class HttpTransportImpl implements HttpTransport {
         this.host = host;
     }
 
-    addInterceptor(interceptor: HttpInterceptor): HttpTransport {
+    public addInterceptor(interceptor: HttpInterceptor): HttpTransport {
         if (this.interceptors.indexOf(interceptor) === -1) {
             this.interceptors.push(interceptor);
         }
@@ -38,7 +38,7 @@ export class HttpTransportImpl implements HttpTransport {
     }
 
     // sendRequest(method: HttpMethod, data?: any): Promise<Response>
-    sendRequest(path: string, method: HttpMethod, data?: any): Promise<Response> {
+    public sendRequest(path: string, method: HttpMethod, data?: any): Promise<Response> {
         return this.acceptInterceptor(new InterceptorCortege(path, method, this.headers, false, data))
             .then((cortege: InterceptorCortege) => new Promise<Response>((resolve, reject) => {
                 try {
@@ -70,55 +70,64 @@ export class HttpTransportImpl implements HttpTransport {
             }));
     }
 
-    sendBlobRequest(path: string, method: HttpMethod, headers: Map<string, string>, data?: any, file?: File): Promise<Response> {
+    sendBlobRequest(
+        path: string,
+        method: HttpMethod,
+        headers: Map<string, string>,
+        data?: any,
+        file?: File
+    ): Promise<Response> {
         return this.acceptInterceptor(new InterceptorCortege(path, method, headers, true, data, file))
             .then((cortege: InterceptorCortege) => new Promise<Response>((resolve, reject) => {
                 try {
                     const url = cortege.path ? this.getHost() + cortege.path : this.getHost();
-                    if(cortege.blobRequest) {
-                        if(cortege.file) {
-                            var formData = {
+                    if (cortege.blobRequest) {
+                        if (cortege.file) {
+                            const formData = {
                                 signature: JSON.stringify(cortege.data ? cortege.data : {}),
                                 data: cortege.file,
                             };
 
-                            req.post({url:url, formData: formData}, function optionalCallback(err: any, httpResponse: any, body: any) {
-                                if (err) {
-                                    const result: Response = new Response(err, httpResponse.statusCode);
-                                    reject(result);
-                                } else {
-                                    const result: Response = new Response(body, httpResponse.statusCode);
-                                    if (result.status >= 200 && result.status < 300) {
-                                        resolve(result);
-        
-                                    } else {
+                            req.post({url: url, formData: formData},
+                                function optionalCallback(err: any, httpResponse: any, body: any) {
+                                    if (err) {
+                                        const result: Response = new Response(err, httpResponse.statusCode);
                                         reject(result);
-                                    }
-                                }
-                            }); 
-                        } else {
-                            let r = req.get({url:url, body:JSON.stringify(cortege.data ? cortege.data : {})}).on('response', function(res:any) {
-                                    var filename: string = '', contentDisp = res.headers['content-disposition'];
-                                    if (contentDisp && /^attachment/i.test(contentDisp)) {
-                                        filename = contentDisp.toLowerCase()
-                                            .split('filename=')[1]
-                                            .split(';')[0]
-                                            .replace(/"/g, '');
-                                    }
-                                    let stream = r.pipe(fs.createWriteStream(`./${filename}`));
-
-                                    stream.on("finish", function() {
-                                        const file = fs.readFileSync(`./${filename}`);
-                                        const result: Response = new Response(file, res.statusCode);
+                                    } else {
+                                        const result: Response = new Response(body, httpResponse.statusCode);
                                         if (result.status >= 200 && result.status < 300) {
                                             resolve(result);
-            
+
                                         } else {
                                             reject(result);
-                                        } 
-                                    });
-                                }
-                            ); 
+                                        }
+                                    }
+                                });
+                        } else {
+                            let r = req.get({url: url, body: JSON.stringify(cortege.data ? cortege.data : {})})
+                                .on('response',
+                                    function (res: any) {
+                                        let filename: string = '', contentDisp = res.headers['content-disposition'];
+                                        if (contentDisp && /^attachment/i.test(contentDisp)) {
+                                            filename = contentDisp.toLowerCase()
+                                                .split('filename=')[1]
+                                                .split(';')[0]
+                                                .replace(/"/g, '');
+                                        }
+                                        let stream = r.pipe(fs.createWriteStream(`./${filename}`));
+
+                                        stream.on('finish', () => {
+                                            const file = fs.readFileSync(`./${filename}`);
+                                            const result: Response = new Response(file, res.statusCode);
+                                            if (result.status >= 200 && result.status < 300) {
+                                                resolve(result);
+
+                                            } else {
+                                                reject(result);
+                                            }
+                                        });
+                                    }
+                                );
                         }
                     } else {
                         const request: XMLHttpRequest = new XMLHttpRequest();
@@ -132,7 +141,7 @@ export class HttpTransportImpl implements HttpTransport {
                             const result: Response = new Response(request.responseText, request.status);
                             if (request.status >= 200 && request.status < 300) {
                                 resolve(result);
-    
+
                             } else {
                                 reject(result);
                             }
@@ -150,17 +159,20 @@ export class HttpTransportImpl implements HttpTransport {
             }));
     }
 
-    getHost(): string {
+    public getHost(): string {
         return this.host;
     }
 
-    private acceptInterceptor(interceptorCortege: InterceptorCortege, interceptorIndex: number = 0): Promise<InterceptorCortege> {
+    private acceptInterceptor(
+        interceptorCortege: InterceptorCortege,
+        interceptorIndex: number = 0
+    ): Promise<InterceptorCortege> {
         return (interceptorIndex >= this.interceptors.length)
-            ? Promise.resolve(interceptorCortege)
-            : this.interceptors[interceptorIndex]
-                  .onIntercept(interceptorCortege)
-                  .then(interceptorCortegeResult =>
-                      this.acceptInterceptor(interceptorCortegeResult, ++interceptorIndex)
-                  );
+               ? Promise.resolve(interceptorCortege)
+               : this.interceptors[interceptorIndex]
+                   .onIntercept(interceptorCortege)
+                   .then(interceptorCortegeResult =>
+                       this.acceptInterceptor(interceptorCortegeResult, ++interceptorIndex)
+                   );
     }
 }

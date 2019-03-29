@@ -1,10 +1,10 @@
-import { DataRequestRepository } from '../repository/requests/DataRequestRepository';
-import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
-import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
-import { JsonUtils } from '../utils/JsonUtils';
-import DataRequest from '../repository/models/DataRequest';
-import Account from '../repository/models/Account';
 import { Observable } from 'rxjs/Rx';
+import Account from '../repository/models/Account';
+import DataRequest from '../repository/models/DataRequest';
+import { DataRequestRepository } from '../repository/requests/DataRequestRepository';
+import { JsonUtils } from '../utils/JsonUtils';
+import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
+import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { AccessRight } from '../utils/keypair/Permissions';
 import { DataRequestManager } from './DataRequestManager';
 
@@ -51,7 +51,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
      *
      * @returns {Promise<Array<DataRequest>>}  List of {@link DataRequest}, or empty list
      */
-    public getRequests(fromPk: string = '', toPk: string = ''): Promise<Array<DataRequest>> {
+    public getRequests(fromPk: string | null, toPk: string | null): Promise<Array<DataRequest>> {
         return this.dataRequestRepository.getRequests(fromPk, toPk);
     }
 
