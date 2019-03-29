@@ -1,7 +1,8 @@
-import { BaseSchema } from './types/BaseSchema';
-import { AddrRecord, BaseAddrPair } from './types/BaseTypes';
-import { EthereumUtils } from './EthereumUtils';
+import { MessageData } from 'eth-sig-util';
 import { WalletManagerImpl } from '../manager/WalletManagerImpl';
+import { EthereumUtils } from './EthereumUtils';
+import { BaseSchema } from './types/BaseSchema';
+import { AddrRecord, BaseAddrPair, WalletsRecords } from './types/BaseTypes';
 
 const bitcore = require('bitcore-lib');
 const Message = require('bitcore-message');
@@ -32,12 +33,12 @@ export class WalletUtils {
                 return WalletVerificationCodes.RC_ADDR_SCHEMA_MISSMATCH;
             }
 
-            if (!this.baseSchema.validateBaseAddrPair(JSON.parse(record.data))) {
+            if (!this.baseSchema.validateBaseAddrPair(record.data)) {
                 return WalletVerificationCodes.RC_ADDR_SCHEMA_MISSMATCH;
             }
 
             if (record.sig.length > 0) {
-                signerAddr = EthereumUtils.recoverPersonalSignature(record);
+                signerAddr = EthereumUtils.recoverPersonalSignature(record.getSignedMessage());
             } else {
                 return WalletVerificationCodes.RC_ADDR_NOT_VERIFIED;
             }
@@ -46,12 +47,14 @@ export class WalletUtils {
             return WalletVerificationCodes.RC_GENERAL_ERROR;
         }
 
-        return (signerAddr === JSON.parse(record.data).ethAddr)
-            ? WalletVerificationCodes.RC_OK
-            : WalletVerificationCodes.RC_ADDR_WRONG_SIGNATURE;
+        return (signerAddr === record.data.ethAddr)
+               ? WalletVerificationCodes.RC_OK
+               : WalletVerificationCodes.RC_ADDR_WRONG_SIGNATURE;
     }
 
-    public static validateWallets(key: string, val: any, baseID: string): WalletVerificationStatus {
+    public static validateWallets(key: string,
+                                  walletsRecords: WalletsRecords,
+                                  baseID: string): WalletVerificationStatus {
         const result: WalletVerificationStatus = new WalletVerificationStatus();
 
         if (key !== WalletManagerImpl.DATA_KEY_ETH_WALLETS) {
@@ -61,22 +64,22 @@ export class WalletUtils {
             return result;
         }
 
-        return this.verifyWalletsRecord(baseID, val);
+        return this.verifyWalletsRecord(baseID, walletsRecords);
     }
 
-    public static verifyWalletsRecord(baseID: string, msg: any): WalletVerificationStatus {
+    public static verifyWalletsRecord(baseID: string, walletsRecords: WalletsRecords): WalletVerificationStatus {
         let resultCode: WalletVerificationCodes;
         const status: WalletVerificationStatus = new WalletVerificationStatus();
         status.rc = WalletVerificationCodes.RC_OK;
 
-        if (!this.baseSchema.validateWallets(msg)) {
+        if (!this.baseSchema.validateWallets(walletsRecords)) {
             status.rc = WalletVerificationCodes.RC_ADDR_SCHEMA_MISSMATCH;
             return status;
         }
 
         // verify all baseID keys are the same in ETH records
-        for (let item of msg.data) {
-            const pubKey = JSON.parse(item.data).baseID;
+        for (let item of walletsRecords.data) {
+            const pubKey = item.data.baseID;
             if (pubKey !== baseID) {
                 status.details.push(WalletVerificationCodes.RC_BASEID_MISSMATCH);
 
@@ -93,8 +96,9 @@ export class WalletUtils {
         let sigCheck = false;
 
         try {
-            if (msg.sig.length > 0) {
-                sigCheck = Message(JSON.stringify(msg.data)).verify(baseAddr, msg.sig);
+            if (walletsRecords.sig.length > 0) {
+                const message: Array<MessageData> = walletsRecords.data.map(item => item.getMessage());
+                sigCheck = Message(JSON.stringify(message)).verify(baseAddr, walletsRecords.sig);
                 if (!sigCheck) {
                     status.rc = WalletVerificationCodes.RC_ADDR_WRONG_SIGNATURE;
                 }
@@ -110,12 +114,11 @@ export class WalletUtils {
 
     public static createEthereumAddersRecord(baseID: string, ethAddr: string, ethPrvKey: string): AddrRecord {
         const record: AddrRecord = new AddrRecord(
-            JSON.stringify(new BaseAddrPair(baseID, ethAddr)),
+            new BaseAddrPair(baseID, ethAddr),
             ''
         );
-        record.sig = EthereumUtils.createSig(ethPrvKey, record);
 
-        return record;
+        return new AddrRecord(record.data, EthereumUtils.createSig(ethPrvKey, record.getMessage()));
     }
 
 }

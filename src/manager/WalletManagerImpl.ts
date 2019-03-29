@@ -1,20 +1,20 @@
-import { AddrRecord, WalletsRecords, WealthPtr } from '../utils/types/BaseTypes';
-import Account from '../repository/models/Account';
-import { ProfileManager } from './ProfileManager';
-import { DataRequestManager } from './DataRequestManager';
-import { BaseSchema } from '../utils/types/BaseSchema';
-import { MessageSigner } from '../utils/keypair/MessageSigner';
-import DataRequest from '../repository/models/DataRequest';
 import { Observable } from 'rxjs/Observable';
-import { WalletUtils, WalletVerificationCodes } from '../utils/WalletUtils';
+import Account from '../repository/models/Account';
+import DataRequest from '../repository/models/DataRequest';
+import { MessageSigner } from '../utils/keypair/MessageSigner';
 import { AccessRight } from '../utils/keypair/Permissions';
+import { BaseSchema } from '../utils/types/BaseSchema';
+import { AddrRecord, WalletsRecords, WealthPtr } from '../utils/types/BaseTypes';
+import { WalletUtils, WalletVerificationCodes } from '../utils/WalletUtils';
+import { DataRequestManager } from './DataRequestManager';
+import { ProfileManager } from './ProfileManager';
 import { WalletManager } from './WalletManager';
 
 export class WalletManagerImpl implements WalletManager {
 
     public static DATA_KEY_ETH_WALLETS: string = 'eth_wallets';
-    public static DATA_KEY_ETH_WEALTH_VALIDATOR: string =  'ethwealthvalidator';
-    public static DATA_KEY_WEALTH: string =  'wealth';
+    public static DATA_KEY_ETH_WEALTH_VALIDATOR: string = 'ethwealthvalidator';
+    public static DATA_KEY_WEALTH: string = 'wealth';
 
     private account: Account = new Account();
     private profileManager: ProfileManager;
@@ -45,7 +45,7 @@ export class WalletManagerImpl implements WalletManager {
                 throw 'invalid eth record: ' + msg;
             }
 
-            if (baseID !== JSON.parse(msg.data).baseID) {
+            if (baseID !== msg.data.baseID) {
                 throw 'baseID missmatch';
             }
         }
@@ -58,12 +58,12 @@ export class WalletManagerImpl implements WalletManager {
 
         // eth style signing
         // msgWallets.sig = sigUtil.personalSign(Buffer.from(prvKey, 'hex'), msgWallets);
-        // var signerAddr = sigUtil.recoverPersonalSignature(msgWallets)
+        // const signerAddr = sigUtil.recoverPersonalSignature(msgWallets)
 
         // BASE Style signing
-        msgWallets.sig = await this.messageSigner.signMessage(JSON.stringify(msgWallets.data));
+        const sig: string = await this.messageSigner.signMessage(JSON.stringify(msgWallets.data));
 
-        return msgWallets;
+        return new WalletsRecords(msgWallets.data, sig);
     }
 
     public async addWealthValidator(validatorPbKey: string): Promise<void> {
@@ -125,8 +125,9 @@ export class WalletManagerImpl implements WalletManager {
     }
 
     public validateWallets(walletRecords: WalletsRecords): boolean {
-      return this.baseSchema.validateWallets(walletRecords);
+        return this.baseSchema.validateWallets(walletRecords);
     }
+
     private onChangeAccount(account: Account) {
         this.account = account;
     }
