@@ -53,7 +53,7 @@ export class AccountManagerImpl implements AccountManager {
                 acc = await this.registration(passPhrase, message);
             }
 
-            this.logger.info(`__LOC__: New user logged via  base-client-js ${acc.publicKey}`);
+            this.logger.info(`New user logged via  base-client-js ${acc.publicKey}`);
 
             return acc;
         }
@@ -121,7 +121,7 @@ export class AccountManagerImpl implements AccountManager {
         return this.keyPairCreator.createKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
             .then(account => {
-                this.logger.debug(`__LOC__: base-client-js:checkAccount user login  ${account.publicKey}`);
+                this.logger.debug(`base-client-js:checkAccount user login  ${account.publicKey}`);
                 return this.syncAccount(account, message);
             })
             .catch(err => {
