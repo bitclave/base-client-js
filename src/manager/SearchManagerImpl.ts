@@ -4,7 +4,7 @@ import { SearchRequestRepository } from '../repository/search/SearchRequestRepos
 import SearchRequest from '../repository/models/SearchRequest';
 import { SearchManager } from './SearchManager';
 import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
-import OfferSearch from '../repository/models/OfferSearch';
+import OfferSearch, { OfferResultAction } from '../repository/models/OfferSearch';
 import { OfferSearchRepository } from '../repository/search/OfferSearchRepository';
 import { Page } from '../repository/models/Page';
 
@@ -70,15 +70,22 @@ export class SearchManagerImpl implements SearchManager {
         return this.offerSearchRepository.getCountBySearchRequestIds(searchRequestIds);
     }
 
-    public getSearchResult(searchRequestId: number): Promise<Array<OfferSearchResultItem>> {
+    public getSearchResult(searchRequestId: number): Promise<Page<OfferSearchResultItem>> {
         return this.offerSearchRepository.getSearchResult(this.account.publicKey, searchRequestId);
     }
 
-    public getUserOfferSearches(): Promise<Array<OfferSearchResultItem>> {
-        return this.offerSearchRepository.getUserOfferSearches(this.account.publicKey);
+    public getUserOfferSearches(
+        page: number = 0,
+        size: number = 20,
+        unique: boolean = false,
+        searchIds: Array<number> = [],
+        state: Array<OfferResultAction> = []
+    ): Promise<Page<OfferSearchResultItem>> {
+        return this.offerSearchRepository
+            .getUserOfferSearches(this.account.publicKey, page, size, unique, searchIds, state);
     }
 
-    public getSearchResultByOfferSearchId(offerSearchId: number): Promise<Array<OfferSearchResultItem>> {
+    public getSearchResultByOfferSearchId(offerSearchId: number): Promise<Page<OfferSearchResultItem>> {
         return this.offerSearchRepository.getSearchResultByOfferSearchId(this.account.publicKey, offerSearchId);
     }
 

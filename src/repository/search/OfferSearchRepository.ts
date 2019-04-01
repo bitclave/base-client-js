@@ -1,5 +1,5 @@
 import OfferSearchResultItem from '../models/OfferSearchResultItem';
-import OfferSearch from '../models/OfferSearch';
+import OfferSearch, { OfferResultAction } from '../models/OfferSearch';
 import SearchRequest from '../models/SearchRequest';
 import { Page } from '../models/Page';
 
@@ -12,11 +12,18 @@ export interface OfferSearchRepository {
         size?: number
     ): Promise<Page<OfferSearchResultItem>>;
 
-    getUserOfferSearches(clientId: string): Promise<Array<OfferSearchResultItem>>;
+    getUserOfferSearches(
+        clientId: string,
+        page?: number,
+        size?: number,
+        unique?: boolean,
+        searchIds?: Array<number>,
+        state?: Array<OfferResultAction>
+    ): Promise<Page<OfferSearchResultItem>>;
 
-    getSearchResult(clientId: string, searchRequestId: number): Promise<Array<OfferSearchResultItem>>;
+    getSearchResult(clientId: string, searchRequestId: number): Promise<Page<OfferSearchResultItem>>;
 
-    getSearchResultByOfferSearchId(clientId: string, offerSearchId: number): Promise<Array<OfferSearchResultItem>>;
+    getSearchResultByOfferSearchId(clientId: string, offerSearchId: number): Promise<Page<OfferSearchResultItem>>;
 
     getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>>;
 

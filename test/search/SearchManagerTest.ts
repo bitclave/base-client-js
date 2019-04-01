@@ -152,17 +152,19 @@ describe('Search Manager', async () => {
             let offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
             await userBase.searchManager.addResultItem(offerSearch);
 
-            let searchRequests = await userBase.searchManager.getSearchResult(insertedSearchRequest.id);
+            let searchRequests = (await userBase.searchManager.getSearchResult(insertedSearchRequest.id)).content;
             searchRequests.length.should.be.eql(1);
 
-            searchRequests = await userBase.searchManager.getSearchResultByOfferSearchId(searchRequests[0].offerSearch.id);
+            searchRequests = (await userBase.searchManager
+                .getSearchResultByOfferSearchId(searchRequests[0].offerSearch.id)).content;
+
             searchRequests.length.should.be.eql(1);
 
-            searchRequests = await userBase.searchManager.getUserOfferSearches();
+            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
             searchRequests.length.should.be.eql(1);
 
             await userBase.searchManager.addEventToOfferSearch('updated', searchRequests[0].offerSearch.id);
-            searchRequests = await userBase.searchManager.getUserOfferSearches();
+            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.events.length.should.be.eql(2);
 
@@ -184,36 +186,36 @@ describe('Search Manager', async () => {
 
             let offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
             await userBase.searchManager.addResultItem(offerSearch);
-            let searchRequests = await userBase.searchManager.getUserOfferSearches();
+            let searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
             searchRequests.length.should.be.eql(1);
 
             await userBase.searchManager.claimPurchaseForSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
-            searchRequests = await userBase.searchManager.getUserOfferSearches();
+            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.CLAIMPURCHASE);
 
             await userBase.searchManager.complainToSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
-            searchRequests = await userBase.searchManager.getUserOfferSearches();
+            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.COMPLAIN);
 
             await userBase.searchManager.evaluateSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
-            searchRequests = await userBase.searchManager.getUserOfferSearches();
+            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.EVALUATE);
 
             await userBase.searchManager.rejectSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
-            searchRequests = await userBase.searchManager.getUserOfferSearches();
+            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.REJECT);
 
             await businessBase.searchManager.confirmSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
-            searchRequests = await userBase.searchManager.getUserOfferSearches();
+            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.CONFIRMED);
 
@@ -236,13 +238,13 @@ describe('Search Manager', async () => {
             let offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
             await userBase.searchManager.addResultItem(offerSearch);
 
-            let searchRequests = await userBase.searchManager.getSearchResult(insertedSearchRequest.id);
+            let searchRequests = (await userBase.searchManager.getSearchResult(insertedSearchRequest.id)).content;
             searchRequests.length.should.be.eql(1);
 
             const clonedSearchRequest = await userBase.searchManager.cloneRequest(insertedSearchRequest);
             clonedSearchRequest.should.exist;
 
-            searchRequests = await userBase.searchManager.getSearchResult(clonedSearchRequest.id);
+            searchRequests = (await userBase.searchManager.getSearchResult(clonedSearchRequest.id)).content;
             searchRequests.length.should.be.eql(1);
 
             const clonedSearchRequest2 = await userBase.searchManager.cloneOfferSearch(clonedSearchRequest.id, searchRequest);
