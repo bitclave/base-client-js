@@ -111,7 +111,7 @@ export class HttpTransportSyncedImpl implements HttpTransport {
         
                                     } else {
                                         reject();
-                                        _this.logger.error('__LOC__: Error runTransaction postBlobRequest', result);
+                                        _this.logger.error('Error runTransaction postBlobRequest', result);
                                         transaction.reject(result);
                                         _this.callNextRequest();
                                     }
@@ -129,7 +129,7 @@ export class HttpTransportSyncedImpl implements HttpTransport {
                                     }
                                     let stream = r.pipe(fs.createWriteStream(`./${filename}`));
 
-                                    stream.on("finish", function() {
+                                    stream.on('finish', function() {
                                         const file = fs.readFileSync(`./${filename}`);
                                         const result: Response = new Response(file, res.statusCode);
                                         if (result.status >= 200 && result.status < 300) {
@@ -139,7 +139,7 @@ export class HttpTransportSyncedImpl implements HttpTransport {
             
                                         } else {
                                             reject();
-                                            _this.logger.error('__LOC__: Error runTransaction getBlobRequest', result);
+                                            _this.logger.error('Error runTransaction getBlobRequest', result);
                                             transaction.reject(result);
                                             _this.callNextRequest();
                                         } 
@@ -160,7 +160,7 @@ export class HttpTransportSyncedImpl implements HttpTransport {
 
                             } else {
                                 resolve();
-                                _this.logger.error('__LOC__: Error runTransaction request', result);
+                                _this.logger.error('Error runTransaction request', result);
                                 transaction.reject(result);
                                 this.callNextRequest();
                             }
@@ -168,7 +168,7 @@ export class HttpTransportSyncedImpl implements HttpTransport {
 
                         request.onerror = () => {
                             const result: Response = new Response(request.responseText, request.status);
-                            _this.logger.error('__LOC__: Error runTransaction onErrorRequest', result);
+                            _this.logger.error('Error runTransaction onErrorRequest', result);
                             resolve();
                             transaction.reject(result);
                             this.callNextRequest();
