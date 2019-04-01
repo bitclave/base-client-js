@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Rx';
 import Account from '../repository/models/Account';
-import { OfferRepository } from '../repository/offer/OfferRepository';
 import Offer from '../repository/models/Offer';
+import { OfferRepository } from '../repository/offer/OfferRepository';
 import { OfferManager } from './OfferManager';
 
 export class OfferManagerImpl implements OfferManager {

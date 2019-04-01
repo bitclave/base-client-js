@@ -1,16 +1,16 @@
-import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
-import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
 import { BehaviorSubject } from 'rxjs/Rx';
-import Account from '../../src/repository/models/Account';
 import { ProfileManager } from '../../src/manager/ProfileManager';
-import ClientDataRepositoryImplMock from './ClientDataRepositoryImplMock';
+import { ProfileManagerImpl } from '../../src/manager/ProfileManagerImpl';
+import Account from '../../src/repository/models/Account';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
-import AuthenticatorHelper from '../AuthenticatorHelper';
+import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
+import { RemoteKeyPairHelper } from '../../src/utils/keypair/RemoteKeyPairHelper';
 import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
-import { ProfileManagerImpl } from '../../src/manager/ProfileManagerImpl';
+import AuthenticatorHelper from '../AuthenticatorHelper';
+import ClientDataRepositoryImplMock from './ClientDataRepositoryImplMock';
 
-const should = require('chai')
+require('chai')
     .use(require('chai-as-promised'))
     .should();
 
@@ -23,8 +23,8 @@ describe('Profile Manager', async () => {
     const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
     const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
-    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
-    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
+    const keyPairHelperAlisa: RemoteKeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
+    const keyPairHelperBob: RemoteKeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
 
     const clientRepository: ClientDataRepositoryImplMock = new ClientDataRepositoryImplMock();
 
@@ -65,7 +65,6 @@ describe('Profile Manager', async () => {
 
     it('update data and validate updated data', async () => {
         const origMockData: Map<string, string> = new Map();
-        const mockData: Map<string, string> = new Map();
 
         origMockData.set('email', 'im@host.com');
 
@@ -76,5 +75,4 @@ describe('Profile Manager', async () => {
         savedData.should.be.deep.equal(data);
         savedDecrypted.should.be.deep.equal(origMockData);
     });
-
 });

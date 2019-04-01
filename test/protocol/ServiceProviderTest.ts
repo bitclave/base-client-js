@@ -1,27 +1,25 @@
-import Base from '../../src/Base';
+// tslint:disable:no-unused-expression
+import Base, { WalletsRecords } from '../../src/Base';
+import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
 import Account from '../../src/repository/models/Account';
 import DataRequest from '../../src/repository/models/DataRequest';
-import { TransportFactory } from '../../src/repository/source/TransportFactory';
-import AuthenticatorHelper from '../AuthenticatorHelper';
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
-import { WalletUtils, WalletVerificationStatus } from '../../src/utils/WalletUtils';
-import { AccessRight } from '../../src/utils/keypair/Permissions';
-import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
+import { TransportFactory } from '../../src/repository/source/TransportFactory';
+import { AccessRight } from '../../src/utils/keypair/Permissions';
+import { WalletUtils, WalletVerificationStatus } from '../../src/utils/WalletUtils';
+import AuthenticatorHelper from '../AuthenticatorHelper';
 
-const should = require('chai')
+require('chai')
     .use(require('chai-as-promised'))
     .should();
 
-const SEP: string = "_"
-const SPID: string = "spid"
-const UID: string = "uid"
-const BID: string = "bid"
+const SEP: string = '_';
+const UID: string = 'uid';
+const BID: string = 'bid';
 
-const KEY_WEALTH_PTR: string = "wealth_ptr";
-const WEALTH_KEY_SCHEME: string = UID + SEP + BID + SEP + "wealth";
-const NONCE_KEY_SCHEME: string = UID + SEP + SPID + SEP + "nonce";
-const TOKEN_KEY_SCHEME: string = BID + SEP + SPID + SEP + "token";
+const KEY_WEALTH_PTR: string = 'wealth_ptr';
+const WEALTH_KEY_SCHEME: string = UID + SEP + BID + SEP + 'wealth';
 
 const someSigMessage = 'some unique message for signature';
 const rpcSignerHost: string = 'http://localhost:3545';
@@ -51,15 +49,15 @@ class WealthEntry {
 }
 
 function getNonceKey(uid: string, spid: string): string {
-    return uid + SEP + spid + SEP + "nonce";
+    return uid + SEP + spid + SEP + 'nonce';
 }
 
 function getTokenKey(bid: string, spid: string): string {
-    return bid + SEP + spid + SEP + "token";
+    return bid + SEP + spid + SEP + 'token';
 }
 
 function getWealthEntryKey(uid: string, bid: string): string {
-    return uid + SEP + bid + SEP + "wealth";
+    return uid + SEP + bid + SEP + 'wealth';
 }
 
 async function createUser(user: Base, pass: string): Promise<Account> {
@@ -70,7 +68,7 @@ async function createUser(user: Base, pass: string): Promise<Account> {
         await user.accountManager.unsubscribe();
     } catch (e) {
         console.log('check createUser', e);
-        //ignore error if user not exist
+        // ignore error if user not exist
     }
 
     return await user.accountManager.registration(pass, someSigMessage); // this method private.
@@ -85,9 +83,9 @@ describe('BASE API test: Protocol Flow', async () => {
     const baseBusiness: Base = createBase();
     const baseValidator: Base = createBase();
 
-    var accUser: Account;
-    var accBusiness: Account;
-    var accValidator: Account;
+    let accUser: Account;
+    let accBusiness: Account;
+    let accValidator: Account;
 
     function createBase(): Base {
         const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
@@ -140,10 +138,6 @@ describe('BASE API test: Protocol Flow', async () => {
         await sp.profileManager.updateData(data);
     }
 
-    before(async () => {
-
-    });
-
     beforeEach(async () => {
         accUser = await createUser(baseUser, passPhraseUser);
         accBusiness = await createUser(baseBusiness, passPhraseBusiness);
@@ -157,7 +151,13 @@ describe('BASE API test: Protocol Flow', async () => {
     it('User - Service Provider - Business data flow protocol', async () => {
         // to get this records, I used example application, created a wallet records and did copy&paste
         try {
-            var wallet = '{"data":[{"data":"{\\"baseID\\":\\"03cb46e31c2d0f5827bb267f9fb30cf98077165d0e560b964651c6c379f69c7a35\\",\\"ethAddr\\":\\"0x916e1c7340f3f0a7af1a5b55e0fd9c3846ef8d28\\"}","sig":"0x08602606d842363d58e714e18f8c4d4b644c0cdc88d644dba03d0af3558f0691334a4db534034ba736347a085f28a58c9b643be25a9c7169f073f69a26b432531b"}],"sig":"IMBBXn+LLf4jWmjhQ1cWGmccuCZW9M5TwQYq46nXpCFUbs72Sxjn0hxOtmyNwiP4va97ZwCruqFyNhi3CuR1BvM="}';
+            const wallet =
+                '{"data":[{"data":"' +
+                '{\\"baseID\\":\\"03cb46e31c2d0f5827bb267f9fb30cf98077165d0e560b964651c6c379f69c7a35\\",' +
+                '\\"ethAddr\\":\\"0x916e1c7340f3f0a7af1a5b55e0fd9c3846ef8d28\\"}",' +
+                '"sig":"0x08602606d842363d58e714e18f8c4d4b644c0cdc88d644dba03d0af3558f069' +
+                '1334a4db534034ba736347a085f28a58c9b643be25a9c7169f073f69a26b432531b"}],' +
+                '"sig":"IMBBXn+LLf4jWmjhQ1cWGmccuCZW9M5TwQYq46nXpCFUbs72Sxjn0hxOtmyNwiP4va97ZwCruqFyNhi3CuR1BvM="}';
 
             // Step 1: create wallets for User and grant access for Validator
             await baseUser.profileManager.updateData(new Map([[WalletManagerImpl.DATA_KEY_ETH_WALLETS, wallet]]));
@@ -167,12 +167,12 @@ describe('BASE API test: Protocol Flow', async () => {
             await baseUser.dataRequestManager.grantAccessForClient(accValidator.publicKey, grantFields);
 
             // Validator retrieves the requests from user
-            var recordsForValidator: Array<DataRequest> = await baseValidator.dataRequestManager.getRequests(
+            let recordsForValidator: Array<DataRequest> = await baseValidator.dataRequestManager.getRequests(
                 accValidator.publicKey, accUser.publicKey
             );
 
             recordsForValidator.length.should.be.equal(1);
-            const userDataRequest = recordsForValidator[0]
+            const userDataRequest = recordsForValidator[0];
 
             // Validator decodes wallets for User and calculate wealth
             const wealthMap: Map<string, string> = new Map<string, string>();
@@ -180,18 +180,18 @@ describe('BASE API test: Protocol Flow', async () => {
                 userDataRequest.toPk,
                 userDataRequest.responseData
             );
-            decryptedObj.get(WalletManagerImpl.DATA_KEY_ETH_WALLETS).should.be.equal(wallet);
+            (decryptedObj.get(WalletManagerImpl.DATA_KEY_ETH_WALLETS) as string).should.be.equal(wallet);
 
             // validator verifies the ETH wallets
-            var res: WalletVerificationStatus = WalletUtils.validateWallets(
+            const res: WalletVerificationStatus = WalletUtils.validateWallets(
                 WalletManagerImpl.DATA_KEY_ETH_WALLETS,
-                JSON.parse(wallet),
+                WalletsRecords.fromJson(wallet),
                 accUser.publicKey
             );
-            JSON.stringify(res).should.be.equal(JSON.stringify({ rc: 0, err: '', details: [0] }));
+            JSON.stringify(res).should.be.equal(JSON.stringify({rc: 0, err: '', details: [0]}));
 
             // Here we simulate that Validator compute wealth for each requestor
-            var wealth = '15213';
+            const wealth = '15213';
             // ~compute wealth
 
             // Step 3: Validator create a corresponding entries into its base
@@ -205,23 +205,22 @@ describe('BASE API test: Protocol Flow', async () => {
             await baseValidator.dataRequestManager.grantAccessForClient(accUser.publicKey, grantFields);
 
             // Test user receives the shared data
-            var recordsForUser: Array<DataRequest> = await baseUser.dataRequestManager.getRequests(
+            let recordsForUser: Array<DataRequest> = await baseUser.dataRequestManager.getRequests(
                 accUser.publicKey, accValidator.publicKey
             );
+
             recordsForUser.length.should.be.equal(1);
             const processedDataMap: Map<string, string> = await baseUser.profileManager.getAuthorizedData(
                 recordsForUser[0].toPk, recordsForUser[0].responseData);
 
-            const processedData = processedDataMap.get(accUser.publicKey);
+            const processedData = processedDataMap.get(accUser.publicKey) as string;
             processedData.should.be.equal(wealth);
 
             // Step 5: Users receives the shared record, write a new record into Base
             await userWriteWealthPtr(baseUser, accValidator.publicKey);
 
-
             // Step 6: Business request wealth record from user
             await baseBusiness.dataRequestManager.requestPermissions(accUser.publicKey, [KEY_WEALTH_PTR]);
-
 
             // Step 7: User checks for outstanding requests from Business
             const recordsForUserToApprove: Array<DataRequest> = await baseUser.dataRequestManager.getRequests(
@@ -235,19 +234,18 @@ describe('BASE API test: Protocol Flow', async () => {
             grantFields.clear();
             grantFields.set(KEY_WEALTH_PTR, AccessRight.R);
             // User approves the request
-            await baseUser.dataRequestManager.grantAccessForClient(/* id */
-                accBusiness.publicKey, grantFields);
+            await baseUser.dataRequestManager.grantAccessForClient(/* id */ accBusiness.publicKey, grantFields);
 
-            //Business reads wealth pointer from User
-            var recordsForBusiness: Array<DataRequest> = await baseBusiness.dataRequestManager.getRequests(
-                accBusiness.publicKey, accUser.publicKey
-            );
+            // Business reads wealth pointer from User
+            let recordsForBusiness: Array<DataRequest> = await baseBusiness.dataRequestManager
+                .getRequests(accBusiness.publicKey, accUser.publicKey);
 
             recordsForBusiness.length.should.be.equal(1);
 
-            const wealthPtrMap: Map<string, string> = await baseBusiness.profileManager.getAuthorizedData(
-                recordsForBusiness[0].toPk, recordsForBusiness[0].responseData);
-            const wealthPtr: Pointer = JSON.parse(wealthPtrMap.get(KEY_WEALTH_PTR));
+            const wealthPtrMap: Map<string, string> = await baseBusiness.profileManager
+                .getAuthorizedData(recordsForBusiness[0].toPk, recordsForBusiness[0].responseData);
+
+            const wealthPtr: Pointer = JSON.parse(wealthPtrMap.get(KEY_WEALTH_PTR) as string);
 
             // Business get the Service Provider ID and SP key scheme
             wealthPtr.spid.should.be.equal(accValidator.publicKey);
@@ -270,7 +268,7 @@ describe('BASE API test: Protocol Flow', async () => {
             recordsForUser.length.should.be.equal(1);
             const nonceMap: Map<string, string> = await baseUser.profileManager.getAuthorizedData(
                 recordsForUser[0].toPk, recordsForUser[0].responseData);
-            nonceMap.get(nonceKey).should.be.equal(nonceValue);
+            (nonceMap.get(nonceKey) as string).should.be.equal(nonceValue);
 
             // Step 10: User write signed token
             const tokenKey = getTokenKey(accBusiness.publicKey, accValidator.publicKey);
@@ -293,7 +291,7 @@ describe('BASE API test: Protocol Flow', async () => {
 
             // Step 12: Validator write signed token and processed data
             const wealthEntryKey = getWealthEntryKey(accUser.publicKey, accBusiness.publicKey);
-            await spWriteWealthEntry(baseValidator, wealthEntryKey, wealth, tokenMap.get(tokenKey));
+            await spWriteWealthEntry(baseValidator, wealthEntryKey, wealth, tokenMap.get(tokenKey) as string);
 
             // Step 13, 14: grant wealth entry to business and user
             grantFields.clear();
@@ -311,7 +309,7 @@ describe('BASE API test: Protocol Flow', async () => {
             const wealthEntryMap: Map<string, string> = await baseBusiness.profileManager.getAuthorizedData(
                 recordsForBusiness[0].toPk, recordsForBusiness[0].responseData
             );
-            const wealthEntry: WealthEntry = JSON.parse(wealthEntryMap.get(wealthEntryKey));
+            const wealthEntry: WealthEntry = JSON.parse(wealthEntryMap.get(wealthEntryKey) as string);
             wealthEntry.wealth.should.be.equal(wealth);
             const signedToken: SignedMessage = JSON.parse(wealthEntry.token);
 
@@ -319,6 +317,8 @@ describe('BASE API test: Protocol Flow', async () => {
             const Message = require('bitcore-message');
             const bitcore = require('bitcore-lib');
             const addrUser = bitcore.Address(bitcore.PublicKey(accUser.publicKey));
+
+            // noinspection BadExpressionStatementJS
             Message(signedToken.message).verify(addrUser, signedToken.signature).should.be.true;
 
             const token: Token = JSON.parse(signedToken.message);
@@ -333,7 +333,7 @@ describe('BASE API test: Protocol Flow', async () => {
             token.hash.should.be.equal(getHash(processedData));
 
             // Business read the timestamp from token
-            var timestampDate = new Date();
+            const timestampDate = new Date();
             timestampDate.setTime(Number(token.timestamp));
             // console.log("Business received token timestamp: " + timestampDate.toString());
 
@@ -342,5 +342,4 @@ describe('BASE API test: Protocol Flow', async () => {
             throw e;
         }
     });
-
 });

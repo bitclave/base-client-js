@@ -1,8 +1,8 @@
-import { DataRequestRepository } from './DataRequestRepository';
 import DataRequest from '../models/DataRequest';
-import { HttpTransport } from '../source/http/HttpTransport';
-import { HttpMethod } from '../source/http/HttpMethod';
 import OfferShareData from '../models/OfferShareData';
+import { HttpMethod } from '../source/http/HttpMethod';
+import { HttpTransport } from '../source/http/HttpTransport';
+import { DataRequestRepository } from './DataRequestRepository';
 
 export default class DataRequestRepositoryImpl implements DataRequestRepository {
 
@@ -16,7 +16,7 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
         this.transport = transport;
     }
 
-    requestPermissions(toPk: string, encryptedRequest: string): Promise<number> {
+    public requestPermissions(toPk: string, encryptedRequest: string): Promise<number> {
         const data: DataRequest = new DataRequest(toPk, encryptedRequest);
         return this.transport
             .sendRequest(
@@ -26,7 +26,7 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
             ).then((response) => parseInt(response.json.toString(), 10));
     }
 
-    grantAccessForClient(fromPk: string, toPk: string, encryptedResponse: string): Promise<number> {
+    public grantAccessForClient(fromPk: string, toPk: string, encryptedResponse: string): Promise<number> {
         const data: DataRequest = new DataRequest(toPk, '');
         data.responseData = encryptedResponse;
         data.fromPk = fromPk;
@@ -39,11 +39,8 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
             ).then((response) => parseInt(response.json.toString(), 10));
     }
 
-    getRequests(fromPk: string | null, toPk: string | null): Promise<Array<DataRequest>> {
-        const params: Map<string, any> = new Map([
-            ['toPk', toPk],
-            ['fromPk', fromPk]
-        ]);
+    public getRequests(fromPk: string | null, toPk: string | null): Promise<Array<DataRequest>> {
+        const params: Map<string, string | null> = new Map([['toPk', toPk], ['fromPk', fromPk]]);
 
         const strParams: string = this.joinParams(params);
 
@@ -54,14 +51,19 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
             ).then((response) => Object.assign([], response.json));
     }
 
-    grantAccessForOffer(offerSearchId: number, clientPk: string, encryptedClientResponse: string, priceId: number): Promise<any> {
+    public async grantAccessForOffer(
+        offerSearchId: number,
+        clientPk: string,
+        encryptedClientResponse: string,
+        priceId: number
+    ): Promise<void> {
         const shareData = new OfferShareData(offerSearchId, encryptedClientResponse, priceId);
-        return this.transport
+        await this.transport
             .sendRequest(this.GRANT_ACCESS_FOR_OFFER, HttpMethod.Post, shareData);
     }
 
-    private joinParams(params: Map<string, any>): string {
-        let result: Array<string> = [];
+    private joinParams(params: Map<string, string | null>): string {
+        const result: Array<string> = [];
         params.forEach((value, key) => {
             if (!this.isEmpty(value)) {
                 result.push(`${key}=${value}`);

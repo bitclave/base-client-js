@@ -1,7 +1,7 @@
 export class Pageable {
-    readonly sort: string | undefined;
-    readonly page: number;
-    readonly size: number;
+    public readonly sort: string | undefined;
+    public readonly page: number;
+    public readonly size: number;
 
     constructor(sort: string, page: number, size: number) {
         this.sort = sort;
@@ -11,45 +11,56 @@ export class Pageable {
 }
 
 export class Page<T> {
-    readonly total: number;
-    readonly content: Array<T>;
-    readonly pageable: Pageable;
-    readonly numberOfElements: number;
-    readonly first: boolean;
-    readonly last: boolean;
-    readonly number: number;
-    readonly size: number;
-    readonly totalPages: number;
-    readonly totalElements: number;
+    public readonly total: number;
+    public readonly content: Array<T>;
+    public readonly pageable: Pageable;
+    public readonly numberOfElements: number;
+    public readonly first: boolean;
+    public readonly last: boolean;
+    public readonly number: number;
+    public readonly size: number;
+    public readonly totalPages: number;
+    public readonly totalElements: number;
 
-    public static fromJson<T>(json: any, Creator: { new(): T; }): Page<T> {
-        const pageable: Pageable = new Pageable(json.pageable.sort, json.pageable.page, json.pageable.size);
-        const content: Array<T> = json.content.map((item: any) => Object.assign(new Creator(), item));
+    // tslint:disable-next-line:callable-types
+    public static fromJson<T>(json: object, Creator: { new(): T; }): Page<T> {
+        const raw = json as JsonObject<Page<T>>;
+        const rawPageable = raw.pageable as JsonObject<Pageable>;
+        const pageable: Pageable = new Pageable(
+            rawPageable.sort as string,
+            rawPageable.page as number,
+            rawPageable.size as number
+        );
+        const content: Array<T> = (raw.content as Array<T>)
+            .map((item: T) => Object.assign(new Creator(), item));
 
         return new Page<T>(
-            json.total,
+            raw.total as number,
             content,
             pageable,
-            json.numberOfElements,
-            json.first,
-            json.last,
-            json.number,
-            json.size,
-            json.totalPages,
-            json.totalElements
+            raw.numberOfElements as number,
+            raw.first as boolean,
+            raw.last as boolean,
+            raw.number as number,
+            raw.size as number,
+            raw.totalPages as number,
+            raw.totalElements as number
         );
     }
 
-    constructor(total: number,
-                content: Array<T>,
-                pageable: Pageable,
-                numberOfElements: number,
-                first: boolean,
-                last: boolean,
-                number: number,
-                size: number,
-                totalPages: number,
-                totalElements: number) {
+    constructor(
+        total: number,
+        content: Array<T>,
+        pageable: Pageable,
+        numberOfElements: number,
+        first: boolean,
+        last: boolean,
+        // tslint:disable-next-line:variable-name
+        number: number,
+        size: number,
+        totalPages: number,
+        totalElements: number
+    ) {
         this.total = total;
         this.content = content;
         this.pageable = pageable;

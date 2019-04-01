@@ -1,6 +1,6 @@
 export default class RpcPassPhrase {
 
-    pass: string;
+    public readonly pass: string;
 
     constructor(pass: string) {
         this.pass = pass;

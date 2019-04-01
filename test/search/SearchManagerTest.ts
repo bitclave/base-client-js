@@ -1,16 +1,16 @@
-import Base, { Offer, CompareAction, SearchRequest, OfferSearch, OfferResultAction } from '../../src/Base';
+// tslint:disable:no-unused-expression
+import Base, { CompareAction, Offer, OfferResultAction, OfferSearch, SearchRequest } from '../../src/Base';
 import Account from '../../src/repository/models/Account';
+import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import AuthenticatorHelper from '../AuthenticatorHelper';
-import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
 
-const should = require('chai').use(require('chai-as-promised')).should();
+require('chai').use(require('chai-as-promised')).should();
 const someSigMessage = 'some unique message for signature';
 
 const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
 const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
 
-const httpTransport = TransportFactory.createHttpTransport(baseNodeUrl);
 const rpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
 const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
@@ -36,7 +36,6 @@ describe('Search Manager', async () => {
     const businessBase: Base = createBase();
     const userBase: Base = createBase();
 
-    let businessAccount: Account;
     let userAccount: Account;
 
     function createBase(): Base {
@@ -47,37 +46,49 @@ describe('Search Manager', async () => {
             rpcSignerHost
         );
     }
+
     function offerFactory(): Offer {
-        const offerTags = new Map<String, String>([
-          ['product', 'car'],
-          ['color', 'red'],
-          ['producer', 'mazda'],
-          ['models', 'RX8']
-        ]);
-        const compareUserTag = new Map<String, String>([
-            ['age', '10']
-        ]);
-        const rules = new Map<String, CompareAction>([
-            ['age', CompareAction.MORE]
-        ]);
-        const offer = new Offer(
-          'it is offer description',
-          'it is title of offer',
-          '', '1', offerTags, compareUserTag, rules
+        const offerTags = new Map<string, string>(
+            [
+                ['product', 'car'],
+                ['color', 'red'],
+                ['producer', 'mazda'],
+                ['models', 'RX8']
+            ]
         );
-        return offer;
+        const compareUserTag = new Map<string, string>(
+            [
+                ['age', '10']
+            ]
+        );
+
+        const rules = new Map<string, CompareAction>(
+            [
+                ['age', CompareAction.MORE]
+            ]
+        );
+
+        return new Offer(
+            'it is offer description',
+            'it is title of offer',
+            '', '1', offerTags, compareUserTag, rules
+        );
     }
+
     function requestFactory(): SearchRequest {
-        return new SearchRequest(new Map([
-            ['product', 'car'],
-            ['color', 'red'],
-            ['producer', 'mazda'],
-            ['models', 'RX8']
-        ]));
+        return new SearchRequest(new Map(
+            [
+                ['product', 'car'],
+                ['color', 'red'],
+                ['producer', 'mazda'],
+                ['models', 'RX8']
+            ]
+        ));
 
     }
+
     beforeEach(async () => {
-        businessAccount = await createUser(businessBase, passPhraseSeller);
+        await createUser(businessBase, passPhraseSeller);
         userAccount = await createUser(userBase, passPhraseBusinessBuyer);
     });
     after(async () => {
@@ -88,24 +99,26 @@ describe('Search Manager', async () => {
         try {
 
             const searchRequest = requestFactory();
-            let insertedSearchRequest = await userBase.searchManager.createRequest(searchRequest);
+            const insertedSearchRequest = await userBase.searchManager.createRequest(searchRequest);
 
             let searchRequests = await userBase.searchManager.getMyRequests(0);
 
             searchRequests.length.should.be.eql(1);
 
-            insertedSearchRequest.tags = new Map([
+            insertedSearchRequest.tags = new Map(
+                [
                     ['product', 'car'],
                     ['color', 'blue'],
                     ['producer', 'mazda'],
                     ['models', 'RX8']
-                ]);
+                ]
+            );
 
-            let updatedSearchRequest = await userBase.searchManager.updateRequest(insertedSearchRequest);
+            const updatedSearchRequest = await userBase.searchManager.updateRequest(insertedSearchRequest);
 
             searchRequests = await userBase.searchManager.getMyRequests(updatedSearchRequest.id);
             searchRequests.length.should.be.eql(1);
-            searchRequests[0].tags.get('color').should.be.eql('blue');
+            (searchRequests[0].tags.get('color') as string).should.be.eql('blue');
 
             await userBase.searchManager.deleteRequest(updatedSearchRequest.id);
             searchRequests = await userBase.searchManager.getMyRequests(updatedSearchRequest.id);
@@ -121,8 +134,8 @@ describe('Search Manager', async () => {
         try {
 
             const searchRequest = requestFactory();
-            let insertedSearchRequest = await userBase.searchManager.createRequest(searchRequest);
-            insertedSearchRequest = await userBase.searchManager.createRequest(searchRequest);
+            await userBase.searchManager.createRequest(searchRequest);
+            await userBase.searchManager.createRequest(searchRequest);
 
             let searchRequests = await userBase.searchManager.getAllRequests();
             searchRequests.length.should.be.gte(2);
@@ -130,7 +143,10 @@ describe('Search Manager', async () => {
             searchRequests = await userBase.searchManager.getMySearchRequestsByTag('product');
             searchRequests.length.should.be.eql(2);
 
-            searchRequests = await userBase.searchManager.getSearchRequestsByOwnerAndTag(userAccount.publicKey, 'product');
+            searchRequests = await userBase.searchManager.getSearchRequestsByOwnerAndTag(
+                userAccount.publicKey,
+                'product'
+            );
             searchRequests.length.should.be.eql(2);
 
         } catch (e) {
@@ -145,11 +161,11 @@ describe('Search Manager', async () => {
             // create offer
             const offer = offerFactory();
             const businessOffer = await businessBase.offerManager.saveOffer(offer);
-            
+
             const searchRequest = requestFactory();
             const insertedSearchRequest = await userBase.searchManager.createRequest(searchRequest);
 
-            let offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
+            const offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
             await userBase.searchManager.addResultItem(offerSearch);
 
             let searchRequests = (await userBase.searchManager.getSearchResult(insertedSearchRequest.id)).content;
@@ -180,11 +196,11 @@ describe('Search Manager', async () => {
             // create offer
             const offer = offerFactory();
             const businessOffer = await businessBase.offerManager.saveOffer(offer);
-            
+
             const searchRequest = requestFactory();
             const insertedSearchRequest = await userBase.searchManager.createRequest(searchRequest);
 
-            let offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
+            const offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
             await userBase.searchManager.addResultItem(offerSearch);
             let searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
             searchRequests.length.should.be.eql(1);
@@ -231,23 +247,26 @@ describe('Search Manager', async () => {
             // create offer
             const offer = offerFactory();
             const businessOffer = await businessBase.offerManager.saveOffer(offer);
-            
+
             const searchRequest = requestFactory();
             const insertedSearchRequest = await userBase.searchManager.createRequest(searchRequest);
 
-            let offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
+            const offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
             await userBase.searchManager.addResultItem(offerSearch);
 
             let searchRequests = (await userBase.searchManager.getSearchResult(insertedSearchRequest.id)).content;
             searchRequests.length.should.be.eql(1);
 
             const clonedSearchRequest = await userBase.searchManager.cloneRequest(insertedSearchRequest);
-            clonedSearchRequest.should.exist;
+            clonedSearchRequest.should.be.exist;
 
             searchRequests = (await userBase.searchManager.getSearchResult(clonedSearchRequest.id)).content;
             searchRequests.length.should.be.eql(1);
 
-            const clonedSearchRequest2 = await userBase.searchManager.cloneOfferSearch(clonedSearchRequest.id, searchRequest);
+            const clonedSearchRequest2 = await userBase.searchManager.cloneOfferSearch(
+                clonedSearchRequest.id,
+                searchRequest
+            );
             clonedSearchRequest2.length.should.be.eql(1);
             clonedSearchRequest2[0].offerId.should.be.eql(businessOffer.id);
             clonedSearchRequest2[0].id.should.not.eql(searchRequests[0].offerSearch.id);
@@ -256,5 +275,4 @@ describe('Search Manager', async () => {
             throw e;
         }
     });
-
 });

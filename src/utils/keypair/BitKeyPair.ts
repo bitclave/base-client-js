@@ -14,11 +14,27 @@ const Message = require('bitcore-message');
 const ECIES = require('bitcore-ecies');
 const Mnemonic = require('bitcore-mnemonic');
 
+declare interface PublicKey {
+    toString(radix: number): string;
+}
+
+declare interface PrivateKey {
+    toPublicKey(): PublicKey;
+
+    toAddress(): Address;
+
+    toString(radix: number): string;
+}
+
+declare interface Address {
+    toString(radix: number): string;
+}
+
 export class BitKeyPair implements KeyPairHelper {
 
-    private privateKey: any;
-    private publicKey: any;
-    private addr: any;
+    private privateKey: PrivateKey;
+    private publicKey: PublicKey;
+    private addr: Address;
     private readonly permissions: Permissions;
     private readonly permissionsSource: PermissionsSource;
     private siteDataSource: SiteDataSource;
@@ -110,7 +126,7 @@ export class BitKeyPair implements KeyPairHelper {
 
             await this.syncPermissions();
 
-            for (let [key, value] of data.entries()) {
+            for (const [key, value] of data.entries()) {
                 if (!this.hasPermissions(key, false)) {
                     continue;
                 }
@@ -130,7 +146,7 @@ export class BitKeyPair implements KeyPairHelper {
 
     }
 
-    public async decryptFile(file: string): Promise<any> {
+    public async decryptFile(file: string): Promise<string> {
         return this.decryptMessage(this.getPublicKey(), file);
     }
 
@@ -195,15 +211,18 @@ export class BitKeyPair implements KeyPairHelper {
                     site.publicKey, this.getPublicKey()
                 );
 
-                for (let request of requests) {
+                for (const request of requests) {
                     const strDecrypt: string = await this.decryptMessage(site.publicKey, request.responseData);
                     const jsonDecrypt = JSON.parse(strDecrypt);
                     const resultMap: Map<string, AcceptedField> = JsonUtils.jsonToMap(jsonDecrypt);
 
                     this.permissions.fields.clear();
-                    resultMap.forEach((value, key) => {
-                        this.permissions.fields.set(key, value.access);
-                    }, this);
+                    resultMap.forEach(
+                        (value, key) => {
+                            this.permissions.fields.set(key, value.access);
+                        },
+                        this
+                    );
                 }
             }
         }

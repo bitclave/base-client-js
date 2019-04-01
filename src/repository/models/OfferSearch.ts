@@ -1,34 +1,30 @@
 export default class OfferSearch {
 
-    id: number = 0;
-    readonly owner: string = '0x0';
-    searchRequestId: number = 0;
-    offerId: number = 0;
-    state: OfferResultAction = OfferResultAction.NONE;
-    info: string;
-    events: Array<string>;
-    createdAt: Date = new Date();
-    updatedAt: Date = new Date();
+    public readonly id: number = 0;
+    public readonly owner: string = '0x0';
+    public readonly searchRequestId: number = 0;
+    public readonly offerId: number = 0;
+    public readonly state: OfferResultAction = OfferResultAction.NONE;
+    public readonly info: string;
+    public readonly events: Array<string>;
+    public createdAt: Date = new Date();
+    public updatedAt: Date = new Date();
 
-    public static fromJson(json: any): OfferSearch {
+    public static fromJson(json: object): OfferSearch {
         const offerSearch: OfferSearch = Object.assign(new OfferSearch(), json);
-        offerSearch.createdAt = new Date(json.createdAt);
-        offerSearch.updatedAt = new Date(json.updatedAt);
+        offerSearch.createdAt = new Date((json as OfferSearch).createdAt);
+        offerSearch.updatedAt = new Date((json as OfferSearch).updatedAt);
 
         return offerSearch;
     }
 
-    constructor(
-        searchRequestId: number = 0,
-        offerId: number = 0,
-        events: Array<string> = new Array<string>()
-    ) {
-        this.searchRequestId = searchRequestId;
-        this.offerId = offerId;
+    constructor(searchRequestId: number = 0, offerId: number = 0, events: Array<string> = []) {
+        this.searchRequestId = searchRequestId || 0;
+        this.offerId = offerId || 0;
         this.createdAt = new Date();
         this.updatedAt = new Date();
         this.info = 'from base-client-demo';
-        this.events = events;
+        this.events = events || [];
     }
 
     public toJson() {

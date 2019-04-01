@@ -1,8 +1,8 @@
-import { HttpInterceptor } from './HttpInterceptor';
-import SignedRequest from './SignedRequest';
-import { InterceptorCortege } from './InterceptorCortege';
 import { MessageSigner } from '../../../utils/keypair/MessageSigner';
 import { NonceSource } from '../../assistant/NonceSource';
+import { HttpInterceptor } from './HttpInterceptor';
+import { InterceptorCortege } from './InterceptorCortege';
+import SignedRequest from './SignedRequest';
 
 export default class NonceInterceptor implements HttpInterceptor {
 
@@ -16,14 +16,14 @@ export default class NonceInterceptor implements HttpInterceptor {
 
     public onIntercept(cortege: InterceptorCortege): Promise<InterceptorCortege> {
         return !(cortege.data instanceof SignedRequest) && !cortege.isTransaction()
-            ? Promise.resolve(cortege)
+               ? Promise.resolve(cortege)
 
-            : this.nonceSource.getNonce(this.messageSigner.getPublicKey())
-                .then(nonce => {
-                    cortege.data.nonce = ++nonce;
+               : this.nonceSource.getNonce(this.messageSigner.getPublicKey())
+                   .then(nonce => {
+                       (cortege.data as SignedRequest).nonce = ++nonce;
 
-                    return cortege;
-                });
+                       return cortege;
+                   });
     }
 
 }

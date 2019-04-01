@@ -4,10 +4,10 @@ import { HttpTransport } from './HttpTransport';
 import { InterceptorCortege } from './InterceptorCortege';
 import { Response } from './Response';
 
-let XMLHttpRequest: any;
+let XMLHttpRequest: XMLHttpRequestInitializer;
 
-if ((typeof window !== 'undefined' && (<any> window).XMLHttpRequest)) {
-    XMLHttpRequest = (<any> window).XMLHttpRequest;
+if ((typeof window !== 'undefined' && window.hasOwnProperty('XMLHttpRequest'))) {
+    XMLHttpRequest = (window as WindowXMLHttpRequest).XMLHttpRequest;
 } else {
     XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 }
@@ -36,10 +36,10 @@ export class HttpTransportImpl implements HttpTransport {
         return this;
     }
 
-    // sendRequest(method: HttpMethod, data?: any): Promise<Response>
-    public sendRequest(path: string, method: HttpMethod, data?: any): Promise<Response> {
+    // sendRequest(method: HttpMethod, data?: object | string): Promise<Response>
+    public sendRequest<T>(path: string, method: HttpMethod, data?: object | string | number): Promise<Response<T>> {
         return this.acceptInterceptor(new InterceptorCortege(path, method, this.headers, data))
-            .then((cortege: InterceptorCortege) => new Promise<Response>((resolve, reject) => {
+            .then((cortege: InterceptorCortege) => new Promise<Response<T>>((resolve, reject) => {
                 try {
                     const url = cortege.path ? this.getHost() + cortege.path : this.getHost();
                     const request: XMLHttpRequest = new XMLHttpRequest();
@@ -50,7 +50,7 @@ export class HttpTransportImpl implements HttpTransport {
                     });
 
                     request.onload = () => {
-                        const result: Response = new Response(request.responseText, request.status);
+                        const result: Response<object> = new Response(request.responseText, request.status);
                         if (request.status >= 200 && request.status < 300) {
                             resolve(result);
 
@@ -59,7 +59,7 @@ export class HttpTransportImpl implements HttpTransport {
                         }
                     };
                     request.onerror = () => {
-                        const result: Response = new Response(request.responseText, request.status);
+                        const result: Response<object> = new Response(request.responseText, request.status);
                         reject(result);
                     };
                     request.send(JSON.stringify(cortege.data ? cortege.data : {}));

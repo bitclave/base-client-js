@@ -1,12 +1,12 @@
 import { AccountRepository } from '../account/AccountRepository';
-import { DataRequestRepository } from '../requests/DataRequestRepository';
-import { PermissionsSource } from './PermissionsSource';
-import { NonceSource } from './NonceSource';
-import DataRequest from '../models/DataRequest';
 import Account from '../models/Account';
-import { SiteDataSource } from './SiteDataSource';
-import { SiteRepository } from '../site/SiteRepository';
+import DataRequest from '../models/DataRequest';
 import { Site } from '../models/Site';
+import { DataRequestRepository } from '../requests/DataRequestRepository';
+import { SiteRepository } from '../site/SiteRepository';
+import { NonceSource } from './NonceSource';
+import { PermissionsSource } from './PermissionsSource';
+import { SiteDataSource } from './SiteDataSource';
 
 // this class assistant for only read data from Base-node. without any permissions
 export class AssistantNodeRepository implements PermissionsSource, NonceSource, SiteDataSource {
@@ -15,9 +15,11 @@ export class AssistantNodeRepository implements PermissionsSource, NonceSource, 
     private dataRequestRepository: DataRequestRepository;
     private siteRepository: SiteRepository;
 
-    public constructor(accountRepository: AccountRepository,
-                       dataRequestRepository: DataRequestRepository,
-                       siteRepository: SiteRepository) {
+    public constructor(
+        accountRepository: AccountRepository,
+        dataRequestRepository: DataRequestRepository,
+        siteRepository: SiteRepository
+    ) {
 
         this.accountRepository = accountRepository;
         this.dataRequestRepository = dataRequestRepository;

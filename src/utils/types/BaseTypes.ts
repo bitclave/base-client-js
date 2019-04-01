@@ -13,7 +13,7 @@ class BaseAddrPair {
 class StringMessage implements MessageData<string> {
     public readonly data: string;
 
-    public static valueOf(message: MessageData<any>): StringMessage {
+    public static valueOf(message: MessageData): StringMessage {
         return new StringMessage(JSON.stringify(message.data));
     }
 
@@ -25,7 +25,7 @@ class StringMessage implements MessageData<string> {
 class StringSignedMessage extends StringMessage implements SignedMessageData<string> {
     public readonly sig: string;
 
-    public static valueOf(message: SignedMessageData<any>): StringSignedMessage {
+    public static valueOf(message: SignedMessageData): StringSignedMessage {
         return new StringSignedMessage(JSON.stringify(message.data), message.sig);
     }
 
@@ -67,10 +67,11 @@ class WalletsRecords {
     public readonly sig: string;
 
     public static fromJson(json: string): WalletsRecords {
-        const jsonObj: any = JSON.parse(json);
-        const items: Array<AddrRecord> = jsonObj.hasOwnProperty('data')
-                                         ? jsonObj.data.map((item: any) => new AddrRecord(item.data, item.sig))
-                                         : [];
+        const jsonObj: WalletsRecords = JSON.parse(json);
+        const items: Array<AddrRecord> =
+            jsonObj.hasOwnProperty('data')
+            ? jsonObj.data.map((item: AddrRecord) => new AddrRecord(item.data, item.sig))
+            : [];
         return new WalletsRecords(items, jsonObj.sig);
     }
 

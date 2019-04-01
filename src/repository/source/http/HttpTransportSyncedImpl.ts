@@ -6,10 +6,10 @@ import { InterceptorCortege } from './InterceptorCortege';
 import { Response } from './Response';
 import Transaction from './Transaction';
 
-let XMLHttpRequest: any;
+let XMLHttpRequest: XMLHttpRequestInitializer;
 
-if ((typeof window !== 'undefined' && (<any> window).XMLHttpRequest)) {
-    XMLHttpRequest = (<any> window).XMLHttpRequest;
+if ((typeof window !== 'undefined' && window.hasOwnProperty('XMLHttpRequest'))) {
+    XMLHttpRequest = (window as WindowXMLHttpRequest).XMLHttpRequest;
 } else {
     XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 }
@@ -38,7 +38,7 @@ export class HttpTransportSyncedImpl implements HttpTransport {
         this.logger = loggerService;
     }
 
-    addInterceptor(interceptor: HttpInterceptor): HttpTransport {
+    public addInterceptor(interceptor: HttpInterceptor): HttpTransport {
         if (this.interceptors.indexOf(interceptor) === -1) {
             this.interceptors.push(interceptor);
         }
@@ -46,9 +46,9 @@ export class HttpTransportSyncedImpl implements HttpTransport {
         return this;
     }
 
-    sendRequest(method: HttpMethod, data?: any): Promise<Response>;
-    sendRequest(path: string, method: HttpMethod, data?: any): Promise<Response> {
-        return new Promise<Response>((resolve, reject) => {
+    public sendRequest<T>(method: HttpMethod, data?: object | string | number): Promise<Response<T>>;
+    public sendRequest<T>(path: string, method: HttpMethod, data?: object | string | number): Promise<Response<T>> {
+        return new Promise<Response<T>>((resolve, reject) => {
             const cortege: InterceptorCortege = new InterceptorCortege(path, method, this.headers, data);
             this.transactions.push(new Transaction(resolve, reject, cortege));
 
@@ -58,7 +58,7 @@ export class HttpTransportSyncedImpl implements HttpTransport {
         });
     }
 
-    getHost(): string {
+    public getHost(): string {
         return this.host;
     }
 
@@ -84,11 +84,11 @@ export class HttpTransportSyncedImpl implements HttpTransport {
                     const url = cortege.path ? this.getHost() + cortege.path : this.getHost();
                     const request: XMLHttpRequest = new XMLHttpRequest();
 
-                    let _this = this;
+                    const _this = this;
                     request.open(cortege.method, url);
 
                     request.onload = () => {
-                        const result: Response = new Response(request.responseText, request.status);
+                        const result: Response<object> = new Response(request.responseText, request.status);
                         if (request.status >= 200 && request.status < 300) {
                             resolve();
                             transaction.resolve(result);
@@ -103,7 +103,7 @@ export class HttpTransportSyncedImpl implements HttpTransport {
                     };
 
                     request.onerror = () => {
-                        const result: Response = new Response(request.responseText, request.status);
+                        const result: Response<object> = new Response(request.responseText, request.status);
                         _this.logger.error('__LOC__: Error runTransaction onErrorRequest', result);
                         resolve();
                         transaction.reject(result);

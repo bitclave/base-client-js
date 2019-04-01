@@ -193,7 +193,7 @@ describe('Wallet manager test', async () => {
 
         // sign string {baseID, eth_addr1, eth_addr2} with private keys for baseID, eth_addr1, eth_addr2
         const msg = {
-            baseID: baseID,
+            baseID: `${baseID}`,
             addr1: `${baseID}_${ethAddr1}`,
             addr2: `${baseID}_${ethAddr2}`
         };
@@ -269,7 +269,7 @@ describe('Wallet manager test', async () => {
                         ethAddr: '0x42cb8ae103896daee71ebb5dca5367f16727164a'
                     }),
                 '0x273f63c3c0da0bde3448a5dc24865cd25e936d6a210f548fdf7fcfd3f8fc2f9' +
-                'd5089fd6fc2ce2c778a04a4a464de09d9f781c2f1f42914eb33f168c3f8e5e2351c'
+                    'd5089fd6fc2ce2c778a04a4a464de09d9f781c2f1f42914eb33f168c3f8e5e2351c'
             )
         ).should.be.equal(WalletVerificationCodes.RC_OK);
 

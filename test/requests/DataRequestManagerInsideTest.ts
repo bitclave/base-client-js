@@ -1,18 +1,18 @@
-import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
-import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
-import { DataRequestManager } from '../../src/manager/DataRequestManager';
-import DataRequestRepositoryImplMock from './DataRequestRepositoryImplMock';
-import ClientDataRepositoryImplMock from '../profile/ClientDataRepositoryImplMock';
-import { AssistantPermissions } from './AssistantPermissions';
 import { BehaviorSubject } from 'rxjs/Rx';
+import { DataRequestManager } from '../../src/manager/DataRequestManager';
+import { DataRequestManagerImpl } from '../../src/manager/DataRequestManagerImpl';
+import { ProfileManager } from '../../src/manager/ProfileManager';
+import { ProfileManagerImpl } from '../../src/manager/ProfileManagerImpl';
 import Account from '../../src/repository/models/Account';
 import { Site } from '../../src/repository/models/Site';
-import { ProfileManager } from '../../src/manager/ProfileManager';
+import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
+import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
 import { AccessRight } from '../../src/utils/keypair/Permissions';
-import { ProfileManagerImpl } from '../../src/manager/ProfileManagerImpl';
-import { DataRequestManagerImpl } from '../../src/manager/DataRequestManagerImpl';
+import ClientDataRepositoryImplMock from '../profile/ClientDataRepositoryImplMock';
+import { AssistantPermissions } from './AssistantPermissions';
+import DataRequestRepositoryImplMock from './DataRequestRepositoryImplMock';
 
-const should = require('chai')
+require('chai')
     .use(require('chai-as-promised'))
     .should();
 
@@ -127,24 +127,7 @@ describe('Data Request Manager: permissions for inside signer', async () => {
         const accountAlisa: Account = new Account(keyPairHelperAlisa.getPublicKey());
         const authAccountBehaviorAlisa: BehaviorSubject<Account> = new BehaviorSubject<Account>(accountAlisa);
 
-        const accountBob: Account = new Account(keyPairHelperBobSite.getPublicKey());
-        const authAccountBehaviorBob: BehaviorSubject<Account> = new BehaviorSubject<Account>(accountBob);
-
-        dataRepository.setPK(keyPairHelperAlisa.getPublicKey(), keyPairHelperBobSite.getPublicKey());
-
-        const requestManagerAlisa = new DataRequestManagerImpl(
-            dataRepository,
-            authAccountBehaviorAlisa,
-            keyPairHelperAlisa,
-            keyPairHelperAlisa
-        );
-
-        const requestManagerBob = new DataRequestManagerImpl(
-            dataRepository,
-            authAccountBehaviorBob,
-            keyPairHelperBobSite,
-            keyPairHelperBobSite
-        );
+        dataRepository.setPK(keyPairHelperAlisa.getPublicKey());
 
         const profileManager: ProfileManager = new ProfileManagerImpl(
             clientRepository,
@@ -160,9 +143,8 @@ describe('Data Request Manager: permissions for inside signer', async () => {
 
         const resultData = await profileManager.getData();
 
-        alisaData.get('name').should.be.equal(resultData.get('name'));
-        alisaData.get('email').should.be.not.equal(resultData.get('email'));
-        alisaData.get('phone').should.be.not.equal(resultData.get('phone'));
+        (alisaData.get('name') as string).should.be.equal(resultData.get('name'));
+        (alisaData.get('email') as string).should.be.not.equal(resultData.get('email'));
+        (alisaData.get('phone') as string).should.be.not.equal(resultData.get('phone'));
     });
-
 });

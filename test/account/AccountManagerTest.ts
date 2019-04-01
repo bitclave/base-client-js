@@ -1,39 +1,35 @@
-import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
-import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
-import { AccountManager } from '../../src/manager/AccountManager';
-import { AccountRepository } from '../../src/repository/account/AccountRepository';
-import AccountRepositoryImplMock from './AccountRepositoryImplMock';
 import { BehaviorSubject } from 'rxjs/Rx';
+import { AccountManager } from '../../src/manager/AccountManager';
+import { AccountManagerImpl } from '../../src/manager/AccountManagerImpl';
+import { AccountRepository } from '../../src/repository/account/AccountRepository';
 import Account from '../../src/repository/models/Account';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
-import AuthenticatorHelper from '../AuthenticatorHelper';
+import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
+import { RemoteKeyPairHelper } from '../../src/utils/keypair/RemoteKeyPairHelper';
 import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
-import { AccountManagerImpl } from '../../src/manager/AccountManagerImpl';
+import AuthenticatorHelper from '../AuthenticatorHelper';
+import AccountRepositoryImplMock from './AccountRepositoryImplMock';
 
 const chai = require('chai');
-const expect = chai.expect;
-const should = chai
-    .use(require('chai-as-promised'))
+chai.use(require('chai-as-promised'))
     .should();
 
 describe('Account Manager', async () => {
-    const someSigMessage = 'some unique message for signature';
-
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
 
     const authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
     const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
 
-    console.log("Signer: " + rpcSignerHost);
+    console.log('Signer: ' + rpcSignerHost);
 
     const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
     const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
-    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
-    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
-    const keyPairHelper: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
+    const keyPairHelperAlisa: RemoteKeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
+    const keyPairHelperBob: RemoteKeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
+    const keyPairHelper: RemoteKeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
     const accountRepository: AccountRepository = new AccountRepositoryImplMock();
 
     let accountAlisa: Account;
@@ -88,9 +84,9 @@ describe('Account Manager', async () => {
     it('should valid public key from sig (with empty message) in registration and check account', async () => {
         try {
             await accountManager.authenticationByAccessToken(alisaAccessToken, '');
-            throw 'message for signature should be have min 10 symbols';
+            throw new Error('message for signature should be have min 10 symbols');
         } catch (e) {
-            e.should.be.equal('message for signature should be have min 10 symbols');
+            e.message.should.be.equal('message for signature should be have min 10 symbols');
         }
     });
 
@@ -110,7 +106,7 @@ describe('Account Manager', async () => {
             .equal(accountBob.publicKey);
     });
 
-    it('should check mnemonic phrase', function () {
+    it('should check mnemonic phrase', () => {
         const m1 = accountManager.getNewMnemonic();
         const m2 = accountManager.getNewMnemonic();
         m1.should.be.not.equal(m2);

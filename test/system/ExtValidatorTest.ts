@@ -172,8 +172,8 @@ describe('BASE API test: External Validator', async () => {
         const wealth = Number(18).toString();
         // Validator adds all wealth values to map
         wealthMap.set(accAlice.publicKey, JSON.stringify({
-            'wealth': wealth,
-            'sig': baseValidator.profileManager.signMessage(wealth)
+            wealth: `${wealth}`,
+            sig: baseValidator.profileManager.signMessage(wealth)
         }));
 
         await baseValidator.profileManager.updateData(wealthMap);
@@ -202,8 +202,8 @@ describe('BASE API test: External Validator', async () => {
         try {
             return await baseAlice.walletManager.refreshWealthPtr();
         } catch (e) {
-            if (e === 'validator did not verify anything yet' ||
-                e === WalletManagerImpl.DATA_KEY_ETH_WEALTH_VALIDATOR + ' data not exist!') {
+            if (e.message === 'validator did not verify anything yet' ||
+                e.message === WalletManagerImpl.DATA_KEY_ETH_WEALTH_VALIDATOR + ' data not exist!') {
                 return;
             } else {
                 throw e;
@@ -275,7 +275,7 @@ describe('BASE API test: External Validator', async () => {
                 // ~compute wealth
 
                 // Validator adds all wealth values to map
-                const obj = {'sig': await baseValidator.profileManager.signMessage(wealth)};
+                const obj = {sig: await baseValidator.profileManager.signMessage(wealth)};
                 obj[WalletManagerImpl.DATA_KEY_WEALTH] = wealth;
 
                 wealthMap.set(accs[i].publicKey, JSON.stringify(obj));
@@ -284,7 +284,7 @@ describe('BASE API test: External Validator', async () => {
             // Validator writes wealth for all users to BASE
             // Validator stores the data in <key, value> map,
             // where key is the public key of the user that asked for verification
-            baseValidator.profileManager.updateData(wealthMap);
+            await baseValidator.profileManager.updateData(wealthMap);
 
             const grantFields: Map<string, AccessRight> = new Map();
             // Validator shares wealth records with the original owners of the wallets
@@ -304,8 +304,9 @@ describe('BASE API test: External Validator', async () => {
 
             // Desearch asks Alice for access
             /* const id: number = */
-            await baseDesearch.dataRequestManager.requestPermissions(accAlice.publicKey,
-                [WalletManagerImpl.DATA_KEY_WEALTH]);
+            await baseDesearch.dataRequestManager.requestPermissions(
+                accAlice.publicKey, [WalletManagerImpl.DATA_KEY_WEALTH]
+            );
 
             // Alice checks for outstanding requests to her from Desearch
             const recordsForAliceToApprove: Array<DataRequest> = await baseAlice.dataRequestManager.getRequests(
@@ -347,8 +348,10 @@ describe('BASE API test: External Validator', async () => {
             const Message = require('bitcore-message');
             const bitcore = require('bitcore-lib');
             const addrValidator = bitcore.Address(bitcore.PublicKey(wealthRecordObject.validator));
-            Message(decryptedAliceWealthObject.wealth).verify(addrValidator,
-                decryptedAliceWealthObject.sig).should.be.equal(true);
+            Message(decryptedAliceWealthObject.wealth)
+                .verify(addrValidator, decryptedAliceWealthObject.sig)
+                .should.be.equal(true);
+
         } catch (e) {
             console.log(e);
             throw e;

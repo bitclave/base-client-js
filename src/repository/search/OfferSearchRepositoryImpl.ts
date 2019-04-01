@@ -1,12 +1,12 @@
-import { OfferSearchRepository } from './OfferSearchRepository';
-import OfferSearchResultItem from '../models/OfferSearchResultItem';
-import OfferSearch from '../models/OfferSearch';
-import { HttpTransport } from '../source/http/HttpTransport';
-import { HttpMethod } from '../source/http/HttpMethod';
-import Offer from '../models/Offer';
-import SearchRequest from '../models/SearchRequest';
-import { Page } from '../models/Page';
 import { JsonUtils } from '../../utils/JsonUtils';
+import Offer from '../models/Offer';
+import OfferSearch from '../models/OfferSearch';
+import OfferSearchResultItem from '../models/OfferSearchResultItem';
+import { Page } from '../models/Page';
+import SearchRequest from '../models/SearchRequest';
+import { HttpMethod } from '../source/http/HttpMethod';
+import { HttpTransport } from '../source/http/HttpTransport';
+import { OfferSearchRepository } from './OfferSearchRepository';
 
 export class OfferSearchRepositoryImpl implements OfferSearchRepository {
 
@@ -77,7 +77,10 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         ).then((response) => this.jsonToPageResultItem(response.json));
     }
 
-    public getSearchResultByOfferSearchId(clientId: string, offerSearchId: number): Promise<Page<OfferSearchResultItem>> {
+    public getSearchResultByOfferSearchId(
+        clientId: string,
+        offerSearchId: number
+    ): Promise<Page<OfferSearchResultItem>> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_GET_BY_REQUEST_OR_SEARCH_API
                 .replace('{searchRequestId}', '0')
@@ -94,8 +97,8 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         ).then((response) => JsonUtils.jsonToMap<number, number>(response.json));
     }
 
-    public complainToSearchItem(clientId: string, searchResultId: number): Promise<any> {
-        return this.transport.sendRequest(
+    public async complainToSearchItem(clientId: string, searchResultId: number): Promise<void> {
+        await this.transport.sendRequest(
             this.OFFER_SEARCH_API
             // .replace('{clientId}', clientId)
                 .replace('{id}', searchResultId.toString()) + `?searchResultId=${searchResultId}`,
@@ -104,8 +107,8 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         );
     }
 
-    public rejectSearchItem(clientId: string, searchResultId: number): Promise<any> {
-        return this.transport.sendRequest(
+    public async rejectSearchItem(clientId: string, searchResultId: number): Promise<void> {
+        await this.transport.sendRequest(
             this.OFFER_SEARCH_REJECT_API
                 .replace('{id}', searchResultId.toString()) + `?searchResultId=${searchResultId}`,
             HttpMethod.Patch,
@@ -113,8 +116,8 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         );
     }
 
-    public evaluateSearchItem(clientId: string, searchResultId: number): Promise<any> {
-        return this.transport.sendRequest(
+    public async evaluateSearchItem(clientId: string, searchResultId: number): Promise<void> {
+        await this.transport.sendRequest(
             this.OFFER_SEARCH_EVALUATE_API
                 .replace('{id}', searchResultId.toString()) + `?searchResultId=${searchResultId}`,
             HttpMethod.Patch,
@@ -122,8 +125,8 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         );
     }
 
-    public confirmSearchItem(clientId: string, searchResultId: number): Promise<any> {
-        return this.transport.sendRequest(
+    public async confirmSearchItem(clientId: string, searchResultId: number): Promise<void> {
+        await this.transport.sendRequest(
             this.OFFER_SEARCH_CONFIRM_API
                 .replace('{id}', searchResultId.toString()) + `?searchResultId=${searchResultId + 1}`,
             HttpMethod.Patch,
@@ -131,8 +134,8 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         );
     }
 
-    public claimPurchaseForSearchItem(clientId: string, searchResultId: number): Promise<any> {
-        return this.transport.sendRequest(
+    public async claimPurchaseForSearchItem(clientId: string, searchResultId: number): Promise<void> {
+        await this.transport.sendRequest(
             this.OFFER_SEARCH_CLAIM_PURCHASE_API
                 .replace('{id}', searchResultId.toString()) + `?searchResultId=${searchResultId + 1}`,
             HttpMethod.Patch,
@@ -140,8 +143,8 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         );
     }
 
-    public addResultItem(clientId: string, offerSearch: OfferSearch): Promise<any> {
-        return this.transport.sendRequest(
+    public async addResultItem(clientId: string, offerSearch: OfferSearch): Promise<void> {
+        await this.transport.sendRequest(
             // this.OFFER_SEARCH_ADD_API.replace('{clientId}', clientId),
             this.OFFER_SEARCH_ADD_API,
             HttpMethod.Post,
@@ -149,8 +152,8 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         );
     }
 
-    public addEventToOfferSearch(event: string, offerSearchId: number): Promise<any> {
-        return this.transport.sendRequest(
+    public async addEventToOfferSearch(event: string, offerSearchId: number): Promise<void> {
+        await this.transport.sendRequest(
             this.OFFER_SEARCH_ADD_EVENT_API.replace('{id}', offerSearchId.toString()),
             HttpMethod.Patch,
             event
@@ -165,32 +168,30 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         ).then((response) => this.jsonToOfferSearchList(response.json));
     }
 
-    private async jsonToPageResultItem(json: any): Promise<Page<OfferSearchResultItem>> {
-        json.content = await this.jsonToListResult(json.content);
+    private async jsonToPageResultItem(
+        json: JsonObject<Page<OfferSearchResultItem>>
+    ): Promise<Page<OfferSearchResultItem>> {
+        json.content = await this.jsonToListResult(json.content as JsonObject<Array<OfferSearchResultItem>>);
+
         return Page.fromJson(json, OfferSearchResultItem);
     }
 
-    private async jsonToListResult(json: any): Promise<Array<OfferSearchResultItem>> {
-        const result: Array<OfferSearchResultItem> = [];
-
-        for (let item of json) {
-            result.push(new OfferSearchResultItem(
-                OfferSearch.fromJson(item.offerSearch),
-                Offer.fromJson(item.offer)
-            ));
-        }
-
-        return result;
+    private async jsonToListResult(
+        json: JsonObject<Array<OfferSearchResultItem>>
+    ): Promise<Array<OfferSearchResultItem>> {
+        return Object.keys(json)
+            .map(key => {
+                     const rawOfferSearch = json[key] as JsonObject<OfferSearchResultItem>;
+                     return new OfferSearchResultItem(
+                         OfferSearch.fromJson(rawOfferSearch.offerSearch as object),
+                         Offer.fromJson(rawOfferSearch.offer as object)
+                     );
+                 }
+            );
     }
 
-    private async jsonToOfferSearchList(json: any): Promise<Array<OfferSearch>> {
-        const result: Array<OfferSearch> = [];
-
-        for (let item of json) {
-            result.push(OfferSearch.fromJson(item));
-        }
-
-        return result;
+    private async jsonToOfferSearchList(json: JsonObject<Array<OfferSearch>>): Promise<Array<OfferSearch>> {
+        return Object.keys(json).map(key => OfferSearch.fromJson(json[key] as object));
     }
 
 }

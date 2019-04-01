@@ -15,10 +15,12 @@ export class DataRequestManagerImpl implements DataRequestManager {
     private encrypt: MessageEncrypt;
     private decrypt: MessageDecrypt;
 
-    constructor(dataRequestRepository: DataRequestRepository,
-                authAccountBehavior: Observable<Account>,
-                encrypt: MessageEncrypt,
-                decrypt: MessageDecrypt) {
+    constructor(
+        dataRequestRepository: DataRequestRepository,
+        authAccountBehavior: Observable<Account>,
+        encrypt: MessageEncrypt,
+        decrypt: MessageDecrypt
+    ) {
         this.dataRequestRepository = dataRequestRepository;
         this.encrypt = encrypt;
         this.decrypt = decrypt;
@@ -121,7 +123,8 @@ export class DataRequestManagerImpl implements DataRequestManager {
         offerSearchId: number,
         offerOwner: string,
         acceptedFields: Map<string, AccessRight>,
-        priceId: number): Promise<void> {
+        priceId: number
+    ): Promise<void> {
 
         // automatically grant access to eth_wallets
         acceptedFields.set('eth_wallets', AccessRight.R);
@@ -146,7 +149,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
      *
      * @returns {object | null} object with data or null if was error.
      */
-    public decryptMessage(senderPk: string, encrypted: string): Promise<any> {
+    public decryptMessage(senderPk: string, encrypted: string): Promise<object | string> {
         return this.decrypt.decryptMessage(senderPk, encrypted)
             .then(decrypted => {
                 try {

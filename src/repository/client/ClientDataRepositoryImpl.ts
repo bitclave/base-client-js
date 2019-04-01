@@ -17,7 +17,7 @@ export default class ClientDataRepositoryImpl implements ClientDataRepository {
         this.transport = transport;
     }
 
-    getData(pk: string): Promise<Map<string, string>> {
+    public getData(pk: string): Promise<Map<string, string>> {
         return this.transport
             .sendRequest(
                 this.CLIENT_GET_DATA.replace('{pk}', pk),
@@ -26,7 +26,7 @@ export default class ClientDataRepositoryImpl implements ClientDataRepository {
             .then((response) => JsonUtils.jsonToMap<string, string>(response.json));
     }
 
-    updateData(pk: string, data: Map<string, string>): Promise<Map<string, string>> {
+    public updateData(pk: string, data: Map<string, string>): Promise<Map<string, string>> {
         return this.transport
             .sendRequest(
                 this.CLIENT_SET_DATA,
@@ -35,7 +35,7 @@ export default class ClientDataRepositoryImpl implements ClientDataRepository {
             .then((response) => JsonUtils.jsonToMap<string, string>(response.json));
     }
 
-    getFile(pk: string, fileId: number): Promise<FileMeta> {
+    public getFile(pk: string, fileId: number): Promise<FileMeta> {
         return this.transport
             .sendRequest(
                 this.FILE_GET_FILE.replace('{pk}', pk).replace('{fileId}', fileId.toString()),
@@ -44,7 +44,7 @@ export default class ClientDataRepositoryImpl implements ClientDataRepository {
             .then((response) => (Object.assign(new FileMeta(), response.json)));
     }
 
-    uploadFile(pk: string, file: FileMeta, fileId?: number | null): Promise<FileMeta> {
+    public uploadFile(pk: string, file: FileMeta, fileId?: number | null): Promise<FileMeta> {
         let path: string = this.FILE_UPLOAD_FILE.replace('{pk}', pk);
         if (fileId! > 0) {
             path += fileId!.toString() + '/';

@@ -2,14 +2,16 @@ import { RpcToken } from './RpcToken';
 
 export class RpcAuth extends RpcToken {
 
-    passPhrase: string;
-    origin: string;
-    expireDate: string;
+    public readonly passPhrase: string;
+    public readonly origin: string;
+    public readonly expireDate: string;
 
-    constructor(accessToken: string = '',
-                passPhrase: string = '',
-                origin: string = '',
-                expireDate: string = '') {
+    constructor(
+        accessToken: string = '',
+        passPhrase: string = '',
+        origin: string = '',
+        expireDate: string = ''
+    ) {
         super(accessToken);
         this.passPhrase = passPhrase;
         this.origin = origin;

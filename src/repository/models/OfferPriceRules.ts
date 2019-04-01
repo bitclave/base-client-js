@@ -1,44 +1,32 @@
 import { CompareAction } from './CompareAction';
+
 export class OfferPriceRules {
-    id: number;
-    rulesKey: string;
-    value: string;
-    rule: CompareAction;
-    public static fromJson(data: any): OfferPriceRules {
-      let rule: CompareAction;
-      switch (data.rule) {
+    public readonly id: number;
+    public readonly rulesKey: string;
+    public readonly value: string;
+    public readonly rule: CompareAction;
 
-        // adding these as some cases were failing
-        case CompareAction.EQUALLY: rule = CompareAction.EQUALLY; break;
-        case CompareAction.NOT_EQUAL: rule = CompareAction.NOT_EQUAL; break;
-        case CompareAction.LESS_OR_EQUAL: rule = CompareAction.LESS_OR_EQUAL; break;
-        case CompareAction.MORE_OR_EQUAL: rule = CompareAction.MORE_OR_EQUAL; break;
-        case CompareAction.MORE: rule = CompareAction.MORE; break;
-        case CompareAction.LESS: rule = CompareAction.LESS; break;
-        // ~adding these as some cases were failing
+    public static fromJson(json: object): OfferPriceRules {
+        const raw = json as JsonObject<OfferPriceRules>;
+        const strRule: string = (raw.rule || CompareAction.EQUALLY).toString();
+        const rule: CompareAction = CompareAction[strRule] || CompareAction.EQUALLY;
 
-        case 'EQUALLY': rule = CompareAction.EQUALLY; break;
-        case 'NOT_EQUAL': rule = CompareAction.NOT_EQUAL; break;
-        case 'LESS_OR_EQUAL': rule = CompareAction.LESS_OR_EQUAL; break;
-        case 'MORE_OR_EQUAL': rule = CompareAction.MORE_OR_EQUAL; break;
-        case 'MORE': rule = CompareAction.MORE; break;
-        case 'LESS': rule = CompareAction.LESS; break;
-        default: rule = data.rule;
-      }
-      return new OfferPriceRules(data.id, data.rulesKey, data.value, rule);
-  }
+        return new OfferPriceRules(raw.id as number, raw.rulesKey as string, raw.value as string, rule);
+    }
+
     constructor(
         id: number = 0,
         rulesKey: string = '',
         value: string = '',
         rule: CompareAction = CompareAction.EQUALLY
     ) {
-          this.id = id;
-          this.rulesKey = rulesKey;
-          this.value = value;
-          this.rule = rule;
+        this.id = id;
+        this.rulesKey = rulesKey;
+        this.value = value;
+        this.rule = rule;
     }
-    toJson() {
+
+    public toJson() {
         return {
             id: this.id,
             rulesKey: this.rulesKey,
@@ -47,7 +35,7 @@ export class OfferPriceRules {
         };
     }
 
-    isValid(value: string | undefined): boolean {
+    public isValid(value: string | undefined): boolean {
         if (Number(value) && Number(this.value)) {
 
             // compare as number
@@ -56,7 +44,7 @@ export class OfferPriceRules {
 
             switch (this.rule) {
                 case CompareAction.EQUALLY:
-                    return  externalNumericValue === internalNumericValue;
+                    return externalNumericValue === internalNumericValue;
                 case CompareAction.LESS:
                     return externalNumericValue < internalNumericValue;
                 case CompareAction.LESS_OR_EQUAL:
@@ -67,7 +55,8 @@ export class OfferPriceRules {
                     return externalNumericValue >= internalNumericValue;
                 case CompareAction.NOT_EQUAL:
                     return externalNumericValue !== internalNumericValue;
-                default: throw new Error('wrong rule');
+                default:
+                    throw new Error('wrong rule');
             }
         } else if (value) {
             // compare as string
@@ -84,11 +73,12 @@ export class OfferPriceRules {
                     return value >= this.value;
                 case CompareAction.NOT_EQUAL:
                     return value !== this.value;
-                default: throw new Error('wrong rule');
+                default:
+                    throw new Error('wrong rule');
             }
         } else {
-          // value is undefined
-          return false;
+            // value is undefined
+            return false;
         }
     }
 }

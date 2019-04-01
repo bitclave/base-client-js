@@ -26,7 +26,7 @@ export class RpcKeyPair implements RemoteKeyPairHelper {
 
     public createKeyPair(passPhrase: string): Promise<KeyPair> {
         return this.rpcTransport.request('checkAccessToken', new RpcToken(this.accessToken))
-            .then((response: any) => this.clientData = Object.assign(new RpcClientData(), response))
+            .then((response) => this.clientData = Object.assign(new RpcClientData(), response))
             .then((response: RpcClientData) => new KeyPair('', response.publicKey));
     }
 

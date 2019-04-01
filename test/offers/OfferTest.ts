@@ -1,20 +1,14 @@
-import Base, { Offer, CompareAction } from '../../src/Base';
+// tslint:disable:no-unused-expression
+import Base, { CompareAction, Offer } from '../../src/Base';
 import Account from '../../src/repository/models/Account';
-import { CryptoUtils } from '../../src/utils/CryptoUtils';
-import DataRequest from '../../src/repository/models/DataRequest';
-import { TransportFactory } from '../../src/repository/source/TransportFactory';
-import { WealthPtr, WealthRecord } from '../../src/utils/types/BaseTypes';
-import AuthenticatorHelper from '../AuthenticatorHelper';
-import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
-import { WalletManager } from '../../src/manager/WalletManager';
-import { WalletUtils, WalletVerificationStatus } from '../../src/utils/WalletUtils';
-import { AccessRight } from '../../src/utils/keypair/Permissions';
-import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
-import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { OfferPrice } from '../../src/repository/models/OfferPrice';
 import { OfferPriceRules } from '../../src/repository/models/OfferPriceRules';
+import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
+import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
+import { TransportFactory } from '../../src/repository/source/TransportFactory';
+import AuthenticatorHelper from '../AuthenticatorHelper';
 
-const should = require('chai').use(require('chai-as-promised')).should();
+require('chai').use(require('chai-as-promised')).should();
 const someSigMessage = 'some unique message for signature';
 const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
 const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
@@ -42,9 +36,6 @@ describe('Offer CRUD', async () => {
     const baseSeller: Base = createBase();
     const baseBusinessBuyer: Base = createBase();
 
-    let seller: Account;
-    let buyer: Account;
-
     function createBase(): Base {
         return new Base(
             baseNodeUrl,
@@ -53,20 +44,15 @@ describe('Offer CRUD', async () => {
             rpcSignerHost
         );
     }
+
     function offerFactory(isMultiPrices: boolean = false): Offer {
-        const offerTags = new Map<String, String>([
-          ['product', 'car']
-        ]);
-        const compareUserTag = new Map<String, String>([
-            ['age', '10']
-        ]);
-        const rules = new Map<String, CompareAction>([
-            ['age', CompareAction.MORE]
-        ]);
+        const offerTags = new Map<string, string>([['product', 'car']]);
+        const compareUserTag = new Map<string, string>([['age', '10']]);
+        const rules = new Map<string, CompareAction>([['age', CompareAction.MORE]]);
         const offer = new Offer(
-          'it is offer description',
-          'it is title of offer',
-          '', '1', offerTags, compareUserTag, rules
+            'it is offer description',
+            'it is title of offer',
+            '', '1', offerTags, compareUserTag, rules
         );
         if (isMultiPrices) {
             offer.offerPrices = [
@@ -79,7 +65,7 @@ describe('Offer CRUD', async () => {
                 ),
                 new OfferPrice(
                     0, 'special price for young girls customers < 15', '0.9', [
-                      new OfferPriceRules(0, 'sex', 'female', CompareAction.EQUALLY),
+                        new OfferPriceRules(0, 'sex', 'female', CompareAction.EQUALLY),
                         new OfferPriceRules(0, 'age', '15', CompareAction.LESS)
                     ]
                 ),
@@ -94,11 +80,10 @@ describe('Offer CRUD', async () => {
 
         return offer;
     }
+
     beforeEach(async () => {
-        seller = await createUser(baseSeller, passPhraseSeller);
-        buyer = await createUser(baseBusinessBuyer, passPhraseBusinessBuyer);
-        // buyer2 = await createUser(baseBusinessBuyer2, passPhraseBusinessBuyer2);
-        // buyer3 = await createUser(baseBusinessBuyer3, passPhraseBusinessBuyer3);
+        await createUser(baseSeller, passPhraseSeller);
+        await createUser(baseBusinessBuyer, passPhraseBusinessBuyer);
     });
 
     after(async () => {
@@ -109,6 +94,7 @@ describe('Offer CRUD', async () => {
         try {
             const offer = offerFactory();
             const createdOffer = await baseSeller.offerManager.saveOffer(offer);
+            // noinspection BadExpressionStatementJS
             createdOffer.id.should.exist;
         } catch (e) {
             console.log(e);
@@ -119,6 +105,7 @@ describe('Offer CRUD', async () => {
         try {
             const offer = offerFactory(true);
             const createdOffer = await baseSeller.offerManager.saveOffer(offer);
+            // noinspection BadExpressionStatementJS
             createdOffer.id.should.exist;
         } catch (e) {
             console.log(e);
@@ -144,13 +131,15 @@ describe('Offer CRUD', async () => {
             updated.title.should.be.eql(updatedTitle);
 
             const updatedOffer = updated.offerPrices.find(e =>
-                e.id === offerId
-            );
+                                                              e.id === offerId
+            ) as OfferPrice;
+
             updatedOffer.description.should.be.eql(updatedPriceDescription);
 
             const updatedRule = updatedOffer.rules.find(e =>
-                e.id === ruleId
-            );
+                                                            e.id === ruleId
+            ) as OfferPriceRules;
+
             updatedRule.rule.should.be.eql(CompareAction.MORE_OR_EQUAL);
 
         } catch (e) {
@@ -165,7 +154,7 @@ describe('Offer CRUD', async () => {
             const createdOffer = await baseSeller.offerManager.saveOffer(offer);
 
             const id = createdOffer.id;
-            const deleted = await baseSeller.offerManager.deleteOffer(id);
+            await baseSeller.offerManager.deleteOffer(id);
             const existedOffers = await baseSeller.offerManager.getMyOffers(id);
 
             existedOffers.length.should.be.eql(0);
@@ -177,11 +166,10 @@ describe('Offer CRUD', async () => {
     });
     it('should get existed offer with tag', async () => {
         try {
-
             const offer = offerFactory();
-            const createdOffer = await baseSeller.offerManager.saveOffer(offer);
+            await baseSeller.offerManager.saveOffer(offer);
 
-            let existedOffers = await baseSeller.offerManager.getMyOffersByTag('product');
+            const existedOffers = await baseSeller.offerManager.getMyOffersByTag('product');
 
             existedOffers.length.should.be.eql(1);
 

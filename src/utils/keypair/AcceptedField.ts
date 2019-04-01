@@ -2,8 +2,8 @@ import { AccessRight } from './Permissions';
 
 export class AcceptedField {
 
-    pass: string;
-    access: AccessRight;
+    public readonly pass: string;
+    public readonly access: AccessRight;
 
     constructor(pass: string, access: AccessRight) {
         this.pass = pass;

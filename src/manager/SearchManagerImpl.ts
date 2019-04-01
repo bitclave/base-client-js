@@ -1,12 +1,12 @@
 import { Observable } from 'rxjs/Rx';
 import Account from '../repository/models/Account';
-import { SearchRequestRepository } from '../repository/search/SearchRequestRepository';
-import SearchRequest from '../repository/models/SearchRequest';
-import { SearchManager } from './SearchManager';
-import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import OfferSearch from '../repository/models/OfferSearch';
-import { OfferSearchRepository } from '../repository/search/OfferSearchRepository';
+import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import { Page } from '../repository/models/Page';
+import SearchRequest from '../repository/models/SearchRequest';
+import { OfferSearchRepository } from '../repository/search/OfferSearchRepository';
+import { SearchRequestRepository } from '../repository/search/SearchRequestRepository';
+import { SearchManager } from './SearchManager';
 
 export class SearchManagerImpl implements SearchManager {
 
@@ -14,9 +14,11 @@ export class SearchManagerImpl implements SearchManager {
     private requestRepository: SearchRequestRepository;
     private offerSearchRepository: OfferSearchRepository;
 
-    constructor(requestRepository: SearchRequestRepository,
-                offerSearchRepository: OfferSearchRepository,
-                authAccountBehavior: Observable<Account>) {
+    constructor(
+        requestRepository: SearchRequestRepository,
+        offerSearchRepository: OfferSearchRepository,
+        authAccountBehavior: Observable<Account>
+    ) {
         this.requestRepository = requestRepository;
         this.offerSearchRepository = offerSearchRepository;
 
@@ -36,7 +38,7 @@ export class SearchManagerImpl implements SearchManager {
         return this.requestRepository.clone(this.account.publicKey, searchRequest);
     }
 
-    public cloneOfferSearch(id: number, searchRequest: SearchRequest): Promise<OfferSearch[]> {
+    public cloneOfferSearch(id: number, searchRequest: SearchRequest): Promise<Array<OfferSearch>> {
         return this.offerSearchRepository.clone(this.account.publicKey, id, searchRequest);
     }
 

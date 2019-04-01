@@ -1,19 +1,19 @@
 import { KeyPairFactory } from '../src/utils/keypair/KeyPairFactory';
 import { KeyPairHelper } from '../src/utils/keypair/KeyPairHelper';
-import { MessageSigner } from '../src/utils/keypair/MessageSigner';
 import { MessageDecrypt } from '../src/utils/keypair/MessageDecrypt';
+import { MessageSigner } from '../src/utils/keypair/MessageSigner';
+import { AssistantPermissions } from './requests/AssistantPermissions';
+import DataRequestRepositoryImplMock from './requests/DataRequestRepositoryImplMock';
 
 const Message = require('bitcore-message');
 const bitcore = require('bitcore-lib');
-const ECIES = require('bitcore-ecies');
 
-const should = require('chai')
-    .use(require('chai-as-promised'))
-    .should();
+const dataRepository: DataRequestRepositoryImplMock = new DataRequestRepositoryImplMock();
+const assistant: AssistantPermissions = new AssistantPermissions(dataRepository);
 
 describe('Key pair and cryptography', async () => {
 
-    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.createDefaultKeyPair( null, null, '');
+    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.createDefaultKeyPair(assistant, assistant, '');
     const messageSigner: MessageSigner = keyPairHelperAlisa;
 
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
@@ -43,12 +43,15 @@ describe('Key pair and cryptography', async () => {
     });
 
     it('encrypt and decrypt message', async () => {
-        const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createDefaultKeyPair(null, null, '');
+        const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createDefaultKeyPair(assistant, assistant, '');
         const decryptMessageBob: MessageDecrypt = keyPairHelperBob;
 
         const keyPairAlisa = await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
         const keyPairBob = await keyPairHelperBob.createKeyPair(passPhraseBob);
-        const encryptedMessage = await keyPairHelperAlisa.encryptMessage(keyPairBob.publicKey.toString(), passPhraseAlisa);
+        const encryptedMessage = await keyPairHelperAlisa.encryptMessage(
+            keyPairBob.publicKey.toString(),
+            passPhraseAlisa
+        );
 
         encryptedMessage.should.not.equal(passPhraseAlisa);
         const decryptedMessage = await decryptMessageBob.decryptMessage(
@@ -75,9 +78,8 @@ describe('Key pair and cryptography', async () => {
     });
 
     it('Alisa decrypt message sended from Alisa', async () => {
-        const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createDefaultKeyPair(null, null, '');
+        const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createDefaultKeyPair(assistant, assistant, '');
 
-        const keyPairAlisa = await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
         const keyPairBob = await keyPairHelperBob.createKeyPair(passPhraseBob);
 
         const encryptedMessage = await keyPairHelperAlisa.encryptMessage(keyPairBob.publicKey, passPhraseAlisa);
@@ -86,5 +88,4 @@ describe('Key pair and cryptography', async () => {
 
         passPhraseAlisa.should.be.equal(result);
     });
-
 });

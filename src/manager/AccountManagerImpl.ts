@@ -1,13 +1,13 @@
+import { BehaviorSubject } from 'rxjs/Rx';
 import { AccountRepository } from '../repository/account/AccountRepository';
 import Account from '../repository/models/Account';
+import { BasicLogger, Logger } from '../utils/BasicLogger';
 import { KeyPair } from '../utils/keypair/KeyPair';
 import { KeyPairHelper } from '../utils/keypair/KeyPairHelper';
-import { BehaviorSubject } from 'rxjs/Rx';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
 import { RemoteSigner } from '../utils/keypair/RemoteSigner';
 import { RpcKeyPair } from '../utils/keypair/rpc/RpcKeyPair';
 import { AccountManager } from './AccountManager';
-import { BasicLogger, Logger } from './../utils/BasicLogger';
 
 export class AccountManagerImpl implements AccountManager {
 
@@ -17,11 +17,13 @@ export class AccountManagerImpl implements AccountManager {
     private authAccountBehavior: BehaviorSubject<Account>;
     private logger: Logger;
 
-    constructor(auth: AccountRepository,
-                keyPairCreator: KeyPairHelper,
-                messageSigner: MessageSigner,
-                authAccountBehavior: BehaviorSubject<Account>,
-                loggerService?: Logger) {
+    constructor(
+        auth: AccountRepository,
+        keyPairCreator: KeyPairHelper,
+        messageSigner: MessageSigner,
+        authAccountBehavior: BehaviorSubject<Account>,
+        loggerService?: Logger
+    ) {
         this.accountRepository = auth;
         this.keyPairCreator = keyPairCreator;
         this.messageSigner = messageSigner;
@@ -57,7 +59,7 @@ export class AccountManagerImpl implements AccountManager {
 
             return acc;
         }
-        throw 'key pair helper does not support pass-phrase authentication';
+        throw new Error('key pair helper does not support pass-phrase authentication');
     }
 
     /**
@@ -78,13 +80,10 @@ export class AccountManagerImpl implements AccountManager {
             return this.keyPairCreator.createKeyPair('')
                 .then(this.generateAccount)
                 .then(account => this.accountRepository.checkAccount(account))
-                .then(account => this.onGetAccount(account, message))
-                .catch(err => {
-                    throw err;
-                });
+                .then(account => this.onGetAccount(account, message));
         }
 
-        throw 'key pair helper does not support token authentication';
+        throw new Error('key pair helper does not support token authentication');
     }
 
     /**
@@ -101,10 +100,7 @@ export class AccountManagerImpl implements AccountManager {
         return this.keyPairCreator.createKeyPair(mnemonicPhrase)
             .then(this.generateAccount)
             .then((account) => this.accountRepository.registration(account))
-            .then(account => this.onGetAccount(account, message))
-            .catch(err => {
-                throw err;
-            });
+            .then(account => this.onGetAccount(account, message));
     }
 
     /**
@@ -123,9 +119,6 @@ export class AccountManagerImpl implements AccountManager {
             .then(account => {
                 this.logger.debug(`__LOC__: base-client-js:checkAccount user login  ${account.publicKey}`);
                 return this.syncAccount(account, message);
-            })
-            .catch(err => {
-                throw err;
             });
     }
 
@@ -135,10 +128,7 @@ export class AccountManagerImpl implements AccountManager {
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
     public unsubscribe(): Promise<Account> {
-        return this.accountRepository.unsubscribe(this.authAccountBehavior.getValue())
-            .catch(err => {
-                throw err;
-            });
+        return this.accountRepository.unsubscribe(this.authAccountBehavior.getValue());
     }
 
     public getNewMnemonic(): Promise<string> {
@@ -151,17 +141,14 @@ export class AccountManagerImpl implements AccountManager {
 
     private checkSigMessage(message: string) {
         if (message == null || message === undefined || message.length < 10) {
-            throw 'message for signature should be have min 10 symbols';
+            throw new Error('message for signature should be have min 10 symbols');
         }
     }
 
     private syncAccount(account: Account, message: string): Promise<Account> {
         return this.accountRepository
             .checkAccount(account)
-            .then(checkedAccount => this.onGetAccount(checkedAccount, message))
-            .catch(err => {
-                throw err;
-            });
+            .then(checkedAccount => this.onGetAccount(checkedAccount, message));
     }
 
     private generateAccount(keyPair: KeyPair): Promise<Account> {

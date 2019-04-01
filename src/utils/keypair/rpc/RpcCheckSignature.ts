@@ -2,8 +2,8 @@ import { RpcToken } from './RpcToken';
 
 export default class RpcCheckSignature extends RpcToken {
 
-    msg: string;
-    sig: string;
+    public readonly msg: string;
+    public readonly sig: string;
 
     constructor(msg: string = '', sig: string = '', accessToken: string = '') {
         super(accessToken);

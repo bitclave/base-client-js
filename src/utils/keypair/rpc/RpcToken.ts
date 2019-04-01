@@ -1,6 +1,6 @@
 export class RpcToken {
 
-    accessToken: string;
+    public readonly accessToken: string;
 
     constructor(accessToken: string) {
         this.accessToken = accessToken;

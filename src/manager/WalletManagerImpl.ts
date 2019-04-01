@@ -22,11 +22,13 @@ export class WalletManagerImpl implements WalletManager {
     private baseSchema: BaseSchema;
     private messageSigner: MessageSigner;
 
-    constructor(profileManager: ProfileManager,
-                dataRequestManager: DataRequestManager,
-                baseSchema: BaseSchema,
-                messageSigner: MessageSigner,
-                authAccountBehavior: Observable<Account>) {
+    constructor(
+        profileManager: ProfileManager,
+        dataRequestManager: DataRequestManager,
+        baseSchema: BaseSchema,
+        messageSigner: MessageSigner,
+        authAccountBehavior: Observable<Account>
+    ) {
 
         this.profileManager = profileManager;
         this.dataRequestManager = dataRequestManager;
@@ -38,22 +40,22 @@ export class WalletManagerImpl implements WalletManager {
             .subscribe(this.onChangeAccount.bind(this));
     }
 
-    public async createWalletsRecords(wallets: AddrRecord[], baseID: string): Promise<WalletsRecords> {
-        for (let msg of wallets) {
+    public async createWalletsRecords(wallets: Array<AddrRecord>, baseID: string): Promise<WalletsRecords> {
+        for (const msg of wallets) {
             if ((WalletUtils.verifyAddressRecord(msg) !== WalletVerificationCodes.RC_OK) &&
                 (WalletUtils.verifyAddressRecord(msg) !== WalletVerificationCodes.RC_ADDR_NOT_VERIFIED)) {
-                throw 'invalid eth record: ' + msg;
+                throw new Error(`invalid eth record:  ${msg}`);
             }
 
             if (baseID !== msg.data.baseID) {
-                throw 'baseID missmatch';
+                throw new Error('baseID missmatch');
             }
         }
 
         const msgWallets: WalletsRecords = new WalletsRecords(wallets, '');
 
         if (!this.baseSchema.validateWallets(msgWallets)) {
-            throw 'invalid wallets structure';
+            throw new Error('invalid wallets structure');
         }
 
         // eth style signing
@@ -114,11 +116,11 @@ export class WalletManagerImpl implements WalletManager {
                 await this.profileManager.updateData(data);
 
             } else {
-                throw 'validator did not verify anything yet';
+                throw new Error('validator did not verify anything yet');
             }
 
         } else {
-            throw WalletManagerImpl.DATA_KEY_ETH_WEALTH_VALIDATOR + ' data not exist!';
+            throw new Error(`${WalletManagerImpl.DATA_KEY_ETH_WEALTH_VALIDATOR} data not exist!`);
         }
 
         return wealthPtr;

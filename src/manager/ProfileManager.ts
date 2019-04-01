@@ -2,7 +2,7 @@ import FileMeta from '../repository/models/FileMeta';
 
 export interface ProfileManager {
 
-    signMessage(data: any): Promise<string>;
+    signMessage(data: string): Promise<string>;
 
     /**
      * Returns decrypted data of the authorized user.

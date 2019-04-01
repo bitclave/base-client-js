@@ -1,7 +1,7 @@
-import { SearchRequestRepository } from './SearchRequestRepository';
 import SearchRequest from '../models/SearchRequest';
 import { HttpMethod } from '../source/http/HttpMethod';
 import { HttpTransport } from '../source/http/HttpTransport';
+import { SearchRequestRepository } from './SearchRequestRepository';
 
 export default class SearchRequestRepositoryImpl implements SearchRequestRepository {
 
@@ -42,7 +42,7 @@ export default class SearchRequestRepositoryImpl implements SearchRequestReposit
             this.SEARCH_REQUEST_API.replace('{owner}', owner).replace('{id}', id.toString()),
             HttpMethod.Delete,
             id,
-        ).then((response) => parseInt(response.json.toString(), 10));
+        ).then(response => parseInt(response.json.toString(), 10));
     }
 
     public getSearchRequestByOwnerAndId(owner: string, id: number): Promise<Array<SearchRequest>> {
@@ -73,14 +73,8 @@ export default class SearchRequestRepositoryImpl implements SearchRequestReposit
         ).then((response) => this.jsonToListSearchRequests(response.json));
     }
 
-    private jsonToListSearchRequests(json: any): Array<SearchRequest> {
-        const result: Array<SearchRequest> = [];
-
-        for (let item of json) {
-            result.push(SearchRequest.fromJson(item));
-        }
-
-        return result;
+    private jsonToListSearchRequests(json: JsonObject<Array<SearchRequest>>): Array<SearchRequest> {
+        return Object.keys(json).map(key => SearchRequest.fromJson(json[key] as object));
     }
 
 }

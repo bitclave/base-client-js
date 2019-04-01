@@ -52,9 +52,11 @@ export class WalletUtils {
                : WalletVerificationCodes.RC_ADDR_WRONG_SIGNATURE;
     }
 
-    public static validateWallets(key: string,
-                                  walletsRecords: WalletsRecords,
-                                  baseID: string): WalletVerificationStatus {
+    public static validateWallets(
+        key: string,
+        walletsRecords: WalletsRecords,
+        baseID: string
+    ): WalletVerificationStatus {
         const result: WalletVerificationStatus = new WalletVerificationStatus();
 
         if (key !== WalletManagerImpl.DATA_KEY_ETH_WALLETS) {
@@ -68,7 +70,6 @@ export class WalletUtils {
     }
 
     public static verifyWalletsRecord(baseID: string, walletsRecords: WalletsRecords): WalletVerificationStatus {
-        let resultCode: WalletVerificationCodes;
         const status: WalletVerificationStatus = new WalletVerificationStatus();
         status.rc = WalletVerificationCodes.RC_OK;
 
@@ -78,13 +79,13 @@ export class WalletUtils {
         }
 
         // verify all baseID keys are the same in ETH records
-        for (let item of walletsRecords.data) {
+        for (const item of walletsRecords.data) {
             const pubKey = item.data.baseID;
             if (pubKey !== baseID) {
                 status.details.push(WalletVerificationCodes.RC_BASEID_MISSMATCH);
 
-            } else if ((resultCode = this.verifyAddressRecord(item)) !== WalletVerificationCodes.RC_OK) {
-                status.details.push(resultCode);
+            } else if (this.verifyAddressRecord(item) !== WalletVerificationCodes.RC_OK) {
+                status.details.push(this.verifyAddressRecord(item));
 
             } else {
                 status.details.push(WalletVerificationCodes.RC_OK);

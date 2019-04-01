@@ -1,7 +1,7 @@
-import { AccountRepository } from './AccountRepository';
+import Account from '../models/Account';
 import { HttpMethod } from '../source/http/HttpMethod';
 import { HttpTransport } from '../source/http/HttpTransport';
-import Account from '../models/Account';
+import { AccountRepository } from './AccountRepository';
 
 export default class AccountRepositoryImpl implements AccountRepository {
 
@@ -16,7 +16,7 @@ export default class AccountRepositoryImpl implements AccountRepository {
         this.transport = transport;
     }
 
-    registration(account: Account): Promise<Account> {
+    public registration(account: Account): Promise<Account> {
         return this.transport
             .sendRequest(this.SIGN_UP, HttpMethod.Post, account.toSimpleAccount())
             .then((response) => Object.assign(new Account(), response.json))
@@ -25,7 +25,7 @@ export default class AccountRepositoryImpl implements AccountRepository {
             });
     }
 
-    checkAccount(account: Account): Promise<Account> {
+    public checkAccount(account: Account): Promise<Account> {
         return this.transport
             .sendRequest(this.SIGN_IN, HttpMethod.Post, account.toSimpleAccount())
             .then((response) => Object.assign(new Account(), response.json))
@@ -34,7 +34,7 @@ export default class AccountRepositoryImpl implements AccountRepository {
             });
     }
 
-    unsubscribe(account: Account): Promise<Account> {
+    public unsubscribe(account: Account): Promise<Account> {
         return this.transport
             .sendRequest(this.DELETE, HttpMethod.Delete, account.toSimpleAccount())
             .then((response) => Object.assign(new Account(), response.json))
@@ -43,7 +43,7 @@ export default class AccountRepositoryImpl implements AccountRepository {
             });
     }
 
-    getNonce(account: Account): Promise<number> {
+    public getNonce(account: Account): Promise<number> {
         return this.transport
             .sendRequest(this.GET_NONCE + account.publicKey, HttpMethod.Get)
             .then((response) => parseInt(response.json.toString(), 10));

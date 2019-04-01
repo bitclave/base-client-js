@@ -67,10 +67,15 @@ export interface DataRequestManager {
      * @param {Map<string, AccessRight>} acceptedFields. Map with names of fields for accept access and access rights.
      * (e.g. this is keys in {Map<string, string>} - personal data).
      *
+     * @param priceId {number} of price
      * @returns {Promise<void>}
      */
-    // tslint:disable-next-line:max-line-length
-    grantAccessForOffer(offerSearchId: number, offerOwner: string, acceptedFields: Map<string, AccessRight>, priceId: number): Promise<void>;
+    grantAccessForOffer(
+        offerSearchId: number,
+        offerOwner: string,
+        acceptedFields: Map<string, AccessRight>,
+        priceId: number
+    ): Promise<void>;
 
     /**
      * Decodes a message that was encrypted by the owner of the private key that matches the provided public key.
@@ -79,6 +84,6 @@ export interface DataRequestManager {
      *
      * @returns {object | null} object with data or null if was error.
      */
-    decryptMessage(senderPk: string, encrypted: string): Promise<any>;
+    decryptMessage(senderPk: string, encrypted: string): Promise<object | string>;
 
 }

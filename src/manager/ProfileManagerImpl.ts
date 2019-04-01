@@ -35,7 +35,7 @@ export class ProfileManagerImpl implements ProfileManager {
         this.signer = signer;
     }
 
-    public signMessage(data: any): Promise<string> {
+    public signMessage(data: string): Promise<string> {
         return this.signer.signMessage(data);
     }
 
@@ -46,10 +46,7 @@ export class ProfileManagerImpl implements ProfileManager {
      */
     public getData(): Promise<Map<string, string>> {
         return this.getRawData(this.account.publicKey)
-            .then((rawData: Map<string, string>) => this.decrypt.decryptFields(rawData))
-            .catch(err => {
-                throw err;
-            });
+            .then((rawData: Map<string, string>) => this.decrypt.decryptFields(rawData));
     }
 
     /**
@@ -125,14 +122,7 @@ export class ProfileManagerImpl implements ProfileManager {
      */
     public updateData(data: Map<string, string>): Promise<Map<string, string>> {
         return this.encrypt.encryptFields(data)
-            .then(encrypted => this.clientDataRepository.updateData(this.account.publicKey, encrypted))
-            .catch(err => {
-                throw err;
-            });
-    }
-
-    private onChangeAccount(account: Account) {
-        this.account = account;
+            .then(encrypted => this.clientDataRepository.updateData(this.account.publicKey, encrypted));
     }
 
     /**
@@ -188,4 +178,7 @@ export class ProfileManagerImpl implements ProfileManager {
         return fileMeta;
     }
 
+    private onChangeAccount(account: Account) {
+        this.account = account;
+    }
 }

@@ -1,21 +1,20 @@
-import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
-import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
-import { DataRequestManager } from '../../src/manager/DataRequestManager';
-import DataRequestRepositoryImplMock from './DataRequestRepositoryImplMock';
+import * as assert from 'assert';
 import { BehaviorSubject } from 'rxjs/Rx';
+import { DataRequestManager } from '../../src/manager/DataRequestManager';
+import { DataRequestManagerImpl } from '../../src/manager/DataRequestManagerImpl';
 import Account from '../../src/repository/models/Account';
+import { HttpTransportImpl } from '../../src/repository/source/http/HttpTransportImpl';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { RpcTransportImpl } from '../../src/repository/source/rpc/RpcTransportImpl';
-import { HttpTransportImpl } from '../../src/repository/source/http/HttpTransportImpl';
-import * as assert from 'assert';
-import AuthenticatorHelper from '../AuthenticatorHelper';
-import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
+import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
 import { AccessRight } from '../../src/utils/keypair/Permissions';
-import { DataRequestManagerImpl } from '../../src/manager/DataRequestManagerImpl';
+import { RemoteKeyPairHelper } from '../../src/utils/keypair/RemoteKeyPairHelper';
+import AuthenticatorHelper from '../AuthenticatorHelper';
+import DataRequestRepositoryImplMock from './DataRequestRepositoryImplMock';
 
 const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
 
-const should = require('chai')
+require('chai')
     .use(require('chai-as-promised'))
     .should();
 
@@ -26,22 +25,21 @@ describe('Data Request Manager', async () => {
     const rpcTransport: RpcTransport = new RpcTransportImpl(new HttpTransportImpl(rpcSignerHost));
     const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
-    const keyPairHelperAlisa: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
-    const keyPairHelperBob: KeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
+    const keyPairHelperAlisa: RemoteKeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
+    const keyPairHelperBob: RemoteKeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
     const dataRepository: DataRequestRepositoryImplMock = new DataRequestRepositoryImplMock();
 
     const bobsFields = ['name', 'email'];
-    const alisaFields = ['email'];
 
-    var requestManagerAlisa: DataRequestManager;
-    var requestManagerBob: DataRequestManager;
+    let requestManagerAlisa: DataRequestManager;
+    let requestManagerBob: DataRequestManager;
 
     before(async () => {
         const alisaAccessToken = await authenticatorHelper.generateAccessToken(passPhraseAlisa);
         const bobAccessToken = await authenticatorHelper.generateAccessToken(passPhraseBob);
 
-        (keyPairHelperAlisa as RemoteSigner).setAccessToken(alisaAccessToken);
-        (keyPairHelperBob as RemoteSigner).setAccessToken(bobAccessToken);
+        keyPairHelperAlisa.setAccessToken(alisaAccessToken);
+        keyPairHelperBob.setAccessToken(bobAccessToken);
 
         await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
         await keyPairHelperBob.createKeyPair(passPhraseBob);
@@ -52,7 +50,7 @@ describe('Data Request Manager', async () => {
         const accountBob: Account = new Account(keyPairHelperBob.getPublicKey());
         const authAccountBehaviorBob: BehaviorSubject<Account> = new BehaviorSubject<Account>(accountBob);
 
-        dataRepository.setPK(keyPairHelperAlisa.getPublicKey(), keyPairHelperBob.getPublicKey());
+        dataRepository.setPK(keyPairHelperAlisa.getPublicKey());
 
         requestManagerAlisa = new DataRequestManagerImpl(
             dataRepository,
@@ -116,7 +114,7 @@ describe('Data Request Manager', async () => {
         await requestManagerAlisa.requestPermissions(keyPairHelperBob.getPublicKey(), bobsFields);
 
         const grantFields: Map<string, AccessRight> = new Map();
-        for (let item of bobsFields) {
+        for (const item of bobsFields) {
             grantFields.set(item, AccessRight.R);
         }
 
@@ -137,7 +135,7 @@ describe('Data Request Manager', async () => {
 
     it('grand access to field without requested permissions', async () => {
         const grantFields: Map<string, AccessRight> = new Map();
-        for (let item of bobsFields) {
+        for (const item of bobsFields) {
             grantFields.set(item, AccessRight.R);
         }
 
@@ -160,7 +158,7 @@ describe('Data Request Manager', async () => {
         const somePK = '020b6936ce0264852b713cff3d03faef1994477924ea0ad4c28a0d2543a16d70ec';
 
         const grantFields: Map<string, AccessRight> = new Map();
-        for (let item of bobsFields) {
+        for (const item of bobsFields) {
             grantFields.set(item, AccessRight.R);
         }
         await requestManagerBob.grantAccessForClient(somePK, grantFields);
@@ -188,7 +186,7 @@ describe('Data Request Manager', async () => {
 
     it('share data for offer', async () => {
         const grantFields: Map<string, AccessRight> = new Map();
-        for (let item of bobsFields) {
+        for (const item of bobsFields) {
             grantFields.set(item, AccessRight.R);
         }
         await requestManagerAlisa.grantAccessForOffer(1, keyPairHelperAlisa.getPublicKey(), grantFields, 0);
@@ -202,5 +200,4 @@ describe('Data Request Manager', async () => {
         );
         assert.ok(result === message, 'WTF?');
     });
-
 });

@@ -1,7 +1,7 @@
 export class KeyPair {
 
-    private _privateKey: string;
-    private _publicKey: string;
+    private readonly _privateKey: string;
+    private readonly _publicKey: string;
 
     constructor(privateKey: string, publicKey: string) {
         this._privateKey = privateKey;
