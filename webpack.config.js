@@ -30,6 +30,7 @@ const nodeConfig = {
                 use: [
                     {loader: 'babel-loader'},
                     {loader: 'ts-loader'},
+                    {loader: Path.join(__dirname, "./LogLoader.js")}
                 ],
                 exclude: /node_modules/
             }
