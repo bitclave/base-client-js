@@ -1,6 +1,6 @@
 {
   "name": "@bitclave/base-client-js",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "description": "Base JS library for BASE-platform",
   "main": "lib/Base.js",
   "types": "lib/Base.d.ts",
