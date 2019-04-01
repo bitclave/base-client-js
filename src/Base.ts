@@ -133,8 +133,6 @@ export default class Base {
         loggerService?: Logger
     ) {
 
-        nodeHost = 'http://localhost:8080';
-
         if (!loggerService) {
             loggerService = new BasicLogger();
         }
