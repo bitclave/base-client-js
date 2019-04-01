@@ -1,8 +1,8 @@
-import { ClientDataRepository } from './ClientDataRepository';
-import { HttpTransport } from '../source/http/HttpTransport';
-import { HttpMethod } from '../source/http/HttpMethod';
 import { JsonUtils } from '../../utils/JsonUtils';
 import FileMeta from '../models/FileMeta';
+import { HttpMethod } from '../source/http/HttpMethod';
+import { HttpTransport } from '../source/http/HttpTransport';
+import { ClientDataRepository } from './ClientDataRepository';
 
 export default class ClientDataRepositoryImpl implements ClientDataRepository {
 
@@ -35,35 +35,24 @@ export default class ClientDataRepositoryImpl implements ClientDataRepository {
             .then((response) => JsonUtils.jsonToMap<string, string>(response.json));
     }
 
-    getFile(pk: string, fileId: number): Promise<any> {
+    getFile(pk: string, fileId: number): Promise<FileMeta> {
         return this.transport
-            .sendBlobRequest(
+            .sendRequest(
                 this.FILE_GET_FILE.replace('{pk}', pk).replace('{fileId}', fileId.toString()),
                 HttpMethod.Get,
-                new Map<string, string>([
-                    ['Accept', 'application/json'], ['Content-Type', 'application/json']
-                ]),
-                pk
             )
-            .then((response) => response.json as Buffer);
+            .then((response) => (Object.assign(new FileMeta(), response.json)));
     }
 
-    uploadFile(pk: string, file: File, fileId?: number): Promise<FileMeta> {
+    uploadFile(pk: string, file: FileMeta, fileId?: number | null): Promise<FileMeta> {
         let path: string = this.FILE_UPLOAD_FILE.replace('{pk}', pk);
-        if(fileId! > 0) {
+        if (fileId! > 0) {
             path += fileId!.toString() + '/';
         }
+
         return this.transport
-            .sendBlobRequest(
-                path,
-                HttpMethod.Post, 
-                new Map<string, string>([
-                    ['Accept', 'application/json'], ['Content-Type', 'multipart/form-data']
-                ]),
-                pk,
-                file
-            )
-            .then((response) => response.json as FileMeta);
+            .sendRequest(path, HttpMethod.Post, file)
+            .then((response) => Object.assign(new FileMeta(), response.json));
     }
 
 }

@@ -47,14 +47,15 @@ export interface ProfileManager {
 
     /**
      * Encrypts and stores file in BASE.
-     * @param {File} file the actual file blob data
+     * @param {FileMeta} file the actual file information
      * @param {String} key the key of FileMeta value in profile data
-     * If the value of the key is undefined, creates a new file, added associated FileMeta to Profile data with the key and returns FileMeta.
-     * If not then updates the existing file and its FileMeta in Profile data and returns updated FileMeta
+     * If the value of the key is undefined, creates a new file, added associated FileMeta to Profile data with the key
+     *     and returns FileMeta. If not then updates the existing file and its FileMeta in Profile data and returns
+     *     updated FileMeta
      *
      * @returns {Promise<FileMeta>} Encrypted FileMeta.
      */
-    uploadFile(file: File, key: string): Promise<FileMeta>;
+    uploadFile(file: FileMeta, key: string): Promise<FileMeta>;
 
     /**
      * Returns decrypted file blob data of the authorized user based on provided file id.
@@ -62,13 +63,13 @@ export interface ProfileManager {
      *
      * @returns {Promise<File>} decrypted file blob data.
      */
-    downloadFile(id: number): Promise<any>;
+    downloadFile(id: number): Promise<FileMeta>;
 
     /**
      * Returns given key's decrypted value of authorized user's data.
      *
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
-    getFileMetaWithGivenKey(key: string): Promise<FileMeta>;
+    getFileMetaWithGivenKey(key: string): Promise<FileMeta | undefined>;
 
 }

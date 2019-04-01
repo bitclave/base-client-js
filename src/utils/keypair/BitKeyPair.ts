@@ -1,33 +1,29 @@
-import { KeyPairHelper } from './KeyPairHelper';
-import { CryptoUtils } from '../CryptoUtils';
-import { KeyPair } from './KeyPair';
-import { AccessRight, Permissions } from './Permissions';
-import DataRequest from '../../repository/models/DataRequest';
-import { JsonUtils } from '../JsonUtils';
 import { PermissionsSource } from '../../repository/assistant/PermissionsSource';
-import { Site } from '../../repository/models/Site';
 import { SiteDataSource } from '../../repository/assistant/SiteDataSource';
+import DataRequest from '../../repository/models/DataRequest';
+import { Site } from '../../repository/models/Site';
+import { CryptoUtils } from '../CryptoUtils';
+import { JsonUtils } from '../JsonUtils';
 import { AcceptedField } from './AcceptedField';
+import { KeyPair } from './KeyPair';
+import { KeyPairHelper } from './KeyPairHelper';
+import { AccessRight, Permissions } from './Permissions';
 
 const bitcore = require('bitcore-lib');
 const Message = require('bitcore-message');
 const ECIES = require('bitcore-ecies');
 const Mnemonic = require('bitcore-mnemonic');
-const Crypto = require('crypto');
-const fs = require('fs');
 
 export class BitKeyPair implements KeyPairHelper {
 
     private privateKey: any;
     private publicKey: any;
     private addr: any;
-    private permissions: Permissions;
-    private permissionsSource: PermissionsSource;
+    private readonly permissions: Permissions;
+    private readonly permissionsSource: PermissionsSource;
     private siteDataSource: SiteDataSource;
-    private origin: string;
+    private readonly origin: string;
     private isConfidential: boolean = false;
-    private encipher: any;
-    private decipher: any
 
     constructor(permissionsSource: PermissionsSource, siteDataSource: SiteDataSource, origin: string) {
         this.permissions = new Permissions();
@@ -95,16 +91,18 @@ export class BitKeyPair implements KeyPairHelper {
                 .privateKey(this.privateKey)
                 .publicKey(bitcore.PublicKey.fromString(recipientPk));
 
-            resolve(ecies.encrypt(message)
-                .toString('base64'));
+            resolve(
+                ecies.encrypt(message)
+                    .toString('base64')
+            );
         });
     }
 
-    async encryptFields(fields: Map<string, string>): Promise<Map<string, string>> {
+    public async encryptFields(fields: Map<string, string>): Promise<Map<string, string>> {
         return this.prepareData(fields, true);
     }
 
-    async encryptPermissionsFields(recipient: string, data: Map<string, AccessRight>): Promise<string> {
+    public async encryptPermissionsFields(recipient: string, data: Map<string, AccessRight>): Promise<string> {
         const resultMap: Map<string, AcceptedField> = new Map();
 
         if (data != null && data.size > 0) {
@@ -127,37 +125,26 @@ export class BitKeyPair implements KeyPairHelper {
         return await this.encryptMessage(recipient, JSON.stringify(jsonMap));
     }
 
-    async encryptFile(file: any): Promise<any> {
-        const iv = await this.generatePasswordForField(this.getAddr());
-        this.encipher = Crypto.createCipheriv('aes-256-ctr', this.getPublicKey().slice(0, 32), iv.slice(0, 16));
-        return new Promise<any>(resolve => {
-            let stream = file.pipe(this.encipher).pipe(fs.createWriteStream(`./${file.path.split('/').slice(-1).pop()}`));
-            stream.on("finish", () => { resolve(fs.createReadStream(`./${file.path.split('/').slice(-1).pop()}`)); });
-        });
+    public async encryptFile(file: string): Promise<string> {
+        return this.encryptMessage(this.getPublicKey(), file);
+
     }
 
-    async decryptFile(file: Buffer): Promise<any> {
-        const iv = await this.generatePasswordForField(this.getAddr());
-        this.decipher = Crypto.createDecipheriv('aes-256-ctr', this.getPublicKey().slice(0, 32), iv.slice(0, 16));
-        let buffer: Buffer = new Buffer(file);
-        return new Promise<any>(resolve => {
-            resolve (Buffer.concat([this.decipher.update(buffer) , this.decipher.final()]));
-        });
+    public async decryptFile(file: string): Promise<any> {
+        return this.decryptMessage(this.getPublicKey(), file);
     }
 
-    async decryptMessage(senderPk: string, encrypted: string): Promise<string> {
+    public async decryptMessage(senderPk: string, encrypted: string): Promise<string> {
         const ecies = new ECIES({noKey: true})
             .privateKey(this.privateKey)
             .publicKey(bitcore.PublicKey.fromString(senderPk));
 
-        const result: string = ecies
+        return ecies
             .decrypt(new Buffer(encrypted, 'base64'))
             .toString();
-
-        return result;
     }
 
-    async decryptFields(fields: Map<string, string>): Promise<Map<string, string>> {
+    public async decryptFields(fields: Map<string, string>): Promise<Map<string, string>> {
         return this.prepareData(fields, false);
     }
 
@@ -176,8 +163,8 @@ export class BitKeyPair implements KeyPairHelper {
             pass = await this.generatePasswordForField(key);
             if (pass != null && pass !== undefined && pass.length > 0) {
                 changedValue = encrypt
-                    ? CryptoUtils.encryptAes256(value, pass)
-                    : CryptoUtils.decryptAes256(value, pass);
+                               ? CryptoUtils.encryptAes256(value, pass)
+                               : CryptoUtils.decryptAes256(value, pass);
 
                 result.set(key.toLowerCase(), changedValue);
             }
@@ -194,8 +181,8 @@ export class BitKeyPair implements KeyPairHelper {
         const keyPermission: AccessRight | undefined = this.permissions.fields.get(field);
 
         return read
-            ? keyPermission === AccessRight.R || keyPermission === AccessRight.RW
-            : keyPermission === AccessRight.RW;
+               ? keyPermission === AccessRight.R || keyPermission === AccessRight.RW
+               : keyPermission === AccessRight.RW;
     }
 
     private async syncPermissions() {
@@ -231,8 +218,9 @@ export class BitKeyPair implements KeyPairHelper {
             // );
 
             const result: string = bitcore.crypto.Hash.sha256hmac(
-                bitcore.deps.Buffer(this.privateKey.toString(16)), 
-                bitcore.deps.Buffer(fieldName.toLowerCase())).toString('hex');
+                bitcore.deps.Buffer(this.privateKey.toString(16)),
+                bitcore.deps.Buffer(fieldName.toLowerCase())
+            ).toString('hex');
 
             resolve(result);
         });

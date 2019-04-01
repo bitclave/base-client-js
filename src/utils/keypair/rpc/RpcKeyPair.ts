@@ -1,21 +1,20 @@
-import { KeyPairHelper } from '../KeyPairHelper';
-import RpcClientData from './RpcClientData';
-import { KeyPair } from '../KeyPair';
-import RpcSignMessage from './RpcSignMessage';
-import RpcEncryptMessage from './RpcEncryptMessage';
-import RpcDecryptMessage from './RpcDecryptMessage';
 import { RpcTransport } from '../../../repository/source/rpc/RpcTransport';
-import RpcCheckSignature from './RpcCheckSignature';
-import { RpcToken } from './RpcToken';
-import { RemoteSigner } from '../RemoteSigner';
-import RpcDecryptEncryptFields from './RpcDecryptEncryptFields';
-import RpcPermissionsFields from './RpcPermissionsFields';
-import { AccessRight } from '../Permissions';
 import { JsonUtils } from '../../JsonUtils';
+import { KeyPair } from '../KeyPair';
+import { AccessRight } from '../Permissions';
+import { RemoteKeyPairHelper } from '../RemoteKeyPairHelper';
+import RpcCheckSignature from './RpcCheckSignature';
+import RpcClientData from './RpcClientData';
+import RpcDecryptEncryptFields from './RpcDecryptEncryptFields';
+import RpcDecryptMessage from './RpcDecryptMessage';
+import RpcEncryptMessage from './RpcEncryptMessage';
+import RpcPermissionsFields from './RpcPermissionsFields';
+import RpcSignMessage from './RpcSignMessage';
+import { RpcToken } from './RpcToken';
 
 const Mnemonic = require('bitcore-mnemonic');
 
-export class RpcKeyPair implements KeyPairHelper, RemoteSigner {
+export class RpcKeyPair implements RemoteKeyPairHelper {
 
     private rpcTransport: RpcTransport;
     private clientData: RpcClientData;
@@ -58,14 +57,14 @@ export class RpcKeyPair implements KeyPairHelper, RemoteSigner {
         );
     }
 
-    encryptFields(fields: Map<string, string>): Promise<Map<string, string>> {
+    public encryptFields(fields: Map<string, string>): Promise<Map<string, string>> {
         return this.rpcTransport.request(
             'encryptFields',
             new RpcDecryptEncryptFields(this.clientData.accessToken, JsonUtils.mapToJson(fields))
         ).then((response) => JsonUtils.jsonToMap<string, string>(response));
     }
 
-    encryptPermissionsFields(recipient: string, data: Map<string, AccessRight>): Promise<string> {
+    public encryptPermissionsFields(recipient: string, data: Map<string, AccessRight>): Promise<string> {
         return this.rpcTransport.request(
             'encryptPermissionsFields',
             new RpcPermissionsFields(this.clientData.accessToken, recipient, JsonUtils.mapToJson(data))
@@ -86,15 +85,14 @@ export class RpcKeyPair implements KeyPairHelper, RemoteSigner {
         ).then((response) => JsonUtils.jsonToMap<string, string>(response));
     }
 
-    async encryptFile(file: any): Promise<any> {
-        console.log('encryptFile API is not supported for RpcKeyPair');
-        return new Promise<any>(resolve => {throw 'encryptFile API is not supported for RpcKeyPair'});
+    public async encryptFile(file: string): Promise<string> {
+        return this.encryptMessage(this.getPublicKey(), file);
     }
 
-    async decryptFile(file: any): Promise<any> {
-        console.log('decryptFile API is not supported for RpcKeyPair');
-        return new Promise<any>(resolve => {throw 'decryptFile API is not supported for RpcKeyPair'});
+    public async decryptFile(file: string): Promise<string> {
+        return this.decryptMessage(this.getPublicKey(), file);
     }
+
     public setAccessToken(accessToken: string) {
         this.accessToken = accessToken;
     }

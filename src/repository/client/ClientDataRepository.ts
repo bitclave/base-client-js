@@ -1,4 +1,4 @@
-import FileMeta from "../models/FileMeta";
+import FileMeta from '../models/FileMeta';
 
 export interface ClientDataRepository {
 
@@ -6,8 +6,8 @@ export interface ClientDataRepository {
 
     updateData(id: string, data: Map<string, string>): Promise<Map<string, string>>;
 
-    getFile(id: string, fileId: number): Promise<any>;
+    getFile(id: string, fileId: number): Promise<FileMeta>;
 
-    uploadFile(id: string, file: File, fileId?: number): Promise<FileMeta>;
+    uploadFile(id: string, file: FileMeta, fileId?: number | null): Promise<FileMeta>;
 
 }
