@@ -155,7 +155,7 @@ export class BitKeyPair implements KeyPairHelper {
 
         await this.syncPermissions();
 
-        for (let [key, value] of data.entries()) {
+        for (const [key, value] of data.entries()) {
             if (!this.hasPermissions(key, !encrypt)) {
                 continue;
             }
@@ -201,10 +201,9 @@ export class BitKeyPair implements KeyPairHelper {
                     const resultMap: Map<string, AcceptedField> = JsonUtils.jsonToMap(jsonDecrypt);
 
                     this.permissions.fields.clear();
-                    let self = this;
                     resultMap.forEach((value, key) => {
-                        self.permissions.fields.set(key, value.access);
-                    });
+                        this.permissions.fields.set(key, value.access);
+                    }, this);
                 }
             }
         }
