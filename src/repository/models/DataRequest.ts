@@ -1,4 +1,6 @@
-export default class DataRequest {
+import { DeepCopy } from './ObjectClone';
+
+export default class DataRequest extends DeepCopy<DataRequest> {
 
     public id: number = 0;
     public fromPk: string = '';
@@ -11,6 +13,7 @@ export default class DataRequest {
         requestData: string = '',
         responseData: string = ''
     ) {
+        super();
         this.toPk = toPk;
         this.requestData = requestData;
         this.responseData = responseData;

@@ -1,4 +1,6 @@
-export default class FileMeta {
+import { DeepCopy } from './ObjectClone';
+
+export default class FileMeta extends DeepCopy<FileMeta> {
 
     public readonly id: number;
     public readonly publicKey: string;
@@ -15,6 +17,7 @@ export default class FileMeta {
         size: number = 0,
         content?: string
     ) {
+        super();
         this.id = id || 0;
         this.publicKey = publicKey || '0x0';
         this.name = name || '';

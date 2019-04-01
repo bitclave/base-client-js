@@ -16,5 +16,4 @@ export default class Account extends SimpleAccount {
     public toSimpleAccount() {
         return new SimpleAccount(this.publicKey, this.nonce);
     }
-
 }

@@ -1,4 +1,6 @@
-export default class OfferShareData {
+import { DeepCopy } from './ObjectClone';
+
+export default class OfferShareData extends DeepCopy<OfferShareData> {
     public readonly offerSearchId: number = 0;
     public offerOwner: string = '0x0';
     public clientId: string = '0x0';
@@ -8,6 +10,7 @@ export default class OfferShareData {
     public readonly priceId: number;
 
     constructor(offerSearchId: number, clientResponse: string, priceId: number) {
+        super();
         this.offerSearchId = offerSearchId;
         this.clientResponse = clientResponse;
         this.priceId = priceId;

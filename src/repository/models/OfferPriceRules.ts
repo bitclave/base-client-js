@@ -1,6 +1,7 @@
 import { CompareAction } from './CompareAction';
+import { DeepCopy } from './ObjectClone';
 
-export class OfferPriceRules {
+export class OfferPriceRules extends DeepCopy<OfferPriceRules> {
     public readonly id: number;
     public readonly rulesKey: string;
     public readonly value: string;
@@ -20,6 +21,7 @@ export class OfferPriceRules {
         value: string = '',
         rule: CompareAction = CompareAction.EQUALLY
     ) {
+        super();
         this.id = id;
         this.rulesKey = rulesKey;
         this.value = value;
@@ -80,5 +82,9 @@ export class OfferPriceRules {
             // value is undefined
             return false;
         }
+    }
+
+    protected deepCopyFromJson(): OfferPriceRules {
+        return OfferPriceRules.fromJson(this.toJson());
     }
 }

@@ -122,23 +122,25 @@ describe('Offer CRUD', async () => {
 
             createdOffer.title = updatedTitle;
             const offerId = createdOffer.offerPrices[0].id;
-            createdOffer.offerPrices[0].description = updatedPriceDescription;
-            const ruleId = createdOffer.offerPrices[0].rules[0].id;
-            createdOffer.offerPrices[0].rules[0].rule = CompareAction.MORE_OR_EQUAL;
 
-            const updated = await baseSeller.offerManager.saveOffer(createdOffer);
+            const copied = createdOffer.copy();
+
+            copied.offerPrices[0] = copied.offerPrices[0].copy({description: updatedPriceDescription});
+            copied.offerPrices[0].rules[0] = createdOffer.offerPrices[0]
+                .rules[0]
+                .copy({rule: CompareAction.MORE_OR_EQUAL});
+
+            const ruleId = copied.offerPrices[0].rules[0].id;
+
+            const updated = await baseSeller.offerManager.saveOffer(copied);
 
             updated.title.should.be.eql(updatedTitle);
 
-            const updatedOffer = updated.offerPrices.find(e =>
-                                                              e.id === offerId
-            ) as OfferPrice;
+            const updatedOffer = updated.offerPrices.find(e => e.id === offerId) as OfferPrice;
 
             updatedOffer.description.should.be.eql(updatedPriceDescription);
 
-            const updatedRule = updatedOffer.rules.find(e =>
-                                                            e.id === ruleId
-            ) as OfferPriceRules;
+            const updatedRule = updatedOffer.rules.find(e => e.id === ruleId) as OfferPriceRules;
 
             updatedRule.rule.should.be.eql(CompareAction.MORE_OR_EQUAL);
 

@@ -1,16 +1,19 @@
-export class Pageable {
+import { DeepCopy } from './ObjectClone';
+
+export class Pageable extends DeepCopy<Pageable> {
     public readonly sort: string | undefined;
     public readonly page: number;
     public readonly size: number;
 
     constructor(sort: string, page: number, size: number) {
+        super();
         this.sort = sort;
         this.page = page;
         this.size = size;
     }
 }
 
-export class Page<T> {
+export class Page<T> extends DeepCopy<Page<T>> {
     public readonly total: number;
     public readonly content: Array<T>;
     public readonly pageable: Pageable;
@@ -61,6 +64,7 @@ export class Page<T> {
         totalPages: number,
         totalElements: number
     ) {
+        super();
         this.total = total;
         this.content = content;
         this.pageable = pageable;
@@ -71,5 +75,9 @@ export class Page<T> {
         this.size = size;
         this.totalPages = totalPages;
         this.totalElements = totalElements;
+    }
+
+    protected deepCopyFromJson(): Page<T> {
+        throw new Error('method not supported');
     }
 }

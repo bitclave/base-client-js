@@ -1,9 +1,10 @@
 import { JsonUtils } from '../../utils/JsonUtils';
 import { CompareAction } from './CompareAction';
+import { DeepCopy } from './ObjectClone';
 import { OfferPrice } from './OfferPrice';
 import { OfferPriceRules } from './OfferPriceRules';
 
-export default class Offer {
+export default class Offer extends DeepCopy<Offer> {
 
     public readonly id: number = 0;
     public readonly owner: string = '0x0';
@@ -61,7 +62,7 @@ export default class Offer {
         rules: Map<string, CompareAction> = new Map(),
         offerPrices: Array<OfferPrice> = new Array<OfferPrice>()
     ) {
-
+        super();
         this.description = description;
         this.title = title;
         this.imageUrl = imageUrl;
@@ -120,5 +121,9 @@ export default class Offer {
         }
 
         return undefined;
+    }
+
+    protected deepCopyFromJson(): Offer {
+        return Offer.fromJson(this.toJson());
     }
 }

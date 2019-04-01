@@ -1,12 +1,20 @@
 import { AccessRight } from '../../utils/keypair/Permissions';
+import { DeepCopy } from './ObjectClone';
 import { OfferPriceRules } from './OfferPriceRules';
 
-export class OfferPrice {
+export class OfferPrice extends DeepCopy<OfferPrice> {
 
     public readonly id: number;
     public readonly description: string;
     public readonly worth: string;
     public readonly rules: Array<OfferPriceRules>;
+
+    public static fromJson(json: object): OfferPrice {
+        const raw = json as JsonObject<OfferPrice>;
+        raw.rules = (raw.rules as Array<object>).map(item => OfferPriceRules.fromJson(item));
+
+        return Object.assign(new OfferPrice(), raw);
+    }
 
     constructor(
         id: number = 0,
@@ -14,6 +22,7 @@ export class OfferPrice {
         worth: string = '',
         rules: Array<OfferPriceRules> = new Array<OfferPriceRules>()
     ) {
+        super();
         this.id = id;
         this.description = description;
         this.worth = worth;
@@ -43,5 +52,9 @@ export class OfferPrice {
             });
         }
         return fields;
+    }
+
+    protected deepCopyFromJson(): OfferPrice {
+        return OfferPrice.fromJson(this.toJson());
     }
 }

@@ -1,4 +1,6 @@
-export default class OfferSearch {
+import { DeepCopy } from './ObjectClone';
+
+export default class OfferSearch extends DeepCopy<OfferSearch> {
 
     public readonly id: number = 0;
     public readonly owner: string = '0x0';
@@ -19,6 +21,7 @@ export default class OfferSearch {
     }
 
     constructor(searchRequestId: number = 0, offerId: number = 0, events: Array<string> = []) {
+        super();
         this.searchRequestId = searchRequestId || 0;
         this.offerId = offerId || 0;
         this.createdAt = new Date();
@@ -34,6 +37,10 @@ export default class OfferSearch {
         json.updatedAt = this.updatedAt.toJSON();
 
         return json;
+    }
+
+    protected deepCopyFromJson(): OfferSearch {
+        return OfferSearch.fromJson(this.toJson());
     }
 }
 
