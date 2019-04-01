@@ -2,10 +2,6 @@ import { HttpMethod } from '../http/HttpMethod';
 import { HttpTransport } from '../http/HttpTransport';
 import { RpcTransport } from './RpcTransport';
 
-declare interface JsonRpcResponse<T> {
-    result: T;
-}
-
 export class RpcTransportImpl implements RpcTransport {
 
     private transport: HttpTransport;
@@ -23,8 +19,9 @@ export class RpcTransportImpl implements RpcTransport {
             params: [arg],
             id: this.id
         };
+
         return this.transport.sendRequest('/', HttpMethod.Post, data)
-            .then(response => (response.json as JsonRpcResponse<T>).result);
+            .then(response => response.json.result as T);
     }
 
     public disconnect(): void {

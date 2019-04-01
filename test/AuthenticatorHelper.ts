@@ -27,7 +27,7 @@ export default class AuthenticatorHelper {
 
         let accessToken: string = this.makeClearAccessToken();
         accessToken += await this.keyHelper.signMessage(accessToken);
-        const signerPK: string = await this.rpcTransport.request('getPublicKey', null);
+        const signerPK: string = (await this.rpcTransport.request('getPublicKey')) as string;
 
         const auth: RpcAuth = new RpcAuth(accessToken, passPhrase, 'http://localhost', '');
         const encryptedAuth: string = await this.keyHelper.encryptMessage(signerPK, JSON.stringify(auth));
