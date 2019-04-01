@@ -1,7 +1,15 @@
 const Path = require('path');
 const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
+const DeepMerge = require('deep-merge');
 
-module.exports = {
+const DeepCopy = DeepMerge((target, source, key) => {
+    if (target instanceof Array) {
+        return [].concat(target, source);
+    }
+    return source;
+});
+
+const nodeConfig = {
     entry: './src/Base.ts',
     devtool: 'source-map',
     node: {
@@ -33,9 +41,9 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js']
     },
     output: {
-        filename: 'Bitclave-Base.js',
+        filename: 'Base.node.js',
         path: Path.resolve(__dirname, 'dist'),
-        library: 'Bitclave-Base',
+        library: 'Base',
         libraryTarget: "umd2",
         umdNamedDefine: true
     },
@@ -51,3 +59,25 @@ module.exports = {
         }, './src/')
     ]
 };
+
+const browserConfig = DeepCopy(
+    nodeConfig,
+    {
+        target: 'web',
+        node: {
+            fs: 'empty',
+            tls: 'empty',
+            net: 'empty',
+            child_process: 'empty'
+        },
+        output: {
+            filename: 'Base.js',
+            path: Path.resolve(__dirname, 'dist'),
+            library: 'Base',
+            libraryTarget: "umd2",
+            umdNamedDefine: true
+        },
+    }
+);
+
+module.exports = [browserConfig, nodeConfig];
