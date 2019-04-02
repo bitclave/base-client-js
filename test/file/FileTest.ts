@@ -1,7 +1,7 @@
 // tslint:disable:no-unused-expression
 import Base from '../../src/Base';
 import Account from '../../src/repository/models/Account';
-import FileMeta from '../../src/repository/models/FileMeta';
+import { FileMeta } from '../../src/repository/models/FileMeta';
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
 
 require('chai')
@@ -79,8 +79,11 @@ describe('File CRUD', async () => {
         try {
             // debugger
             const uploadFileName = Path.join(process.cwd(), './test/asset/test.png');
-            const fileToUpload = fs.createReadStream(uploadFileName);
-            const fileMetaUploaded: FileMeta = await baseAlice.profileManager.uploadFile(fileToUpload, updateKey);
+
+            const fileToUpload = fs.readFileSync(uploadFileName, {encoding: 'base64'});
+            let fileMeta: FileMeta = new FileMeta(0, '0x0', 'test', 'image/png', fileToUpload.length, fileToUpload);
+
+            const fileMetaUploaded: FileMeta = await baseAlice.profileManager.uploadFile(fileMeta, updateKey);
             fileMetaUploaded.id.should.exist;
 
             const savedFileMeta = await baseAlice.profileManager.getFileMetaWithGivenKey(updateKey) as FileMeta;
@@ -88,8 +91,10 @@ describe('File CRUD', async () => {
             savedFileMeta.should.be.deep.equal(fileMetaUploaded);
 
             const updateFileName = Path.join(process.cwd(), './test/asset/test.png');
-            const fileToUpdate = fs.createReadStream(updateFileName);
-            const fileMetaUpdated: FileMeta = await baseAlice.profileManager.uploadFile(fileToUpdate, updateKey);
+            const fileToUpdate = fs.readFileSync(updateFileName, {encoding: 'base64'});
+
+            fileMeta = new FileMeta(0, '0x0', 'test', 'image/png', fileToUpdate.length, fileToUpdate);
+            const fileMetaUpdated: FileMeta = await baseAlice.profileManager.uploadFile(fileMeta, updateKey);
             fileMetaUpdated.id.should.exist;
             fileMetaUpdated.id.should.be.eql(fileMetaUploaded.id);
 
@@ -105,9 +110,11 @@ describe('File CRUD', async () => {
     it('should download existed file', async () => {
         try {
             const uploadFileName = Path.join(process.cwd(), './test/asset/test.png');
-            const fileToUpload = fs.createReadStream(uploadFileName);
-            const actualFile = fs.readFileSync(uploadFileName);
-            const fileMetaUploaded: FileMeta = await baseAlice.profileManager.uploadFile(fileToUpload, downloadKey);
+            const fileToUpload = fs.readFileSync(uploadFileName, {encoding: 'base64'});
+            const actualFile = fs.readFileSync(uploadFileName, {encoding: 'base64'});
+
+            const fileMeta: FileMeta = new FileMeta(0, '0x0', 'test', 'image/png', fileToUpload.length, fileToUpload);
+            const fileMetaUploaded: FileMeta = await baseAlice.profileManager.uploadFile(fileMeta, downloadKey);
             fileMetaUploaded.id.should.exist;
 
             const savedFileMeta = await baseAlice.profileManager.getFileMetaWithGivenKey(downloadKey) as FileMeta;
@@ -117,8 +124,7 @@ describe('File CRUD', async () => {
             const file = await baseAlice.profileManager.downloadFile(fileMetaUploaded.id);
 
             file.should.exist;
-            actualFile.equals(file);
-
+            actualFile.should.be.eq(file);
         } catch (e) {
             console.log(e);
             throw e;

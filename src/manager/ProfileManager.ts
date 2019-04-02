@@ -1,4 +1,4 @@
-import FileMeta from '../repository/models/FileMeta';
+import { FileMeta } from '../repository/models/FileMeta';
 
 export interface ProfileManager {
 
@@ -58,12 +58,12 @@ export interface ProfileManager {
     uploadFile(file: FileMeta, key: string): Promise<FileMeta>;
 
     /**
-     * Returns decrypted file blob data of the authorized user based on provided file id.
+     * Returns decrypted file Base64 data of the authorized user based on provided file id.
      * @param {number} id not encrypted file id
      *
-     * @returns {Promise<File>} decrypted file blob data.
+     * @returns {Promise<string>} decrypted file Base64 data.
      */
-    downloadFile(id: number): Promise<FileMeta>;
+    downloadFile(id: number): Promise<string>;
 
     /**
      * Returns given key's decrypted value of authorized user's data.

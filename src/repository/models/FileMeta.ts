@@ -1,13 +1,13 @@
 import { DeepCopy } from './ObjectClone';
 
-export default class FileMeta extends DeepCopy<FileMeta> {
+export class FileMeta extends DeepCopy<FileMeta> {
 
     public readonly id: number;
     public readonly publicKey: string;
     public name: string;
     public mimeType: string;
     public size: number;
-    public content?: string;
+    public content?: string; // Base64
 
     constructor(
         id: number = 0,
