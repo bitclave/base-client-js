@@ -17,6 +17,10 @@ export class Response<T> {
         return this._json;
     }
 
+    public get originJson(): object {
+        return this._json;
+    }
+
     public get status(): number {
         return this._status;
     }

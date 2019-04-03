@@ -9,5 +9,5 @@ declare interface WindowXMLHttpRequest extends Window {
 }
 
 declare interface JsonObject<T> {
-    [key: string]: object | string | number | boolean | Array<object | string | number> | T | undefined;
+    [key: string]: object | string | number | boolean | T | undefined;
 }

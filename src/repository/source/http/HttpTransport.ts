@@ -1,14 +1,20 @@
+import { FileMeta } from '../../models/FileMeta';
 import { HttpInterceptor } from './HttpInterceptor';
 import { HttpMethod } from './HttpMethod';
 import { Response } from './Response';
 
-export declare interface HttpTransport {
+export interface HttpTransport {
 
     getHost(): string;
 
     sendRequest<T>(method: HttpMethod, data?: object | string): Promise<Response<T>>;
 
-    sendRequest<T>(path: string, method: HttpMethod, data?: object | string | number): Promise<Response<T>>;
+    sendRequest<T>(
+        path: string,
+        method: HttpMethod,
+        data?: object | string | number,
+        file?: FileMeta
+    ): Promise<Response<T>>;
 
     addInterceptor(interceptor: HttpInterceptor): HttpTransport;
 

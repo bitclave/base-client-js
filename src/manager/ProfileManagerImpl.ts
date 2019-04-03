@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Rx';
 import { ClientDataRepository } from '../repository/client/ClientDataRepository';
 import Account from '../repository/models/Account';
-import FileMeta from '../repository/models/FileMeta';
+import { FileMeta } from '../repository/models/FileMeta';
 import { CryptoUtils } from '../utils/CryptoUtils';
 import { JsonUtils } from '../utils/JsonUtils';
 import { AcceptedField } from '../utils/keypair/AcceptedField';
@@ -148,16 +148,14 @@ export class ProfileManagerImpl implements ProfileManager {
     }
 
     /**
-     * Returns decrypted file blob data of the authorized user based on provided file id.
+     * Returns decrypted Base64 data of the authorized user based on provided file id.
      * @param {number} id not encrypted file id
      *
-     * @returns {Promise<FileMeta>} decrypted file data.
+     * @returns {Promise<string>} decrypted file Base64 data.
      */
-    public async downloadFile(id: number): Promise<FileMeta> {
+    public async downloadFile(id: number): Promise<string> {
         const encodedFile = await this.clientDataRepository.getFile(this.account.publicKey, id);
-        const decrypted = await this.decrypt.decryptFile(encodedFile.content || '');
-
-        return encodedFile.copyWithContent(decrypted);
+        return await this.decrypt.decryptFile(encodedFile);
     }
 
     public async getFileMetaWithGivenKey(key: string): Promise<FileMeta | undefined> {

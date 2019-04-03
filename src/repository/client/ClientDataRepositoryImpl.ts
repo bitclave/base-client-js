@@ -1,5 +1,5 @@
 import { JsonUtils } from '../../utils/JsonUtils';
-import FileMeta from '../models/FileMeta';
+import { FileMeta } from '../models/FileMeta';
 import { HttpMethod } from '../source/http/HttpMethod';
 import { HttpTransport } from '../source/http/HttpTransport';
 import { ClientDataRepository } from './ClientDataRepository';
@@ -35,13 +35,15 @@ export default class ClientDataRepositoryImpl implements ClientDataRepository {
             .then((response) => JsonUtils.jsonToMap<string, string>(response.json));
     }
 
-    public getFile(pk: string, fileId: number): Promise<FileMeta> {
+    public getFile(pk: string, fileId: number): Promise<string> {
         return this.transport
             .sendRequest(
                 this.FILE_GET_FILE.replace('{pk}', pk).replace('{fileId}', fileId.toString()),
                 HttpMethod.Get,
             )
-            .then((response) => (Object.assign(new FileMeta(), response.json)));
+            .then(response => (response.originJson as Array<number>)
+                .map(ch => String.fromCharCode(ch)).join('')
+            );
     }
 
     public uploadFile(pk: string, file: FileMeta, fileId?: number | null): Promise<FileMeta> {
@@ -51,7 +53,7 @@ export default class ClientDataRepositoryImpl implements ClientDataRepository {
         }
 
         return this.transport
-            .sendRequest(path, HttpMethod.Post, file)
+            .sendRequest(path, HttpMethod.Post, pk, file)
             .then((response) => Object.assign(new FileMeta(), response.json));
     }
 
