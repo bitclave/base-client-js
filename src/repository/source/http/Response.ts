@@ -1,23 +1,23 @@
-export class Response {
+export class Response<T> {
 
-    private _json: any;
-    private _status: number;
+    private readonly _json: JsonObject<T>;
+    private readonly _status: number;
 
-    constructor(json: any, status: number) {
+    constructor(json: string | object, status: number) {
         try {
-            this._json = JSON.parse(json);
+            this._json = JSON.parse(json as string);
         } catch (e) {
-            this._json = json;
+            this._json = json as JsonObject<T>;
         }
 
         this._status = status;
     }
 
-    get json(): object {
+    public get json(): JsonObject<T> {
         return this._json;
     }
 
-    get status(): number {
+    public get status(): number {
         return this._status;
     }
 

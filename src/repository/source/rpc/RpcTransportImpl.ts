@@ -1,6 +1,6 @@
-import { RpcTransport } from './RpcTransport';
-import { HttpTransport } from '../http/HttpTransport';
 import { HttpMethod } from '../http/HttpMethod';
+import { HttpTransport } from '../http/HttpTransport';
+import { RpcTransport } from './RpcTransport';
 
 export class RpcTransportImpl implements RpcTransport {
 
@@ -11,19 +11,21 @@ export class RpcTransportImpl implements RpcTransport {
         this.transport = httpTransport;
     }
 
-    public request(method: string, arg: any): Promise<any> {
+    public request<T>(method: string, arg: object): Promise<T> {
         this.id++;
-        const data: any = {
-            'jsonrpc': '2.0',
-            method: method,
+        const data = {
+            jsonrpc: '2.0',
+            method: `${method}`,
             params: [arg],
             id: this.id
         };
+
         return this.transport.sendRequest('/', HttpMethod.Post, data)
-            .then(response => response.json['result']);
+            .then(response => response.json.result as T);
     }
 
     public disconnect(): void {
+        // ignore
     }
 
 }

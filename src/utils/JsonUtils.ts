@@ -1,19 +1,22 @@
 export class JsonUtils {
 
-    public static jsonToMap<K, V>(json: Object): Map<K, V> {
+    public static jsonToMap<K, V>(json: object): Map<K, V> {
         const map: Map<K, V> = new Map<K, V>();
+        // tslint:disable-next-line:no-any
         Object.keys(json).forEach((key: any) => map.set(key, json[key]));
+
         return map;
     }
 
-    public static mapToJson(map: Map<any, any>): any {
-        const result: any = {};
+// tslint:disable-next-line:no-any
+    public static mapToJson<T>(map: Map<string, any>): T {
+        const result = {};
 
         map.forEach((value, key) => {
             result[key] = value;
         });
 
-        return result;
+        return result as T;
     }
 
 }

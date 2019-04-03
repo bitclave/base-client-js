@@ -1,20 +1,15 @@
+import { BasicLogger, Logger } from '../../../utils/BasicLogger';
+import { HttpInterceptor } from './HttpInterceptor';
 import { HttpMethod } from './HttpMethod';
 import { HttpTransport } from './HttpTransport';
-import { Response } from './Response';
-import { HttpInterceptor } from './HttpInterceptor';
 import { InterceptorCortege } from './InterceptorCortege';
+import { Response } from './Response';
 import Transaction from './Transaction';
-import { BasicLogger, Logger } from './../../../utils/BasicLogger';
 
-// const MemoryFileSystem = require("memory-fs");
-// const fs = new MemoryFileSystem();
-const fs = require('fs');
-// const FormData = require('form-data');
-const req = require('request');
-let XMLHttpRequest: any;
+let XMLHttpRequest: XMLHttpRequestInitializer;
 
-if ((typeof window !== 'undefined' && (<any> window).XMLHttpRequest)) {
-    XMLHttpRequest = (<any> window).XMLHttpRequest;
+if ((typeof window !== 'undefined' && window.hasOwnProperty('XMLHttpRequest'))) {
+    XMLHttpRequest = (window as WindowXMLHttpRequest).XMLHttpRequest;
 } else {
     XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 }
@@ -24,11 +19,13 @@ export class HttpTransportSyncedImpl implements HttpTransport {
     private interceptors: Array<HttpInterceptor> = [];
     private transactions: Array<Transaction> = [];
 
-    private headers: Map<string, string> = new Map<string, string>([
-        ['Accept', 'application/json'], ['Content-Type', 'application/json']
-    ]);
+    private headers: Map<string, string> = new Map<string, string>(
+        [
+            ['Accept', 'application/json'], ['Content-Type', 'application/json']
+        ]
+    );
 
-    private host: string;
+    private readonly host: string;
 
     private logger: Logger;
 
@@ -41,17 +38,18 @@ export class HttpTransportSyncedImpl implements HttpTransport {
         this.logger = loggerService;
     }
 
-    addInterceptor(interceptor: HttpInterceptor): HttpTransport {
+    public addInterceptor(interceptor: HttpInterceptor): HttpTransport {
         if (this.interceptors.indexOf(interceptor) === -1) {
             this.interceptors.push(interceptor);
         }
 
         return this;
     }
-    sendRequest(method: HttpMethod, data?: any): Promise<Response>;
-    sendRequest(path: string, method: HttpMethod, data?: any): Promise<Response> {
-        return new Promise<Response>((resolve, reject) => {
-            const cortege: InterceptorCortege = new InterceptorCortege(path, method, this.headers, false, data);
+
+    public sendRequest<T>(method: HttpMethod, data?: object | string | number): Promise<Response<T>>;
+    public sendRequest<T>(path: string, method: HttpMethod, data?: object | string | number): Promise<Response<T>> {
+        return new Promise<Response<T>>((resolve, reject) => {
+            const cortege: InterceptorCortege = new InterceptorCortege(path, method, this.headers, data);
             this.transactions.push(new Transaction(resolve, reject, cortege));
 
             if (this.transactions.length === 1) {
@@ -60,25 +58,21 @@ export class HttpTransportSyncedImpl implements HttpTransport {
         });
     }
 
-    sendBlobRequest(path: string, method: HttpMethod, headers: Map<string, string>, data?: any, file?: File): Promise<Response> {
-        return new Promise<Response>((resolve, reject) => {
-            const cortege: InterceptorCortege = new InterceptorCortege(path, method, headers, true, data, file);
-            this.transactions.push(new Transaction(resolve, reject, cortege));
-            if (this.transactions.length === 1) {
-                this.runTransaction(this.transactions[0]);
-            }
-        });
-    }
-
-    getHost(): string {
+    public getHost(): string {
         return this.host;
     }
-    private acceptInterceptor(interceptorCortege: InterceptorCortege, interceptorIndex: number = 0): Promise<InterceptorCortege> {
+
+    private acceptInterceptor(
+        interceptorCortege: InterceptorCortege,
+        interceptorIndex: number = 0
+    ): Promise<InterceptorCortege> {
         return (interceptorIndex >= this.interceptors.length)
-            ? Promise.resolve(interceptorCortege)
-            : this.interceptors[interceptorIndex].onIntercept(interceptorCortege).then(interceptorCortegeResult =>
-                this.acceptInterceptor(interceptorCortegeResult, ++interceptorIndex)
-            );
+               ? Promise.resolve(interceptorCortege)
+               : this.interceptors[interceptorIndex]
+                   .onIntercept(interceptorCortege)
+                   .then(interceptorCortegeResult =>
+                             this.acceptInterceptor(interceptorCortegeResult, ++interceptorIndex)
+                   );
     }
 
     private runTransaction(transaction: Transaction) {
@@ -89,96 +83,37 @@ export class HttpTransportSyncedImpl implements HttpTransport {
 
                     const url = cortege.path ? this.getHost() + cortege.path : this.getHost();
                     const request: XMLHttpRequest = new XMLHttpRequest();
-                    if(cortege.blobRequest) {
-                        if(cortege.file) {
-                            var formData = {
-                                signature: JSON.stringify(cortege.data ? cortege.data : {}),
-                                data: cortege.file,
-                            };
-                            let _this = this;
-                            req.post({url:url, formData: formData}, function optionalCallback(err: any, httpResponse: any, body: any) {
-                                if (err) {
-                                    const result: Response = new Response(err, httpResponse.statusCode);
-                                    reject();
-                                    transaction.reject(result);
-                                    _this.callNextRequest();
-                                } else {
-                                    const result: Response = new Response(body, httpResponse.statusCode);
-                                    if (result.status >= 200 && result.status < 300) {
-                                        resolve();
-                                        transaction.resolve(result);
-                                        _this.callNextRequest();
-        
-                                    } else {
-                                        reject();
-                                        _this.logger.error('Error runTransaction postBlobRequest', result);
-                                        transaction.reject(result);
-                                        _this.callNextRequest();
-                                    }
-                                }
-                            }); 
-                        } else {
-                            let _this = this;
-                            let r = req.get({url:url, body:JSON.stringify(cortege.data ? cortege.data : {})}).on('response', function(res:any) {
-                                    var filename: string = '', contentDisp = res.headers['content-disposition'];
-                                    if (contentDisp && /^attachment/i.test(contentDisp)) {
-                                        filename = contentDisp.toLowerCase()
-                                            .split('filename=')[1]
-                                            .split(';')[0]
-                                            .replace(/"/g, '');
-                                    }
-                                    let stream = r.pipe(fs.createWriteStream(`./${filename}`));
 
-                                    stream.on('finish', function() {
-                                        const file = fs.readFileSync(`./${filename}`);
-                                        const result: Response = new Response(file, res.statusCode);
-                                        if (result.status >= 200 && result.status < 300) {
-                                            resolve();
-                                            transaction.resolve(result);
-                                            _this.callNextRequest();
-            
-                                        } else {
-                                            reject();
-                                            _this.logger.error('Error runTransaction getBlobRequest', result);
-                                            transaction.reject(result);
-                                            _this.callNextRequest();
-                                        } 
-                                    });
-                                }
-                            ); 
-                        }
-                    } else {
-                        let _this = this;
-                        request.open(cortege.method, url);
+                    const _this = this;
+                    request.open(cortege.method, url);
 
-                        request.onload = () => {
-                            const result: Response = new Response(request.responseText, request.status);
-                            if (request.status >= 200 && request.status < 300) {
-                                resolve();
-                                transaction.resolve(result);
-                                this.callNextRequest();
-
-                            } else {
-                                resolve();
-                                _this.logger.error('Error runTransaction request', result);
-                                transaction.reject(result);
-                                this.callNextRequest();
-                            }
-                        };
-
-                        request.onerror = () => {
-                            const result: Response = new Response(request.responseText, request.status);
-                            _this.logger.error('Error runTransaction onErrorRequest', result);
+                    request.onload = () => {
+                        const result: Response<object> = new Response(request.responseText, request.status);
+                        if (request.status >= 200 && request.status < 300) {
                             resolve();
+                            transaction.resolve(result);
+                            this.callNextRequest();
+
+                        } else {
+                            resolve();
+                            _this.logger.error('Error runTransaction request', result);
                             transaction.reject(result);
                             this.callNextRequest();
-                        };
+                        }
+                    };
 
-                        cortege.headers.forEach((value, key) => {
-                            request.setRequestHeader(key, value);
-                        });
-                        request.send(JSON.stringify(cortege.data ? cortege.data : {}));
-                    }
+                    request.onerror = () => {
+                        const result: Response<object> = new Response(request.responseText, request.status);
+                        _this.logger.error('Error runTransaction onErrorRequest', result);
+                        resolve();
+                        transaction.reject(result);
+                        this.callNextRequest();
+                    };
+
+                    cortege.headers.forEach((value, key) => {
+                        request.setRequestHeader(key, value);
+                    });
+                    request.send(JSON.stringify(cortege.data ? cortege.data : {}));
                 } catch (e) {
                     reject();
                     transaction.reject(e);

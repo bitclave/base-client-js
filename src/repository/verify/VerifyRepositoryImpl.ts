@@ -1,8 +1,8 @@
-import { VerifyRepository } from './VerifyRepository';
-import OfferSearch from '../models/OfferSearch';
-import { HttpTransport } from '../source/http/HttpTransport';
-import { HttpMethod } from '../source/http/HttpMethod';
 import Account from '../models/Account';
+import OfferSearch from '../models/OfferSearch';
+import { HttpMethod } from '../source/http/HttpMethod';
+import { HttpTransport } from '../source/http/HttpTransport';
+import { VerifyRepository } from './VerifyRepository';
 
 export class VerifyRepositoryImpl implements VerifyRepository {
 
@@ -31,24 +31,12 @@ export class VerifyRepositoryImpl implements VerifyRepository {
         ).then((response) => this.jsonToAccountList(response.json));
     }
 
-    private async jsonToOfferSearchList(json: any): Promise<Array<OfferSearch>> {
-        const result: Array<OfferSearch> = [];
-
-        for (let item of json) {
-            result.push(OfferSearch.fromJson(item));
-        }
-
-        return result;
+    private async jsonToOfferSearchList(json: object): Promise<Array<OfferSearch>> {
+        return Object.keys(json).map(key => OfferSearch.fromJson(json[key]));
     }
 
-    private async jsonToAccountList(json: any): Promise<Array<Account>> {
-        const result: Array<Account> = [];
-
-        for (let item of json) {
-            result.push(Account.fromJson(item));
-        }
-
-        return result;
+    private async jsonToAccountList(json: object): Promise<Array<Account>> {
+        return Object.keys(json).map(key => Account.fromJson(json[key]));
     }
 
 }

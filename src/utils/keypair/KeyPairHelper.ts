@@ -1,7 +1,7 @@
 import { KeyPair } from './KeyPair';
-import { MessageSigner } from './MessageSigner';
-import { MessageEncrypt } from './MessageEncrypt';
 import { MessageDecrypt } from './MessageDecrypt';
+import { MessageEncrypt } from './MessageEncrypt';
+import { MessageSigner } from './MessageSigner';
 
 export interface KeyPairHelper extends MessageSigner, MessageEncrypt, MessageDecrypt {
 

@@ -1,13 +1,13 @@
-import { HttpTransportImpl } from './http/HttpTransportImpl';
-import { RpcTransportImpl } from './rpc/RpcTransportImpl';
+import { Logger } from '../../utils/BasicLogger';
 import { HttpTransport } from './http/HttpTransport';
-import { RpcTransport } from './rpc/RpcTransport';
+import { HttpTransportImpl } from './http/HttpTransportImpl';
 import { HttpTransportSyncedImpl } from './http/HttpTransportSyncedImpl';
-import { Logger } from './../../utils/BasicLogger';
+import { RpcTransport } from './rpc/RpcTransport';
+import { RpcTransportImpl } from './rpc/RpcTransportImpl';
 
 export class TransportFactory {
 
-    public static createHttpTransport(host: string, loggerService :Logger): HttpTransport {
+    public static createHttpTransport(host: string, loggerService: Logger): HttpTransport {
         return new HttpTransportSyncedImpl(host, loggerService);
     }
 

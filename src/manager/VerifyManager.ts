@@ -1,9 +1,10 @@
-import OfferSearch from '../repository/models/OfferSearch';
 import Account from '../repository/models/Account';
+import OfferSearch from '../repository/models/OfferSearch';
 
 export interface VerifyManager {
 
-    getOfferSearchesByIds(ids: number[]): Promise<OfferSearch[]>;
-    getAccountsByPublicKeys(publicKeys: string[]): Promise<Account[]>;
+    getOfferSearchesByIds(ids: Array<number>): Promise<Array<OfferSearch>>;
+
+    getAccountsByPublicKeys(publicKeys: Array<string>): Promise<Array<Account>>;
 
 }

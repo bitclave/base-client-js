@@ -4,6 +4,6 @@ export interface MessageDecrypt {
 
     decryptFields(fields: Map<string, string>): Promise<Map<string, string>>;
 
-    decryptFile(file: any): Promise<any>;
+    decryptFile(file: string): Promise<string>;
 
 }

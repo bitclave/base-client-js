@@ -1,7 +1,7 @@
-import OfferSearchResultItem from '../models/OfferSearchResultItem';
 import OfferSearch, { OfferResultAction } from '../models/OfferSearch';
-import SearchRequest from '../models/SearchRequest';
+import OfferSearchResultItem from '../models/OfferSearchResultItem';
 import { Page } from '../models/Page';
+import SearchRequest from '../models/SearchRequest';
 
 export interface OfferSearchRepository {
     createByQuery(

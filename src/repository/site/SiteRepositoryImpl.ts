@@ -1,7 +1,7 @@
-import { SiteRepository } from './SiteRepository';
-import { HttpTransport } from '../source/http/HttpTransport';
-import { HttpMethod } from '../source/http/HttpMethod';
 import { Site } from '../models/Site';
+import { HttpMethod } from '../source/http/HttpMethod';
+import { HttpTransport } from '../source/http/HttpTransport';
+import { SiteRepository } from './SiteRepository';
 
 export class SiteRepositoryImpl implements SiteRepository {
 
@@ -13,7 +13,7 @@ export class SiteRepositoryImpl implements SiteRepository {
         this.transport = transport;
     }
 
-    getSiteData(origin: string): Promise<Site> {
+    public getSiteData(origin: string): Promise<Site> {
         return this.transport.sendRequest(
             this.GET_SITE_DATA_API.replace('{origin}', origin),
             HttpMethod.Get

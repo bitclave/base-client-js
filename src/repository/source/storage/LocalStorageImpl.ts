@@ -1,6 +1,6 @@
 import { Storage } from './Storage';
 
-let storage: any;
+let storage: Storage;
 
 if (typeof localStorage === 'undefined' || localStorage === null) {
     const nodeStorage = require('node-localstorage').LocalStorage;
@@ -9,14 +9,14 @@ if (typeof localStorage === 'undefined' || localStorage === null) {
     storage = localStorage;
 }
 
-export default class LocalStorageImpl implements Storage {
+export class LocalStorageImpl implements Storage {
 
-    setItem(key: string, value: string): void {
+    public setItem(key: string, value: string): void {
         storage.setItem(key, value);
     }
 
-    getItem(key: string): string {
-        return storage.getItem(key);
+    public getItem(key: string): string {
+        return storage.getItem(key) || '';
     }
 
 }

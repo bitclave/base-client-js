@@ -115,21 +115,23 @@ export {
 
 export default class Base {
 
-    private _walletManager: WalletManager;
-    private _accountManager: AccountManager;
-    private _profileManager: ProfileManager;
-    private _dataRequestManager: DataRequestManager;
-    private _offerManager: OfferManager;
-    private _searchManager: SearchManager;
-    private _verifyManager: VerifyManager;
-    private _authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
-    private _repositoryStrategyInterceptor: RepositoryStrategyInterceptor;
+    private readonly _walletManager: WalletManager;
+    private readonly _accountManager: AccountManager;
+    private readonly _profileManager: ProfileManager;
+    private readonly _dataRequestManager: DataRequestManager;
+    private readonly _offerManager: OfferManager;
+    private readonly _searchManager: SearchManager;
+    private readonly _verifyManager: VerifyManager;
+    private readonly _authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
+    private readonly _repositoryStrategyInterceptor: RepositoryStrategyInterceptor;
 
-    constructor(nodeHost: string,
-                siteOrigin: string,
-                strategy: RepositoryStrategyType = RepositoryStrategyType.Postgres,
-                signerHost: string = '',
-                loggerService?: Logger) {
+    constructor(
+        nodeHost: string,
+        siteOrigin: string,
+        strategy: RepositoryStrategyType = RepositoryStrategyType.Postgres,
+        signerHost: string = '',
+        loggerService?: Logger
+    ) {
 
         if (!loggerService) {
             loggerService = new BasicLogger();
@@ -206,7 +208,7 @@ export default class Base {
         );
     }
 
-    changeStrategy(strategy: RepositoryStrategyType) {
+    public changeStrategy(strategy: RepositoryStrategyType) {
         this._repositoryStrategyInterceptor.changeStrategy(strategy);
     }
 
@@ -234,7 +236,7 @@ export default class Base {
         return this._searchManager;
     }
 
-    get verfiyManager(): VerifyManager {
+    get verifyManager(): VerifyManager {
         return this._verifyManager;
     }
 
@@ -246,13 +248,15 @@ export default class Base {
         return new AssistantNodeRepository(accountRepository, dataRequestRepository, siteRepository);
     }
 
-    private createKeyPairHelper(signerHost: string,
-                                permissionSource: PermissionsSource,
-                                siteDataSource: SiteDataSource,
-                                siteOrigin: string): KeyPairHelper {
+    private createKeyPairHelper(
+        signerHost: string,
+        permissionSource: PermissionsSource,
+        siteDataSource: SiteDataSource,
+        siteOrigin: string
+    ): KeyPairHelper {
         return (signerHost.length === 0)
-            ? KeyPairFactory.createDefaultKeyPair(permissionSource, siteDataSource, siteOrigin)
-            : KeyPairFactory.createRpcKeyPair(TransportFactory.createJsonRpcHttpTransport(signerHost));
+               ? KeyPairFactory.createDefaultKeyPair(permissionSource, siteDataSource, siteOrigin)
+               : KeyPairFactory.createRpcKeyPair(TransportFactory.createJsonRpcHttpTransport(signerHost));
     }
 
 }

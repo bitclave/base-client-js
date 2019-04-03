@@ -1,8 +1,8 @@
 import { PermissionsSource } from '../../src/repository/assistant/PermissionsSource';
 import { SiteDataSource } from '../../src/repository/assistant/SiteDataSource';
-import { DataRequestRepository } from '../../src/repository/requests/DataRequestRepository';
-import { Site } from '../../src/repository/models/Site';
 import DataRequest from '../../src/repository/models/DataRequest';
+import { Site } from '../../src/repository/models/Site';
+import { DataRequestRepository } from '../../src/repository/requests/DataRequestRepository';
 
 export class AssistantPermissions implements PermissionsSource, SiteDataSource {
 

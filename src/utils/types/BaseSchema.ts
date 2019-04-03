@@ -1,104 +1,176 @@
-const Ajv = require('ajv');
+import * as Ajv from 'ajv';
+import { RefParams, TypeParams } from 'ajv';
+import { AddrRecord, BaseAddrPair, WalletsRecords } from './BaseTypes';
 
-// todo need refactor this class!!!!
-export class BaseSchema {
+export class BaseSchemaField implements TypeParams {
+    public readonly type: string;
+    public readonly description?: string;
+    public readonly required?: Array<string>;
+    public readonly additionalProperties?: boolean;
 
-    public static EthBaseAddrPair: any = {
-        'type': 'object',
-        'properties': {
-            'baseID': {'type': 'string'},
-            'ethAddr': {'type': 'string'}
-        },
-        'required': ['baseID', 'ethAddr'],
-        'additionalProperties': false
-    };
+    constructor(type?: string, description?: string, required?: Array<string>, additionalProperties?: boolean) {
+        this.type = type || 'string';
+        this.description = description;
+        this.required = required;
+        this.additionalProperties = additionalProperties;
+    }
+}
 
-    public static EthAddrRecord: any = {
-        'type': 'object',
-        'properties': {
-            'data': {'type': 'string'},
-            'sig': {
-                'type': 'string'
-            },
-        },
-        'required': ['data'],
-        'additionalProperties': false
-    };
+export class BaseSchemaFieldObject implements RefParams {
+    public readonly ref: string;
 
-    public static EthWallets: any = {
-        'definitions': {
-            'eth_address': BaseSchema.EthAddrRecord
-        },
-        'description': 'list of ETH wallets',
-        'type': 'object',
-        'properties': {
-            'data': {
-                'type': 'array',
-                'items': {'$ref': '#/definitions/eth_address'},
-                'minItems': 1,
-                'uniqueItems': true
-            },
-            'sig': {
-                'type': 'string'
-            }
-        }
-    };
+    constructor(ref: string) {
+        this.ref = ref;
+    }
+}
 
-    public static All: any = {
-        'title': 'Profile',
-        'definitions': {
-            'eth_address': BaseSchema.EthAddrRecord,
-            'eth_wallets': BaseSchema.EthWallets
-        },
+export class BaseSchemaFieldArray extends BaseSchemaField {
+    public readonly items: BaseSchemaFieldObject;
+    public readonly minItems: number;
+    public readonly uniqueItems: boolean;
 
-        'type': 'object',
-        'properties': {
-            'baseID': {
-                'type': 'string'
-            },
-            'email': {
-                'type': 'string'
-            },
-            'wealth': {
-                'description': 'wealth in USD',
-                'type': 'string'
-            },
-            'eth_wallets': {'$ref': '#/definitions/eth_wallets'},
-        },
-        'required': ['baseID'],
-        'additionalProperties': false
-    };
+    constructor(itemDefinition: string, minItems: number, uniqueItems: boolean) {
+        super('array');
+        this.items = new BaseSchemaFieldObject(itemDefinition);
+        this.minItems = minItems;
+        this.uniqueItems = uniqueItems;
+    }
+}
 
-    private ajvValidateAll: Function;
-    private ajvValidateAddr: Function;
-    private ajvValidateBaseAddrPair: Function;
-    private ajvValidateWallets: Function;
+export class BaseSchemaAddPairProps {
+    public readonly baseID: BaseSchemaField = new BaseSchemaField();
+    public readonly ethAddr: BaseSchemaField = new BaseSchemaField();
+}
 
-    private ajv: any;
+export class BaseSchemaAddPair extends BaseSchemaField {
+    public readonly properties: BaseSchemaAddPairProps = new BaseSchemaAddPairProps();
 
     constructor() {
-        this.ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
+        super('object', '', ['baseID', 'ethAddr'], true);
+    }
+}
 
-        this.ajvValidateBaseAddrPair = this.ajv.compile(BaseSchema.EthBaseAddrPair);
-        this.ajvValidateAddr = this.ajv.compile(BaseSchema.EthAddrRecord);
-        this.ajvValidateWallets = this.ajv.compile(BaseSchema.EthWallets);
-        this.ajvValidateAll = this.ajv.compile(BaseSchema.All);
+export class BaseSchemaAddRecordDefinitions {
+    public readonly recordPair: BaseSchemaAddPair;
+
+    constructor(recordPair: BaseSchemaAddPair) {
+        this.recordPair = recordPair;
+    }
+}
+
+export class BaseSchemaAddRecordProps {
+    public readonly data: BaseSchemaFieldObject = new BaseSchemaFieldObject('#/definitions/recordPair');
+    public readonly sig: BaseSchemaField = new BaseSchemaField();
+}
+
+export class BaseSchemaAddRecord extends BaseSchemaField {
+    public readonly definitions: BaseSchemaAddRecordDefinitions;
+    public readonly properties: BaseSchemaAddRecordProps = new BaseSchemaAddRecordProps();
+
+    constructor(definitions: BaseSchemaAddRecordDefinitions) {
+        super('object', '', ['data'], true);
+        this.definitions = definitions;
+    }
+}
+
+export class BaseSchemaEthWalletProps {
+    public readonly data: BaseSchemaFieldArray = new BaseSchemaFieldArray(
+        '#/definitions/ethAddress',
+        1,
+        true
+    );
+    public sig: BaseSchemaField = new BaseSchemaField();
+}
+
+export class BaseSchemaEthWalletDefinitions {
+    public readonly recordPair: BaseSchemaAddPair;
+    public readonly ethAddress: BaseSchemaAddRecord;
+
+    constructor(ethAddress: BaseSchemaAddRecord, recordPair: BaseSchemaAddPair) {
+        this.ethAddress = ethAddress;
+        this.recordPair = recordPair;
+    }
+}
+
+export class BaseSchemaEthWallet extends BaseSchemaField {
+    public readonly definitions: BaseSchemaEthWalletDefinitions;
+    public readonly description: string = 'list of ETH wallets';
+    public readonly properties: BaseSchemaEthWalletProps = new BaseSchemaEthWalletProps();
+
+    constructor(definitions: BaseSchemaEthWalletDefinitions) {
+        super('object');
+        this.definitions = definitions;
+    }
+}
+
+export class BaseSchemaCombineDefinitions {
+    public readonly ethAddress: BaseSchemaAddRecord;
+    public readonly recordPair: BaseSchemaAddPair;
+    public readonly ethWallets: BaseSchemaEthWallet;
+
+    constructor(ethAddress: BaseSchemaAddRecord, recordPair: BaseSchemaAddPair, ethWallets: BaseSchemaEthWallet) {
+        this.ethAddress = ethAddress;
+        this.ethWallets = ethWallets;
+        this.recordPair = recordPair;
+    }
+}
+
+export class BaseSchemaCombineProps {
+    public readonly baseID: BaseSchemaField = new BaseSchemaField();
+    public readonly email: BaseSchemaField = new BaseSchemaField();
+    public readonly wealth: BaseSchemaField = new BaseSchemaField('string', 'wealth in USD');
+    // tslint:disable-next-line:variable-name
+    public readonly eth_wallets: BaseSchemaFieldObject = new BaseSchemaFieldObject('#/definitions/ethWallets');
+}
+
+export class BaseSchemaCombine extends BaseSchemaField {
+    public readonly definitions: BaseSchemaCombineDefinitions;
+    public readonly properties: BaseSchemaCombineProps = new BaseSchemaCombineProps();
+
+    constructor(definitions: BaseSchemaCombineDefinitions) {
+        super('object', 'list of ETH wallets', ['baseID'], false);
+        this.definitions = definitions;
+    }
+}
+
+export class BaseSchema {
+
+    public static EthBaseAddrPair: BaseSchemaAddPair = new BaseSchemaAddPair();
+
+    public static EthAddrRecord: BaseSchemaAddRecord = new BaseSchemaAddRecord(
+        new BaseSchemaAddRecordDefinitions(BaseSchema.EthBaseAddrPair)
+    );
+
+    public static EthWallets: BaseSchemaEthWallet = new BaseSchemaEthWallet(
+        new BaseSchemaEthWalletDefinitions(BaseSchema.EthAddrRecord, BaseSchema.EthBaseAddrPair)
+    );
+
+    public static All: BaseSchemaCombine = new BaseSchemaCombine(
+        new BaseSchemaCombineDefinitions(BaseSchema.EthAddrRecord, BaseSchema.EthBaseAddrPair, BaseSchema.EthWallets)
+    );
+
+    private readonly ajvValidateAddr: Ajv.ValidateFunction;
+    private readonly ajvValidateBaseAddrPair: Ajv.ValidateFunction;
+    private readonly ajvValidateWallets: Ajv.ValidateFunction;
+
+    constructor() {
+        const ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
+
+        this.ajvValidateBaseAddrPair = ajv.compile(BaseSchema.EthBaseAddrPair);
+        this.ajvValidateAddr = ajv.compile(BaseSchema.EthAddrRecord);
+        this.ajvValidateWallets = ajv.compile(BaseSchema.EthWallets);
     }
 
-    public validateAddr(s: any): boolean {
-        return this.ajvValidateAddr(s);
+    public validateAddr(addrRecord: AddrRecord): boolean {
+        return this.ajvValidateAddr(addrRecord) as boolean;
     }
 
-    public validateWallets(s: any): boolean {
-        return this.ajvValidateWallets(s);
+    public validateWallets(walletsRecords: WalletsRecords): boolean {
+        return this.ajvValidateWallets(walletsRecords) as boolean;
     }
 
-    public validateBaseAddrPair(s: any): boolean {
-        return this.ajvValidateBaseAddrPair(s);
-    }
-
-    public validateAll(s: any): boolean {
-        return this.ajvValidateAll(s);
+    public validateBaseAddrPair(baseAddrPair: BaseAddrPair): boolean {
+        return this.ajvValidateBaseAddrPair(baseAddrPair) as boolean;
     }
 
 }

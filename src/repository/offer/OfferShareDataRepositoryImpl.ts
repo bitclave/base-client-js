@@ -1,10 +1,10 @@
-import { OfferShareDataRepository } from './OfferShareDataRepository';
-import OfferShareData from './../models/OfferShareData';
 import { AccountManager } from '../../manager/AccountManager';
 import { ProfileManager } from '../../manager/ProfileManager';
-import { HttpTransport } from '../source/http/HttpTransport';
 import { HttpMethod } from '../source/http/HttpMethod';
-import { Response } from './../source/http/Response';
+import { HttpTransport } from '../source/http/HttpTransport';
+import { Response } from '../source/http/Response';
+import OfferShareData from './../models/OfferShareData';
+import { OfferShareDataRepository } from './OfferShareDataRepository';
 
 export default class OfferShareDataRepositoryImpl implements OfferShareDataRepository {
 
@@ -21,27 +21,22 @@ export default class OfferShareDataRepositoryImpl implements OfferShareDataRepos
         this.profileManager = profileManager;
     }
 
-    async getShareData(owner: string, accepted: boolean): Promise<Array<OfferShareData>> {
+    public async getShareData(owner: string, accepted: boolean): Promise<Array<OfferShareData>> {
         const url = this.SHARE_DATA_API + `?owner=${owner}&accepted=${accepted.toString()}`;
         return this.transport
-          .sendRequest(url, HttpMethod.Get)
-          .then( (response: Response) => {
-            const result: Array<OfferShareData> = [];
-            for (let item of (response.json as Array<any>)) {
-                result.push(Object.assign(new OfferShareData(0, '', 0), item));
-            }
-            return result;
-          });
+            .sendRequest(url, HttpMethod.Get)
+            .then((response) => Object.keys(response.json)
+                .map(key => Object.assign(new OfferShareData(0, '', 0), response.json[key])));
     }
 
-    async acceptShareData(searchId: number, worth: string): Promise<void> {
+    public async acceptShareData(searchId: number, worth: string): Promise<void> {
         const publicKey: string = this.accountManager
             .getAccount()
             .publicKey;
 
         const nonceUrl: string = this.NONCE_DATA_API + publicKey;
 
-        const nonceResponse: Response = await this.transport.sendRequest (nonceUrl, HttpMethod.Get);
+        const nonceResponse: Response<number> = await this.transport.sendRequest(nonceUrl, HttpMethod.Get);
         let nonce = parseInt(await nonceResponse.json.toString(), 10);
 
         const acceptUrl: string = this.SHARE_DATA_API + `?offerSearchId=${searchId}`;

@@ -1,11 +1,11 @@
-import Base, { Offer, CompareAction, SearchRequest, OfferSearch } from '../../src/Base';
+import Base, { CompareAction, Offer, OfferSearch, SearchRequest } from '../../src/Base';
 import Account from '../../src/repository/models/Account';
-import { TransportFactory } from '../../src/repository/source/TransportFactory';
-import AuthenticatorHelper from '../AuthenticatorHelper';
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
+import { TransportFactory } from '../../src/repository/source/TransportFactory';
+import AuthenticatorHelper from '../AuthenticatorHelper';
 
-const should = require('chai')
+require('chai')
     .use(require('chai-as-promised'))
     .should();
 const someSigMessage = 'some unique message for signature';
@@ -35,8 +35,7 @@ describe('Verify Manager', async () => {
     const businessBase: Base = createBase();
     const baseAlice: Base = createBase();
 
-    let businessAccount: Account;
-    var accAlice: Account;
+    let accAlice: Account;
 
     function createBase(): Base {
         return new Base(
@@ -46,26 +45,28 @@ describe('Verify Manager', async () => {
             rpcSignerHost
         );
     }
+
     function offerFactory(): Offer {
-        const offerTags = new Map<String, String>([
-          ['product', 'car'],
-          ['color', 'red'],
-          ['producer', 'mazda'],
-          ['models', 'RX8']
+        const offerTags = new Map<string, string>([
+            ['product', 'car'],
+            ['color', 'red'],
+            ['producer', 'mazda'],
+            ['models', 'RX8']
         ]);
-        const compareUserTag = new Map<String, String>([
+        const compareUserTag = new Map<string, string>([
             ['age', '10']
         ]);
-        const rules = new Map<String, CompareAction>([
+        const rules = new Map<string, CompareAction>([
             ['age', CompareAction.MORE]
         ]);
-        const offer = new Offer(
-          'it is offer description',
-          'it is title of offer',
-          '', '1', offerTags, compareUserTag, rules
+
+        return new Offer(
+            'it is offer description',
+            'it is title of offer',
+            '', '1', offerTags, compareUserTag, rules
         );
-        return offer;
     }
+
     function requestFactory(): SearchRequest {
         return new SearchRequest(new Map([
             ['product', 'car'],
@@ -75,8 +76,9 @@ describe('Verify Manager', async () => {
         ]));
 
     }
+
     beforeEach(async () => {
-        businessAccount = await createUser(businessBase, passPhraseSeller);
+        await createUser(businessBase, passPhraseSeller);
         accAlice = await createUser(baseAlice, passPhraseAlisa);
     });
 
@@ -90,26 +92,29 @@ describe('Verify Manager', async () => {
             // create offer
             const offer = offerFactory();
             const businessOffer = await businessBase.offerManager.saveOffer(offer);
-            
+
             const searchRequest = requestFactory();
             const insertedSearchRequest = await baseAlice.searchManager.createRequest(searchRequest);
 
-            let offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
+            const offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
             await baseAlice.searchManager.addResultItem(offerSearch);
 
-            let searchRequests = (await baseAlice.searchManager.getSearchResult(insertedSearchRequest.id)).content;
+            const searchRequests = (await baseAlice.searchManager.getSearchResult(insertedSearchRequest.id)).content;
             searchRequests.length.should.be.eql(1);
 
-            const offerSearches = await baseAlice.verfiyManager.getOfferSearchesByIds([searchRequests[0].offerSearch.id]);
+            const offerSearches = await baseAlice.verifyManager
+                .getOfferSearchesByIds([searchRequests[0].offerSearch.id]);
+
             offerSearches.length.should.be.equal(1);
         } catch (e) {
             console.log(e);
             throw e;
         }
     });
+
     it('should get user list by publickeys', async () => {
         try {
-            const users = await baseAlice.verfiyManager.getAccountsByPublicKeys([accAlice.publicKey]);
+            const users = await baseAlice.verifyManager.getAccountsByPublicKeys([accAlice.publicKey]);
             users.length.should.be.equal(1);
         } catch (e) {
             console.log(e);

@@ -8,6 +8,6 @@ export interface MessageEncrypt {
 
     encryptPermissionsFields(recipient: string, data: Map<string, AccessRight>): Promise<string>;
 
-    encryptFile(file: any): Promise<any>;
+    encryptFile(file: string): Promise<string>;
 
 }

@@ -1,5 +1,5 @@
-import { HttpInterceptor } from './HttpInterceptor';
 import { RepositoryStrategyType } from '../../RepositoryStrategyType';
+import { HttpInterceptor } from './HttpInterceptor';
 import { InterceptorCortege } from './InterceptorCortege';
 
 export class RepositoryStrategyInterceptor implements HttpInterceptor {

@@ -1,28 +1,21 @@
-import Base, { Offer, CompareAction, SearchRequest, OfferResultAction, OfferSearch } from '../../src/Base';
+import Base, { CompareAction, Offer, OfferSearch, SearchRequest } from '../../src/Base';
 import Account from '../../src/repository/models/Account';
-import { CryptoUtils } from '../../src/utils/CryptoUtils';
-import DataRequest from '../../src/repository/models/DataRequest';
-import { TransportFactory } from '../../src/repository/source/TransportFactory';
-import { WealthPtr, WealthRecord } from '../../src/utils/types/BaseTypes';
-import AuthenticatorHelper from '../AuthenticatorHelper';
-import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
-import { WalletManager } from '../../src/manager/WalletManager';
-import { WalletUtils, WalletVerificationStatus } from '../../src/utils/WalletUtils';
-import { AccessRight } from '../../src/utils/keypair/Permissions';
-import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
-import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { OfferPrice } from '../../src/repository/models/OfferPrice';
 import { OfferPriceRules } from '../../src/repository/models/OfferPriceRules';
+import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
+import { TransportFactory } from '../../src/repository/source/TransportFactory';
+import { BasicLogger } from '../../src/utils/BasicLogger';
+import { AccessRight } from '../../src/utils/keypair/Permissions';
+import AuthenticatorHelper from '../AuthenticatorHelper';
 import OfferShareDataRepositoryImpl from './../../src/repository/offer/OfferShareDataRepositoryImpl';
-import { OfferShareDataRepository } from './../../src/repository/offer/OfferShareDataRepository';
 
-const should = require('chai').use(require('chai-as-promised')).should();
+require('chai').use(require('chai-as-promised')).should();
 const someSigMessage = 'some unique message for signature';
 
 const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
 const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
 
-const httpTransport = TransportFactory.createHttpTransport(baseNodeUrl);
+const httpTransport = TransportFactory.createHttpTransport(baseNodeUrl, new BasicLogger());
 const rpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
 const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
@@ -48,11 +41,13 @@ describe('Offer main scenario', async () => {
     const businessBase: Base = createBase();
     const userBase: Base = createBase();
 
-    // tslint:disable-next-line:max-line-length
-    const offerShareDataRepository = new OfferShareDataRepositoryImpl(httpTransport, businessBase.accountManager, businessBase.profileManager);
+    const offerShareDataRepository = new OfferShareDataRepositoryImpl(
+        httpTransport,
+        businessBase.accountManager,
+        businessBase.profileManager
+    );
 
     let businessAccount: Account;
-    let userAccount: Account;
 
     function createBase(): Base {
         return new Base(
@@ -62,23 +57,22 @@ describe('Offer main scenario', async () => {
             rpcSignerHost
         );
     }
+
     function offerFactory(isMultiPrices: boolean = false): Offer {
-        const offerTags = new Map<String, String>([
-          ['product', 'car'],
-          ['color', 'red'],
-          ['producer', 'mazda'],
-          ['models', 'RX8']
-        ]);
-        const compareUserTag = new Map<String, String>([
-            ['age', '10']
-        ]);
-        const rules = new Map<String, CompareAction>([
-            ['age', CompareAction.MORE]
-        ]);
+        const offerTags = new Map<string, string>(
+            [
+                ['product', 'car'],
+                ['color', 'red'],
+                ['producer', 'mazda'],
+                ['models', 'RX8']
+            ]
+        );
+        const compareUserTag = new Map<string, string>([['age', '10']]);
+        const rules = new Map<string, CompareAction>([['age', CompareAction.MORE]]);
         const offer = new Offer(
-          'it is offer description',
-          'it is title of offer',
-          '', '1', offerTags, compareUserTag, rules
+            'it is offer description',
+            'it is title of offer',
+            '', '1', offerTags, compareUserTag, rules
         );
         if (isMultiPrices) {
             offer.offerPrices = [
@@ -97,7 +91,7 @@ describe('Offer main scenario', async () => {
                 ),
                 new OfferPrice(
                     0, 'special price for young girls customers < 15', '0.9', [
-                      new OfferPriceRules(0, 'sex', 'female', CompareAction.EQUALLY),
+                        new OfferPriceRules(0, 'sex', 'female', CompareAction.EQUALLY),
                         new OfferPriceRules(0, 'age', '15', CompareAction.LESS)
                     ]
                 ),
@@ -112,26 +106,28 @@ describe('Offer main scenario', async () => {
 
         return offer;
     }
-    function requestFactory(): SearchRequest {
-        return new SearchRequest(new Map([
-            ['product', 'car'],
-            ['color', 'red'],
-            ['producer', 'mazda'],
-            ['models', 'RX8']
-        ]));
 
+    function requestFactory(): SearchRequest {
+        return new SearchRequest(new Map(
+            [
+                ['product', 'car'],
+                ['color', 'red'],
+                ['producer', 'mazda'],
+                ['models', 'RX8']
+            ]
+        ));
     }
+
     beforeEach(async () => {
         businessAccount = await createUser(businessBase, passPhraseSeller);
-        userAccount = await createUser(userBase, passPhraseBusinessBuyer);
+        await createUser(userBase, passPhraseBusinessBuyer);
     });
     after(async () => {
         // rpcClient.disconnect();
     });
 
-    // it.only('should select offer, price, confirmed and share data', async () => {
     it('should select offer, price, confirmed and share data', async () => {
-            try {
+        try {
 
             // Business:
             // create offer
@@ -162,7 +158,6 @@ describe('Offer main scenario', async () => {
             // select a proper offer
             const searchResults = (await userBase.searchManager.getSearchResult(userSearchRequest.id)).content;
             const searchResult: OfferSearch = searchResults[0].offerSearch;
-            const selectedOffer: Offer = searchResults[0].offer;
 
             // User:
             // get valid prices from the offer price list
@@ -185,11 +180,8 @@ describe('Offer main scenario', async () => {
             // get shared data
             const offerShare = await offerShareDataRepository.getShareData(pkBusiness, false);
             const offerShareData = offerShare[0];
-            // get client data
-            const clientData = await businessBase.profileManager
-                .getAuthorizedData(offerShareData.clientId, offerShareData.clientResponse);
 
-            const price =  offerShareData.worth;
+            const price = offerShareData.worth;
             price.should.be.eql('1.5');
 
         } catch (e) {
@@ -199,49 +191,42 @@ describe('Offer main scenario', async () => {
     });
 
     it('should add events to offerSearch', async () => {
-      try {
+        try {
+            // Business:
+            // create offer
+            const offer = offerFactory(true);
+            const businessOffer = await businessBase.offerManager.saveOffer(offer);
 
-      // Business:
-      // create offer
-      const offer = offerFactory(true);
-      const businessOffer = await businessBase.offerManager.saveOffer(offer);
+            // User:
+            // create user private data and upload ones to server
+            await userBase.profileManager.updateData(new Map([['age', '40']]));
+            await userBase.profileManager.updateData(new Map([['sex', 'male']]));
 
-      // User:
-      // create user private data and upload ones to server
-      await userBase.profileManager.updateData(new Map([['age', '40']]));
-      await userBase.profileManager.updateData(new Map([['sex', 'male']]));
+            // User:
+            // create search request and upload one to server
+            const request = requestFactory();
+            const userSearchRequest = await userBase.searchManager.createRequest(request);
 
-      // User:
-      // create search request and upload one to server
-      const request = requestFactory();
-      const userSearchRequest = await userBase.searchManager.createRequest(request);
+            // External Matcher:
+            // match the offer and the searchRequest
+            const offerSearch = new OfferSearch(userSearchRequest.id, businessOffer.id);
+            await userBase.searchManager.addResultItem(offerSearch);
 
-      // User:
-      // retrieve private data
-      const userData = await userBase.profileManager.getData();
+            // User:
+            // get OfferSearch (matched offer and searchRequesr data)
+            // select a proper offer
+            const searchResults = (await userBase.searchManager.getSearchResult(userSearchRequest.id)).content;
+            const searchResult: OfferSearch = searchResults[0].offerSearch;
 
-      // External Matcher:
-      // match the offer and the searchRequest
-      const offerSearch = new OfferSearch(userSearchRequest.id, businessOffer.id);
-      await userBase.searchManager.addResultItem(offerSearch);
+            await userBase.searchManager.addEventToOfferSearch('tram-param-pam', searchResult.id);
+            await userBase.searchManager.addEventToOfferSearch('ta-da-bada', searchResult.id);
+            const updated = (await userBase.searchManager.getSearchResult(userSearchRequest.id)).content;
 
-      // User:
-      // get OfferSearch (matched offer and searchRequesr data)
-      // select a proper offer
-      const searchResults = (await userBase.searchManager.getSearchResult(userSearchRequest.id)).content;
-      const searchResult: OfferSearch = searchResults[0].offerSearch;
-      const selectedOffer: Offer = searchResults[0].offer;
-
-      await userBase.searchManager.addEventToOfferSearch('tram-param-pam', searchResult.id);
-      await userBase.searchManager.addEventToOfferSearch('ta-da-bada', searchResult.id);
-      const updated = (await userBase.searchManager.getSearchResult(userSearchRequest.id)).content;
-
-      updated[0].offerSearch.events[0].should.be.eql('tram-param-pam');
-      updated[0].offerSearch.events[1].should.be.eql('ta-da-bada');
-    } catch (e) {
-        console.log(e);
-        throw e;
-    }
-  });
-
+            updated[0].offerSearch.events[0].should.be.eql('tram-param-pam');
+            updated[0].offerSearch.events[1].should.be.eql('ta-da-bada');
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    });
 });

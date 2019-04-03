@@ -8,6 +8,11 @@ export interface DataRequestRepository {
 
     getRequests(fromPk: string | null, toPk: string | null): Promise<Array<DataRequest>>;
 
-    grantAccessForOffer(offerId: number, clientPk: string, encryptedClientResponse: string, priceId: number): Promise<void>;
+    grantAccessForOffer(
+        offerId: number,
+        clientPk: string,
+        encryptedClientResponse: string,
+        priceId: number
+    ): Promise<void>;
 
 }

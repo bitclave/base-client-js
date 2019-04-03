@@ -1,18 +1,23 @@
 export interface Logger {
-    error(message: any, ...args: any[]): void;
-    info(message: any, ...args: any[]): void;
-    debug(message: any, ...args: any[]): void;
+
+    error(message: string, ...args: Array<object | string | number>): void;
+
+    info(message: string, ...args: Array<object | string | number>): void;
+
+    debug(message: string, ...args: Array<object | string | number>): void;
 }
 
 export class BasicLogger implements Logger {
 
-    error(message: any, ...args: any[]) {
+    public error(message: string, ...args: Array<object | string | number>) {
         console.error('[error]' + message, args);
     }
-    info(message: any, ...args: any[]) {
+
+    public info(message: string, ...args: Array<object | string | number>) {
         console.log('[info]' + message, args);
     }
-    debug(message: any, ...args: any[]) {
+
+    public debug(message: string, ...args: Array<object | string | number>) {
         console.log('[debug]' + message, args);
     }
 }

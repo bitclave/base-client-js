@@ -1,7 +1,7 @@
-import SearchRequest from '../repository/models/SearchRequest';
-import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import OfferSearch, { OfferResultAction } from '../repository/models/OfferSearch';
+import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import { Page } from '../repository/models/Page';
+import SearchRequest from '../repository/models/SearchRequest';
 
 export interface SearchManager {
 
@@ -11,7 +11,7 @@ export interface SearchManager {
 
     cloneRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
 
-    cloneOfferSearch(id: number, searchRequest: SearchRequest): Promise<OfferSearch[]>;
+    cloneOfferSearch(id: number, searchRequest: SearchRequest): Promise<Array<OfferSearch>>;
 
     getMyRequests(id: number): Promise<Array<SearchRequest>>;
 
@@ -30,7 +30,7 @@ export interface SearchManager {
 
     getSearchResultByOfferSearchId(offerSearchId: number): Promise<Page<OfferSearchResultItem>>;
 
-    getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>>
+    getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>>;
 
     getUserOfferSearches(
         page?: number,

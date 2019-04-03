@@ -1,6 +1,7 @@
 const Path = require('path');
 const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
 const DeepMerge = require('deep-merge');
+const TSLintPlugin = require('tslint-webpack-plugin');
 
 const DeepCopy = DeepMerge((target, source, key) => {
     if (target instanceof Array) {
@@ -12,6 +13,7 @@ const DeepCopy = DeepMerge((target, source, key) => {
 const nodeConfig = {
     entry: './src/Base.ts',
     devtool: 'source-map',
+    mode: 'production',
     node: {
         fs: 'empty',
         child_process: 'empty'
@@ -33,9 +35,10 @@ const nodeConfig = {
                     {loader: Path.join(__dirname, "./LogLoader.js")}
                 ],
                 exclude: /node_modules/
-            }
+            },
         ]
     },
+
     resolve: {
         modules: [Path.resolve('./node_modules'), Path.resolve('./src')],
         extensions: ['.tsx', '.ts', '.js']
@@ -48,6 +51,12 @@ const nodeConfig = {
         umdNamedDefine: true
     },
     plugins: [
+        new TSLintPlugin({
+            waitForLinting: true,
+            warningsAsError: true,
+            config: './tslint.json',
+            files: ['./src/**/*.ts', "./test/**/*.ts"]
+        }),
         new TypedocWebpackPlugin({
             out: './docs',
             module: 'commonjs',

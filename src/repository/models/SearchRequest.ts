@@ -1,23 +1,26 @@
 import { JsonUtils } from '../../utils/JsonUtils';
+import { DeepCopy } from './ObjectClone';
 
-export default class SearchRequest {
+export default class SearchRequest extends DeepCopy<SearchRequest> {
 
-    readonly id: number = 0;
-    readonly owner: string = '0x0';
-    tags: Map<String, String>;
-    createdAt: Date = new Date();
-    updatedAt: Date = new Date();
+    public readonly id: number = 0;
+    public readonly owner: string = '0x0';
+    public tags: Map<string, string>;
+    public createdAt: Date = new Date();
+    public updatedAt: Date = new Date();
 
-    public static fromJson(json: any): SearchRequest {
-        const searchRequest: SearchRequest = Object.assign(new SearchRequest(), json);
-        searchRequest.tags = JsonUtils.jsonToMap(json.tags);
-        searchRequest.createdAt = new Date(json.createdAt);
-        searchRequest.updatedAt = new Date(json.updatedAt);
+    public static fromJson(json: object): SearchRequest {
+        const rawData = json as JsonObject<SearchRequest>;
+        const searchRequest: SearchRequest = Object.assign(new SearchRequest(), rawData);
+        searchRequest.tags = JsonUtils.jsonToMap(rawData.tags as object);
+        searchRequest.createdAt = new Date(rawData.createdAt as string);
+        searchRequest.updatedAt = new Date(rawData.updatedAt as string);
 
         return searchRequest;
     }
 
-    constructor(tags: Map<String, String> = new Map()) {
+    constructor(tags: Map<string, string> = new Map()) {
+        super();
         this.tags = tags;
     }
 
@@ -31,4 +34,7 @@ export default class SearchRequest {
         return json;
     }
 
+    protected deepCopyFromJson(): SearchRequest {
+        return SearchRequest.fromJson(this.toJson());
+    }
 }

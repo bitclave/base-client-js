@@ -2,27 +2,28 @@ import { HttpMethod } from './HttpMethod';
 
 export class InterceptorCortege {
 
-    path: string;
-    method: HttpMethod;
-    headers: Map<string, string>;
-    blobRequest: boolean;
-    data?: any;
-    file?: File;
+    public path: string;
+    public method: HttpMethod;
+    public headers: Map<string, string>;
+    public data?: object | string | number;
 
-    constructor(path: string, method: HttpMethod, headers: Map<string, string>, blobRequest: boolean, data?: any, file?: File) {
+    constructor(
+        path: string,
+        method: HttpMethod,
+        headers: Map<string, string>,
+        data?: object | string | number,
+    ) {
         this.path = path;
         this.method = method;
         this.headers = headers;
-        this.blobRequest = blobRequest;
         this.data = data;
-        this.file = file;
     }
 
-    isTransaction(): boolean {
-        return this.method == HttpMethod.Delete ||
-            this.method == HttpMethod.Put ||
-            this.method == HttpMethod.Patch ||
-            this.method == HttpMethod.Post;
+    public isTransaction(): boolean {
+        return this.method === HttpMethod.Delete ||
+            this.method === HttpMethod.Put ||
+            this.method === HttpMethod.Patch ||
+            this.method === HttpMethod.Post;
     }
 
 }

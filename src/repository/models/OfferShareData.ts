@@ -1,13 +1,16 @@
-export default class OfferShareData {
-    offerSearchId: number = 0;
-    offerOwner: string = '0x0';
-    clientId: string = '0x0';
-    clientResponse: string = '';
-    worth: string = '0';
-    accepted: boolean = false;
-    priceId: number;
+import { DeepCopy } from './ObjectClone';
+
+export default class OfferShareData extends DeepCopy<OfferShareData> {
+    public readonly offerSearchId: number = 0;
+    public offerOwner: string = '0x0';
+    public clientId: string = '0x0';
+    public readonly clientResponse: string = '';
+    public worth: string = '0';
+    public accepted: boolean = false;
+    public readonly priceId: number;
 
     constructor(offerSearchId: number, clientResponse: string, priceId: number) {
+        super();
         this.offerSearchId = offerSearchId;
         this.clientResponse = clientResponse;
         this.priceId = priceId;

@@ -1,7 +1,7 @@
+import Account from '../repository/models/Account';
+import OfferSearch from '../repository/models/OfferSearch';
 import { VerifyRepository } from '../repository/verify/VerifyRepository';
 import { VerifyManager } from './VerifyManager';
-import OfferSearch from '../repository/models/OfferSearch';
-import Account from '../repository/models/Account';
 
 export class VerifyManagerImpl implements VerifyManager {
 
@@ -11,10 +11,11 @@ export class VerifyManagerImpl implements VerifyManager {
         this.verifyRepository = verifyRepository;
     }
 
-    public getOfferSearchesByIds(ids: number[]): Promise<OfferSearch[]> {
+    public getOfferSearchesByIds(ids: Array<number>): Promise<Array<OfferSearch>> {
         return this.verifyRepository.getOfferSearchesByIds(ids);
     }
-    public getAccountsByPublicKeys(publicKeys: string[]): Promise<Account[]> {
+
+    public getAccountsByPublicKeys(publicKeys: Array<string>): Promise<Array<Account>> {
         return this.verifyRepository.getAccountsByPublicKeys(publicKeys);
     }
 }
