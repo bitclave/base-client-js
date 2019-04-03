@@ -55,7 +55,7 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
 
                         } else {
                             resolve();
-                            this.logger.error('__LOC__: Error runTransaction request', result);
+                            this.logger.error('Error runTransaction request', result);
                             transaction.reject(result);
                             this.callNextRequest();
                         }
@@ -63,7 +63,7 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
 
                     request.onerror = () => {
                         const result: Response<object> = new Response(request.responseText, request.status);
-                        this.logger.error('__LOC__: Error runTransaction onErrorRequest', result);
+                        this.logger.error('Error runTransaction onErrorRequest', result);
                         resolve();
                         transaction.reject(result);
                         this.callNextRequest();

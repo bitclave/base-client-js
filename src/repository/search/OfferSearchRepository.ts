@@ -1,4 +1,4 @@
-import OfferSearch from '../models/OfferSearch';
+import OfferSearch, { OfferResultAction } from '../models/OfferSearch';
 import OfferSearchResultItem from '../models/OfferSearchResultItem';
 import { Page } from '../models/Page';
 import SearchRequest from '../models/SearchRequest';
@@ -17,8 +17,8 @@ export interface OfferSearchRepository {
         page?: number,
         size?: number,
         unique?: boolean,
-        group?: Array<string>,
-        state?: Array<string>
+        searchIds?: Array<number>,
+        state?: Array<OfferResultAction>
     ): Promise<Page<OfferSearchResultItem>>;
 
     getSearchResult(clientId: string, searchRequestId: number): Promise<Page<OfferSearchResultItem>>;

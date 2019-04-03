@@ -32,21 +32,10 @@ const nodeConfig = {
                 use: [
                     {loader: 'babel-loader'},
                     {loader: 'ts-loader'},
+                    {loader: Path.join(__dirname, "./LogLoader.js")}
                 ],
                 exclude: /node_modules/
             },
-            // {
-            //     test: /\.ts(x?)$/,
-            //     enforce: 'pre',
-            //     use: [
-            //         {
-            //             loader: 'tslint-loader',
-            //             options: {
-            //                 configFile: './tslint.json'
-            //             }
-            //         }
-            //     ]
-            // }
         ]
     },
 
