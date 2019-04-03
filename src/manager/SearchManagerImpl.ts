@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs/Rx';
 import Account from '../repository/models/Account';
-import OfferSearch from '../repository/models/OfferSearch';
+import OfferSearch, { OfferResultAction } from '../repository/models/OfferSearch';
 import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import { Page } from '../repository/models/Page';
 import SearchRequest from '../repository/models/SearchRequest';
@@ -80,11 +80,11 @@ export class SearchManagerImpl implements SearchManager {
         page: number = 0,
         size: number = 20,
         unique: boolean = false,
-        group: Array<string> = [],
-        state: Array<string> = []
+        searchIds: Array<number> = [],
+        state: Array<OfferResultAction> = []
     ): Promise<Page<OfferSearchResultItem>> {
         return this.offerSearchRepository
-            .getUserOfferSearches(this.account.publicKey, page, size, unique, group, state);
+            .getUserOfferSearches(this.account.publicKey, page, size, unique, searchIds, state);
     }
 
     public getSearchResultByOfferSearchId(offerSearchId: number): Promise<Page<OfferSearchResultItem>> {

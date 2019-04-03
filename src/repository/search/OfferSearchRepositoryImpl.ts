@@ -1,6 +1,6 @@
 import { JsonUtils } from '../../utils/JsonUtils';
 import Offer from '../models/Offer';
-import OfferSearch from '../models/OfferSearch';
+import OfferSearch, { OfferResultAction } from '../models/OfferSearch';
 import OfferSearchResultItem from '../models/OfferSearchResultItem';
 import { Page } from '../models/Page';
 import SearchRequest from '../models/SearchRequest';
@@ -17,7 +17,9 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     private readonly OFFER_SEARCH_CLAIM_PURCHASE_API = '/v1/search/result/claimpurchase/{id}';
     private readonly OFFER_SEARCH_ADD_API = '/v1/search/result/';
     private readonly OFFER_SEARCH_BY_PARAMS_API =
-        '/v1/search/result/user?owner={owner}&group={group}&state={state}&unique={unique}&page={page}&size={size}';
+        '/v1/search/result/user?owner={owner}&searchIds={searchIds}' +
+        '&state={state}&unique={unique}&page={page}&size={size}';
+
     private readonly OFFER_SEARCH_GET_BY_REQUEST_OR_SEARCH_API =
         '/v1/search/result?searchRequestId={searchRequestId}&offerSearchId={offerSearchId}';
     private readonly OFFER_SEARCH_ADD_EVENT_API = '/v1/search/result/event/{id}';
@@ -52,15 +54,15 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         page: number = 0,
         size: number = 20,
         unique: boolean = false,
-        group: Array<string> = [],
-        state: Array<string> = []
+        searchIds: Array<number> = [],
+        state: Array<OfferResultAction> = []
     ): Promise<Page<OfferSearchResultItem>> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_BY_PARAMS_API
                 .replace('{owner}', clientId)
                 .replace('{page}', (page || 0).toString())
                 .replace('{size}', (size || 20).toString())
-                .replace('{group}', (group || []).join(','))
+                .replace('{searchIds}', (searchIds || []).join(','))
                 .replace('{state}', (state || []).join(','))
                 .replace('{unique}', (unique ? '1' : '0'))
             ,
