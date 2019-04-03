@@ -16,13 +16,8 @@ The repository also includes an example application, demonstrating how to integr
 # How to build
 - from root directory run
 ```
-./install_lib.sh
+npm run build
 
-```
-# How to run example application
-- from example directory run
-```
-npm start
 ```
 
 # How to run tests
