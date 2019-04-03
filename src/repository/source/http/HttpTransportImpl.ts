@@ -41,7 +41,7 @@ export class HttpTransportImpl implements HttpTransport {
         return this;
     }
 
-    sendRequest<T>(method: HttpMethod, data?: object | string): Promise<Response<T>>
+    public sendRequest<T>(method: HttpMethod, data?: object | string): Promise<Response<T>>;
     public sendRequest<T>(
         path: string,
         method: HttpMethod,
