@@ -21,6 +21,7 @@ import { SiteDataSource } from './repository/assistant/SiteDataSource';
 import { ClientDataRepository } from './repository/client/ClientDataRepository';
 import ClientDataRepositoryImpl from './repository/client/ClientDataRepositoryImpl';
 import Account from './repository/models/Account';
+import { JsonObject } from './repository/models/JsonObject';
 import Offer from './repository/models/Offer';
 import { OfferPrice } from './repository/models/OfferPrice';
 import { OfferPriceRules } from './repository/models/OfferPriceRules';
@@ -89,6 +90,7 @@ export {
 export {
     Account,
     AccountManager,
+    JsonObject,
     ProfileManager,
     Page,
     Pageable,

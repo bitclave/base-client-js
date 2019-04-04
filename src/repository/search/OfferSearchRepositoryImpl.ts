@@ -1,4 +1,5 @@
 import { JsonUtils } from '../../utils/JsonUtils';
+import { JsonObject } from '../models/JsonObject';
 import Offer from '../models/Offer';
 import OfferSearch, { OfferResultAction } from '../models/OfferSearch';
 import OfferSearchResultItem from '../models/OfferSearchResultItem';

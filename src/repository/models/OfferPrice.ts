@@ -1,4 +1,5 @@
 import { AccessRight } from '../../utils/keypair/Permissions';
+import { JsonObject } from './JsonObject';
 import { DeepCopy } from './ObjectClone';
 import { OfferPriceRules } from './OfferPriceRules';
 

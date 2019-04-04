@@ -1,3 +1,5 @@
+import { JsonObject } from './JsonObject';
+
 export abstract class DeepCopy<T> {
     // tslint:disable-next-line:callable-types
     private readonly creator: { new(): T; };

@@ -1,3 +1,4 @@
+import { JsonObject } from './JsonObject';
 import { DeepCopy } from './ObjectClone';
 import Offer from './Offer';
 import OfferSearch from './OfferSearch';
