@@ -1,3 +1,4 @@
+import { JsonObject } from './JsonObject';
 import { DeepCopy } from './ObjectClone';
 
 export class Pageable extends DeepCopy<Pageable> {

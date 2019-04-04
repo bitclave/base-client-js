@@ -1,3 +1,5 @@
+import { JsonObject } from '../../models/JsonObject';
+
 export class Response<T> {
 
     private readonly _json: JsonObject<T>;

@@ -7,7 +7,3 @@ declare interface XMLHttpRequestInitializer extends XMLHttpRequest {
 declare interface WindowXMLHttpRequest extends Window {
     XMLHttpRequest: XMLHttpRequestInitializer;
 }
-
-declare interface JsonObject<T> {
-    [key: string]: object | string | number | boolean | T | undefined;
-}

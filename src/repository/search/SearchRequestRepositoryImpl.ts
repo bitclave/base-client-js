@@ -1,3 +1,4 @@
+import { JsonObject } from '../models/JsonObject';
 import SearchRequest from '../models/SearchRequest';
 import { HttpMethod } from '../source/http/HttpMethod';
 import { HttpTransport } from '../source/http/HttpTransport';

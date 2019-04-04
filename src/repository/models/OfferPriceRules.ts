@@ -1,4 +1,5 @@
 import { CompareAction } from './CompareAction';
+import { JsonObject } from './JsonObject';
 import { DeepCopy } from './ObjectClone';
 
 export class OfferPriceRules extends DeepCopy<OfferPriceRules> {

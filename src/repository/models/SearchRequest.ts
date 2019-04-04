@@ -1,4 +1,5 @@
 import { JsonUtils } from '../../utils/JsonUtils';
+import { JsonObject } from './JsonObject';
 import { DeepCopy } from './ObjectClone';
 
 export default class SearchRequest extends DeepCopy<SearchRequest> {
