@@ -139,6 +139,11 @@ export class AccountManagerImpl implements AccountManager {
         return this.authAccountBehavior.getValue();
     }
 
+    public getPublicKeyFromMnemonic(mnemonicPhrase: string): Promise<string> {
+        return this.keyPairCreator.createKeyPair(mnemonicPhrase)
+            .then(res => res.publicKey);
+    }
+
     private checkSigMessage(message: string) {
         if (message == null || message === undefined || message.length < 10) {
             throw new Error('message for signature should be have min 10 symbols');
