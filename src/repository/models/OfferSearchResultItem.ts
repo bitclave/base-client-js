@@ -1,5 +1,5 @@
+import { DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
-import { DeepCopy } from './ObjectClone';
 import Offer from './Offer';
 import OfferSearch from './OfferSearch';
 
@@ -25,7 +25,7 @@ export default class OfferSearchResultItem extends DeepCopy<OfferSearchResultIte
     public toJson(): object {
         return {
             offerSearch: this.offerSearch.toJson(),
-            offer: this.toJson()
+            offer: this.offer.toJson()
         };
     }
 

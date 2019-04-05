@@ -1,4 +1,4 @@
-import { DeepCopy } from './ObjectClone';
+import { DeepCopy } from './DeepCopy';
 
 export default class OfferSearch extends DeepCopy<OfferSearch> {
 

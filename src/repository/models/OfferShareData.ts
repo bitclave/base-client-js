@@ -1,4 +1,4 @@
-import { DeepCopy } from './ObjectClone';
+import { DeepCopy } from './DeepCopy';
 
 export default class OfferShareData extends DeepCopy<OfferShareData> {
     public readonly offerSearchId: number = 0;

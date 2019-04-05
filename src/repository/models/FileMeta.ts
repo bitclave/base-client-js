@@ -1,4 +1,4 @@
-import { DeepCopy } from './ObjectClone';
+import { DeepCopy } from './DeepCopy';
 
 export class FileMeta extends DeepCopy<FileMeta> {
 

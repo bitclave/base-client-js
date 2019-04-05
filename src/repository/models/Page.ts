@@ -1,5 +1,5 @@
+import { DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
-import { DeepCopy } from './ObjectClone';
 
 export class Pageable extends DeepCopy<Pageable> {
     public readonly sort: string | undefined;
