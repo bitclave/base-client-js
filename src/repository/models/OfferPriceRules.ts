@@ -1,6 +1,6 @@
 import { CompareAction } from './CompareAction';
+import { DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
-import { DeepCopy } from './ObjectClone';
 
 export class OfferPriceRules extends DeepCopy<OfferPriceRules> {
     public readonly id: number;

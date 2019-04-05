@@ -21,6 +21,9 @@ import { SiteDataSource } from './repository/assistant/SiteDataSource';
 import { ClientDataRepository } from './repository/client/ClientDataRepository';
 import ClientDataRepositoryImpl from './repository/client/ClientDataRepositoryImpl';
 import Account from './repository/models/Account';
+import DataRequest from './repository/models/DataRequest';
+import { DeepCopy } from './repository/models/DeepCopy';
+import { FileMeta } from './repository/models/FileMeta';
 import { JsonObject } from './repository/models/JsonObject';
 import Offer from './repository/models/Offer';
 import { OfferPrice } from './repository/models/OfferPrice';
@@ -29,7 +32,10 @@ import OfferSearch, { OfferResultAction } from './repository/models/OfferSearch'
 import OfferSearchResultItem from './repository/models/OfferSearchResultItem';
 import OfferShareData from './repository/models/OfferShareData';
 import { Page, Pageable } from './repository/models/Page';
+import Profile from './repository/models/Profile';
 import SearchRequest from './repository/models/SearchRequest';
+import SimpleAccount from './repository/models/SimpleAccount';
+import { Site } from './repository/models/Site';
 import { OfferRepository } from './repository/offer/OfferRepository';
 import OfferRepositoryImpl from './repository/offer/OfferRepositoryImpl';
 import { OfferShareDataRepository } from './repository/offer/OfferShareDataRepository';
@@ -92,9 +98,13 @@ export {
     AccountManager,
     JsonObject,
     ProfileManager,
+    DeepCopy,
+    FileMeta,
     Page,
     Pageable,
+    Profile,
     DataRequestManager,
+    DataRequest,
     OfferManager,
     SearchManager,
     WalletManager,
@@ -105,6 +115,8 @@ export {
     OfferPriceRules,
     SearchRequest,
     OfferSearch,
+    Site,
+    SimpleAccount,
     OfferSearchResultItem,
     OfferResultAction,
     OfferShareData,

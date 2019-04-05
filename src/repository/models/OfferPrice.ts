@@ -1,6 +1,6 @@
 import { AccessRight } from '../../utils/keypair/Permissions';
+import { DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
-import { DeepCopy } from './ObjectClone';
 import { OfferPriceRules } from './OfferPriceRules';
 
 export class OfferPrice extends DeepCopy<OfferPrice> {

@@ -1,4 +1,4 @@
-import { DeepCopy } from './ObjectClone';
+import { DeepCopy } from './DeepCopy';
 
 export class Site extends DeepCopy<Site> {
 

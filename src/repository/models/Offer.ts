@@ -1,6 +1,6 @@
 import { JsonUtils } from '../../utils/JsonUtils';
 import { CompareAction } from './CompareAction';
-import { DeepCopy } from './ObjectClone';
+import { DeepCopy } from './DeepCopy';
 import { OfferPrice } from './OfferPrice';
 import { OfferPriceRules } from './OfferPriceRules';
 
