@@ -125,7 +125,7 @@ describe('Verify Manager', async () => {
     it('should get all users', async () => {
         try {
             const users = await baseAlice.verifyManager.getAllAccounts();
-            users.length.should.be.equal(1);
+            users.length.should.be.greaterThan(1);
         } catch (e) {
             console.log(e);
             throw e;
