@@ -18,4 +18,8 @@ export class VerifyManagerImpl implements VerifyManager {
     public getAccountsByPublicKeys(publicKeys: Array<string>): Promise<Array<Account>> {
         return this.verifyRepository.getAccountsByPublicKeys(publicKeys);
     }
+
+    public getAllAccounts(): Promise<Array<Account>> {
+        return this.verifyRepository.getAllAccounts();
+    }
 }

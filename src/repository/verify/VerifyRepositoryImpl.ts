@@ -8,6 +8,7 @@ export class VerifyRepositoryImpl implements VerifyRepository {
 
     private readonly VERIFY_GET_OFFER_SEARCH_API = '/dev/verify/offersearch/ids';
     private readonly VERIFY_GET_ACCOUNTS_API = '/dev/verify/account/publickeys';
+    private readonly VERIFY_GET_ALL_ACCOUNTS_API = '/dev/verify/account/all';
 
     private transport: HttpTransport;
 
@@ -28,6 +29,13 @@ export class VerifyRepositoryImpl implements VerifyRepository {
             this.VERIFY_GET_ACCOUNTS_API,
             HttpMethod.Post,
             publicKeys
+        ).then((response) => this.jsonToAccountList(response.json));
+    }
+
+    public getAllAccounts(): Promise<Array<Account>> {
+        return this.transport.sendRequest(
+            this.VERIFY_GET_ALL_ACCOUNTS_API,
+            HttpMethod.Get
         ).then((response) => this.jsonToAccountList(response.json));
     }
 
