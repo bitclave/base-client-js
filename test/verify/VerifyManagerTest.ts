@@ -121,4 +121,14 @@ describe('Verify Manager', async () => {
             throw e;
         }
     });
+
+    it('should get all users', async () => {
+        try {
+            const users = await baseAlice.verifyManager.getAllAccounts();
+            users.length.should.be.equal(1);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    });
 });
