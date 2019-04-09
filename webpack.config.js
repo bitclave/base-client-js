@@ -15,6 +15,8 @@ const nodeConfig = {
     devtool: 'source-map',
     mode: 'production',
     node: {
+        crypto: true,
+        Buffer: true,
         fs: 'empty',
         child_process: 'empty'
     },
