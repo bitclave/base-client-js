@@ -13,7 +13,7 @@ const DeepCopy = DeepMerge((target, source, key) => {
 const nodeConfig = {
     entry: './src/Base.ts',
     devtool: 'source-map',
-    mode: 'production',
+    mode: 'development',
     node: {
         crypto: true,
         Buffer: true,
