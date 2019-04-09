@@ -48,7 +48,7 @@ export default class ClientDataRepositoryImpl implements ClientDataRepository {
 
     public uploadFile(pk: string, file: FileMeta, fileId?: number | null): Promise<FileMeta> {
         let path: string = this.FILE_UPLOAD_FILE.replace('{pk}', pk);
-        if (fileId! > 0) {
+        if (fileId && fileId > 0) {
             path += fileId!.toString() + '/';
         }
 

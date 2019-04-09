@@ -156,7 +156,7 @@ export class BitKeyPair implements KeyPairHelper {
             .publicKey(bitcore.PublicKey.fromString(senderPk));
 
         return ecies
-            .decrypt(new Buffer(encrypted, 'base64'))
+            .decrypt(Buffer.from(encrypted, 'base64'))
             .toString();
     }
 
