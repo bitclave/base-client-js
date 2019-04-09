@@ -11,7 +11,7 @@ The repository also includes an example application, demonstrating how to integr
 
 # Overview
 
-![Alt text](https://github.com/bitclave/base-client-js/blob/develop/images/base_phase1_overview.png)
+![Alt text](https://github.com/bitclave/base-client-demo/blob/master/images/base_phase1_overview.png)
 
 # How to build
 - from root directory run
