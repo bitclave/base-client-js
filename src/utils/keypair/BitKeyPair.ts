@@ -41,6 +41,17 @@ export class BitKeyPair implements KeyPairHelper {
     private readonly origin: string;
     private isConfidential: boolean = false;
 
+    public static getPublicKeyFromMnemonic(passPhrase: string): string {
+        const pbkdf2: string = CryptoUtils.PBKDF2(passPhrase, 256);
+        const hash = bitcore.crypto.Hash.sha256(new bitcore.deps.Buffer(pbkdf2));
+        const bn = bitcore.crypto.BN.fromBuffer(hash);
+        const privateKey = new bitcore.PrivateKey(bn);
+        const publicKey = privateKey.toPublicKey();
+
+        const publicKeyHex = publicKey.toString(16);
+        return publicKeyHex;
+    }
+    
     constructor(permissionsSource: PermissionsSource, siteDataSource: SiteDataSource, origin: string) {
         this.permissions = new Permissions();
         this.permissionsSource = permissionsSource;

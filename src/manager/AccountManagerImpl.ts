@@ -2,6 +2,7 @@ import { BehaviorSubject } from 'rxjs/Rx';
 import { AccountRepository } from '../repository/account/AccountRepository';
 import Account from '../repository/models/Account';
 import { BasicLogger, Logger } from '../utils/BasicLogger';
+import { BitKeyPair } from '../utils/keypair/BitKeyPair';
 import { KeyPair } from '../utils/keypair/KeyPair';
 import { KeyPairHelper } from '../utils/keypair/KeyPairHelper';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
@@ -140,8 +141,12 @@ export class AccountManagerImpl implements AccountManager {
     }
 
     public getPublicKeyFromMnemonic(mnemonicPhrase: string): Promise<string> {
-        return this.keyPairCreator.createKeyPair(mnemonicPhrase)
-            .then(res => res.publicKey);
+        // return this.keyPairCreator.createKeyPair(mnemonicPhrase)
+        //     .then(res => res.publicKey);
+
+        return new Promise<string>(resolve => {
+            resolve(BitKeyPair.getPublicKeyFromMnemonic(mnemonicPhrase));
+        });
     }
 
     private checkSigMessage(message: string) {

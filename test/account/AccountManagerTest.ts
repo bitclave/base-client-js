@@ -69,6 +69,8 @@ describe('Account Manager', async () => {
     it('should register same account and change it', async () => {
         await accountManager.authenticationByAccessToken(alisaAccessToken, messageForSigAlisa);
         authAccountBehavior.getValue().publicKey.should.be.equal(accountAlisa.publicKey);
+
+        (await accountManager.getPublicKeyFromMnemonic(passPhraseAlisa)).should.be.equal(accountAlisa.publicKey);
     });
 
     it('should valid public key from sig in registration and check account', async () => {
