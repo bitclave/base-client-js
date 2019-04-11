@@ -3,6 +3,8 @@ import { AccountManager } from './manager/AccountManager';
 import { AccountManagerImpl } from './manager/AccountManagerImpl';
 import { DataRequestManager } from './manager/DataRequestManager';
 import { DataRequestManagerImpl } from './manager/DataRequestManagerImpl';
+import { ExternalServicesManager } from './manager/ExternalServicesManager';
+import { ExternalServicesManagerImpl } from './manager/ExternalServicesManagerImpl';
 import { OfferManager } from './manager/OfferManager';
 import { OfferManagerImpl } from './manager/OfferManagerImpl';
 import { ProfileManager } from './manager/ProfileManager';
@@ -34,6 +36,10 @@ import OfferShareData from './repository/models/OfferShareData';
 import { Page, Pageable } from './repository/models/Page';
 import Profile from './repository/models/Profile';
 import SearchRequest from './repository/models/SearchRequest';
+import { ExternalService } from './repository/models/services/ExternalService';
+import { HttpServiceCall } from './repository/models/services/HttpServiceCall';
+import { ServiceCall, ServiceCallType } from './repository/models/services/ServiceCall';
+import { ServiceResponse } from './repository/models/services/ServiceResponse';
 import SimpleAccount from './repository/models/SimpleAccount';
 import { Site } from './repository/models/Site';
 import { OfferRepository } from './repository/offer/OfferRepository';
@@ -47,6 +53,8 @@ import { OfferSearchRepository } from './repository/search/OfferSearchRepository
 import { OfferSearchRepositoryImpl } from './repository/search/OfferSearchRepositoryImpl';
 import { SearchRequestRepository } from './repository/search/SearchRequestRepository';
 import SearchRequestRepositoryImpl from './repository/search/SearchRequestRepositoryImpl';
+import { ExternalServicesRepository } from './repository/services/ExternalServicesRepository';
+import { ExternalServicesRepositoryImpl } from './repository/services/ExternalServicesRepositoryImpl';
 import { SiteRepository } from './repository/site/SiteRepository';
 import { SiteRepositoryImpl } from './repository/site/SiteRepositoryImpl';
 import { HttpTransport } from './repository/source/http/HttpTransport';
@@ -99,6 +107,13 @@ export {
     JsonObject,
     ProfileManager,
     DeepCopy,
+    ServiceCallType,
+    ExternalService,
+    HttpServiceCall,
+    ServiceResponse,
+    ServiceCall,
+    ExternalServicesManager,
+    ExternalServicesRepository,
     FileMeta,
     Page,
     Pageable,
@@ -136,6 +151,7 @@ export default class Base {
     private readonly _offerManager: OfferManager;
     private readonly _searchManager: SearchManager;
     private readonly _verifyManager: VerifyManager;
+    private readonly _externalServicesManager: ExternalServicesManager;
     private readonly _authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
     private readonly _repositoryStrategyInterceptor: RepositoryStrategyInterceptor;
 
@@ -177,6 +193,7 @@ export default class Base {
         const searchRequestRepository: SearchRequestRepository = new SearchRequestRepositoryImpl(transport);
         const offerSearchRepository: OfferSearchRepository = new OfferSearchRepositoryImpl(transport);
         const verifyRepository: VerifyRepository = new VerifyRepositoryImpl(transport);
+        const externalServicesRepository: ExternalServicesRepository = new ExternalServicesRepositoryImpl(transport);
 
         this._accountManager = new AccountManagerImpl(
             accountRepository,
@@ -220,6 +237,8 @@ export default class Base {
         this._verifyManager = new VerifyManagerImpl(
             verifyRepository
         );
+
+        this._externalServicesManager = new ExternalServicesManagerImpl(externalServicesRepository);
     }
 
     public changeStrategy(strategy: RepositoryStrategyType) {
@@ -254,6 +273,10 @@ export default class Base {
         return this._verifyManager;
     }
 
+    get externalServicesManager(): ExternalServicesManager {
+        return this._externalServicesManager;
+    }
+
     private createNodeAssistant(httpTransport: HttpTransport): AssistantNodeRepository {
         const accountRepository: AccountRepository = new AccountRepositoryImpl(httpTransport);
         const dataRequestRepository: DataRequestRepository = new DataRequestRepositoryImpl(httpTransport);
@@ -272,5 +295,4 @@ export default class Base {
                ? KeyPairFactory.createDefaultKeyPair(permissionSource, siteDataSource, siteOrigin)
                : KeyPairFactory.createRpcKeyPair(TransportFactory.createJsonRpcHttpTransport(signerHost));
     }
-
 }

@@ -16,6 +16,6 @@ export abstract class DeepCopy<T> {
     }
 
     protected deepCopyFromJson(): T {
-        return Object.assign(new this.creator(), this);
+        return Object.assign(new this.creator(), JSON.parse(JSON.stringify(this)));
     }
 }
