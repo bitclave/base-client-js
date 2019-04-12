@@ -97,6 +97,8 @@ describe('File CRUD', async () => {
             const fileMetaUpdated: FileMeta = await baseAlice.profileManager.uploadFile(fileMeta, updateKey);
             fileMetaUpdated.id.should.exist;
             fileMetaUpdated.id.should.be.eql(fileMetaUploaded.id);
+            savedFileMeta.createdAt.getTime().should.be.eq(fileMetaUpdated.createdAt.getTime());
+            savedFileMeta.updatedAt.getTime().should.be.lt(fileMetaUpdated.updatedAt.getTime());
 
             const updatedFileMeta = await baseAlice.profileManager.getFileMetaWithGivenKey(updateKey) as FileMeta;
 

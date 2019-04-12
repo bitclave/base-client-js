@@ -139,7 +139,7 @@ export class ProfileManagerImpl implements ProfileManager {
         const encrypted: string = await this.encrypt.encryptFile(file.content || '');
         const existedMeta = await this.getFileMetaWithGivenKey(key);
         const fileId: number = existedMeta ? existedMeta.id : 0;
-        const fileForUpload = file.copyWithContent(encrypted);
+        const fileForUpload = file.copy({content: encrypted});
         const updatedMeta = await this.clientDataRepository
             .uploadFile(this.account.publicKey, fileForUpload, fileId);
 
@@ -163,7 +163,7 @@ export class ProfileManagerImpl implements ProfileManager {
         let fileMeta: FileMeta | undefined;
         if (myData.has(key)) {
             const meta: string = myData.get(key) || '';
-            fileMeta = Object.assign(new FileMeta(), JSON.parse(meta));
+            fileMeta = FileMeta.fromJson(JSON.parse(meta));
         }
 
         return fileMeta;
@@ -171,7 +171,7 @@ export class ProfileManagerImpl implements ProfileManager {
 
     private async updateFileMetaWithGivenKey(key: string, fileMeta: FileMeta): Promise<FileMeta> {
         const myData: Map<string, string> = await this.getData();
-        myData.set(key, JSON.stringify(fileMeta));
+        myData.set(key, JSON.stringify(fileMeta.toJson()));
         await this.updateData(myData);
         return fileMeta;
     }
