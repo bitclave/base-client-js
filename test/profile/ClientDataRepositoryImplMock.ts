@@ -1,5 +1,5 @@
 import { ClientDataRepository } from '../../src/repository/client/ClientDataRepository';
-import FileMeta from '../../src/repository/models/FileMeta';
+import { FileMeta } from '../../src/repository/models/FileMeta';
 
 export default class ClientDataRepositoryImplMock implements ClientDataRepository {
 
@@ -13,22 +13,38 @@ export default class ClientDataRepositoryImplMock implements ClientDataRepositor
         this._clientData.set(id, data);
     }
 
-    public getData(id: string): Promise<Map<string, string>> {
-        return new Promise<Map<string, string>>(resolve => resolve(this._clientData.get(id)));
+    public getData(id: string, fieldKey?: string | Array<string> | undefined): Promise<Map<string, string>> {
+        const map = this._clientData.get(id) || new Map();
+        let fields: Array<string> = [];
+        const fieldsSet = new Set<string>();
+        if (fieldKey && typeof fieldKey === 'string') {
+            fields.push(fieldKey);
+
+        } else if (fieldKey && typeof fieldKey === 'object' && fieldKey instanceof Array) {
+            fields = fieldKey;
+        }
+        fields.forEach(key => fieldsSet.add(key));
+
+        const filtered = new Map();
+        map.forEach((value, key) => {
+            if (fieldsSet.size === 0 || fieldsSet.has(key)) {
+                filtered.set(key, value);
+            }
+        });
+
+        return Promise.resolve(filtered);
     }
 
     public updateData(id: string, data: Map<string, string>): Promise<Map<string, string>> {
-        return new Promise<Map<string, string>>(resolve => {
-            this._clientData.set(id, data);
-            resolve(data);
-        });
+        this._clientData.set(id, data);
+        return Promise.resolve(data);
     }
 
-    public getFile(id: string, fileId: number): Promise<FileMeta> {
-        return Promise.resolve(new FileMeta());
+    public getFile(id: string, fileId: number): Promise<string> {
+        throw new Error('method not supported');
     }
 
     public uploadFile(id: string, file: FileMeta, fileId?: number | null): Promise<FileMeta> {
-        return Promise.resolve(new FileMeta());
+        throw new Error('method not supported');
     }
 }

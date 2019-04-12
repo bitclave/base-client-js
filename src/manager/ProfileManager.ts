@@ -6,18 +6,20 @@ export interface ProfileManager {
 
     /**
      * Returns decrypted data of the authorized user.
+     * @param {fieldKey: string | Array<string>} fieldKey is optional argument. get only requested keys.
      *
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
-    getData(): Promise<Map<string, string>>;
+    getData(fieldKey?: string | Array<string>): Promise<Map<string, string>>;
 
     /**
      * Returns raw (encrypted) data of user with provided ID (Public Key).
      * @param {string} anyPublicKey Public key of client.
+     * @param {fieldKey: string | Array<string>} fieldKey is optional argument. get only requested keys.
      *
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
-    getRawData(anyPublicKey: string): Promise<Map<string, string>>;
+    getRawData(anyPublicKey: string, fieldKey?: string | Array<string>): Promise<Map<string, string>>;
 
     /**
      * Decrypts accepted personal data {@link DataRequest#responseData}.

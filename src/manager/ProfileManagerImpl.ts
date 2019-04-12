@@ -41,22 +41,28 @@ export class ProfileManagerImpl implements ProfileManager {
 
     /**
      * Returns decrypted data of the authorized user.
+     * @param {string | Array<string>} fieldKey is optional argument. get only requested keys.
      *
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
-    public getData(): Promise<Map<string, string>> {
-        return this.getRawData(this.account.publicKey)
+
+    public getData(fieldKey?: string | Array<string>): Promise<Map<string, string>> {
+        return this.getRawData(this.account.publicKey, fieldKey)
             .then((rawData: Map<string, string>) => this.decrypt.decryptFields(rawData));
     }
 
     /**
      * Returns raw (encrypted) data of user with provided ID (Public Key).
      * @param {string} anyPublicKey Public key of client.
+     * @param {string | Array<string>} fieldKey is optional argument. get only requested keys.
      *
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
-    public getRawData(anyPublicKey: string): Promise<Map<string, string>> {
-        return this.clientDataRepository.getData(anyPublicKey);
+    public getRawData(
+        anyPublicKey: string,
+        fieldKey?: string | Array<string>
+    ): Promise<Map<string, string>> {
+        return this.clientDataRepository.getData(anyPublicKey, fieldKey);
     }
 
     /**
@@ -159,7 +165,7 @@ export class ProfileManagerImpl implements ProfileManager {
     }
 
     public async getFileMetaWithGivenKey(key: string): Promise<FileMeta | undefined> {
-        const myData: Map<string, string> = await this.getData();
+        const myData: Map<string, string> = await this.getData(key);
         let fileMeta: FileMeta | undefined;
         if (myData.has(key)) {
             const meta: string = myData.get(key) || '';

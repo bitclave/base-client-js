@@ -75,4 +75,30 @@ describe('Profile Manager', async () => {
         savedData.should.be.deep.equal(data);
         savedDecrypted.should.be.deep.equal(origMockData);
     });
+
+    it('should be get data by keys', async () => {
+        const origMockData: Map<string, string> = new Map();
+
+        origMockData.set('email', 'im@host.com');
+        origMockData.set('name', 'isName');
+        origMockData.set('last_name', 'isLastName');
+
+        const data = await profileManager.updateData(origMockData);
+        const savedData = await profileManager.getRawData(authAccountBehaviorAlisa.getValue().publicKey);
+        let savedDecrypted = await profileManager.getData();
+
+        savedData.should.be.deep.equal(data);
+        savedDecrypted.size.should.be.equal(3);
+
+        savedDecrypted = await profileManager.getData('name');
+
+        savedDecrypted.size.should.be.equal(1);
+        (savedDecrypted.get('name') || '').should.be.eq(origMockData.get('name'));
+
+        savedDecrypted = await profileManager.getData(['name', 'last_name']);
+
+        savedDecrypted.size.should.be.equal(2);
+        (savedDecrypted.get('name') || '').should.be.eq(origMockData.get('name'));
+        (savedDecrypted.get('last_name') || '').should.be.eq(origMockData.get('last_name'));
+    });
 });
