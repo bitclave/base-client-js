@@ -12,7 +12,6 @@ const Path = require('path');
 
 const someSigMessage = 'some unique message for signature';
 const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
-const rpcSignerHost = process.env.SIGNER || ''; // use internal SIGNER
 
 async function createUser(user: Base, pass: string): Promise<Account> {
     try {
@@ -40,8 +39,7 @@ describe('File CRUD', async () => {
         return new Base(
             baseNodeUrl,
             'localhost',
-            RepositoryStrategyType.Postgres,
-            rpcSignerHost
+            RepositoryStrategyType.Postgres
         );
     }
 
