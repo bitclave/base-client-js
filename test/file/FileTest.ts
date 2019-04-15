@@ -1,5 +1,5 @@
 // tslint:disable:no-unused-expression
-import Base from '../../src/Base';
+import Base, { AccessRight } from '../../src/Base';
 import Account from '../../src/repository/models/Account';
 import { FileMeta } from '../../src/repository/models/FileMeta';
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
@@ -30,10 +30,13 @@ describe('File CRUD', async () => {
     const updateKey: string = 'update_file';
     const downloadKey: string = 'download_file';
     const passPhraseAlisa: string = 'Alice'; // need 5 symbols
+    const passPhraseBob: string = 'BobBob'; // need 5 symbols
 
     const baseAlice: Base = createBase();
+    const baseBob: Base = createBase();
 
     let accAlice: Account;
+    let accBob: Account;
 
     function createBase(): Base {
         return new Base(
@@ -45,6 +48,7 @@ describe('File CRUD', async () => {
 
     beforeEach(async () => {
         accAlice = await createUser(baseAlice, passPhraseAlisa);
+        accBob = await createUser(baseBob, passPhraseBob);
     });
 
     after(async () => {
@@ -53,6 +57,57 @@ describe('File CRUD', async () => {
 
     it('get public ID', async () => {
         accAlice.publicKey.should.be.equal('03cb46e31c2d0f5827bb267f9fb30cf98077165d0e560b964651c6c379f69c7a35');
+    });
+
+    it('should decrypt foreign data and decrypt file', async () => {
+        // Alice save file
+        const uploadFileName = Path.join(process.cwd(), './test/asset/test.png');
+        const fileToUpload = fs.readFileSync(uploadFileName, {encoding: 'base64'});
+        const fileMeta: FileMeta = new FileMeta(0, '0x0', 'test', 'image/png', fileToUpload.length, fileToUpload);
+        const fileMetaUploaded: FileMeta = await baseAlice.profileManager.uploadFile(fileMeta, newKey);
+        fileMetaUploaded.id.should.exist;
+
+        const savedFileMeta = await baseAlice.profileManager.getFileMetaWithGivenKey(newKey) as FileMeta;
+
+        savedFileMeta.should.be.deep.equal(fileMetaUploaded);
+
+        // Alisa create grand for access to field with FileMeta data
+        const grantFields: Map<string, AccessRight> = new Map();
+        grantFields.set(newKey, AccessRight.R);
+
+        await baseAlice.dataRequestManager.grantAccessForClient(
+            accBob.publicKey,
+            grantFields
+        );
+
+        // Bob check granted permissions.
+        // await baseBob.dataRequestManager.getGrantedPermissions(accAlice.publicKey);
+
+        // Bob get encrypted granted data
+        const requests = await baseBob.dataRequestManager.getRequests(accBob.publicKey, accAlice.publicKey);
+
+        // Bob decrypt granted data to Map<filedName, password>
+        const keyPassMap = await baseBob.profileManager.getAuthorizedEncryptionKeys(
+            requests[0].toPk,
+            requests[0].responseData
+        );
+
+        const pass = keyPassMap.get(newKey) || '';
+
+        // Bob decrypt granted data to Map<fieldName, SOME_DATA_STRING>
+        const decryptedData = await baseBob.profileManager.getAuthorizedData(
+            requests[0].toPk,
+            requests[0].responseData
+        );
+
+        // get file meta as string and convert to Model FileMeta
+        const rawFileMeta = decryptedData.get(newKey) || '';
+        const decryptedFleMeta = FileMeta.fromJson(JSON.parse(rawFileMeta));
+
+        // download file end decrypt
+        const file = await baseBob.profileManager.downloadFile(decryptedFleMeta.id, newKey, accAlice.publicKey, pass);
+
+        file.should.be.eq(fileToUpload);
     });
 
     it('should upload simple file with key', async () => {
@@ -121,7 +176,7 @@ describe('File CRUD', async () => {
 
             savedFileMeta.should.be.deep.equal(fileMetaUploaded);
 
-            const file = await baseAlice.profileManager.downloadFile(fileMetaUploaded.id);
+            const file = await baseAlice.profileManager.downloadFile(fileMetaUploaded.id, downloadKey);
 
             file.should.exist;
             actualFile.should.be.eq(file);

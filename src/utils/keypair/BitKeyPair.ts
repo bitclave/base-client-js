@@ -48,10 +48,9 @@ export class BitKeyPair implements KeyPairHelper {
         const privateKey = new bitcore.PrivateKey(bn);
         const publicKey = privateKey.toPublicKey();
 
-        const publicKeyHex = publicKey.toString(16);
-        return publicKeyHex;
+        return publicKey.toString(16);
     }
-    
+
     constructor(permissionsSource: PermissionsSource, siteDataSource: SiteDataSource, origin: string) {
         this.permissions = new Permissions();
         this.permissionsSource = permissionsSource;
@@ -126,14 +125,13 @@ export class BitKeyPair implements KeyPairHelper {
     }
 
     public async encryptFields(fields: Map<string, string>): Promise<Map<string, string>> {
-        return this.prepareData(fields, true);
+        return this.prepareData(fields, true, new Map());
     }
 
     public async encryptPermissionsFields(recipient: string, data: Map<string, AccessRight>): Promise<string> {
         const resultMap: Map<string, AcceptedField> = new Map();
 
         if (data != null && data.size > 0) {
-            let pass: string;
 
             await this.syncPermissions();
 
@@ -142,7 +140,7 @@ export class BitKeyPair implements KeyPairHelper {
                     continue;
                 }
 
-                pass = await this.generatePasswordForField(key.toLowerCase());
+                const pass = await this.generatePasswordForField(key.toLowerCase());
                 resultMap.set(key, new AcceptedField(pass, value));
             }
         }
@@ -152,13 +150,19 @@ export class BitKeyPair implements KeyPairHelper {
         return await this.encryptMessage(recipient, JSON.stringify(jsonMap));
     }
 
-    public async encryptFile(file: string): Promise<string> {
-        return this.encryptMessage(this.getPublicKey(), file);
+    public async encryptFile(file: string, filedName: string): Promise<string> {
+        const map = new Map([[filedName, file]]);
+        const result = await this.encryptFields(map);
 
+        return result.get(filedName) || '';
     }
 
-    public async decryptFile(file: string): Promise<string> {
-        return this.decryptMessage(this.getPublicKey(), file);
+    public async decryptFile(file: string, filedName: string, password?: string): Promise<string> {
+        const map = new Map([[filedName, file]]);
+        const passMap = password ? new Map([[filedName, password]]) : new Map();
+        const result = await this.decryptFields(map, passMap);
+
+        return result.get(filedName) || '';
     }
 
     public async decryptMessage(senderPk: string, encrypted: string): Promise<string> {
@@ -171,14 +175,19 @@ export class BitKeyPair implements KeyPairHelper {
             .toString();
     }
 
-    public async decryptFields(fields: Map<string, string>): Promise<Map<string, string>> {
-        return this.prepareData(fields, false);
+    public async decryptFields(
+        fields: Map<string, string>,
+        passwords?: Map<string, string>
+    ): Promise<Map<string, string>> {
+        return this.prepareData(fields, false, passwords || new Map());
     }
 
-    private async prepareData(data: Map<string, string>, encrypt: boolean): Promise<Map<string, string>> {
+    private async prepareData(
+        data: Map<string, string>,
+        encrypt: boolean,
+        passwords: Map<string, string>
+    ): Promise<Map<string, string>> {
         const result: Map<string, string> = new Map<string, string>();
-        let pass: string;
-        let changedValue: string;
 
         await this.syncPermissions();
 
@@ -187,11 +196,14 @@ export class BitKeyPair implements KeyPairHelper {
                 continue;
             }
 
-            pass = await this.generatePasswordForField(key);
+            const pass = passwords.has(key)
+                         ? passwords.get(key)
+                         : await this.generatePasswordForField(key);
+
             if (pass != null && pass !== undefined && pass.length > 0) {
-                changedValue = encrypt
-                               ? CryptoUtils.encryptAes256(value, pass)
-                               : CryptoUtils.decryptAes256(value, pass);
+                const changedValue = encrypt
+                                     ? CryptoUtils.encryptAes256(value, pass)
+                                     : CryptoUtils.decryptAes256(value, pass);
 
                 result.set(key.toLowerCase(), changedValue);
             }
