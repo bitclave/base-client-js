@@ -35,7 +35,7 @@ export interface ProfileManager {
      * @param {string} recipientPk  Public key of the user that shared the data
      * @param {string} encryptedData encrypted data {@link DataRequest#responseData}.
      *
-     * @returns {Promise<Map<string, string>>} Map key => value.
+     * @returns {Promise<Map<string, string>>} Map key (fieldName) => value (Password).
      */
     getAuthorizedEncryptionKeys(recipientPk: string, encryptedData: string): Promise<Map<string, string>>;
 
@@ -60,12 +60,16 @@ export interface ProfileManager {
     uploadFile(file: FileMeta, key: string): Promise<FileMeta>;
 
     /**
-     * Returns decrypted file Base64 data of the authorized user based on provided file id.
-     * @param {number} id not encrypted file id
+     * Returns decrypted Base64 data of the authorized user based on provided file id.
+     * @param {number} id not encrypted file id.
+     * @param {String} key the key of FileMeta value in profile data.
+     * @param {String} publicKey the public key (id) of user. Optional. default will used origin user.
+     * @param {String} existedPassword optional if you already have password for file. apply password instead
+     * auto-generation password.
      *
      * @returns {Promise<string>} decrypted file Base64 data.
      */
-    downloadFile(id: number): Promise<string>;
+    downloadFile(id: number, key: string, publicKey?: string, existedPassword?: string): Promise<string>;
 
     /**
      * Returns given key's decrypted value of authorized user's data.

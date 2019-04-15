@@ -60,7 +60,7 @@ export class RpcKeyPair implements RemoteKeyPairHelper {
     public encryptFields(fields: Map<string, string>): Promise<Map<string, string>> {
         return this.rpcTransport.request(
             'encryptFields',
-            new RpcDecryptEncryptFields(this.clientData.accessToken, JsonUtils.mapToJson(fields))
+            new RpcDecryptEncryptFields(this.clientData.accessToken, JsonUtils.mapToJson(fields), new Map())
         ).then((response) => JsonUtils.jsonToMap<string, string>(response));
     }
 
@@ -78,19 +78,30 @@ export class RpcKeyPair implements RemoteKeyPairHelper {
         );
     }
 
-    public decryptFields(fields: Map<string, string>): Promise<Map<string, string>> {
+    public decryptFields(fields: Map<string, string>, passwords?: Map<string, string>): Promise<Map<string, string>> {
         return this.rpcTransport.request(
             'decryptFields',
-            new RpcDecryptEncryptFields(this.clientData.accessToken, JsonUtils.mapToJson(fields))
+            new RpcDecryptEncryptFields(
+                this.clientData.accessToken,
+                JsonUtils.mapToJson(fields),
+                passwords ? JsonUtils.mapToJson(passwords) : new Map()
+            )
         ).then((response) => JsonUtils.jsonToMap<string, string>(response));
     }
 
-    public async encryptFile(file: string): Promise<string> {
-        return this.encryptMessage(this.getPublicKey(), file);
+    public async encryptFile(file: string, fieldName: string): Promise<string> {
+        const map = new Map([[fieldName, file]]);
+        const result = await this.encryptFields(map);
+
+        return result.get(fieldName) || '';
     }
 
-    public async decryptFile(file: string): Promise<string> {
-        return this.decryptMessage(this.getPublicKey(), file);
+    public async decryptFile(file: string, fieldName: string, password?: string): Promise<string> {
+        const map = new Map([[fieldName, file]]);
+        const passMap = password ? new Map([[fieldName, password]]) : new Map();
+        const result = await this.decryptFields(map, passMap);
+
+        return result.get(fieldName) || '';
     }
 
     public setAccessToken(accessToken: string) {

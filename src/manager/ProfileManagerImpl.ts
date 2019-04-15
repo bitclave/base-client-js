@@ -2,7 +2,6 @@ import { Observable } from 'rxjs/Rx';
 import { ClientDataRepository } from '../repository/client/ClientDataRepository';
 import Account from '../repository/models/Account';
 import { FileMeta } from '../repository/models/FileMeta';
-import { CryptoUtils } from '../utils/CryptoUtils';
 import { JsonUtils } from '../utils/JsonUtils';
 import { AcceptedField } from '../utils/keypair/AcceptedField';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
@@ -73,27 +72,13 @@ export class ProfileManagerImpl implements ProfileManager {
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
     public async getAuthorizedData(recipientPk: string, encryptedData: string): Promise<Map<string, string>> {
-        const strDecrypt: string = await this.decrypt.decryptMessage(recipientPk, encryptedData);
-        const jsonDecrypt = JSON.parse(strDecrypt);
-        const arrayResponse: Map<string, AcceptedField> = JsonUtils.jsonToMap(jsonDecrypt);
-        const result: Map<string, string> = new Map<string, string>();
+        const passForFields = await this.getAuthorizedEncryptionKeys(recipientPk, encryptedData);
+        const recipientData: Map<string, string> = await this.getRawData(
+            recipientPk,
+            Array.from(passForFields.keys())
+        );
 
-        const recipientData: Map<string, string> = await this.getRawData(recipientPk) || new Map();
-
-        arrayResponse.forEach((value: AcceptedField, key: string) => {
-            if (recipientData.has(key)) {
-                try {
-                    const data: string = recipientData.get(key) as string;
-                    const decryptedValue: string = CryptoUtils.decryptAes256(data, value.pass);
-                    result.set(key, decryptedValue);
-
-                } catch (e) {
-                    console.log('decryption error: ', key, ' => ', recipientData.get(key), e);
-                }
-            }
-        });
-
-        return result;
+        return this.decrypt.decryptFields(recipientData, passForFields);
     }
 
     /**
@@ -101,7 +86,7 @@ export class ProfileManagerImpl implements ProfileManager {
      * @param {string} recipientPk  Public key of the user that shared the data
      * @param {string} encryptedData encrypted data {@link DataRequest#responseData}.
      *
-     * @returns {Promise<Map<string, string>>} Map key => value.
+     * @returns {Promise<Map<string, string>>} Map key (fieldName) => value (Password).
      */
     public async getAuthorizedEncryptionKeys(recipientPk: string, encryptedData: string): Promise<Map<string, string>> {
         const strDecrypt = await this.decrypt.decryptMessage(recipientPk, encryptedData);
@@ -109,13 +94,7 @@ export class ProfileManagerImpl implements ProfileManager {
         const arrayResponse: Map<string, AcceptedField> = JsonUtils.jsonToMap(jsonDecrypt);
         const result: Map<string, string> = new Map<string, string>();
 
-        const recipientData: Map<string, string> = await this.getRawData(recipientPk);
-
-        arrayResponse.forEach((value: AcceptedField, key: string) => {
-            if (recipientData.has(key)) {
-                result.set(key, value.pass);
-            }
-        });
+        arrayResponse.forEach((value: AcceptedField, key: string) => result.set(key, value.pass));
 
         return result;
     }
@@ -133,8 +112,8 @@ export class ProfileManagerImpl implements ProfileManager {
 
     /**
      * Encrypts and stores file in BASE.
-     * @param {string} file the actual file data encoded to Base64
-     * @param {String} key the key of FileMeta value in profile data
+     * @param {string} file the actual file data encoded to Base64.
+     * @param {String} key the key of FileMeta value in profile data.
      * If the fileId is undefined, creates a new file, added associated FileMeta to Profile data with the key and
      *     returns FileMeta.  If not then updates the existing file and its FileMeta in Profile data and returns
      *     updated FileMeta
@@ -142,7 +121,7 @@ export class ProfileManagerImpl implements ProfileManager {
      * @returns {Promise<FileMeta>} Encrypted FileMeta.
      */
     public async uploadFile(file: FileMeta, key: string): Promise<FileMeta> {
-        const encrypted: string = await this.encrypt.encryptFile(file.content || '');
+        const encrypted: string = await this.encrypt.encryptFile(file.content || '', key);
         const existedMeta = await this.getFileMetaWithGivenKey(key);
         const fileId: number = existedMeta ? existedMeta.id : 0;
         const fileForUpload = file.copy({content: encrypted});
@@ -155,13 +134,19 @@ export class ProfileManagerImpl implements ProfileManager {
 
     /**
      * Returns decrypted Base64 data of the authorized user based on provided file id.
-     * @param {number} id not encrypted file id
+     * @param {number} id not encrypted file id.
+     * @param {String} key the key of FileMeta value in profile data.
+     * @param {String} publicKey the public key (id) of user. Optional. default will used origin user.
+     * @param {String} existedPassword optional if you already have password for file. apply password instead
+     * auto-generation password.
      *
      * @returns {Promise<string>} decrypted file Base64 data.
      */
-    public async downloadFile(id: number): Promise<string> {
-        const encodedFile = await this.clientDataRepository.getFile(this.account.publicKey, id);
-        return await this.decrypt.decryptFile(encodedFile);
+    public async downloadFile(id: number, key: string, publicKey?: string, existedPassword?: string): Promise<string> {
+        const pk = publicKey ? publicKey : this.account.publicKey;
+        const encodedFile = await this.clientDataRepository.getFile(pk, id);
+
+        return await this.decrypt.decryptFile(encodedFile, key, existedPassword);
     }
 
     public async getFileMetaWithGivenKey(key: string): Promise<FileMeta | undefined> {
