@@ -6,7 +6,7 @@ import { ClientDataRepository } from './ClientDataRepository';
 
 export default class ClientDataRepositoryImpl implements ClientDataRepository {
 
-    private readonly CLIENT_GET_DATA: string = '/v1/client/{pk}/';
+    private readonly CLIENT_GET_DATA: string = '/v1/client/{pk}';
     private readonly CLIENT_SET_DATA: string = '/v1/client/';
     private readonly FILE_GET_FILE: string = '/v1/file/{pk}/{fileId}/';
     private readonly FILE_UPLOAD_FILE: string = '/v1/file/{pk}/';
@@ -17,10 +17,22 @@ export default class ClientDataRepositoryImpl implements ClientDataRepository {
         this.transport = transport;
     }
 
-    public getData(pk: string): Promise<Map<string, string>> {
+    public getData(pk: string, fieldKey?: string | Array<string>): Promise<Map<string, string>> {
+        let fields: Array<string> = [];
+
+        if (fieldKey && typeof fieldKey === 'string') {
+            fields.push(fieldKey);
+
+        } else if (fieldKey && typeof fieldKey === 'object' && fieldKey instanceof Array) {
+            fields = fieldKey;
+        }
+
+        fields = fields.map(key => `key=${key}`);
+        const queryParams = fields.length > 0 ? `?${fields.join('&')}` : '';
+
         return this.transport
             .sendRequest(
-                this.CLIENT_GET_DATA.replace('{pk}', pk),
+                this.CLIENT_GET_DATA.replace('{pk}', pk).concat(queryParams),
                 HttpMethod.Get
             )
             .then((response) => JsonUtils.jsonToMap<string, string>(response.json));
