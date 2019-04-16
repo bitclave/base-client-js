@@ -60,6 +60,7 @@ export class AccountManagerImpl implements AccountManager {
 
             return acc;
         }
+        this.logger.debug(`key pair helper does not support pass-phrase authentication`);
         throw new Error('key pair helper does not support pass-phrase authentication');
     }
 
