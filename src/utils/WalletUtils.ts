@@ -102,12 +102,15 @@ export class WalletUtils {
                 sigCheck = Message(JSON.stringify(message)).verify(baseAddr, walletsRecords.sig);
                 if (!sigCheck) {
                     status.rc = WalletVerificationCodes.RC_ADDR_WRONG_SIGNATURE;
+                    status.err = `Wallet signature does not match baseID ${baseID}`;
                 }
             } else {
                 status.rc = WalletVerificationCodes.RC_ADDR_NOT_VERIFIED;
+                status.err = `Wallet signature is missing`;
             }
         } catch (err) {
             status.rc = WalletVerificationCodes.RC_GENERAL_ERROR;
+            status.err = `General error while verifying Wallet signature`;
         }
 
         return status;
