@@ -55,7 +55,11 @@ export class ProfileManagerImpl implements ProfileManager {
      */
 
     public getData(fieldKey?: string | Array<string>): Promise<Map<string, string>> {
-        if (this.account == null || this.account.publicKey == null || this.account.publicKey === undefined || this.account.publicKey.length < 1) {
+        if (
+            this.account == null || 
+            this.account.publicKey == null || 
+            this.account.publicKey === undefined || 
+            this.account.publicKey.length < 1) {
             this.logger.error(`publicKey is not  found in base-client-js`);
             throw new Error('publicKey can not find');
         }
