@@ -2,13 +2,13 @@ import { Observable } from 'rxjs/Rx';
 import { ClientDataRepository } from '../repository/client/ClientDataRepository';
 import Account from '../repository/models/Account';
 import { FileMeta } from '../repository/models/FileMeta';
+import { BasicLogger, Logger } from '../utils/BasicLogger';
 import { JsonUtils } from '../utils/JsonUtils';
 import { AcceptedField } from '../utils/keypair/AcceptedField';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
 import { ProfileManager } from './ProfileManager';
-import { BasicLogger, Logger } from '../utils/BasicLogger';
 
 export class ProfileManagerImpl implements ProfileManager {
 
