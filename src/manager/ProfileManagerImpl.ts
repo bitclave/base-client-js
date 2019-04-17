@@ -8,6 +8,7 @@ import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
 import { ProfileManager } from './ProfileManager';
+import { BasicLogger, Logger } from '../utils/BasicLogger';
 
 export class ProfileManagerImpl implements ProfileManager {
 
@@ -16,13 +17,15 @@ export class ProfileManagerImpl implements ProfileManager {
     private encrypt: MessageEncrypt;
     private decrypt: MessageDecrypt;
     private signer: MessageSigner;
+    private logger: Logger;
 
     constructor(
         clientRepository: ClientDataRepository,
         authAccountBehavior: Observable<Account>,
         encrypt: MessageEncrypt,
         decrypt: MessageDecrypt,
-        signer: MessageSigner
+        signer: MessageSigner,
+        loggerService?: Logger
     ) {
         this.clientDataRepository = clientRepository;
 
@@ -32,6 +35,12 @@ export class ProfileManagerImpl implements ProfileManager {
         this.encrypt = encrypt;
         this.decrypt = decrypt;
         this.signer = signer;
+
+        if (!loggerService) {
+            loggerService = new BasicLogger();
+        }
+
+        this.logger = loggerService;
     }
 
     public signMessage(data: string): Promise<string> {
@@ -46,6 +55,10 @@ export class ProfileManagerImpl implements ProfileManager {
      */
 
     public getData(fieldKey?: string | Array<string>): Promise<Map<string, string>> {
+        if (this.account == null || this.account.publicKey == null || this.account.publicKey === undefined || this.account.publicKey.length < 1) {
+            this.logger.error(`publicKey is not  found in base-client-js`);
+            throw new Error('publicKey can not find');
+        }
         return this.getRawData(this.account.publicKey, fieldKey)
             .then((rawData: Map<string, string>) => this.decrypt.decryptFields(rawData));
     }

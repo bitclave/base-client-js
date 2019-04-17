@@ -60,6 +60,7 @@ export class AccountManagerImpl implements AccountManager {
 
             return acc;
         }
+        this.logger.debug(`key pair helper does not support pass-phrase authentication`);
         throw new Error('key pair helper does not support pass-phrase authentication');
     }
 
@@ -158,7 +159,11 @@ export class AccountManagerImpl implements AccountManager {
     private syncAccount(account: Account, message: string): Promise<Account> {
         return this.accountRepository
             .checkAccount(account)
-            .then(checkedAccount => this.onGetAccount(checkedAccount, message));
+            .then(checkedAccount => this.onGetAccount(checkedAccount, message))
+            .catch(err => {
+                this.logger.error(`base-client-js:syncAccount ${err}`);
+                throw err;
+            });
     }
 
     private generateAccount(keyPair: KeyPair): Promise<Account> {
@@ -176,7 +181,11 @@ export class AccountManagerImpl implements AccountManager {
                 this.authAccountBehavior.next(account);
 
                 resolve(account);
-            }));
+            }))
+            .catch(err => {
+                this.logger.error(`base-client-js:onGetAccount ${err}`);
+                throw err;
+            });
     }
 
 }
