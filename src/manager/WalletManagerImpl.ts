@@ -1,3 +1,4 @@
+import { MessageData } from 'eth-sig-util';
 import { Observable } from 'rxjs/Observable';
 import Account from '../repository/models/Account';
 import DataRequest from '../repository/models/DataRequest';
@@ -63,7 +64,9 @@ export class WalletManagerImpl implements WalletManager {
         // const signerAddr = sigUtil.recoverPersonalSignature(msgWallets)
 
         // BASE Style signing
-        const sig: string = await this.messageSigner.signMessage(JSON.stringify(msgWallets.data));
+
+        const message: Array<MessageData> = msgWallets.data.map(item => item.getMessage());
+        const sig: string = await this.messageSigner.signMessage(JSON.stringify(message));
 
         return new WalletsRecords(msgWallets.data, sig);
     }
@@ -124,10 +127,6 @@ export class WalletManagerImpl implements WalletManager {
         }
 
         return wealthPtr;
-    }
-
-    public validateWallets(walletRecords: WalletsRecords): boolean {
-        return this.baseSchema.validateWallets(walletRecords);
     }
 
     private onChangeAccount(account: Account) {
