@@ -298,7 +298,7 @@ describe('Wallet manager test', async () => {
         ).should.be.not.equal(WalletVerificationCodes.RC_OK);
     });
 
-    it('create ETH Wallets record by BASE interface', async () => {
+    it('create valid ETH Wallets record by BASE interface', async () => {
         let msg;
         let rc;
         let ethAddrRecord: AddrRecord;
@@ -386,16 +386,25 @@ describe('Wallet manager test', async () => {
 
         sawException.should.be.equal(true);
 
+        const baseID = keyPairHelperAlisa.getPublicKey();
+
         ethAddrRecord = WalletUtils.createEthereumAddersRecord(
-            '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
+            baseID,
             '0x42cb8ae103896daee71ebb5dca5367f16727164a',
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
         );
 
-        const walletsRecords: WalletsRecords = await walletManager.createWalletsRecords(
-            [ethAddrRecord],
-            '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996'
-        );
+        const verifyCodes = WalletUtils.verifyAddressRecord(ethAddrRecord);
+
+        verifyCodes.should.be.eq(WalletVerificationCodes.RC_OK);
+
+        const walletsRecords: WalletsRecords = await walletManager
+            .createWalletsRecords([ethAddrRecord], baseID);
+
         walletsRecords.data.length.should.be.equal(1);
+        walletsRecords.sig.length.should.be.gt(0);
+
+        const result = WalletUtils.validateWallets(WalletManagerImpl.DATA_KEY_ETH_WALLETS, walletsRecords, baseID);
+        result.rc.should.be.eq(WalletVerificationCodes.RC_OK);
     });
 });
