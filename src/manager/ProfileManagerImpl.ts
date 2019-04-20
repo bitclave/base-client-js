@@ -64,7 +64,11 @@ export class ProfileManagerImpl implements ProfileManager {
             throw new Error('publicKey can not find');
         }
         return this.getRawData(this.account.publicKey, fieldKey)
-            .then((rawData: Map<string, string>) => this.decrypt.decryptFields(rawData));
+            .then((rawData: Map<string, string>) => this.decrypt.decryptFields(rawData))
+            .catch(err => {
+                this.logger.error(`base-client-js:getData ${JSON.stringify(err)}`);
+                throw err;
+            });
     }
 
     /**

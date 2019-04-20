@@ -161,7 +161,7 @@ export class AccountManagerImpl implements AccountManager {
             .checkAccount(account)
             .then(checkedAccount => this.onGetAccount(checkedAccount, message))
             .catch(err => {
-                this.logger.error(`base-client-js:syncAccount ${err}`);
+                this.logger.error(`base-client-js:syncAccount ${JSON.stringify(err)}`);
                 throw err;
             });
     }
