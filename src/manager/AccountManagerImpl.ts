@@ -52,11 +52,11 @@ export class AccountManagerImpl implements AccountManager {
             let acc: Account;
             try {
                 acc = await this.checkAccount(passPhrase, message);
+                this.logger.info(`Returning user logged via  base-client-js ${acc.publicKey}`);
             } catch (err) {
                 acc = await this.registration(passPhrase, message);
+                this.logger.info(`New user logged via  base-client-js ${acc.publicKey}`);
             }
-
-            this.logger.info(`New user logged via  base-client-js ${acc.publicKey}`);
 
             return acc;
         }
