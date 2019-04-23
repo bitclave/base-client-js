@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs/Rx';
+import { BehaviorSubject, Observable } from 'rxjs/Rx';
 import { AccountRepository } from '../repository/account/AccountRepository';
 import Account from '../repository/models/Account';
 import { BasicLogger, Logger } from '../utils/BasicLogger';
@@ -35,6 +35,13 @@ export class AccountManagerImpl implements AccountManager {
         }
 
         this.logger = loggerService;
+    }
+
+    /**
+     * @return {Observable<Account>} subscription to {Account}
+     */
+    public subscribeAccount(): Observable<Account> {
+        return this.authAccountBehavior.asObservable();
     }
 
     /**

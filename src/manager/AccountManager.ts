@@ -1,6 +1,12 @@
+import { Observable } from 'rxjs';
 import Account from '../repository/models/Account';
 
 export interface AccountManager {
+
+    /**
+     * @return {Observable<Account>} subscription to {Account}
+     */
+    subscribeAccount(): Observable<Account>;
 
     /**
      * Checks or Register user with provided mnemonic phrase is already registered in the system.
