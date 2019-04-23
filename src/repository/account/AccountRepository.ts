@@ -6,7 +6,7 @@ export interface AccountRepository {
 
     checkAccount(account: Account): Promise<Account>;
 
-    unsubscribe(account: Account): Promise<Account>;
+    unsubscribe(account: Account): Promise<void>;
 
     getNonce(account: Account): Promise<number>;
 
