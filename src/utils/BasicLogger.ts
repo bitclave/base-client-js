@@ -10,14 +10,14 @@ export interface Logger {
 export class BasicLogger implements Logger {
 
     public error(message: string, ...args: Array<object | string | number>) {
-        console.error('[error]' + message, args);
+        console.error(`[error] ${new Date().toJSON()} ${message}`, args);
     }
 
     public info(message: string, ...args: Array<object | string | number>) {
-        console.log('[info]' + message, args);
+        console.log(`[info] ${new Date().toJSON()} ${message}`, args);
     }
 
     public debug(message: string, ...args: Array<object | string | number>) {
-        console.log('[debug]' + message, args);
+        console.log(`[debug] ${new Date().toJSON()} ${message}`, args);
     }
 }
