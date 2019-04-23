@@ -1,6 +1,11 @@
 const CryptoJS = require('crypto-js');
+const Bitcore = require('bitcore-lib');
 
 export class CryptoUtils {
+
+    public static isValidPublicKey(publicKey: string): boolean {
+        return Bitcore.PublicKey.isValid(publicKey);
+    }
 
     public static keccak256(message: string): string {
         const array = CryptoJS.SHA3(message, {outputLength: 256});
