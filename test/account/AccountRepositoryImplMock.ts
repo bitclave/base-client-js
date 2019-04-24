@@ -14,8 +14,7 @@ export default class AccountRepositoryImplMock implements AccountRepository {
         return new Promise<Account>(resolve => resolve(account));
     }
 
-    public unsubscribe(account: Account): Promise<Account> {
-        return new Promise<Account>(resolve => resolve(account));
+    public async unsubscribe(account: Account): Promise<void> {
     }
 
 }

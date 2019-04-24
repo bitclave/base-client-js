@@ -127,9 +127,9 @@ export class AccountManagerImpl implements AccountManager {
     /**
      * Allows user to unsubscribe from BASE. Delets all his data
      *
-     * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
+     * @returns {Promise<event>} void if client exist or http exception if fail.
      */
-    public unsubscribe(): Promise<Account> {
+    public unsubscribe(): Promise<void> {
         return this.accountRepository.unsubscribe(this.authAccountBehavior.getValue());
     }
 

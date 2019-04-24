@@ -46,9 +46,9 @@ export interface AccountManager {
     /**
      * Allows user to unsubscribe from BASE. Delets all his data
      *
-     * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
+     * @returns {Promise<void>} void if client exist or http exception if fail.
      */
-    unsubscribe(): Promise<Account>;
+    unsubscribe(): Promise<void>;
 
     getNewMnemonic(): Promise<string>;
 

@@ -1,4 +1,5 @@
 import { BehaviorSubject } from 'rxjs/Rx';
+import Base, { RepositoryStrategyType } from '../../src/Base';
 import { AccountManager } from '../../src/manager/AccountManager';
 import { AccountManagerImpl } from '../../src/manager/AccountManagerImpl';
 import { AccountRepository } from '../../src/repository/account/AccountRepository';
@@ -20,6 +21,7 @@ describe('Account Manager', async () => {
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
 
     const authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
+    const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
     const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
 
     console.log('Signer: ' + rpcSignerHost);
@@ -114,4 +116,21 @@ describe('Account Manager', async () => {
         m1.should.be.not.equal(m2);
     });
 
+    it('should be return account with createdAt/updateAt fields', async () => {
+        const user = new Base(
+            baseNodeUrl,
+            'localhost',
+            RepositoryStrategyType.Postgres
+        );
+
+        const pass = 'is alice pass';
+        const sigMessage = 'someSigMessage';
+
+        const account = await user.accountManager.authenticationByPassPhrase(pass, sigMessage);
+
+        await user.accountManager.unsubscribe();
+        account.createdAt.getTime().should.be.gt(0);
+        account.updatedAt.getTime().should.be.gt(0);
+        account.createdAt.getTime().should.be.eq(account.updatedAt.getTime());
+    });
 });

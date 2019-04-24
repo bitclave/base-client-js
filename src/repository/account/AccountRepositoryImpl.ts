@@ -19,7 +19,7 @@ export default class AccountRepositoryImpl implements AccountRepository {
     public registration(account: Account): Promise<Account> {
         return this.transport
             .sendRequest(this.SIGN_UP, HttpMethod.Post, account.toSimpleAccount())
-            .then((response) => Object.assign(new Account(), response.json))
+            .then((response) => Account.fromJson(response.json))
             .catch(err => {
                 throw err;
             });
@@ -28,19 +28,14 @@ export default class AccountRepositoryImpl implements AccountRepository {
     public checkAccount(account: Account): Promise<Account> {
         return this.transport
             .sendRequest(this.SIGN_IN, HttpMethod.Post, account.toSimpleAccount())
-            .then((response) => Object.assign(new Account(), response.json))
+            .then((response) => Account.fromJson(response.json))
             .catch(err => {
                 throw err;
             });
     }
 
-    public unsubscribe(account: Account): Promise<Account> {
-        return this.transport
-            .sendRequest(this.DELETE, HttpMethod.Delete, account.toSimpleAccount())
-            .then((response) => Object.assign(new Account(), response.json))
-            .catch(err => {
-                throw err;
-            });
+    public async unsubscribe(account: Account): Promise<void> {
+        await this.transport.sendRequest(this.DELETE, HttpMethod.Delete, account.toSimpleAccount());
     }
 
     public getNonce(account: Account): Promise<number> {
