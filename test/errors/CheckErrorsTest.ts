@@ -44,7 +44,7 @@ describe('Check throw errors', async () => {
         try {
             await base.profileManager.updateData(new Map());
         } catch (e) {
-            return
+            return;
         }
 
         throw new Error('not throw or catch error!');
