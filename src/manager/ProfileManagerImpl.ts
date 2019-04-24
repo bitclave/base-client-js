@@ -54,7 +54,7 @@ export class ProfileManagerImpl implements ProfileManager {
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
 
-    public getData(fieldKey?: string | Array<string>): Promise<Map<string, string>> {
+    public async getData(fieldKey?: string | Array<string>): Promise<Map<string, string>> {
         if (
             this.account == null ||
             this.account.publicKey == null ||

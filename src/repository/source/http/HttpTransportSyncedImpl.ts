@@ -18,7 +18,6 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
 
     private transactions: Array<Transaction> = [];
 
-    public sendRequest<T>(method: HttpMethod, data?: object | string | number): Promise<Response<T>>;
     public sendRequest<T>(
         path: string,
         method: HttpMethod,
@@ -35,56 +34,57 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
         });
     }
 
-    private runTransaction(transaction: Transaction) {
-        this.acceptInterceptor(transaction.cortege)
-            .then((someCortege: InterceptorCortege) => new Promise<void>((resolve, reject) => {
-                try {
-                    const cortege: InterceptorCortege = transaction.cortege;
+    private runTransaction(transaction: Transaction): Promise<Response<object>> {
+        return new Promise<Response<object>>(async (resolve, reject) => {
+            try {
+                await this.acceptInterceptor(transaction.cortege);
 
-                    const url = cortege.path ? this.getHost() + cortege.path : this.getHost();
-                    const request: XMLHttpRequest = new XMLHttpRequest();
+                const cortege: InterceptorCortege = transaction.cortege;
 
-                    request.open(cortege.method, url);
+                const url = cortege.path ? this.getHost() + cortege.path : this.getHost();
+                const request: XMLHttpRequest = new XMLHttpRequest();
 
-                    request.onload = () => {
-                        const result: Response<object> = new Response(request.responseText, request.status);
-                        if (request.status >= 200 && request.status < 300) {
-                            resolve();
-                            transaction.resolve(result);
-                            this.callNextRequest();
+                request.open(cortege.method, url);
 
-                        } else {
-                            resolve();
-                            this.logger.error('Error runTransaction request', result);
-                            transaction.reject(result);
-                            this.callNextRequest();
-                        }
-                    };
-
-                    request.onerror = () => {
-                        const result: Response<object> = new Response(request.responseText, request.status);
-                        this.logger.error('Error runTransaction onErrorRequest', result);
+                request.onload = () => {
+                    const result: Response<object> = new Response(request.responseText, request.status);
+                    if (request.status >= 200 && request.status < 300) {
+                        transaction.resolve(result);
                         resolve();
-                        transaction.reject(result);
                         this.callNextRequest();
-                    };
-
-                    if (cortege.fileMeta) {
-                        this.sendMultipartData(cortege.data as SignedRequest, cortege.fileMeta, request);
 
                     } else {
-                        cortege.headers.forEach((value, key) => {
-                            request.setRequestHeader(key, value);
-                        });
-
-                        request.send(JSON.stringify(cortege.data ? cortege.data : {}));
+                        this.logger.error('Error runTransaction request', result);
+                        transaction.reject(result);
+                        reject();
+                        this.callNextRequest();
                     }
-                } catch (e) {
+                };
+
+                request.onerror = () => {
+                    const result: Response<object> = new Response(request.responseText, request.status);
+                    this.logger.error('Error runTransaction onErrorRequest', result);
+                    transaction.reject(result);
                     reject();
-                    transaction.reject(e);
                     this.callNextRequest();
+                };
+
+                if (cortege.fileMeta) {
+                    this.sendMultipartData(cortege.data as SignedRequest, cortege.fileMeta, request);
+
+                } else {
+                    cortege.headers.forEach((value, key) => {
+                        request.setRequestHeader(key, value);
+                    });
+
+                    request.send(JSON.stringify(cortege.data ? cortege.data : {}));
                 }
-            }));
+            } catch (e) {
+                transaction.reject(e);
+                reject();
+                this.callNextRequest();
+            }
+        });
     }
 
     private callNextRequest() {

@@ -82,12 +82,10 @@ export class BitKeyPair implements KeyPairHelper {
         });
     }
 
-    public signMessage(data: string): Promise<string> {
-        return new Promise<string>(resolve => {
-            const message = new Message(data);
+    public async signMessage(data: string): Promise<string> {
+        const message = new Message(data);
 
-            resolve(message.sign(this.privateKey));
-        });
+        return message.sign(this.privateKey);
     }
 
     public checkSig(data: string, sig: string): Promise<boolean> {
