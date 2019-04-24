@@ -15,6 +15,7 @@ export default class AccountRepositoryImplMock implements AccountRepository {
     }
 
     public async unsubscribe(account: Account): Promise<void> {
+        console.log('user unsubsribed');
     }
 
 }
