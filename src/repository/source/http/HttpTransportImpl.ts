@@ -41,48 +41,48 @@ export class HttpTransportImpl implements HttpTransport {
         return this;
     }
 
-    public sendRequest<T>(method: HttpMethod, data?: object | string): Promise<Response<T>>;
     public sendRequest<T>(
         path: string,
         method: HttpMethod,
         data?: object | string | number,
         file?: FileMeta
     ): Promise<Response<T>> {
-        return this.acceptInterceptor(new InterceptorCortege(path, method, this.headers, data))
-            .then((cortege: InterceptorCortege) => new Promise<Response<T>>((resolve, reject) => {
-                try {
-                    const url = cortege.path ? this.getHost() + cortege.path : this.getHost();
-                    const request: XMLHttpRequest = new XMLHttpRequest();
-                    request.open(method, url);
+        return new Promise<Response<T>>(async (resolve, reject) => {
+            try {
+                const cortege = await this.acceptInterceptor(new InterceptorCortege(path, method, this.headers, data));
 
-                    request.onload = () => {
-                        const result: Response<object> = new Response(request.responseText, request.status);
-                        if (request.status >= 200 && request.status < 300) {
-                            resolve(result);
+                const url = cortege.path ? this.getHost() + cortege.path : this.getHost();
+                const request: XMLHttpRequest = new XMLHttpRequest();
+                request.open(method, url);
 
-                        } else {
-                            reject(result);
-                        }
-                    };
-                    request.onerror = () => {
-                        const result: Response<object> = new Response(request.responseText, request.status);
-                        reject(result);
-                    };
-
-                    if (cortege.fileMeta) {
-                        this.sendMultipartData(cortege.data as SignedRequest, cortege.fileMeta, request);
+                request.onload = () => {
+                    const result: Response<object> = new Response(request.responseText, request.status);
+                    if (request.status >= 200 && request.status < 300) {
+                        resolve(result);
 
                     } else {
-                        cortege.headers.forEach((value, key) => {
-                            request.setRequestHeader(key, value);
-                        });
-
-                        request.send(JSON.stringify(cortege.data ? cortege.data : {}));
+                        reject(result);
                     }
-                } catch (e) {
-                    reject(e);
+                };
+                request.onerror = () => {
+                    const result: Response<object> = new Response(request.responseText, request.status);
+                    reject(result);
+                };
+
+                if (cortege.fileMeta) {
+                    this.sendMultipartData(cortege.data as SignedRequest, cortege.fileMeta, request);
+
+                } else {
+                    cortege.headers.forEach((value, key) => {
+                        request.setRequestHeader(key, value);
+                    });
+
+                    request.send(JSON.stringify(cortege.data ? cortege.data : {}));
                 }
-            }));
+            } catch (e) {
+                reject(e);
+            }
+        });
     }
 
     public getHost(): string {
@@ -120,16 +120,13 @@ export class HttpTransportImpl implements HttpTransport {
         xhr.send(result);
     }
 
-    protected acceptInterceptor(
-        interceptorCortege: InterceptorCortege,
-        interceptorIndex: number = 0
-    ): Promise<InterceptorCortege> {
-        return (interceptorIndex >= this.interceptors.length)
-               ? Promise.resolve(interceptorCortege)
-               : this.interceptors[interceptorIndex]
-                   .onIntercept(interceptorCortege)
-                   .then(interceptorCortegeResult =>
-                             this.acceptInterceptor(interceptorCortegeResult, ++interceptorIndex)
-                   );
+    protected async acceptInterceptor(interceptorCortege: InterceptorCortege): Promise<InterceptorCortege> {
+        let nextInterceptor = interceptorCortege;
+
+        for await (const interceptor of this.interceptors) {
+            nextInterceptor = await interceptor.onIntercept(nextInterceptor);
+        }
+
+        return nextInterceptor;
     }
 }

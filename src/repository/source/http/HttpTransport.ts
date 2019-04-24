@@ -7,8 +7,6 @@ export interface HttpTransport {
 
     getHost(): string;
 
-    sendRequest<T>(method: HttpMethod, data?: object | string): Promise<Response<T>>;
-
     sendRequest<T>(
         path: string,
         method: HttpMethod,
