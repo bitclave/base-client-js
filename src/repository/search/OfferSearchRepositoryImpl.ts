@@ -41,7 +41,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     ): Promise<Page<OfferSearchResultItem>> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_CREATE_BY_QUERY_API
-                .replace('{query}', query)
+                .replace('{query}', encodeURIComponent(query))
                 .replace('{page}', (page || 0).toString())
                 .replace('{size}', (size || 20).toString())
             ,

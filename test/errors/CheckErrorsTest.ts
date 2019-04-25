@@ -26,6 +26,8 @@ describe('Check throw errors', async () => {
         try {
            await base.profileManager.getData();
         } catch (e) {
+            e.should.be.exist;
+            e.message.should.be.eq('publicKey can not find');
             return;
         }
 
@@ -44,6 +46,8 @@ describe('Check throw errors', async () => {
         try {
             await base.profileManager.updateData(new Map());
         } catch (e) {
+            e.should.be.exist;
+            e.message.should.be.eq('Invalid Argument: First argument should be an instance of PrivateKey');
             return;
         }
 
