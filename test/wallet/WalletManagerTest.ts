@@ -10,6 +10,7 @@ import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
 import Account from '../../src/repository/models/Account';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
+import { CryptoUtils } from '../../src/utils/CryptoUtils';
 import { JsonUtils } from '../../src/utils/JsonUtils';
 import { AcceptedField } from '../../src/utils/keypair/AcceptedField';
 import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
@@ -17,14 +18,19 @@ import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
 import { MessageSigner } from '../../src/utils/keypair/MessageSigner';
 import { AccessRight } from '../../src/utils/keypair/Permissions';
 import { RemoteKeyPairHelper } from '../../src/utils/keypair/RemoteKeyPairHelper';
-import { BaseSchema } from '../../src/utils/types/BaseSchema';
-import { AddrRecord, WalletsRecords } from '../../src/utils/types/BaseTypes';
-import { WalletUtils, WalletVerificationCodes } from '../../src/utils/WalletUtils';
+import {
+    AppWalletData,
+    BtcWalletData,
+    CryptoWallets,
+    CryptoWalletsData,
+    EthWalletData
+} from '../../src/utils/types/BaseTypes';
+import { WalletVerificationCodes } from '../../src/utils/types/validators/ValidationResult';
+import { WalletUtils } from '../../src/utils/WalletUtils';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 import ClientDataRepositoryImplMock from '../profile/ClientDataRepositoryImplMock';
 import { AssistantPermissions } from '../requests/AssistantPermissions';
 import DataRequestRepositoryImplMock from '../requests/DataRequestRepositoryImplMock';
-import BaseEthUtils from '../wallet/BaseEthUtils';
 
 const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
 
@@ -33,7 +39,7 @@ require('chai')
     .should();
 
 const Message = require('bitcore-message');
-const bitcore = require('bitcore-lib');
+const Bitcore = require('bitcore-lib');
 
 describe('Wallet manager test', async () => {
 
@@ -105,7 +111,7 @@ describe('Wallet manager test', async () => {
         walletManager = new WalletManagerImpl(
             profileManager,
             requestManager,
-            new BaseSchema(),
+            WalletUtils.WALLET_VALIDATOR,
             keyPairHelperAlisa,
             authAccountBehaviorAlisa
         );
@@ -174,7 +180,7 @@ describe('Wallet manager test', async () => {
         // create BASE user for tesing
         const baseUser = await keyPairHelper.createKeyPair('mnemonic for BASE user for testing');
 
-        const baseUserAddr = new bitcore.PrivateKey
+        const baseUserAddr = new Bitcore.PrivateKey
             .fromString(baseUser.privateKey)
             .toAddress()
             .toString(16);
@@ -239,172 +245,306 @@ describe('Wallet manager test', async () => {
     });
 
     it('create ETH address record by BASE interface', () => {
-        const msg: AddrRecord = BaseEthUtils.createEthAddrRecord(
+        const msg: EthWalletData = WalletUtils.createEthereumWalletData(
             '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
             '0x42cb8ae103896daee71ebb5dca5367f16727164a',
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
         );
-        WalletUtils.verifyAddressRecord(msg).should.be.equal(WalletVerificationCodes.RC_OK);
+        const validation = WalletUtils.WALLET_VALIDATOR.validateCryptoWallet(msg);
+        validation.message.length.should.be.eq(0);
+        validation.state.length.should.be.eq(0);
     });
 
-    it('verify ETH address record by BASE interface', () => {
-        /*
-        here is the exact string for message - pay attention to " " and "\n"
-        "{\n  \"baseID\": \"02ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41\",\n
-        \"ethAddr\": \"0x42cb8ae103896daee71ebb5dca5367f16727164a\"\n}"
-         */
-        // b4ea5b297db8f178e15ef0afb6df240f6e56e67d3d3cb4ada162a677d7a36807
-        // 0x29F2EF2D5948de8b192Cb67672DD170d4e44D543
+    it('create BTC address record by BASE interface', () => {
+        const pbkdf2: string = CryptoUtils.PBKDF2('some password', 256);
+        const hash = Bitcore.crypto.Hash.sha256(new Bitcore.deps.Buffer(pbkdf2));
+        const bn = Bitcore.crypto.BN.fromBuffer(hash);
+        const privateKey = new Bitcore.PrivateKey(bn);
+        const publicKey = privateKey.toPublicKey();
+        const addr = privateKey.toAddress().toString(16);
 
-        // 0x29F2EF2D5948de8b192Cb67672DD170d4e44D543
-        // tslint:disable-next-line:max-line-length
-        // '0x7d530570d312f51a739d9f632bd3997721c463113ae2d04d45bf5c56426b98f610775dab' +
-        // '97f8e3ea0601089312b5e6e720e29ee514b8e6ff372649a402d5eb1e1b'
+        const privateKeyHex: string = privateKey.toString(16);
+        const publicKeyHex = publicKey.toString(16);
 
-        WalletUtils.verifyAddressRecord(
-            new AddrRecord(
-                JSON.stringify(
-                    {
-                        baseID: '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
-                        ethAddr: '0x42cb8ae103896daee71ebb5dca5367f16727164a'
-                    }),
-                '0x273f63c3c0da0bde3448a5dc24865cd25e936d6a210f548fdf7fcfd3f8fc2f9' +
-                    'd5089fd6fc2ce2c778a04a4a464de09d9f781c2f1f42914eb33f168c3f8e5e2351c'
-            )
-        ).should.be.equal(WalletVerificationCodes.RC_OK);
+        const msg: BtcWalletData = WalletUtils.createBtcWalletData(
+            publicKeyHex,
+            addr,
+            privateKeyHex
+        );
 
-        WalletUtils.verifyAddressRecord(
-            new AddrRecord(
-                JSON.stringify(
-                    {
-                        _baseID: '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
-                        ethAddr: '0x42cb8ae103896daee71ebb5dca5367f16727164a'
-                    }),
-                // tslint:disable-next-line:max-line-length
-                '0x273f63c3c0da0bde3448a5dc24865cd25e936d6a210f548fdf7fcfd3f8fc2f9d5089fd6fc2ce2c778a04a4a464de09d9f781c2f1f42914eb33f168c3f8e5e2351c'
-            )
-        ).should.be.not.equal(WalletVerificationCodes.RC_OK);
-
-        WalletUtils.verifyAddressRecord(
-            new AddrRecord(
-                JSON.stringify(
-                    {
-                        baseID: '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
-                        ethAddr: '0x42cb8ae103896daee71ebb5dca5367f16727164a'
-                    }),
-                // tslint:disable-next-line:max-line-length
-                '0x373f63c3c0da0bde3448a5dc24865cd25e936d6a210f548fdf7fcfd3f8fc2f9d5089fd6fc2ce2c778a04a4a464de09d9f781c2f1f42914eb33f168c3f8e5e2351c'
-            )
-        ).should.be.not.equal(WalletVerificationCodes.RC_OK);
+        const validation = WalletUtils.WALLET_VALIDATOR.validateCryptoWallet(msg);
+        validation.message.length.should.be.eq(0);
+        validation.state.length.should.be.eq(0);
     });
 
-    it('create valid ETH Wallets record by BASE interface', async () => {
-        let msg;
-        let rc;
-        let ethAddrRecord: AddrRecord;
+    it('create APP address record by BASE interface', () => {
+        const pbkdf2: string = CryptoUtils.PBKDF2('some password', 256);
+        const hash = Bitcore.crypto.Hash.sha256(new Bitcore.deps.Buffer(pbkdf2));
+        const bn = Bitcore.crypto.BN.fromBuffer(hash);
+        const privateKey = new Bitcore.PrivateKey(bn);
+        const publicKey = privateKey.toPublicKey();
+        const publicKeyHex = publicKey.toString(16);
 
-        const baseUser: RemoteKeyPairHelper = await KeyPairFactory.createRpcKeyPair(rpcTransport);
-        const baseUserAccessToken: string = await authenticatorHelper.generateAccessToken(
-            'mnemonic for BASE user for testing'
+        const msg: AppWalletData = WalletUtils.createAppWalletData(
+            publicKeyHex,
         );
 
-        baseUser.setAccessToken(baseUserAccessToken);
-        await baseUser.createKeyPair('');
+        const validation = WalletUtils.WALLET_VALIDATOR.validateCryptoWallet(msg);
+        validation.message.length.should.be.eq(0);
+        validation.state.length.should.be.eq(0);
+    });
 
-        baseUser.getPublicKey().should.be.equal('03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996');
+    it('create APP/ETH/BTC for CryptoWallets record by BASE interface', async () => {
+        const pbkdf2: string = CryptoUtils.PBKDF2('some password', 256);
+        const hash = Bitcore.crypto.Hash.sha256(new Bitcore.deps.Buffer(pbkdf2));
+        const bn = Bitcore.crypto.BN.fromBuffer(hash);
+        const privateKey = new Bitcore.PrivateKey(bn);
+        const addr = privateKey.toAddress().toString(16);
 
-        msg = await BaseEthUtils.createEthWalletsRecordWithSigner(
-            '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
-            [
-                WalletUtils.createEthereumAddersRecord(
-                    '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
-                    '0x42cb8ae103896daee71ebb5dca5367f16727164a',
-                    '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
-                ),
-                WalletUtils.createEthereumAddersRecord(
-                    '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
-                    '0x50575b106b1f96359f5e5dbe4c270443e6185f1f',
-                    '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369002'
-                )
-            ],
-            '17e326f9ebad9ee205ade59c23d3a2d49f87b587f20b1667ee089abe5eb9453b'
+        const privateKeyHex: string = privateKey.toString(16);
+
+        const baseId = authAccountBehaviorAlisa.getValue().publicKey;
+
+        const app: AppWalletData = WalletUtils.createAppWalletData(
+            baseId,
         );
-
-        rc = WalletUtils.validateWallets(WalletManagerImpl.DATA_KEY_ETH_WALLETS, msg, baseUser.getPublicKey());
-        JSON.stringify(rc).should.be.equal(JSON.stringify(
-            {
-                rc: WalletVerificationCodes.RC_OK,
-                err: '',
-                details: [
-                    WalletVerificationCodes.RC_OK,
-                    WalletVerificationCodes.RC_OK
-                ]
-            }));
-
-        msg = await BaseEthUtils.createEthWalletsRecordDebug(
-            '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
-            [
-                WalletUtils.createEthereumAddersRecord(
-                    '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
-                    '0x42cb8ae103896daee71ebb5dca5367f16727164a',
-                    '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
-                ),
-                WalletUtils.createEthereumAddersRecord(
-                    '12ce52c58095cf223a3f3f4d3a725b092db11909e5e58bbbca550fb80a2c18ab41',
-                    '0x50575b106b1f96359f5e5dbe4c270443e6185f1f',
-                    '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369002'
-                )
-            ],
-            '17e326f9ebad9ee205ade59c23d3a2d49f87b587f20b1667ee089abe5eb9453b'
+        const btc: BtcWalletData = WalletUtils.createBtcWalletData(
+            baseId,
+            addr,
+            privateKeyHex
         );
-
-        rc = WalletUtils.validateWallets(WalletManagerImpl.DATA_KEY_ETH_WALLETS, msg, baseUser.getPublicKey());
-        JSON.stringify(rc).should.be.equal(JSON.stringify(
-            {
-                rc: WalletVerificationCodes.RC_OK,
-                err: '',
-                details: [
-                    WalletVerificationCodes.RC_OK,
-                    WalletVerificationCodes.RC_BASEID_MISSMATCH
-                ]
-            }));
-
-        rc = WalletUtils.validateWallets('error_eth_wallets', msg, baseUser.getPublicKey());
-        rc.rc.should.be.equal(WalletVerificationCodes.RC_GENERAL_ERROR);
-
-        ethAddrRecord = WalletUtils.createEthereumAddersRecord(
-            '03d1f34ede44ba714316fe3d8c59df1735a4405ce7260d65373ed3cc754fd4f996',
-            '0x42cb8ae103896daee71ebb5dca5367f16727164a',
-            '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
-        );
-        let sawException: boolean = false;
-        try {
-            await walletManager.createWalletsRecords([ethAddrRecord], 'wrong key');
-        } catch (e) {
-            sawException = true;
-        }
-
-        sawException.should.be.equal(true);
-
-        const baseID = keyPairHelperAlisa.getPublicKey();
-
-        ethAddrRecord = WalletUtils.createEthereumAddersRecord(
-            baseID,
+        const eth: EthWalletData = WalletUtils.createEthereumWalletData(
+            baseId,
             '0x42cb8ae103896daee71ebb5dca5367f16727164a',
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
         );
 
-        const verifyCodes = WalletUtils.verifyAddressRecord(ethAddrRecord);
+        const walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app]));
 
-        verifyCodes.should.be.eq(WalletVerificationCodes.RC_OK);
+        const validation = WalletUtils.validateWalletsData(baseId, walletsData);
 
-        const walletsRecords: WalletsRecords = await walletManager
-            .createWalletsRecords([ethAddrRecord], baseID);
+        validation.length.should.be.eq(0);
+    });
 
-        walletsRecords.data.length.should.be.equal(1);
-        walletsRecords.sig.length.should.be.gt(0);
+    it('create APP/ETH/BTC for CryptoWallets with wrong signature', async () => {
+        const pbkdf2: string = CryptoUtils.PBKDF2('some password', 256);
+        const hash = Bitcore.crypto.Hash.sha256(new Bitcore.deps.Buffer(pbkdf2));
+        const bn = Bitcore.crypto.BN.fromBuffer(hash);
+        const privateKey = new Bitcore.PrivateKey(bn);
+        const addr = privateKey.toAddress().toString(16);
 
-        const result = WalletUtils.validateWallets(WalletManagerImpl.DATA_KEY_ETH_WALLETS, walletsRecords, baseID);
-        result.rc.should.be.eq(WalletVerificationCodes.RC_OK);
+        const privateKeyHex: string = privateKey.toString(16);
+
+        const baseId = authAccountBehaviorAlisa.getValue().publicKey;
+
+        const app: AppWalletData = WalletUtils.createAppWalletData(
+            baseId,
+        );
+        const btc: BtcWalletData = WalletUtils.createBtcWalletData(
+            baseId,
+            addr,
+            privateKeyHex
+        );
+        const eth: EthWalletData = WalletUtils.createEthereumWalletData(
+            baseId,
+            '0x42cb8ae103896daee71ebb5dca5367f16727164a',
+            '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
+        );
+
+        const walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app]));
+
+        let validation = WalletUtils.validateWalletsData(baseId, walletsData);
+        validation.length.should.be.eq(0);
+
+        const json = JSON.parse(JSON.stringify(walletsData));
+
+        validation = WalletUtils.validateWalletsData(baseId, CryptoWalletsData.fromJson(json));
+        validation.length.should.be.eq(0);
+
+        json.sig = 'some invalid signature';
+
+        const restoredWalletsData = CryptoWalletsData.fromJson(json);
+        validation = WalletUtils.validateWalletsData(baseId, restoredWalletsData);
+        validation[0].state[0].should.be.eq(WalletVerificationCodes.WRONG_SIGNATURE);
+
+        const walletsDataRestored = await walletManager.createCryptoWalletsData(restoredWalletsData.data);
+
+        validation = WalletUtils.validateWalletsData(baseId, walletsDataRestored);
+        validation.length.should.be.eq(0);
+    });
+
+    it('CryptoWallets should be have only unique wallets', async () => {
+        const pbkdf2: string = CryptoUtils.PBKDF2('some password', 256);
+        const hash = Bitcore.crypto.Hash.sha256(new Bitcore.deps.Buffer(pbkdf2));
+        const bn = Bitcore.crypto.BN.fromBuffer(hash);
+        const privateKey = new Bitcore.PrivateKey(bn);
+        const addr = privateKey.toAddress().toString(16);
+
+        const privateKeyHex: string = privateKey.toString(16);
+
+        const baseId = authAccountBehaviorAlisa.getValue().publicKey;
+
+        const app: AppWalletData = WalletUtils.createAppWalletData(
+            baseId,
+        );
+        const btc: BtcWalletData = WalletUtils.createBtcWalletData(
+            baseId,
+            addr,
+            privateKeyHex
+        );
+        const eth: EthWalletData = WalletUtils.createEthereumWalletData(
+            baseId,
+            '0x42cb8ae103896daee71ebb5dca5367f16727164a',
+            '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
+        );
+
+        let walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth, eth], [btc], [app]));
+        let validation = WalletUtils.validateWalletsData(baseId, walletsData);
+        validation.length.should.be.eq(1);
+        validation[0].message[0].should.be.eq('eth should be have only unique items');
+        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+
+        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc, btc], [app]));
+        validation = WalletUtils.validateWalletsData(baseId, walletsData);
+        validation.length.should.be.eq(1);
+        validation[0].message[0].should.be.eq('btc should be have only unique items');
+        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+
+        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app, app]));
+        validation = WalletUtils.validateWalletsData(baseId, walletsData);
+        validation.length.should.be.eq(1);
+        validation[0].message[0].should.be.eq('app should be have only unique items');
+        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+    });
+
+    it('CryptoWallets should be have fixed types in array of wallets', async () => {
+        const pbkdf2: string = CryptoUtils.PBKDF2('some password', 256);
+        const hash = Bitcore.crypto.Hash.sha256(new Bitcore.deps.Buffer(pbkdf2));
+        const bn = Bitcore.crypto.BN.fromBuffer(hash);
+        const privateKey = new Bitcore.PrivateKey(bn);
+        const addr = privateKey.toAddress().toString(16);
+
+        const privateKeyHex: string = privateKey.toString(16);
+
+        const baseId = authAccountBehaviorAlisa.getValue().publicKey;
+
+        const app: AppWalletData = WalletUtils.createAppWalletData(
+            baseId,
+        );
+        const btc: BtcWalletData = WalletUtils.createBtcWalletData(
+            baseId,
+            addr,
+            privateKeyHex
+        );
+        const eth: EthWalletData = WalletUtils.createEthereumWalletData(
+            baseId,
+            '0x42cb8ae103896daee71ebb5dca5367f16727164a',
+            '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
+        );
+
+        let walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth, btc, app], [btc], [app]));
+        let validation = WalletUtils.validateWalletsData(baseId, walletsData);
+        validation.length.should.be.eq(1);
+        validation[0].message[0].should.be.eq('eth should be type of EthWalletData');
+        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+
+        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc, eth, app], [app]));
+        validation = WalletUtils.validateWalletsData(baseId, walletsData);
+        validation.length.should.be.eq(1);
+        validation[0].message[0].should.be.eq('btc should be type of BtcWalletData');
+        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+
+        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app, eth, btc]));
+        validation = WalletUtils.validateWalletsData(baseId, walletsData);
+        validation.length.should.be.eq(1);
+        validation[0].message[0].should.be.eq('app should be type of AppWalletData');
+        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+    });
+
+    it('CryptoWallets should be have valid baseId', async () => {
+        const pbkdf2: string = CryptoUtils.PBKDF2('some password', 256);
+        const hash = Bitcore.crypto.Hash.sha256(new Bitcore.deps.Buffer(pbkdf2));
+        const bn = Bitcore.crypto.BN.fromBuffer(hash);
+        const privateKey = new Bitcore.PrivateKey(bn);
+        const addr = privateKey.toAddress().toString(16);
+
+        const privateKeyHex: string = privateKey.toString(16);
+
+        const baseId = 'wrong public key';
+
+        const app: AppWalletData = WalletUtils.createAppWalletData(
+            baseId,
+            false
+        );
+
+        const btc: BtcWalletData = WalletUtils.createBtcWalletData(
+            baseId,
+            addr,
+            privateKeyHex,
+            false
+        );
+
+        const eth: EthWalletData = WalletUtils.createEthereumWalletData(
+            baseId,
+            '0x42cb8ae103896daee71ebb5dca5367f16727164a',
+            '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001',
+            false
+        );
+
+        let validation = WalletUtils.WALLET_VALIDATOR.validateCryptoWallet(eth);
+        validation.message[0].should.be.eq('must be valid Bitclave Base Id');
+        validation.state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+
+        validation = WalletUtils.WALLET_VALIDATOR.validateCryptoWallet(btc);
+        validation.message[0].should.be.eq('must be valid Bitclave Base Id');
+        validation.state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+
+        validation = WalletUtils.WALLET_VALIDATOR.validateCryptoWallet(app);
+
+        validation.message[0].should.be.eq('must be valid Bitclave App address');
+        validation.state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+    });
+
+    it('CryptoWallets should be have valid address', async () => {
+        const pbkdf2: string = CryptoUtils.PBKDF2('some password', 256);
+        const hash = Bitcore.crypto.Hash.sha256(new Bitcore.deps.Buffer(pbkdf2));
+        const bn = Bitcore.crypto.BN.fromBuffer(hash);
+        const privateKey = new Bitcore.PrivateKey(bn);
+
+        const privateKeyHex: string = privateKey.toString(16);
+
+        const baseId = authAccountBehaviorAlisa.getValue().publicKey;
+
+        const app: AppWalletData = WalletUtils.createAppWalletData(
+            'some wrong address',
+            false
+        );
+
+        const btc: BtcWalletData = WalletUtils.createBtcWalletData(
+            baseId,
+            'some wrong address',
+            privateKeyHex,
+            false
+        );
+
+        const eth: EthWalletData = WalletUtils.createEthereumWalletData(
+            baseId,
+            '0xSome wrong address',
+            '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001',
+            false
+        );
+
+        let validation = WalletUtils.WALLET_VALIDATOR.validateCryptoWallet(eth);
+        validation.message[0].should.be.eq('must be valid Ethereum address');
+        validation.state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+
+        validation = WalletUtils.WALLET_VALIDATOR.validateCryptoWallet(btc);
+        validation.message[0].should.be.eq('must be valid Bitcoin address');
+        validation.state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+
+        validation = WalletUtils.WALLET_VALIDATOR.validateCryptoWallet(app);
+
+        validation.message[0].should.be.eq('must be valid Bitclave App address');
+        validation.state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
     });
 });

@@ -1,5 +1,7 @@
 // tslint:disable:no-unused-expression
-import Base, { WalletsRecords } from '../../src/Base';
+import * as Bip39 from 'bip39';
+import * as EthUtils from 'ethereumjs-util';
+import Base, { CryptoWallets, CryptoWalletsData } from '../../src/Base';
 import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
 import Account from '../../src/repository/models/Account';
 import DataRequest from '../../src/repository/models/DataRequest';
@@ -7,8 +9,10 @@ import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyT
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import { AccessRight } from '../../src/utils/keypair/Permissions';
-import { WalletUtils, WalletVerificationStatus } from '../../src/utils/WalletUtils';
+import { WalletUtils } from '../../src/utils/WalletUtils';
 import AuthenticatorHelper from '../AuthenticatorHelper';
+
+const HdKey = require('hdkey');
 
 require('chai')
     .use(require('chai-as-promised'))
@@ -149,15 +153,24 @@ describe('BASE API test: Protocol Flow', async () => {
     });
 
     it('User - Service Provider - Business data flow protocol', async () => {
-        // to get this records, I used example application, created a wallet records and did copy&paste
+        // to get this records, I used example application, created a data records and did copy&paste
         try {
-            const wallet =
-                '{"data":[{"data":"' +
-                '{\\"baseID\\":\\"03cb46e31c2d0f5827bb267f9fb30cf98077165d0e560b964651c6c379f69c7a35\\",' +
-                '\\"ethAddr\\":\\"0x916e1c7340f3f0a7af1a5b55e0fd9c3846ef8d28\\"}",' +
-                '"sig":"0x08602606d842363d58e714e18f8c4d4b644c0cdc88d644dba03d0af3558f069' +
-                '1334a4db534034ba736347a085f28a58c9b643be25a9c7169f073f69a26b432531b"}],' +
-                '"sig":"IMBBXn+LLf4jWmjhQ1cWGmccuCZW9M5TwQYq46nXpCFUbs72Sxjn0hxOtmyNwiP4va97ZwCruqFyNhi3CuR1BvM="}';
+            const baseId = baseUser.accountManager.getAccount().publicKey;
+
+            const mnemonic = Bip39.generateMnemonic();
+            const seed = await Bip39.mnemonicToSeed(mnemonic);
+
+            const privateKeyBuffer = HdKey.fromMasterSeed(seed).privateKey;
+            const privateKeyHex = (privateKeyBuffer as Buffer).toString('hex');
+            const address = EthUtils.addHexPrefix(
+                (EthUtils.privateToAddress(privateKeyBuffer) as Buffer).toString('hex')
+            );
+
+            const ethWallet = WalletUtils.createEthereumWalletData(baseId, address, privateKeyHex);
+            const wallets = new CryptoWallets([ethWallet], [], []);
+            const walletsData = await baseUser.walletManager.createCryptoWalletsData(wallets);
+
+            const wallet = JSON.stringify(walletsData);
 
             // Step 1: create wallets for User and grant access for Validator
             await baseUser.profileManager.updateData(new Map([[WalletManagerImpl.DATA_KEY_ETH_WALLETS, wallet]]));
@@ -182,13 +195,15 @@ describe('BASE API test: Protocol Flow', async () => {
             );
             (decryptedObj.get(WalletManagerImpl.DATA_KEY_ETH_WALLETS) as string).should.be.equal(wallet);
 
+            const jsonCryptoWalletsData = JSON.parse(wallet);
             // validator verifies the ETH wallets
-            const res: WalletVerificationStatus = WalletUtils.validateWallets(
-                WalletManagerImpl.DATA_KEY_ETH_WALLETS,
-                WalletsRecords.fromJson(wallet),
-                accUser.publicKey
+
+            const res = WalletUtils.validateWalletsData(
+                baseId,
+                CryptoWalletsData.fromJson(jsonCryptoWalletsData),
             );
-            JSON.stringify(res).should.be.equal(JSON.stringify({rc: 0, err: '', details: [0]}));
+
+            res.length.should.be.equal(0);
 
             // Here we simulate that Validator compute wealth for each requestor
             const wealth = '15213';
