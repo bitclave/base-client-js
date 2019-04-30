@@ -1,10 +1,11 @@
-import { AddrRecord, WalletsRecords, WealthPtr } from '../utils/types/BaseTypes';
+import { CryptoWallet, CryptoWallets, CryptoWalletsData, SupportSignedMessageData } from '../utils/types/BaseTypes';
+import { WalletValidator } from '../utils/types/validators/WalletValidator';
 
 export interface WalletManager {
 
-    createWalletsRecords(wallets: Array<AddrRecord>, baseID: string): Promise<WalletsRecords>;
+    createCryptoWalletsData(wallets: CryptoWallets): Promise<CryptoWalletsData>;
+
+    getWalletValidator(): WalletValidator<CryptoWallet, SupportSignedMessageData<CryptoWallet>>;
 
     addWealthValidator(validatorPbKey: string): Promise<void>;
-
-    refreshWealthPtr(): Promise<WealthPtr>;
 }

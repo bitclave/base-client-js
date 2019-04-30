@@ -71,7 +71,14 @@ import { KeyPairHelper } from './utils/keypair/KeyPairHelper';
 import { MessageDecrypt } from './utils/keypair/MessageDecrypt';
 import { MessageEncrypt } from './utils/keypair/MessageEncrypt';
 import { MessageSigner } from './utils/keypair/MessageSigner';
-import { BaseSchema } from './utils/types/BaseSchema';
+import { AbstractWalletValidator } from './utils/types/validators/AbstractWalletValidator';
+import { AppWalletValidator } from './utils/types/validators/AppWalletValidator';
+import { BtcWalletValidator } from './utils/types/validators/BtcWalletValidator';
+import { EthWalletValidator } from './utils/types/validators/EthWalletValidator';
+import { ValidationResult } from './utils/types/validators/ValidationResult';
+import { WalletValidator } from './utils/types/validators/WalletValidator';
+import { WalletValidatorStrategy } from './utils/types/validators/WalletValidatorStrategy';
+import { WalletUtils } from './utils/WalletUtils';
 
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
@@ -93,14 +100,21 @@ export { RpcToken } from './utils/keypair/rpc/RpcToken';
 export { RpcAuth } from './utils/keypair/rpc/RpcAuth';
 
 export {
-    BaseAddrPair,
-    AddrRecord,
-    WalletsRecords,
-    WealthRecord,
-    WealthPtr,
+    CryptoWallets,
+    EthWalletData,
+    BtcWalletData,
+    AppWalletData,
+    CryptoWalletsData,
+    AppCryptoWallet,
+    BtcCryptoWallet,
+    EthCryptoWallet,
+    CryptoWallet,
+    SupportSignedMessageData,
+    StringSignedMessage,
+    StringMessage,
     ProfileUser,
-    ProfileWealthValidator
 } from './utils/types/BaseTypes';
+
 export {
     Account,
     AccountManager,
@@ -139,7 +153,14 @@ export {
     OfferShareDataRepositoryImpl,
     OfferSearchRepository,
     OfferSearchRepositoryImpl,
-    HttpTransportImpl
+    HttpTransportImpl,
+    AbstractWalletValidator,
+    AppWalletValidator,
+    BtcWalletValidator,
+    EthWalletValidator,
+    ValidationResult,
+    WalletValidator,
+    WalletValidatorStrategy
 };
 
 export default class Base {
@@ -229,7 +250,7 @@ export default class Base {
         this._walletManager = new WalletManagerImpl(
             this.profileManager,
             this.dataRequestManager,
-            new BaseSchema(),
+            WalletUtils.WALLET_VALIDATOR,
             messageSigner,
             this._authAccountBehavior.asObservable()
         );

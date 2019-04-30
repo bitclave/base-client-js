@@ -1,128 +1,103 @@
-import { MessageData } from 'eth-sig-util';
-import { WalletManagerImpl } from '../manager/WalletManagerImpl';
+import { CryptoUtils } from './CryptoUtils';
 import { EthereumUtils } from './EthereumUtils';
-import { BaseSchema } from './types/BaseSchema';
-import { AddrRecord, BaseAddrPair, WalletsRecords } from './types/BaseTypes';
-
-const bitcore = require('bitcore-lib');
-const Message = require('bitcore-message');
-
-export enum WalletVerificationCodes {
-    RC_OK = 0,
-    RC_BASEID_MISSMATCH = -1,
-    RC_ADDR_NOT_VERIFIED = -2,
-    RC_ADDR_WRONG_SIGNATURE = -3,
-    RC_ADDR_SCHEMA_MISSMATCH = -4,
-    RC_GENERAL_ERROR = -100,
-}
-
-export class WalletVerificationStatus {
-    public rc: WalletVerificationCodes = WalletVerificationCodes.RC_OK;
-    public err: string = '';
-    public details: Array<number> = [];
-}
+import {
+    AppCryptoWallet,
+    AppWalletData,
+    BtcCryptoWallet,
+    BtcWalletData,
+    CryptoWallet,
+    CryptoWalletsData,
+    EthCryptoWallet,
+    EthWalletData,
+    StringSignedMessage,
+    SupportSignedMessageData
+} from './types/BaseTypes';
+import { ValidationResult } from './types/validators/ValidationResult';
+import { WalletsValidator } from './types/validators/WalletsValidator';
+import { WalletValidatorStrategy } from './types/validators/WalletValidatorStrategy';
 
 export class WalletUtils {
 
-    private static baseSchema = new BaseSchema();
+    public static readonly WALLET_VALIDATOR = new WalletValidatorStrategy();
 
-    public static verifyAddressRecord(record: AddrRecord): WalletVerificationCodes {
-        let signerAddr: string;
-        try {
-            if (!this.baseSchema.validateAddr(record)) {
-                return WalletVerificationCodes.RC_ADDR_SCHEMA_MISSMATCH;
+    public static validateWalletsData(
+        baseId: string,
+        cryptoWallets: CryptoWalletsData
+    ): Array<ValidationResult<StringSignedMessage>> {
+        const allWallets = cryptoWallets.data.eth.concat(cryptoWallets.data.app, cryptoWallets.data.btc);
+        let result: Array<ValidationResult<StringSignedMessage>> = [];
+
+        allWallets.forEach(wallet => {
+            const allErrors = WalletUtils.WALLET_VALIDATOR.validateCryptoWallet(wallet);
+            if (allErrors.message.length > 0 || allErrors.state.length > 0) {
+                result = result.concat(allErrors);
             }
+        });
 
-            if (!this.baseSchema.validateBaseAddrPair(record.data)) {
-                return WalletVerificationCodes.RC_ADDR_SCHEMA_MISSMATCH;
-            }
+        const validator = new WalletsValidator(baseId);
+        const errors = validator.validateCryptoWallet(cryptoWallets);
 
-            if (record.sig.length > 0) {
-                signerAddr = EthereumUtils.recoverPersonalSignature(record.getSignedMessage());
-            } else {
-                return WalletVerificationCodes.RC_ADDR_NOT_VERIFIED;
-            }
-
-        } catch (err) {
-            return WalletVerificationCodes.RC_GENERAL_ERROR;
+        if (errors.state.length > 0 || errors.message.length > 0) {
+            result = result.concat(errors);
         }
 
-        return (signerAddr === record.data.ethAddr)
-               ? WalletVerificationCodes.RC_OK
-               : WalletVerificationCodes.RC_ADDR_WRONG_SIGNATURE;
+        return result;
     }
 
-    public static validateWallets(
-        key: string,
-        walletsRecords: WalletsRecords,
-        baseID: string
-    ): WalletVerificationStatus {
-        const result: WalletVerificationStatus = new WalletVerificationStatus();
+    public static createEthereumWalletData(
+        baseId: string,
+        address: string,
+        privateKey: string,
+        validation?: boolean
+    ): EthWalletData {
+        const record = new EthWalletData(new EthCryptoWallet(baseId, address));
+        const walletData = new EthWalletData(record.data, EthereumUtils.createSig(privateKey, record.getMessage()));
 
-        if (key !== WalletManagerImpl.DATA_KEY_ETH_WALLETS) {
-            result.err = 'The \<key\> is expected to be "' + WalletManagerImpl.DATA_KEY_ETH_WALLETS + '"';
-            result.rc = WalletVerificationCodes.RC_GENERAL_ERROR;
-
-            return result;
+        if (validation === undefined || validation) {
+            WalletUtils.validateWalletWithThrow(walletData);
         }
 
-        return this.verifyWalletsRecord(baseID, walletsRecords);
+        return walletData;
     }
 
-    public static verifyWalletsRecord(baseID: string, walletsRecords: WalletsRecords): WalletVerificationStatus {
-        const status: WalletVerificationStatus = new WalletVerificationStatus();
-        status.rc = WalletVerificationCodes.RC_OK;
+    public static createBtcWalletData(
+        baseId: string,
+        address: string,
+        privateKey: string,
+        validation?: boolean
+    ): BtcWalletData {
+        const record = new BtcWalletData(new BtcCryptoWallet(baseId, address));
 
-        if (!this.baseSchema.validateWallets(walletsRecords)) {
-            status.rc = WalletVerificationCodes.RC_ADDR_SCHEMA_MISSMATCH;
-            return status;
+        const bitcore = require('bitcore-lib');
+        const Message = require('bitcore-message');
+
+        const btcPrivateKey = bitcore.PrivateKey.fromWIF(privateKey);
+        const signature = Message(record.getMessage().data).sign(btcPrivateKey);
+        const walletData = new BtcWalletData(record.data, signature);
+
+        if (validation === undefined || validation) {
+            WalletUtils.validateWalletWithThrow(walletData);
         }
 
-        // verify all baseID keys are the same in ETH records
-        for (const item of walletsRecords.data) {
-            const pubKey = item.data.baseID;
-            if (pubKey !== baseID) {
-                status.details.push(WalletVerificationCodes.RC_BASEID_MISSMATCH);
-
-            } else if (this.verifyAddressRecord(item) !== WalletVerificationCodes.RC_OK) {
-                status.details.push(this.verifyAddressRecord(item));
-
-            } else {
-                status.details.push(WalletVerificationCodes.RC_OK);
-            }
-        }
-
-        // verify signature matches the baseID
-        const baseAddr = bitcore.PublicKey.fromString(baseID).toAddress().toString(16);
-        let sigCheck = false;
-
-        try {
-            if (walletsRecords.sig.length > 0) {
-                const message: Array<MessageData> = walletsRecords.data.map(item => item.getMessage());
-                sigCheck = Message(JSON.stringify(message)).verify(baseAddr, walletsRecords.sig);
-                if (!sigCheck) {
-                    status.rc = WalletVerificationCodes.RC_ADDR_WRONG_SIGNATURE;
-                    status.err = `Wallet signature does not match baseID ${baseID}`;
-                }
-            } else {
-                status.rc = WalletVerificationCodes.RC_ADDR_NOT_VERIFIED;
-                status.err = `Wallet signature is missing`;
-            }
-        } catch (err) {
-            status.rc = WalletVerificationCodes.RC_GENERAL_ERROR;
-            status.err = `General error while verifying Wallet signature`;
-        }
-
-        return status;
+        return walletData;
     }
 
-    public static createEthereumAddersRecord(baseID: string, ethAddr: string, ethPrvKey: string): AddrRecord {
-        const record: AddrRecord = new AddrRecord(
-            new BaseAddrPair(baseID, ethAddr),
-            ''
-        );
+    public static createAppWalletData(baseId: string, validation?: boolean): AppWalletData {
+        const record = new AppWalletData(new AppCryptoWallet(baseId, baseId));
+        const walletData = new AppWalletData(record.data, CryptoUtils.keccak256(baseId));
 
-        return new AddrRecord(record.data, EthereumUtils.createSig(ethPrvKey, record.getMessage()));
+        if (validation === undefined || validation) {
+            WalletUtils.validateWalletWithThrow(walletData);
+        }
+
+        return walletData;
     }
 
+    private static validateWalletWithThrow<T extends CryptoWallet>(walletData: SupportSignedMessageData<T>) {
+        const validation = WalletUtils.WALLET_VALIDATOR.validateCryptoWallet(walletData);
+
+        if (validation.state.length > 0 || validation.message.length > 0) {
+            throw new Error(JSON.stringify(validation));
+        }
+    }
 }
