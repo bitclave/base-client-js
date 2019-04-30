@@ -1,16 +1,14 @@
+import { IsJSON, IsString, ValidateNested } from 'class-validator';
 import { MessageData, SignedMessageData } from 'eth-sig-util';
+import { JsonObject } from '../../repository/models/JsonObject';
+import { IsBasePublicKey } from './validators/annotations/IsBasePublicKey';
+import { IsBtcAddress } from './validators/annotations/IsBtcAddress';
+import { IsEthAddress } from './validators/annotations/IsEthAddress';
+import { IsTypedArray } from './validators/annotations/IsTypedArray';
 
-class BaseAddrPair {
-    public readonly baseID: string;
-    public readonly ethAddr: string;
-
-    constructor(baseID: string, ethAddr: string) {
-        this.baseID = baseID;
-        this.ethAddr = ethAddr;
-    }
-}
-
-class StringMessage implements MessageData<string> {
+export class StringMessage implements MessageData<string> {
+    @IsString()
+    @IsJSON()
     public readonly data: string;
 
     public static valueOf(message: MessageData): StringMessage {
@@ -22,11 +20,30 @@ class StringMessage implements MessageData<string> {
     }
 }
 
-class StringSignedMessage extends StringMessage implements SignedMessageData<string> {
+export class StringSignedMessage extends StringMessage implements SignedMessageData<string> {
+    @IsString()
     public readonly sig: string;
 
     public static valueOf(message: SignedMessageData): StringSignedMessage {
-        return new StringSignedMessage(JSON.stringify(message.data), message.sig);
+        return new StringSignedMessage(StringSignedMessage.converter(message.data), message.sig);
+    }
+
+    private static converter<T>(data: T): string {
+        if (Array.isArray(data)) {
+            return JSON.stringify(data.map(item => this.converter(item)));
+
+        } else if (typeof data === 'string') {
+            return data;
+
+        } else if (data instanceof SupportSignedMessageData) {
+            return JSON.stringify(data.getMessage());
+
+        } else if (typeof data === 'object') {
+            return JSON.stringify(data);
+
+        } else {
+            throw new Error(`unsupported data ${data}`);
+        }
     }
 
     constructor(data: string, sig: string) {
@@ -35,21 +52,15 @@ class StringSignedMessage extends StringMessage implements SignedMessageData<str
     }
 }
 
-class AddrRecord implements SignedMessageData<BaseAddrPair> {
-    public readonly data: BaseAddrPair;
-    public readonly sig: string;
+export class SupportSignedMessageData<T> {
+    @ValidateNested()
+    public data: T;
 
-    constructor(data?: BaseAddrPair | string, sig?: string) {
-        if (typeof data === 'object') {
-            this.data = Object.assign(new BaseAddrPair('', ''), data);
+    @IsString()
+    public sig: string;
 
-        } else if (typeof data === 'string') {
-            this.data = Object.assign(new BaseAddrPair('', ''), JSON.parse(data));
-
-        } else {
-            this.data = new BaseAddrPair('', '');
-        }
-
+    constructor(data: T, sig?: string) {
+        this.data = data;
         this.sig = sig || '';
     }
 
@@ -62,74 +73,109 @@ class AddrRecord implements SignedMessageData<BaseAddrPair> {
     }
 }
 
-class WalletsRecords {
-    public readonly data: Array<AddrRecord>;
-    public readonly sig: string;
+export class CryptoWallet {
+    @IsBasePublicKey()
+    public readonly baseId: string;
 
-    public static fromJson(json: string): WalletsRecords {
-        const jsonObj: WalletsRecords = JSON.parse(json);
-        const items: Array<AddrRecord> =
-            jsonObj.hasOwnProperty('data')
-            ? jsonObj.data.map((item: AddrRecord) => new AddrRecord(item.data, item.sig))
-            : [];
-        return new WalletsRecords(items, jsonObj.sig);
+    @IsString()
+    public readonly address: string;
+
+    constructor(baseId: string, address: string) {
+        this.baseId = baseId;
+        this.address = address;
     }
-
-    constructor(data: Array<AddrRecord>, sig: string) {
-        this.data = data;
-        this.sig = sig;
-    }
-
 }
 
-class WealthRecord {
-    public readonly wealth: string;
-    public readonly sig: string;
+export class EthCryptoWallet extends CryptoWallet {
+    @IsEthAddress()
+    public readonly address: string;
 
-    constructor(wealth: string, sig: string) {
-        this.wealth = wealth;
-        this.sig = sig;
+    constructor(baseId: string, address: string) {
+        super(baseId, address);
+        this.address = address;
     }
-
 }
 
-class WealthPtr {
-    public readonly validator: string;
-    public readonly decryptKey: string;
+export class BtcCryptoWallet extends CryptoWallet {
+    @IsBtcAddress()
+    public readonly address: string;
 
-    constructor(validator?: string, decryptKey?: string) {
-        this.validator = validator || '';
-        this.decryptKey = decryptKey || '';
+    constructor(baseId: string, address: string) {
+        super(baseId, address);
+        this.address = address;
     }
-
 }
 
-class ProfileUser {
-    public readonly baseID: string;
+export class AppCryptoWallet extends CryptoWallet {
+    @IsBasePublicKey({message: 'must be valid Bitclave App address'})
+    public readonly address: string;
+
+    constructor(baseId: string, address: string) {
+        super(baseId, address);
+        this.address = address;
+    }
+}
+
+export class CryptoWallets {
+    @IsTypedArray(() => EthWalletData, true)
+    public readonly eth: Array<EthWalletData>;
+
+    @IsTypedArray(() => BtcWalletData, true)
+    public readonly btc: Array<BtcWalletData>;
+
+    @IsTypedArray(() => AppWalletData, true)
+    public readonly app: Array<AppWalletData>;
+
+    public static fromJson(json: JsonObject<CryptoWallets>): CryptoWallets {
+        const eth = ((json.eth as Array<JsonObject<EthWalletData>>) || [])
+            .map(item => EthWalletData.fromJson(item as JsonObject<EthWalletData>));
+
+        const btc = ((json.btc as Array<JsonObject<BtcWalletData>>) || [])
+            .map(item => BtcWalletData.fromJson(item as JsonObject<BtcWalletData>));
+
+        const app = ((json.app as Array<JsonObject<AppWalletData>>) || [])
+            .map(item => AppWalletData.fromJson(item as JsonObject<AppWalletData>));
+
+        return new CryptoWallets(eth, btc, app);
+    }
+
+    constructor(eth: Array<EthWalletData>, btc: Array<BtcWalletData>, app: Array<AppWalletData>) {
+        this.eth = eth;
+        this.btc = btc;
+        this.app = app;
+    }
+}
+
+export class EthWalletData extends SupportSignedMessageData<EthCryptoWallet> {
+    public static fromJson(json: JsonObject<EthWalletData>): EthWalletData {
+        return new EthWalletData(Object.assign(new EthCryptoWallet('', ''), json.data), json.sig as string);
+    }
+}
+
+export class BtcWalletData extends SupportSignedMessageData<BtcCryptoWallet> {
+    public static fromJson(json: JsonObject<BtcWalletData>): BtcWalletData {
+        return new BtcWalletData(Object.assign(new BtcCryptoWallet('', ''), json.data), json.sig as string);
+    }
+}
+
+export class AppWalletData extends SupportSignedMessageData<AppCryptoWallet> {
+    public static fromJson(json: JsonObject<AppWalletData>): AppWalletData {
+        return new AppWalletData(Object.assign(new AppCryptoWallet('', ''), json.data), json.sig as string);
+    }
+}
+
+export class CryptoWalletsData extends SupportSignedMessageData<CryptoWallets> {
+    public static fromJson(json: JsonObject<CryptoWalletsData>): CryptoWalletsData {
+        return new CryptoWalletsData(
+            CryptoWallets.fromJson(json.data as JsonObject<CryptoWallets>),
+            json.sig as string
+        );
+    }
+}
+
+export class ProfileUser {
+    public readonly baseId: string;
     public readonly email: string;
-    public readonly wealth: WealthPtr;
     // tslint:disable-next-line:variable-name
-    public readonly eth_wallets: WalletsRecords;
+    public readonly crypto_wallets: CryptoWalletsData; // snake_case because it's a key in data
 }
-
-class ProfileWealthValidator {
-    public readonly baseID: string;
-    public readonly wealth: Map<string, WealthRecord>;
-
-    constructor(baseID: string, wealth: Map<string, WealthRecord>) {
-        this.baseID = baseID;
-        this.wealth = wealth;
-    }
-}
-
-export {
-    StringMessage,
-    StringSignedMessage,
-    BaseAddrPair,
-    AddrRecord,
-    WalletsRecords,
-    WealthRecord,
-    WealthPtr,
-    ProfileUser,
-    ProfileWealthValidator
-};
