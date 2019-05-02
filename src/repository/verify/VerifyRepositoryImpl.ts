@@ -32,10 +32,11 @@ export class VerifyRepositoryImpl implements VerifyRepository {
         ).then((response) => this.jsonToAccountList(response.json));
     }
 
-    public getAllAccounts(): Promise<Array<Account>> {
+    public getAllAccounts(fromDate: Date): Promise<Array<Account>> {
         return this.transport.sendRequest(
             this.VERIFY_GET_ALL_ACCOUNTS_API,
-            HttpMethod.Get
+            HttpMethod.Post,
+            fromDate
         ).then((response) => this.jsonToAccountList(response.json));
     }
 

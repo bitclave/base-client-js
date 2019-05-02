@@ -6,5 +6,5 @@ export interface VerifyRepository {
 
     getAccountsByPublicKeys(publicKeys: Array<string>): Promise<Array<Account>>;
 
-    getAllAccounts(): Promise<Array<Account>>;
+    getAllAccounts(fromDate: Date): Promise<Array<Account>>;
 }

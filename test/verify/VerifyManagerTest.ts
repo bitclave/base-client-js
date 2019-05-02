@@ -37,6 +37,8 @@ describe('Verify Manager', async () => {
 
     let accAlice: Account;
 
+    const fromDate: Date = new Date();
+
     function createBase(): Base {
         return new Base(
             baseNodeUrl,
@@ -124,7 +126,7 @@ describe('Verify Manager', async () => {
 
     it('should get all users', async () => {
         try {
-            const users = await baseAlice.verifyManager.getAllAccounts();
+            const users = await baseAlice.verifyManager.getAllAccounts(fromDate);
             users.length.should.be.greaterThan(1);
         } catch (e) {
             console.log(e);
