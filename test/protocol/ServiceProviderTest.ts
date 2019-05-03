@@ -173,10 +173,10 @@ describe('BASE API test: Protocol Flow', async () => {
             const wallet = JSON.stringify(walletsData);
 
             // Step 1: create wallets for User and grant access for Validator
-            await baseUser.profileManager.updateData(new Map([[WalletManagerImpl.DATA_KEY_ETH_WALLETS, wallet]]));
+            await baseUser.profileManager.updateData(new Map([[WalletManagerImpl.DATA_KEY_CRYPTO_WALLETS, wallet]]));
             // Step 2: user grant data to service provider
             const grantFields: Map<string, AccessRight> = new Map();
-            grantFields.set(WalletManagerImpl.DATA_KEY_ETH_WALLETS, AccessRight.R);
+            grantFields.set(WalletManagerImpl.DATA_KEY_CRYPTO_WALLETS, AccessRight.R);
             await baseUser.dataRequestManager.grantAccessForClient(accValidator.publicKey, grantFields);
 
             // Validator retrieves the requests from user
@@ -193,7 +193,7 @@ describe('BASE API test: Protocol Flow', async () => {
                 userDataRequest.toPk,
                 userDataRequest.responseData
             );
-            (decryptedObj.get(WalletManagerImpl.DATA_KEY_ETH_WALLETS) as string).should.be.equal(wallet);
+            (decryptedObj.get(WalletManagerImpl.DATA_KEY_CRYPTO_WALLETS) as string).should.be.equal(wallet);
 
             const jsonCryptoWalletsData = JSON.parse(wallet);
             // validator verifies the ETH wallets

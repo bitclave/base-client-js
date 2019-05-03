@@ -10,7 +10,7 @@ import { WalletManager } from './WalletManager';
 
 export class WalletManagerImpl implements WalletManager {
 
-    public static DATA_KEY_ETH_WALLETS: string = 'crypto_wallets';
+    public static DATA_KEY_CRYPTO_WALLETS: string = 'crypto_wallets';
     public static DATA_KEY_ETH_WEALTH_VALIDATOR: string = 'ethwealthvalidator';
     public static DATA_KEY_WEALTH: string = 'wealth';
 
@@ -60,7 +60,7 @@ export class WalletManagerImpl implements WalletManager {
         await this.profileManager.updateData(myData);
 
         const acceptedFields: Map<string, AccessRight> = new Map();
-        acceptedFields.set(WalletManagerImpl.DATA_KEY_ETH_WALLETS, AccessRight.RW);
+        acceptedFields.set(WalletManagerImpl.DATA_KEY_CRYPTO_WALLETS, AccessRight.RW);
 
         await this.dataRequestManager.grantAccessForClient(validatorPbKey, acceptedFields);
     }
