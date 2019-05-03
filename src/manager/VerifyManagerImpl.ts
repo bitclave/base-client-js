@@ -19,7 +19,7 @@ export class VerifyManagerImpl implements VerifyManager {
         return this.verifyRepository.getAccountsByPublicKeys(publicKeys);
     }
 
-    public getAllAccounts(): Promise<Array<Account>> {
-        return this.verifyRepository.getAllAccounts();
+    public getAllAccounts(fromDate: Date): Promise<Array<Account>> {
+        return this.verifyRepository.getAllAccounts(fromDate);
     }
 }
