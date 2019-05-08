@@ -45,10 +45,12 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
         const strParams: string = this.joinParams(params);
 
         return this.transport
-            .sendRequest(
+            .sendRequest<Array<DataRequest>>(
                 this.DATA_REQUEST + `?${strParams}`,
                 HttpMethod.Get
-            ).then((response) => Object.assign([], response.json));
+            ).then((response) => (response.originJson as Array<DataRequest>)
+                .map(item => Object.assign(new DataRequest(), item))
+            );
     }
 
     public async grantAccessForOffer(

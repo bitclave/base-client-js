@@ -115,9 +115,9 @@ describe('BASE API test: External Validator', async () => {
     it('Validator asks Alice for access', async () => {
         // create wallets for Alice
         await baseAlice.profileManager.updateData(
-            new Map([[WalletManagerImpl.DATA_KEY_CRYPTO_WALLETS, 'test eth wallets']]));
+            new Map([[WalletManagerImpl.DATA_KEY_CRYPTO_WALLETS, 'test crypto wallets']]));
 
-        // Validator asks Alice to get access to eth_wallets
+        // Validator asks Alice to get access to WalletManagerImpl.DATA_KEY_CRYPTO_WALLETS
         await baseValidator.dataRequestManager.requestPermissions(
             accAlice.publicKey,
             [WalletManagerImpl.DATA_KEY_CRYPTO_WALLETS]
@@ -144,7 +144,7 @@ describe('BASE API test: External Validator', async () => {
         );
 
         // console.log(decryptedObj);
-        (decryptedObj.get(WalletManagerImpl.DATA_KEY_CRYPTO_WALLETS) as string).should.be.equal('test eth wallets');
+        (decryptedObj.get(WalletManagerImpl.DATA_KEY_CRYPTO_WALLETS) as string).should.be.equal('test crypto wallets');
     });
 
     /**/

@@ -1,4 +1,4 @@
-import Base, { CompareAction, Offer, OfferSearch, SearchRequest } from '../../src/Base';
+import Base, { CompareAction, Offer, OfferSearch, SearchRequest, WalletManagerImpl } from '../../src/Base';
 import Account from '../../src/repository/models/Account';
 import { OfferPrice } from '../../src/repository/models/OfferPrice';
 import { OfferPriceRules } from '../../src/repository/models/OfferPriceRules';
@@ -170,7 +170,7 @@ describe('Offer main scenario', async () => {
             // User:
             // grants access to data for business by offer rule keys
             const acceptedFields = onePrice.getFieldsForAcception(AccessRight.R);
-            acceptedFields.set('eth_wallets', AccessRight.R);
+            acceptedFields.set(WalletManagerImpl.DATA_KEY_CRYPTO_WALLETS, AccessRight.R);
             const pkBusiness = businessAccount.publicKey;
             await userBase
                 .dataRequestManager
