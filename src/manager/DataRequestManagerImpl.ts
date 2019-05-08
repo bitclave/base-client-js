@@ -7,6 +7,7 @@ import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { AccessRight } from '../utils/keypair/Permissions';
 import { DataRequestManager } from './DataRequestManager';
+import { WalletManagerImpl } from './WalletManagerImpl';
 
 export class DataRequestManagerImpl implements DataRequestManager {
 
@@ -126,8 +127,8 @@ export class DataRequestManagerImpl implements DataRequestManager {
         priceId: number
     ): Promise<void> {
 
-        // automatically grant access to eth_wallets
-        acceptedFields.set('eth_wallets', AccessRight.R);
+        // automatically grant access to WalletManagerImpl.DATA_KEY_CRYPTO_WALLETS
+        acceptedFields.set(WalletManagerImpl.DATA_KEY_CRYPTO_WALLETS, AccessRight.R);
 
         return this.encrypt
             .encryptPermissionsFields(offerOwner, acceptedFields)
