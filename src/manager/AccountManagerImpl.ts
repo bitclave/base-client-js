@@ -164,11 +164,16 @@ export class AccountManagerImpl implements AccountManager {
     }
 
     private syncAccount(account: Account, message: string): Promise<Account> {
+        this.logger.debug(`base-client-js:syncAccount - enter function`);
         return this.accountRepository
             .checkAccount(account)
-            .then(checkedAccount => this.onGetAccount(checkedAccount, message))
+            .then(checkedAccount => {
+                this.logger.debug(`base-client-js:syncAccount - passed check account call`);
+                return this.onGetAccount(checkedAccount, message);
+            })
             .catch(err => {
-                this.logger.error(`base-client-js:syncAccount ${JSON.stringify(err)}`);
+                // tslint:disable-next-line:max-line-length
+                this.logger.error(`base-client-js:syncAccount failure: ${account.publicKey} err: ${JSON.stringify(err)}`);
                 throw err;
             });
     }
