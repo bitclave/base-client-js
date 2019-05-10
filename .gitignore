@@ -8,4 +8,6 @@ npm-debug.log
 /dist
 /lib
 /base-client-js-bundle/dist/@types
+/base-client-js-bundle/node_modules
+/ppp
 /example/public/
