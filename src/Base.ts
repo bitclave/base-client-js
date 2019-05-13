@@ -164,7 +164,10 @@ export {
     EthWalletValidator,
     ValidationResult,
     WalletValidator,
-    WalletValidatorStrategy
+    WalletValidatorStrategy,
+    OfferRankManager,
+    OfferRankManagerImpl,
+    OfferRankRepositoryImpl
 };
 
 export default class Base {
