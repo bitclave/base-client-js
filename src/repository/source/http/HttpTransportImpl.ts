@@ -123,7 +123,7 @@ export class HttpTransportImpl implements HttpTransport {
     protected async acceptInterceptor(interceptorCortege: InterceptorCortege): Promise<InterceptorCortege> {
         let nextInterceptor = interceptorCortege;
 
-        for await (const interceptor of this.interceptors) {
+        for (const interceptor of this.interceptors) {
             nextInterceptor = await interceptor.onIntercept(nextInterceptor);
         }
 
