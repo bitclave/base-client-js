@@ -36,7 +36,7 @@ export class VerifyRepositoryImpl implements VerifyRepository {
         return this.transport.sendRequest(
             this.VERIFY_GET_ALL_ACCOUNTS_API,
             HttpMethod.Post,
-            fromDate.getTime()
+            new Date(fromDate).getTime()
         ).then((response) => this.jsonToAccountList(response.json));
     }
 
