@@ -101,6 +101,7 @@ export { RpcAuth } from './utils/keypair/rpc/RpcAuth';
 
 import { OfferRankManager } from './manager/OfferRankManager';
 import { OfferRankManagerImpl } from './manager/OfferRankManagerImpl';
+import { OfferRank } from './repository/models/OfferRank';
 import { OfferRankRepositoryImpl } from './repository/offerRank/OfferRankRepositoryImpl';
 
 export {
@@ -167,7 +168,8 @@ export {
     WalletValidatorStrategy,
     OfferRankManager,
     OfferRankManagerImpl,
-    OfferRankRepositoryImpl
+    OfferRankRepositoryImpl,
+    OfferRank
 };
 
 export default class Base {

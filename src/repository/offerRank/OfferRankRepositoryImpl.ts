@@ -30,9 +30,20 @@ export class OfferRankRepositoryImpl implements OfferRankRepository {
     public async save(rank: OfferRank): Promise<OfferRank> {
         return this.transport.sendRequest<OfferRank>(
             this.OFFER_RANK_API,
+            HttpMethod.Post,
+            rank
+        ).then( response =>
+            new OfferRank(response && response.json)
+        );
+    }
+    public async update(rank: OfferRank): Promise<OfferRank> {
+        return this.transport.sendRequest<OfferRank>(
+            this.OFFER_RANK_API,
             HttpMethod.Put,
             rank
-        ).then( response => new OfferRank(response));
+        ).then( response =>
+            new OfferRank(response && response.json)
+        );
     }
     public async delete(offerRankId: number): Promise<number> {
         return this.transport.sendRequest<string>(

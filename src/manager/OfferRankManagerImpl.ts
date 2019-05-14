@@ -24,10 +24,7 @@ export class OfferRankManagerImpl implements OfferRankManager {
         return this.offerRankRepository.save(offerRank);
     }
     public async update(offerRank: OfferRank): Promise<OfferRank> {
-        if (!offerRank || !offerRank.id) {
-            throw new Error('there is no valid data for upadte offerRank');
-        }
-        return this.offerRankRepository.save(offerRank);
+        return this.offerRankRepository.update(offerRank);
     }
     public async delete(offerRankId: number): Promise<number> {
         return this.offerRankRepository.delete(offerRankId);
