@@ -21,7 +21,7 @@ export default class SearchRequest extends DeepCopy<SearchRequest> {
     }
 
     constructor(tags: Map<string, string> = new Map()) {
-        super();
+        super(SearchRequest);
         this.tags = tags;
     }
 

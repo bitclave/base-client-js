@@ -34,7 +34,7 @@ export class HttpServiceCall extends DeepCopy<HttpServiceCall> implements Servic
         headers: Map<string, Array<string>> = new Map(),
         body?: object
     ) {
-        super();
+        super(HttpServiceCall);
         this.serviceId = serviceId || '';
         this.type = type || ServiceCallType.UNDEFINED;
         this.httpMethod = httpMethod || HttpMethod.Get;

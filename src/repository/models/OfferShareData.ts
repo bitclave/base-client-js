@@ -1,6 +1,7 @@
 import { DeepCopy } from './DeepCopy';
 
 export default class OfferShareData extends DeepCopy<OfferShareData> {
+
     public readonly offerSearchId: number = 0;
     public offerOwner: string = '0x0';
     public clientId: string = '0x0';
@@ -9,8 +10,8 @@ export default class OfferShareData extends DeepCopy<OfferShareData> {
     public accepted: boolean = false;
     public readonly priceId: number;
 
-    constructor(offerSearchId: number, clientResponse: string, priceId: number) {
-        super();
+    constructor(offerSearchId: number = 0, clientResponse: string = '', priceId: number = 0) {
+        super(OfferShareData);
         this.offerSearchId = offerSearchId;
         this.clientResponse = clientResponse;
         this.priceId = priceId;

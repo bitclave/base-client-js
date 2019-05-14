@@ -62,7 +62,7 @@ export default class Offer extends DeepCopy<Offer> {
         rules: Map<string, CompareAction> = new Map(),
         offerPrices: Array<OfferPrice> = new Array<OfferPrice>()
     ) {
-        super();
+        super(Offer);
         this.description = description;
         this.title = title;
         this.imageUrl = imageUrl;

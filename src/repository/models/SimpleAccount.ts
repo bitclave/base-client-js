@@ -16,7 +16,7 @@ export default class SimpleAccount extends DeepCopy<SimpleAccount> {
     }
 
     constructor(publicKey: string = '', nonce: number = 0) {
-        super();
+        super(SimpleAccount);
         this.publicKey = publicKey;
         this.nonce = nonce;
     }

@@ -17,7 +17,7 @@ export default class OfferSearchResultItem extends DeepCopy<OfferSearchResultIte
     }
 
     constructor(offerSearch: OfferSearch = new OfferSearch(), offer: Offer = new Offer()) {
-        super();
+        super(OfferSearchResultItem);
         this.offerSearch = offerSearch;
         this.offer = offer;
     }

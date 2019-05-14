@@ -21,7 +21,7 @@ export default class OfferSearch extends DeepCopy<OfferSearch> {
     }
 
     constructor(searchRequestId: number = 0, offerId: number = 0, events: Array<string> = []) {
-        super();
+        super(OfferSearch);
         this.searchRequestId = searchRequestId || 0;
         this.offerId = offerId || 0;
         this.createdAt = new Date();

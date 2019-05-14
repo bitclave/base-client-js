@@ -6,8 +6,8 @@ export class Pageable extends DeepCopy<Pageable> {
     public readonly page: number;
     public readonly size: number;
 
-    constructor(sort: string, page: number, size: number) {
-        super();
+    constructor(sort: string = '', page: number = 0, size: number = 0) {
+        super(Pageable);
         this.sort = sort;
         this.page = page;
         this.size = size;
@@ -53,19 +53,19 @@ export class Page<T> extends DeepCopy<Page<T>> {
     }
 
     constructor(
-        total: number,
-        content: Array<T>,
-        pageable: Pageable,
-        numberOfElements: number,
-        first: boolean,
-        last: boolean,
+        total: number = 0,
+        content: Array<T> = [],
+        pageable: Pageable = new Pageable(),
+        numberOfElements: number = 0,
+        first: boolean = false,
+        last: boolean = false,
         // tslint:disable-next-line:variable-name
-        number: number,
-        size: number,
-        totalPages: number,
-        totalElements: number
+        number: number = 0,
+        size: number = 0,
+        totalPages: number = 0,
+        totalElements: number = 0
     ) {
-        super();
+        super(Page);
         this.total = total;
         this.content = content;
         this.pageable = pageable;
