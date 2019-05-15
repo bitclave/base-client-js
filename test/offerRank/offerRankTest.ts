@@ -62,7 +62,7 @@ describe('OfferRank', async () => {
             throw e;
         }
     });
-    it.only('should update created OfferRank via update', async () => {
+    it('should update created OfferRank via update', async () => {
         try {
             await createUser(base, 'OfferRankPassTest');
             const offerRank = await base.offerRankManager.create(11, 1, 123456);
@@ -79,6 +79,24 @@ describe('OfferRank', async () => {
             updated.id.should.be.eql(id);
             updated.createdAt.should.be.eql(createdAt);
             updated.updatedAt.should.not.be.eql(updatedAt);
+
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    });
+    it.only('should get created OfferRanks by offerId', async () => {
+        try {
+            await createUser(base, 'OfferRankPassTest');
+            const offerId = (new Date()).getTime();
+
+            await base.offerRankManager.create(11, 1, offerId);
+            await base.offerRankManager.create(22, 2, offerId);
+            await base.offerRankManager.create(33, 3, offerId);
+
+            const offerRanks = await base.offerRankManager.getByOfferId(offerId);
+            offerRanks.length.should.be.eql(3);
+
 
         } catch (e) {
             console.log(e);
