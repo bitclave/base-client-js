@@ -97,7 +97,6 @@ describe('OfferRank', async () => {
             const offerRanks = await base.offerRankManager.getByOfferId(offerId);
             offerRanks.length.should.be.eql(3);
 
-
         } catch (e) {
             console.log(e);
             throw e;
