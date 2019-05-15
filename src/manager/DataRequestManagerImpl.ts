@@ -1,8 +1,9 @@
 import { Observable } from 'rxjs/Rx';
 import Account from '../repository/models/Account';
-import DataRequest from '../repository/models/DataRequest';
+import { DataRequest } from '../repository/models/DataRequest';
 import { DataRequestRepository } from '../repository/requests/DataRequestRepository';
 import { JsonUtils } from '../utils/JsonUtils';
+import { AcceptedField } from '../utils/keypair/AcceptedField';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { AccessRight } from '../utils/keypair/Permissions';
@@ -36,15 +37,13 @@ export class DataRequestManagerImpl implements DataRequestManager {
      * @param {Array<string>} fields Array of name identifiers for the requested data fields
      * (e.g. this is keys in {Map<string, string>}).
      *
-     * @returns {Promise<number>} Returns requestID upon successful request record creation.
+     * @returns {Promise<void>}
      */
-    public requestPermissions(recipientPk: string, fields: Array<string>): Promise<number> {
-        return this.encrypt
-            .encryptMessage(recipientPk, JSON.stringify(fields).toLowerCase())
-            .then((encrypted: string) => this.dataRequestRepository.requestPermissions(recipientPk, encrypted))
-            .catch(err => {
-                throw err;
-            });
+    public async requestPermissions(recipientPk: string, fields: Array<string>): Promise<void> {
+        const requestDataList = fields
+            .map(item => new DataRequest(this.account.publicKey, recipientPk, recipientPk, item.toLowerCase(), ''));
+
+        return this.dataRequestRepository.requestPermissions(recipientPk, requestDataList);
     }
 
     /**
@@ -64,11 +63,51 @@ export class DataRequestManagerImpl implements DataRequestManager {
      * @param {Map<string, AccessRight>} acceptedFields. Array of field names that are authorized for access
      * (e.g. these are keys in {Map<string, string>} - personal data).
      *
-     * @returns {Promise<number>}
+     * @returns {Promise<void>}
      */
-    public async grantAccessForClient(clientPk: string, acceptedFields: Map<string, AccessRight>): Promise<number> {
-        const response: string = await this.encrypt.encryptPermissionsFields(clientPk, acceptedFields);
-        return await this.dataRequestRepository.grantAccessForClient(clientPk, this.account.publicKey, response);
+    public async grantAccessForClient(clientPk: string, acceptedFields: Map<string, AccessRight>): Promise<void> {
+        const encrypted: Map<string, string> = await this.encrypt.encryptFieldsWithPermissions(
+            clientPk,
+            acceptedFields
+        );
+
+        const requestDataList: Array<DataRequest> = [];
+
+        for (const [key, value] of encrypted.entries()) {
+            requestDataList.push(
+                new DataRequest(
+                    clientPk,
+                    this.account.publicKey,
+                    this.account.publicKey,
+                    key.toLowerCase(),
+                    value
+                )
+            );
+        }
+
+        return await this.dataRequestRepository.grantAccessForClient(requestDataList);
+    }
+
+    /**
+     * revoke access to specific fields of my data to a client.
+     * @param {string} clientPk id (baseID) of the client that is authorized for data access.
+     * @param {Array<string>} revokeFields. Array of field names that are authorized for access
+     * (e.g. these are keys in {Map<string, string>} - personal data).
+     *
+     * @returns {Promise<void>}
+     */
+    public async revokeAccessForClient(clientPk: string, revokeFields: Array<string>): Promise<void> {
+        const requestDataList = revokeFields.map(item =>
+            new DataRequest(
+                clientPk,
+                this.account.publicKey,
+                this.account.publicKey,
+                item.toLowerCase(),
+                ''
+            ));
+
+        return this.dataRequestRepository
+            .revokeAccessForClient(clientPk, this.account.publicKey, requestDataList);
     }
 
     /**
@@ -162,31 +201,61 @@ export class DataRequestManagerImpl implements DataRequestManager {
     }
 
     private async decodeRequestedPermissions(requests: Array<DataRequest>, clientPk: string): Promise<Array<string>> {
-        if (requests.length > 0 && requests[0].requestData.trim().length > 0) {
-            try {
-                const strDecrypt: string = await this.decrypt.decryptMessage(clientPk, requests[0].requestData);
+        const result: Set<string> = new Set();
 
-                return JSON.parse(strDecrypt);
+        for (const item of requests) {
+            if (!item.rootPk || item.rootPk.length <= 0 && item.requestData.trim().length > 0) {
+                try {
+                    // for Backward compatibility of deprecated data
+                    const strDecrypt: string = await this.decrypt.decryptMessage(clientPk, item.requestData);
+                    const json = JSON.parse(strDecrypt) as Array<string>;
+                    json.forEach(value => result.add(value));
 
-            } catch (e) {
-                return [];
+                } catch (e) {
+                    console.warn(e);
+                }
+            } else {
+                result.add(item.requestData);
             }
-        } else {
-            return [];
         }
+
+        return Array.from(result.keys());
     }
 
     private async getDecodeGrantPermissions(requests: Array<DataRequest>, clientPk: string): Promise<Array<string>> {
-        if (requests.length > 0 && requests[0].responseData.trim().length > 0) {
-            const strDecrypt: string = await this.decrypt.decryptMessage(clientPk, requests[0].responseData);
-            const jsonDecrypt = JSON.parse(strDecrypt);
-            const mapResponse: Map<string, string> = JsonUtils.jsonToMap(jsonDecrypt);
+        const result: Set<string> = new Set();
 
-            return Array.from(mapResponse.keys());
+        for (const item of requests) {
+            if (item.responseData.trim().length > 0) {
+                // for Backward compatibility of deprecated data
+                const strDecrypt: string = await this.decrypt.decryptMessage(clientPk, item.responseData);
+                const jsonDecrypt = JSON.parse(strDecrypt);
 
-        } else {
-            return [];
+                if (!item.rootPk || item.rootPk.length <= 0) {
+                    try {
+                        const mapResponse: Map<string, string> = JsonUtils.jsonToMap(jsonDecrypt);
+
+                        Array.from(mapResponse.keys())
+                            .forEach(value => result.add(value));
+
+                    } catch (e) {
+                        console.warn(e);
+                    }
+
+                } else {
+                    const acceptedFiled: AcceptedField = Object.assign(
+                        new AcceptedField('', AccessRight.R),
+                        jsonDecrypt
+                    );
+
+                    if (acceptedFiled.pass && acceptedFiled.pass.length > 0) {
+                        result.add(item.requestData);
+                    }
+                }
+            }
         }
+
+        return Array.from(result.keys());
     }
 
     private onChangeAccount(account: Account) {

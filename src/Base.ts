@@ -23,7 +23,7 @@ import { SiteDataSource } from './repository/assistant/SiteDataSource';
 import { ClientDataRepository } from './repository/client/ClientDataRepository';
 import ClientDataRepositoryImpl from './repository/client/ClientDataRepositoryImpl';
 import Account from './repository/models/Account';
-import DataRequest from './repository/models/DataRequest';
+import { DataRequest } from './repository/models/DataRequest';
 import { DeepCopy } from './repository/models/DeepCopy';
 import { FileMeta } from './repository/models/FileMeta';
 import { JsonObject } from './repository/models/JsonObject';

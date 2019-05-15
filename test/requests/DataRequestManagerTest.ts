@@ -102,12 +102,6 @@ describe('Data Request Manager', async () => {
         );
 
         requestedFromBob.should.be.deep.equal(bobsFields);
-
-        const decryptedStr = await keyPairHelperBob.decryptMessage(
-            keyPairHelperAlisa.getPublicKey(),
-            requestsByFrom[0].requestData
-        );
-        JSON.parse(decryptedStr).should.be.deep.equal(bobsFields);
     });
 
     it('create response data', async () => {
@@ -154,6 +148,35 @@ describe('Data Request Manager', async () => {
         grantFromBobToAlisa.should.be.deep.equal(bobsFields);
     });
 
+    it('grand access to field without requested permissions and revoke access', async () => {
+        const grantFields: Map<string, AccessRight> = new Map();
+        for (const item of bobsFields) {
+            grantFields.set(item, AccessRight.R);
+        }
+
+        await requestManagerBob.grantAccessForClient(keyPairHelperAlisa.getPublicKey(), grantFields);
+
+        const grantFromAlisaToBob: Array<string> = await requestManagerBob.getGrantedPermissions(
+            keyPairHelperAlisa.getPublicKey()
+        );
+
+        grantFromAlisaToBob.length.should.be.equal(0);
+
+        let grantFromBobToAlisa: Array<string> = await requestManagerBob.getGrantedPermissionsToMe(
+            keyPairHelperAlisa.getPublicKey()
+        );
+
+        grantFromBobToAlisa.should.be.deep.equal(bobsFields);
+
+        await requestManagerBob.revokeAccessForClient(keyPairHelperAlisa.getPublicKey(), bobsFields);
+
+        grantFromBobToAlisa = await requestManagerBob.getGrantedPermissionsToMe(
+            keyPairHelperAlisa.getPublicKey()
+        );
+
+        grantFromBobToAlisa.length.should.be.equal(0);
+    });
+
     it('should be Alisa not nothing found from some pk', async () => {
         const somePK = '020b6936ce0264852b713cff3d03faef1994477924ea0ad4c28a0d2543a16d70ec';
 
@@ -176,6 +199,7 @@ describe('Data Request Manager', async () => {
         let requests: Array<string> = await requestManagerAlisa.getRequestedPermissions(
             keyPairHelperBob.getPublicKey()
         );
+
         requests.length.should.be.eq(0);
 
         requests = await requestManagerAlisa.getRequestedPermissionsToMe(

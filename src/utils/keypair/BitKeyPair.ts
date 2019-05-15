@@ -1,6 +1,6 @@
 import { PermissionsSource } from '../../repository/assistant/PermissionsSource';
 import { SiteDataSource } from '../../repository/assistant/SiteDataSource';
-import DataRequest from '../../repository/models/DataRequest';
+import { DataRequest } from '../../repository/models/DataRequest';
 import { Site } from '../../repository/models/Site';
 import { CryptoUtils } from '../CryptoUtils';
 import { JsonUtils } from '../JsonUtils';
@@ -148,6 +148,30 @@ export class BitKeyPair implements KeyPairHelper {
         return await this.encryptMessage(recipient, JSON.stringify(jsonMap));
     }
 
+    public async encryptFieldsWithPermissions(
+        recipient: string,
+        data: Map<string, AccessRight>
+    ): Promise<Map<string, string>> {
+        const resultMap: Map<string, string> = new Map();
+
+        if (data != null && data.size > 0) {
+
+            await this.syncPermissions();
+
+            for (const [key, value] of data.entries()) {
+                if (!this.hasPermissions(key, false)) {
+                    continue;
+                }
+
+                const pass = await this.generatePasswordForField(key.toLowerCase());
+                const encrypted = await this.encryptMessage(recipient, JSON.stringify(new AcceptedField(pass, value)));
+                resultMap.set(key, encrypted);
+            }
+        }
+
+        return resultMap;
+    }
+
     public async encryptFile(file: string, filedName: string): Promise<string> {
         const map = new Map([[filedName, file]]);
         const result = await this.encryptFields(map);
@@ -235,7 +259,18 @@ export class BitKeyPair implements KeyPairHelper {
                 for (const request of requests) {
                     const strDecrypt: string = await this.decryptMessage(site.publicKey, request.responseData);
                     const jsonDecrypt = JSON.parse(strDecrypt);
-                    const resultMap: Map<string, AcceptedField> = JsonUtils.jsonToMap(jsonDecrypt);
+                    let resultMap: Map<string, AcceptedField> = new Map();
+
+                    // for Backward compatibility of deprecated data
+                    if (!request.rootPk || request.rootPk.length <= 0) {
+                        resultMap = JsonUtils.jsonToMap(jsonDecrypt);
+
+                    } else {
+                        resultMap.set(
+                            request.requestData,
+                            Object.assign(new AcceptedField('', AccessRight.R), jsonDecrypt)
+                        );
+                    }
 
                     this.permissions.fields.clear();
                     resultMap.forEach(
@@ -264,5 +299,4 @@ export class BitKeyPair implements KeyPairHelper {
             resolve(result);
         });
     }
-
 }

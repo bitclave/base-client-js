@@ -1,4 +1,4 @@
-import DataRequest from '../models/DataRequest';
+import { DataRequest } from '../models/DataRequest';
 
 export interface PermissionsSource {
 

@@ -1,4 +1,4 @@
-import DataRequest from '../repository/models/DataRequest';
+import { DataRequest } from '../repository/models/DataRequest';
 import { AccessRight } from '../utils/keypair/Permissions';
 
 export interface DataRequestManager {
@@ -9,9 +9,9 @@ export interface DataRequestManager {
      * @param {Array<string>} fields Array of name identifiers for the requested data fields
      * (e.g. this is keys in {Map<string, string>}).
      *
-     * @returns {Promise<number>} Returns requestID upon successful request record creation.
+     * @returns {Promise<void>}
      */
-    requestPermissions(recipientPk: string, fields: Array<string>): Promise<number>;
+    requestPermissions(recipientPk: string, fields: Array<string>): Promise<void>;
 
     /**
      * Returns a list of outstanding data access requests, where data access requests meet the provided search criteria.
@@ -25,12 +25,23 @@ export interface DataRequestManager {
     /**
      * Grants access to specific fields of my data to a client.
      * @param {string} clientPk id (baseID) of the client that is authorized for data access.
-     * @param {Map<string, AccessRight>} acceptedFields. Array of field names that are authorized for access
+     * @param {Map<string, AccessRight>} acceptedFields. Map of field names and {AccessRight}
+     * that are authorized for access.
      * (e.g. these are keys in {Map<string, string>} - personal data).
      *
-     * @returns {Promise<number>}
+     * @returns {Promise<void>}
      */
-    grantAccessForClient(clientPk: string, acceptedFields: Map<string, AccessRight>): Promise<number>;
+    grantAccessForClient(clientPk: string, acceptedFields: Map<string, AccessRight>): Promise<void>;
+
+    /**
+     * revoke access to specific fields of my data to a client.
+     * @param {string} clientPk id (baseID) of the client that is authorized for data access.
+     * @param {Array<string>} revokeFields. Array of field names that are authorized for access
+     * (e.g. these are keys in {Map<string, string>} - personal data).
+     *
+     * @returns {Promise<void>}
+     */
+    revokeAccessForClient(clientPk: string, revokeFields: Array<string>): Promise<void>;
 
     /**
      * Returns list of fields requested for access by <me> from the client

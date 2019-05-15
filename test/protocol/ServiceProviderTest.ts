@@ -4,7 +4,7 @@ import * as EthUtils from 'ethereumjs-util';
 import Base, { CryptoWallets, CryptoWalletsData } from '../../src/Base';
 import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
 import Account from '../../src/repository/models/Account';
-import DataRequest from '../../src/repository/models/DataRequest';
+import { DataRequest } from '../../src/repository/models/DataRequest';
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
@@ -185,14 +185,11 @@ describe('BASE API test: Protocol Flow', async () => {
             );
 
             recordsForValidator.length.should.be.equal(1);
-            const userDataRequest = recordsForValidator[0];
 
             // Validator decodes wallets for User and calculate wealth
             const wealthMap: Map<string, string> = new Map<string, string>();
-            const decryptedObj: Map<string, string> = await baseValidator.profileManager.getAuthorizedData(
-                userDataRequest.toPk,
-                userDataRequest.responseData
-            );
+            const decryptedObj: Map<string, string> = await baseValidator.profileManager
+                .getAuthorizedData(recordsForValidator);
             (decryptedObj.get(WalletManagerImpl.DATA_KEY_CRYPTO_WALLETS) as string).should.be.equal(wallet);
 
             const jsonCryptoWalletsData = JSON.parse(wallet);
@@ -211,6 +208,7 @@ describe('BASE API test: Protocol Flow', async () => {
 
             // Step 3: Validator create a corresponding entries into its base
             // The value is the calculated wealth, and key is the user's public key
+            const userDataRequest = recordsForValidator[0];
             wealthMap.set(userDataRequest.toPk, wealth);
             await baseValidator.profileManager.updateData(wealthMap);
 
@@ -225,8 +223,8 @@ describe('BASE API test: Protocol Flow', async () => {
             );
 
             recordsForUser.length.should.be.equal(1);
-            const processedDataMap: Map<string, string> = await baseUser.profileManager.getAuthorizedData(
-                recordsForUser[0].toPk, recordsForUser[0].responseData);
+            const processedDataMap: Map<string, string> = await baseUser.profileManager
+                .getAuthorizedData(recordsForUser);
 
             const processedData = processedDataMap.get(accUser.publicKey) as string;
             processedData.should.be.equal(wealth);
@@ -258,7 +256,7 @@ describe('BASE API test: Protocol Flow', async () => {
             recordsForBusiness.length.should.be.equal(1);
 
             const wealthPtrMap: Map<string, string> = await baseBusiness.profileManager
-                .getAuthorizedData(recordsForBusiness[0].toPk, recordsForBusiness[0].responseData);
+                .getAuthorizedData(recordsForBusiness);
 
             const wealthPtr: Pointer = JSON.parse(wealthPtrMap.get(KEY_WEALTH_PTR) as string);
 
@@ -281,8 +279,7 @@ describe('BASE API test: Protocol Flow', async () => {
             );
 
             recordsForUser.length.should.be.equal(1);
-            const nonceMap: Map<string, string> = await baseUser.profileManager.getAuthorizedData(
-                recordsForUser[0].toPk, recordsForUser[0].responseData);
+            const nonceMap: Map<string, string> = await baseUser.profileManager.getAuthorizedData(recordsForUser);
             (nonceMap.get(nonceKey) as string).should.be.equal(nonceValue);
 
             // Step 10: User write signed token
@@ -299,10 +296,9 @@ describe('BASE API test: Protocol Flow', async () => {
                 accValidator.publicKey, accUser.publicKey
             );
 
-            recordsForValidator.length.should.be.equal(1);
-            const tokenMap: Map<string, string> = await baseValidator.profileManager.getAuthorizedData(
-                recordsForValidator[0].toPk, recordsForValidator[0].responseData
-            );
+            recordsForValidator.length.should.be.equal(2); // wallets and token
+            const tokenMap: Map<string, string> = await baseValidator.profileManager
+                .getAuthorizedData(recordsForValidator);
 
             // Step 12: Validator write signed token and processed data
             const wealthEntryKey = getWealthEntryKey(accUser.publicKey, accBusiness.publicKey);
@@ -321,9 +317,9 @@ describe('BASE API test: Protocol Flow', async () => {
             recordsForBusiness.length.should.be.equal(1);
 
             // Step 15: get wealth entry and verify the signed token
-            const wealthEntryMap: Map<string, string> = await baseBusiness.profileManager.getAuthorizedData(
-                recordsForBusiness[0].toPk, recordsForBusiness[0].responseData
-            );
+            const wealthEntryMap: Map<string, string> = await baseBusiness.profileManager
+                .getAuthorizedData(recordsForBusiness);
+
             const wealthEntry: WealthEntry = JSON.parse(wealthEntryMap.get(wealthEntryKey) as string);
             wealthEntry.wealth.should.be.equal(wealth);
             const signedToken: SignedMessage = JSON.parse(wealthEntry.token);

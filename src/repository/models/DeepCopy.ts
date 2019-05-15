@@ -4,8 +4,9 @@ export abstract class DeepCopy<T> {
     // tslint:disable-next-line:callable-types
     private readonly creator: { new(): T; };
 
-   protected constructor(creator: { new(): T }) {
-       this.creator = creator;
+    // tslint:disable-next-line:callable-types
+    protected constructor(creator: { new(): T }) {
+        this.creator = creator;
     }
 
     public copy(changeArgs?: JsonObject<T>): T {

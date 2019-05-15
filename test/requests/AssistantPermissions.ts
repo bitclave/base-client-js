@@ -1,6 +1,6 @@
 import { PermissionsSource } from '../../src/repository/assistant/PermissionsSource';
 import { SiteDataSource } from '../../src/repository/assistant/SiteDataSource';
-import DataRequest from '../../src/repository/models/DataRequest';
+import { DataRequest } from '../../src/repository/models/DataRequest';
 import { Site } from '../../src/repository/models/Site';
 import { DataRequestRepository } from '../../src/repository/requests/DataRequestRepository';
 

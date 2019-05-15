@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs/Rx';
 import { ClientDataRepository } from '../repository/client/ClientDataRepository';
 import Account from '../repository/models/Account';
+import { DataRequest } from '../repository/models/DataRequest';
 import { FileMeta } from '../repository/models/FileMeta';
 import { BasicLogger, Logger } from '../utils/BasicLogger';
 import { JsonUtils } from '../utils/JsonUtils';
@@ -8,6 +9,7 @@ import { AcceptedField } from '../utils/keypair/AcceptedField';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
+import { AccessRight } from '../utils/keypair/Permissions';
 import { ProfileManager } from './ProfileManager';
 
 export class ProfileManagerImpl implements ProfileManager {
@@ -63,12 +65,14 @@ export class ProfileManagerImpl implements ProfileManager {
             this.logger.error(`publicKey is not  found in base-client-js`);
             throw new Error('publicKey can not find');
         }
-        return this.getRawData(this.account.publicKey, fieldKey)
-            .then((rawData: Map<string, string>) => this.decrypt.decryptFields(rawData))
-            .catch(err => {
-                this.logger.error(`base-client-js:getData ${JSON.stringify(err)}`);
-                throw err;
-            });
+        try {
+            const rawData = await this.getRawData(this.account.publicKey, fieldKey);
+            return await this.decrypt.decryptFields(rawData);
+
+        } catch (err) {
+            this.logger.error(`base-client-js:getData ${JSON.stringify(err)}`);
+            throw err;
+        }
     }
 
     /**
@@ -87,35 +91,58 @@ export class ProfileManagerImpl implements ProfileManager {
 
     /**
      * Decrypts accepted personal data {@link DataRequest#responseData}.
-     * @param {string} recipientPk  Public key of the user that shared the data
-     * @param {string} encryptedData encrypted data {@link DataRequest#responseData}.
+     * @param {Array<DataRequest>} acceptedRequests is array {@link DataRequest}
+     * with accepted encrypted data {@link DataRequest#responseData}.
      *
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
-    public async getAuthorizedData(recipientPk: string, encryptedData: string): Promise<Map<string, string>> {
-        const passForFields = await this.getAuthorizedEncryptionKeys(recipientPk, encryptedData);
-        const recipientData: Map<string, string> = await this.getRawData(
-            recipientPk,
-            Array.from(passForFields.keys())
-        );
+    public async getAuthorizedData(acceptedRequests: Array<DataRequest>): Promise<Map<string, string>> {
+        const passForFields = await this.getAuthorizedEncryptionKeys(acceptedRequests);
 
-        return this.decrypt.decryptFields(recipientData, passForFields);
+        if (acceptedRequests.length > 0 && passForFields.size > 0) {
+
+            const recipientData: Map<string, string> = await this.getRawData(
+                acceptedRequests[0].rootPk,
+                Array.from(passForFields.keys())
+            );
+
+            return this.decrypt.decryptFields(recipientData, passForFields);
+        }
+
+        return new Map();
     }
 
     /**
      * Returns decryption keys for approved personal data {@link DataRequest#responseData}.
-     * @param {string} recipientPk  Public key of the user that shared the data
-     * @param {string} encryptedData encrypted data {@link DataRequest#responseData}.
+     * @param {Array<DataRequest>} acceptedRequests is array {@link DataRequest}
+     * with accepted encrypted data {@link DataRequest#responseData}.
      *
      * @returns {Promise<Map<string, string>>} Map key (fieldName) => value (Password).
      */
-    public async getAuthorizedEncryptionKeys(recipientPk: string, encryptedData: string): Promise<Map<string, string>> {
-        const strDecrypt = await this.decrypt.decryptMessage(recipientPk, encryptedData);
-        const jsonDecrypt = JSON.parse(strDecrypt);
-        const arrayResponse: Map<string, AcceptedField> = JsonUtils.jsonToMap(jsonDecrypt);
+    public async getAuthorizedEncryptionKeys(acceptedRequests: Array<DataRequest>): Promise<Map<string, string>> {
         const result: Map<string, string> = new Map<string, string>();
 
-        arrayResponse.forEach((value: AcceptedField, key: string) => result.set(key, value.pass));
+        for (const data of acceptedRequests) {
+            const isDeprecated = !data.rootPk || data.rootPk.length === 0;
+            const pk = isDeprecated ? data.toPk : data.rootPk;
+            const strDecrypt = await this.decrypt.decryptMessage(pk, data.responseData);
+
+            if (isDeprecated) { // for Backward compatibility of deprecated data
+                const jsonDecrypt = JSON.parse(strDecrypt);
+                const arrayResponse: Map<string, AcceptedField> = JsonUtils.jsonToMap(jsonDecrypt);
+
+                arrayResponse.forEach((value: AcceptedField, key: string) => result.set(key, value.pass));
+
+            } else {
+                try {
+                    const field = Object.assign(new AcceptedField('', AccessRight.R), JSON.parse(strDecrypt));
+                    result.set(data.requestData, field.pass);
+
+                } catch (e) {
+                    console.warn(`error parse obj ${strDecrypt}`);
+                }
+            }
+        }
 
         return result;
     }

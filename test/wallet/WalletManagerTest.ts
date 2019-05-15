@@ -8,10 +8,10 @@ import { ProfileManagerImpl } from '../../src/manager/ProfileManagerImpl';
 import { WalletManager } from '../../src/manager/WalletManager';
 import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
 import Account from '../../src/repository/models/Account';
+import { DataRequest } from '../../src/repository/models/DataRequest';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import { CryptoUtils } from '../../src/utils/CryptoUtils';
-import { JsonUtils } from '../../src/utils/JsonUtils';
 import { AcceptedField } from '../../src/utils/keypair/AcceptedField';
 import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
 import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
@@ -134,11 +134,22 @@ describe('Wallet manager test', async () => {
         const grantFields: Map<string, AccessRight> = new Map();
         grantFields.set('name', AccessRight.R);
 
-        const encryptedMessage = await keyPairHelperBob.encryptPermissionsFields(
+        const encryptedFields = await keyPairHelperBob.encryptFieldsWithPermissions(
             keyPairHelperAlisa.getPublicKey(), grantFields
         );
 
-        const data = await profileManager.getAuthorizedData(keyPairHelperBob.getPublicKey(), encryptedMessage);
+        const acceptedDataRequest: Array<DataRequest> = [];
+        for (const [key, value] of encryptedFields.entries()) {
+            acceptedDataRequest.push(new DataRequest(
+                keyPairHelperAlisa.getPublicKey(),
+                keyPairHelperBob.getPublicKey(),
+                keyPairHelperBob.getPublicKey(),
+                key,
+                value
+            ));
+        }
+
+        const data = await profileManager.getAuthorizedData(acceptedDataRequest);
 
         data.should.be.deep.equal(origMockData);
     });
@@ -153,18 +164,25 @@ describe('Wallet manager test', async () => {
         const grantFields: Map<string, AccessRight> = new Map();
         grantFields.set('name', AccessRight.R);
 
-        const encryptedMessage = await keyPairHelperBob.encryptPermissionsFields(
+        const encryptedFields = await keyPairHelperBob.encryptFieldsWithPermissions(
             keyPairHelperAlisa.getPublicKey(), grantFields
         );
 
-        const result: string = await keyPairHelperAlisa
-            .decryptMessage(keyPairHelperBob.getPublicKey(), encryptedMessage);
+        const map: Map<string, AcceptedField> = new Map();
+        const acceptedDataRequest: Array<DataRequest> = [];
+        for (const [key, value] of encryptedFields.entries()) {
+            const json = JSON.parse(await keyPairHelperAlisa.decryptMessage(keyPairHelperBob.getPublicKey(), value));
+            map.set(key, Object.assign(new AcceptedField('', AccessRight.R), json));
+            acceptedDataRequest.push(new DataRequest(
+                keyPairHelperAlisa.getPublicKey(),
+                keyPairHelperBob.getPublicKey(),
+                keyPairHelperBob.getPublicKey(),
+                key,
+                value
+            ));
+        }
 
-        const map: Map<string, AcceptedField> = JsonUtils.jsonToMap(JSON.parse(result));
-
-        const data: string = (await profileManager.getAuthorizedEncryptionKeys(
-            keyPairHelperBob.getPublicKey(), encryptedMessage
-        )).get('name') || '';
+        const data: string = (await profileManager.getAuthorizedEncryptionKeys(acceptedDataRequest)).get('name') || '';
 
         const acceptedField: AcceptedField | undefined = map.get('name');
         const pass: string = acceptedField ? acceptedField.pass : '';
