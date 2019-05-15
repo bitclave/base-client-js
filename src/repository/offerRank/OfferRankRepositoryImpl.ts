@@ -2,6 +2,7 @@ import { HttpMethod } from '../source/http/HttpMethod';
 import { HttpTransport } from '../source/http/HttpTransport';
 
 import { OfferRank } from '../models/OfferRank';
+import { JsonObject } from './../models/JsonObject';
 import { OfferRankRepository } from './OfferRankRepository';
 
 export class OfferRankRepositoryImpl implements OfferRankRepository {
@@ -18,7 +19,13 @@ export class OfferRankRepositoryImpl implements OfferRankRepository {
         ).then( response => new OfferRank(response));
     }
     public async getByOfferId(offerId: number): Promise<Array<OfferRank>> {
-        throw new Error('Method not implemented.');
+        const url = `${this.OFFER_RANK_API}/${offerId}`;
+        return this.transport.sendRequest<Array<OfferRank>>(
+            url,
+            HttpMethod.Get
+        ).then( response => {
+            return this.jsonToListOfferRanks(response.json);
+        });
     }
     public async getById(offerRankId: number): Promise<OfferRank> {
         return this.transport.sendRequest<OfferRank>(
@@ -51,6 +58,9 @@ export class OfferRankRepositoryImpl implements OfferRankRepository {
             HttpMethod.Delete,
             {offerRankId}
         ).then( response => parseInt(response.toString(), 10));
+    }
+    private jsonToListOfferRanks(json: JsonObject<Array<OfferRank>>): Array<OfferRank> {
+        return Object.keys(json).map(key => new OfferRank(json[key] as object));
     }
 
 }
