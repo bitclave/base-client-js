@@ -29,7 +29,7 @@ async function createUser(user: Base, pass: string): Promise<Account> {
 function randomOfferId() {
     return (new Date()).getTime();
 }
-/*
+
 describe('OfferRank', async () => {
     const base = new Base(
         baseNodeUrl,
@@ -84,6 +84,7 @@ describe('OfferRank', async () => {
         const offerRanks = await base.offerRankManager.getByOfferId(offerId);
         offerRanks.length.should.be.eql(3);
     });
+    /*
     it('should not allow change OfferRank offerId', async () => {
         try {
             await createUser(base, 'OfferRankPassTest');
@@ -112,6 +113,7 @@ describe('OfferRank', async () => {
             console.log(e);
         }
     });
+    */
     it('should update OfferRanks if exist OfferRank with the same OfferIf and RankerId', async () => {
         await createUser(base, 'OfferRankPassTest');
         const offerId = randomOfferId();
@@ -124,5 +126,3 @@ describe('OfferRank', async () => {
         offerRanks[0].rank.should.be.eql(22);
     });
 });
-
-*/
