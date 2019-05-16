@@ -75,15 +75,13 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
         this.saveAll(result);
     }
 
-    public async revokeAccessForClient(
-        clientPk: string,
-        publicKey: string,
-        dataRequests: Array<DataRequest>
-    ): Promise<void> {
+    public async revokeAccessForClient(dataRequests: Array<DataRequest>): Promise<void> {
         let idsForDelete: Array<number> = [];
 
         dataRequests.forEach(request => {
-            const tree = this.findDependencies(request.toPk, request.rootPk, request.requestData);
+            const tree = this.findDependencies(request.toPk, request.rootPk, request.requestData)
+                .filter(item => item.fromPk === request.fromPk);
+
             const list = this.treeToListOfRequests(tree);
 
             idsForDelete = idsForDelete.concat(list.map(itemResult => itemResult.id));
@@ -211,7 +209,7 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
 
             filtered.forEach(it => {
                 const rtResult = this.makeTreeOfRequests(nextItems, requestData, it.fromPk, root);
-                const rt = new DataRequestTree(it.fromPk, it.toPk, it.rootPk, '', '', rtResult);
+                const rt = new DataRequestTree(it.fromPk, it.toPk, it.rootPk, it.requestData, '', rtResult);
                 rt.id = it.id;
                 result.push(rt);
             });

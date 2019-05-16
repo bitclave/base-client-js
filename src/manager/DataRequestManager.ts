@@ -28,10 +28,15 @@ export interface DataRequestManager {
      * @param {Map<string, AccessRight>} acceptedFields. Map of field names and {AccessRight}
      * that are authorized for access.
      * (e.g. these are keys in {Map<string, string>} - personal data).
+     * @param {string} rootPk ID (baseID) of the client that is the data owner. by default it's your id.
      *
      * @returns {Promise<void>}
      */
-    grantAccessForClient(clientPk: string, acceptedFields: Map<string, AccessRight>): Promise<void>;
+    grantAccessForClient(
+        clientPk: string,
+        acceptedFields: Map<string, AccessRight>,
+        rootPk?: string
+    ): Promise<void>;
 
     /**
      * revoke access to specific fields of my data to a client.

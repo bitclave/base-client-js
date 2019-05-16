@@ -124,8 +124,7 @@ export class ProfileManagerImpl implements ProfileManager {
 
         for (const data of acceptedRequests) {
             const isDeprecated = !data.rootPk || data.rootPk.length === 0;
-            const pk = isDeprecated ? data.toPk : data.rootPk;
-            const strDecrypt = await this.decrypt.decryptMessage(pk, data.responseData);
+            const strDecrypt = await this.decrypt.decryptMessage(data.toPk, data.responseData);
 
             if (isDeprecated) { // for Backward compatibility of deprecated data
                 const jsonDecrypt = JSON.parse(strDecrypt);

@@ -32,11 +32,7 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
         );
     }
 
-    public async revokeAccessForClient(
-        clientPk: string,
-        publicKey: string,
-        dataRequests: Array<DataRequest>
-    ): Promise<void> {
+    public async revokeAccessForClient(dataRequests: Array<DataRequest>): Promise<void> {
         await this.transport.sendRequest(
             this.GRANT_ACCESS_FOR_CLIENT,
             HttpMethod.Delete,

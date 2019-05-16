@@ -6,7 +6,7 @@ export interface DataRequestRepository {
 
     grantAccessForClient(dataRequests: Array<DataRequest>): Promise<void>;
 
-    revokeAccessForClient(clientPk: string, publicKey: string, dataRequests: Array<DataRequest>): Promise<void>;
+    revokeAccessForClient(dataRequests: Array<DataRequest>): Promise<void>;
 
     getRequests(fromPk: string | null, toPk: string | null): Promise<Array<DataRequest>>;
 

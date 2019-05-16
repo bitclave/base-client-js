@@ -62,14 +62,30 @@ export class DataRequestManagerImpl implements DataRequestManager {
      * @param {string} clientPk id (baseID) of the client that is authorized for data access.
      * @param {Map<string, AccessRight>} acceptedFields. Array of field names that are authorized for access
      * (e.g. these are keys in {Map<string, string>} - personal data).
+     * @param {string} rootPk ID (baseID) of the client that is the data owner.
      *
      * @returns {Promise<void>}
      */
-    public async grantAccessForClient(clientPk: string, acceptedFields: Map<string, AccessRight>): Promise<void> {
-        const encrypted: Map<string, string> = await this.encrypt.encryptFieldsWithPermissions(
-            clientPk,
-            acceptedFields
-        );
+    public async grantAccessForClient(
+        clientPk: string,
+        acceptedFields: Map<string, AccessRight>,
+        rootPk?: string,
+    ): Promise<void> {
+        let encrypted: Map<string, string> = new Map();
+        rootPk = rootPk ? rootPk : this.account.publicKey;
+
+        if (rootPk === this.account.publicKey) {
+            encrypted = await this.encrypt.encryptFieldsWithPermissions(
+                clientPk,
+                acceptedFields
+            );
+        } else {
+            encrypted = await this.encryptGrantedFields(
+                clientPk,
+                rootPk,
+                new Set(acceptedFields.keys())
+            );
+        }
 
         const requestDataList: Array<DataRequest> = [];
 
@@ -78,7 +94,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
                 new DataRequest(
                     clientPk,
                     this.account.publicKey,
-                    this.account.publicKey,
+                    rootPk,
                     key.toLowerCase(),
                     value
                 )
@@ -106,8 +122,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
                 ''
             ));
 
-        return this.dataRequestRepository
-            .revokeAccessForClient(clientPk, this.account.publicKey, requestDataList);
+        return this.dataRequestRepository.revokeAccessForClient(requestDataList);
     }
 
     /**
@@ -198,6 +213,34 @@ export class DataRequestManagerImpl implements DataRequestManager {
                     return decrypted;
                 }
             }).catch(reason => encrypted);
+    }
+
+    private async encryptGrantedFields(
+        recipientPk: string,
+        rootPk: string,
+        shareFields: Set<string>
+    ): Promise<Map<string, string>> {
+        const result: Map<string, string> = new Map();
+        const requests = await this.getRequests(this.account.publicKey, null);
+        const filtered = requests.filter(item => item.rootPk === rootPk && shareFields.has(item.requestData));
+        const availableData = new Map<string, DataRequest>();
+
+        filtered.forEach(item => availableData.set(item.requestData, item));
+
+        for (const data of availableData.values()) {
+            const strDecrypt: string = await this.decrypt.decryptMessage(data.toPk, data.responseData);
+            const jsonDecrypt = JSON.parse(strDecrypt);
+            const acceptedByRoot: AcceptedField = Object.assign(
+                new AcceptedField('', AccessRight.R),
+                jsonDecrypt
+            );
+
+            const accepted = acceptedByRoot.copy({access: AccessRight.R});
+            const value = await this.encrypt.encryptMessage(recipientPk, JSON.stringify(accepted));
+            result.set(data.requestData, value);
+        }
+
+        return result;
     }
 
     private async decodeRequestedPermissions(requests: Array<DataRequest>, clientPk: string): Promise<Array<string>> {
