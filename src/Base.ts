@@ -99,6 +99,11 @@ export { AcceptedField } from './utils/keypair/AcceptedField';
 export { RpcToken } from './utils/keypair/rpc/RpcToken';
 export { RpcAuth } from './utils/keypair/rpc/RpcAuth';
 
+import { OfferRankManager } from './manager/OfferRankManager';
+import { OfferRankManagerImpl } from './manager/OfferRankManagerImpl';
+import { OfferRank } from './repository/models/OfferRank';
+import { OfferRankRepositoryImpl } from './repository/offerRank/OfferRankRepositoryImpl';
+
 export {
     CryptoWallets,
     EthWalletData,
@@ -160,7 +165,11 @@ export {
     EthWalletValidator,
     ValidationResult,
     WalletValidator,
-    WalletValidatorStrategy
+    WalletValidatorStrategy,
+    OfferRankManager,
+    OfferRankManagerImpl,
+    OfferRankRepositoryImpl,
+    OfferRank
 };
 
 export default class Base {
@@ -175,6 +184,7 @@ export default class Base {
     private readonly _externalServicesManager: ExternalServicesManager;
     private readonly _authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
     private readonly _repositoryStrategyInterceptor: RepositoryStrategyInterceptor;
+    private readonly _offerRankManager: OfferRankManager;
 
     constructor(
         nodeHost: string,
@@ -215,6 +225,7 @@ export default class Base {
         const offerSearchRepository: OfferSearchRepository = new OfferSearchRepositoryImpl(transport);
         const verifyRepository: VerifyRepository = new VerifyRepositoryImpl(transport);
         const externalServicesRepository: ExternalServicesRepository = new ExternalServicesRepositoryImpl(transport);
+        const offerRankRepository = new OfferRankRepositoryImpl(transport);
 
         this._accountManager = new AccountManagerImpl(
             accountRepository,
@@ -260,6 +271,7 @@ export default class Base {
         );
 
         this._externalServicesManager = new ExternalServicesManagerImpl(externalServicesRepository);
+        this._offerRankManager = new OfferRankManagerImpl(offerRankRepository);
     }
 
     public changeStrategy(strategy: RepositoryStrategyType) {
@@ -296,6 +308,9 @@ export default class Base {
 
     get externalServicesManager(): ExternalServicesManager {
         return this._externalServicesManager;
+    }
+    get offerRankManager(): OfferRankManager {
+        return this._offerRankManager;
     }
 
     private createNodeAssistant(httpTransport: HttpTransport): AssistantNodeRepository {
