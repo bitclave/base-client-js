@@ -7,7 +7,7 @@ export class EthWalletValidator extends AbstractWalletValidator<EthCryptoWallet,
     public validateSignature(wallet: EthWalletData): boolean {
         try {
             const signerAddress = EthereumUtils.recoverPersonalSignature(wallet.getSignedMessage());
-            return signerAddress === wallet.data.address;
+            return signerAddress.toLowerCase() === wallet.data.address.toLowerCase();
 
         } catch (e) {
             return false;
