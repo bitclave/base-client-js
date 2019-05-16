@@ -97,14 +97,19 @@ export class ProfileManagerImpl implements ProfileManager {
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
     public async getAuthorizedData(acceptedRequests: Array<DataRequest>): Promise<Map<string, string>> {
+        if (acceptedRequests.length <= 0) {
+            return new Map();
+        }
+
+        // for Backward compatibility of deprecated data
+        const rootPk = (acceptedRequests[0].rootPk && acceptedRequests[0].rootPk.length > 0)
+                       ? acceptedRequests[0].rootPk
+                       : acceptedRequests[0].toPk;
+
         const passForFields = await this.getAuthorizedEncryptionKeys(acceptedRequests);
 
-        if (acceptedRequests.length > 0 && passForFields.size > 0) {
-
-            const recipientData: Map<string, string> = await this.getRawData(
-                acceptedRequests[0].rootPk,
-                Array.from(passForFields.keys())
-            );
+        if (passForFields.size > 0) {
+            const recipientData: Map<string, string> = await this.getRawData(rootPk, Array.from(passForFields.keys()));
 
             return this.decrypt.decryptFields(recipientData, passForFields);
         }
@@ -122,7 +127,16 @@ export class ProfileManagerImpl implements ProfileManager {
     public async getAuthorizedEncryptionKeys(acceptedRequests: Array<DataRequest>): Promise<Map<string, string>> {
         const result: Map<string, string> = new Map<string, string>();
 
+        // for Backward compatibility of deprecated data
+        const rootPk = (acceptedRequests[0].rootPk && acceptedRequests[0].rootPk.length > 0)
+                       ? acceptedRequests[0].rootPk
+                       : acceptedRequests[0].toPk;
+
         for (const data of acceptedRequests) {
+            if (!(data.rootPk === rootPk || data.toPk === rootPk)) {
+                throw new Error('all DataRequest should be has same root owner of data. (per one user at time).');
+            }
+
             const isDeprecated = !data.rootPk || data.rootPk.length === 0;
             const strDecrypt = await this.decrypt.decryptMessage(data.toPk, data.responseData);
 
