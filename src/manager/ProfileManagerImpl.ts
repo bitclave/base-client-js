@@ -3,6 +3,7 @@ import { ClientDataRepository } from '../repository/client/ClientDataRepository'
 import Account from '../repository/models/Account';
 import { DataRequest } from '../repository/models/DataRequest';
 import { FileMeta } from '../repository/models/FileMeta';
+import { FieldData, SharedData } from '../repository/models/SharedData';
 import { BasicLogger, Logger } from '../utils/BasicLogger';
 import { JsonUtils } from '../utils/JsonUtils';
 import { AcceptedField } from '../utils/keypair/AcceptedField';
@@ -94,27 +95,37 @@ export class ProfileManagerImpl implements ProfileManager {
      * @param {Array<DataRequest>} acceptedRequests is array {@link DataRequest}
      * with accepted encrypted data {@link DataRequest#responseData}.
      *
-     * @returns {Promise<Map<string, string>>} Map key => value.
+     * @returns {Promise<SharedData>}  sharedData->DataRequest-> responseData is client value or undefined if not
+     * have access
      */
-    public async getAuthorizedData(acceptedRequests: Array<DataRequest>): Promise<Map<string, string>> {
+    public async getAuthorizedData(acceptedRequests: Array<DataRequest>): Promise<SharedData> {
         if (acceptedRequests.length <= 0) {
-            return new Map();
+            return new SharedData();
         }
 
-        // for Backward compatibility of deprecated data
-        const rootPk = (acceptedRequests[0].rootPk && acceptedRequests[0].rootPk.length > 0)
-                       ? acceptedRequests[0].rootPk
-                       : acceptedRequests[0].toPk;
+        const sharedData = await this.getAuthorizedEncryptionKeys(acceptedRequests);
 
-        const passForFields = await this.getAuthorizedEncryptionKeys(acceptedRequests);
+        if (sharedData.size > 0) {
+            for (const [root, fields] of sharedData.extractKeysByRoot()) {
+                const clientKeys: Array<string> = Array.from(fields.keys());
+                const recipientData: Map<string, string> = await this.getRawData(root, clientKeys);
+                const mapKeyToPass: Map<string, string> = new Map();
+                fields.forEach((data, key) => {
+                    if (data.value) {
+                        mapKeyToPass.set(key, data.value);
+                    }
+                });
 
-        if (passForFields.size > 0) {
-            const recipientData: Map<string, string> = await this.getRawData(rootPk, Array.from(passForFields.keys()));
-
-            return this.decrypt.decryptFields(recipientData, passForFields);
+                const decryptedFields = await this.decrypt.decryptFields(recipientData, mapKeyToPass);
+                decryptedFields.forEach((value, key) => {
+                    if (fields.has(key)) {
+                        (fields.get(key) as FieldData).value = value;
+                    }
+                });
+            }
         }
 
-        return new Map();
+        return sharedData;
     }
 
     /**
@@ -122,37 +133,35 @@ export class ProfileManagerImpl implements ProfileManager {
      * @param {Array<DataRequest>} acceptedRequests is array {@link DataRequest}
      * with accepted encrypted data {@link DataRequest#responseData}.
      *
-     * @returns {Promise<Map<string, string>>} Map key (fieldName) => value (Password).
+     * @returns {Promise<SharedData>} sharedData->DataRequest-> responseData is Password.
      */
-    public async getAuthorizedEncryptionKeys(acceptedRequests: Array<DataRequest>): Promise<Map<string, string>> {
-        const result: Map<string, string> = new Map<string, string>();
-
-        // for Backward compatibility of deprecated data
-        const rootPk = (acceptedRequests[0].rootPk && acceptedRequests[0].rootPk.length > 0)
-                       ? acceptedRequests[0].rootPk
-                       : acceptedRequests[0].toPk;
+    public async getAuthorizedEncryptionKeys(acceptedRequests: Array<DataRequest>): Promise<SharedData> {
+        const result = new SharedData();
 
         for (const data of acceptedRequests) {
-            if (!(data.rootPk === rootPk || data.toPk === rootPk)) {
-                throw new Error('all DataRequest should be has same root owner of data. (per one user at time).');
-            }
-
             const isDeprecated = !data.rootPk || data.rootPk.length === 0;
             const strDecrypt = await this.decrypt.decryptMessage(data.toPk, data.responseData);
 
             if (isDeprecated) { // for Backward compatibility of deprecated data
+                const strDecryptRequestFields = await this.decrypt.decryptMessage(data.toPk, data.requestData);
+
+                (JSON.parse(strDecryptRequestFields) as Array<string>)
+                    .forEach(value => result.set(new FieldData(data.fromPk, data.toPk, data.toPk, value)));
+
                 const jsonDecrypt = JSON.parse(strDecrypt);
                 const arrayResponse: Map<string, AcceptedField> = JsonUtils.jsonToMap(jsonDecrypt);
 
-                arrayResponse.forEach((value: AcceptedField, key: string) => result.set(key, value.pass));
+                arrayResponse.forEach((value: AcceptedField, key: string) => {
+                    result.set(new FieldData(data.fromPk, data.toPk, data.toPk, key, value.pass));
+                });
 
             } else {
                 try {
                     const field = Object.assign(new AcceptedField('', AccessRight.R), JSON.parse(strDecrypt));
-                    result.set(data.requestData, field.pass);
+                    result.set(new FieldData(data.fromPk, data.toPk, data.rootPk, data.requestData, field.pass));
 
                 } catch (e) {
-                    console.warn(`error parse obj ${strDecrypt}`);
+                    result.set(new FieldData(data.fromPk, data.toPk, data.rootPk, data.requestData));
                 }
             }
         }

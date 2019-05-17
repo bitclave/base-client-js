@@ -220,7 +220,9 @@ describe('Data Request Manager', async () => {
             dataAlisa.keyPair.getPublicKey()
         );
 
-        let reSharedFields = await dataCabe.profileManager.getAuthorizedData(reShareRequests);
+        let reSharedFields =
+            (await dataCabe.profileManager.getAuthorizedData(reShareRequests))
+                .getKeyValue(dataAlisa.keyPair.getPublicKey(), dataBob.keyPair.getPublicKey());
 
         (reSharedFields.get(bobsFields[0]) as string).should.be.eq('zero index field');
 
@@ -229,7 +231,8 @@ describe('Data Request Manager', async () => {
             dataCabe.keyPair.getPublicKey()
         );
 
-        reSharedFields = await dataDaniel.profileManager.getAuthorizedData(reShareRequests);
+        reSharedFields = (await dataDaniel.profileManager.getAuthorizedData(reShareRequests))
+            .getKeyValue(dataCabe.keyPair.getPublicKey(), dataBob.keyPair.getPublicKey());
 
         (reSharedFields.get(bobsFields[0]) as string).should.be.eq('zero index field');
     });

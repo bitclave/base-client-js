@@ -149,7 +149,8 @@ describe('Wallet manager test', async () => {
             ));
         }
 
-        const data = await profileManager.getAuthorizedData(acceptedDataRequest);
+        const data = (await profileManager.getAuthorizedData(acceptedDataRequest))
+            .getKeyValue(keyPairHelperBob.getPublicKey());
 
         data.should.be.deep.equal(origMockData);
     });
@@ -182,7 +183,9 @@ describe('Wallet manager test', async () => {
             ));
         }
 
-        const data: string = (await profileManager.getAuthorizedEncryptionKeys(acceptedDataRequest)).get('name') || '';
+        const data: string = (await profileManager.getAuthorizedEncryptionKeys(acceptedDataRequest))
+            .getKeyValue(keyPairHelperBob.getPublicKey())
+            .get('name') || '';
 
         const acceptedField: AcceptedField | undefined = map.get('name');
         const pass: string = acceptedField ? acceptedField.pass : '';

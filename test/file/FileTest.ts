@@ -87,12 +87,14 @@ describe('File CRUD', async () => {
         const requests = await baseBob.dataRequestManager.getRequests(accBob.publicKey, accAlice.publicKey);
 
         // Bob decrypt granted data to Map<filedName, password>
-        const keyPassMap = await baseBob.profileManager.getAuthorizedEncryptionKeys(requests);
+        const keyPassMap = (await baseBob.profileManager.getAuthorizedEncryptionKeys(requests))
+            .getKeyValue(accAlice.publicKey);
 
         const pass = keyPassMap.get(newKey) || '';
 
-        // Bob decrypt granted data to Map<fieldName, SOME_DATA_STRING>
-        const decryptedData = await baseBob.profileManager.getAuthorizedData(requests);
+        // Bob decrypt granted data
+        const decryptedData = (await baseBob.profileManager.getAuthorizedData(requests))
+            .getKeyValue(accAlice.publicKey);
 
         // get file meta as string and convert to Model FileMeta
         const rawFileMeta = decryptedData.get(newKey) || '';

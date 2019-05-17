@@ -102,10 +102,12 @@ describe('BASE API test: External Validator', async () => {
         );
 
         // Validator decodes Alice's wallets
-        const decryptedObj = await baseValidator.profileManager.getAuthorizedData(requestsByFrom);
+        const decryptedObj = (await baseValidator.profileManager.getAuthorizedData(requestsByFrom))
+            .getKeyValue(baseAlice.accountManager.getAccount().publicKey);
 
         // console.log(decryptedObj);
-        (decryptedObj.get(WalletManagerImpl.DATA_KEY_CRYPTO_WALLETS) as string).should.be.equal('test eth wallets');
+        (decryptedObj.get(WalletManagerImpl.DATA_KEY_CRYPTO_WALLETS) as string)
+            .should.be.equal('test eth wallets');
     });
 
     it('Validator asks Alice for access', async () => {
@@ -133,10 +135,12 @@ describe('BASE API test: External Validator', async () => {
         );
 
         // Validator decodes Alice's wallets
-        const decryptedObj = await baseValidator.profileManager.getAuthorizedData(requestsByFrom);
+        const decryptedObj = (await baseValidator.profileManager.getAuthorizedData(requestsByFrom))
+            .getKeyValue(baseAlice.accountManager.getAccount().publicKey);
 
         // console.log(decryptedObj);
-        (decryptedObj.get(WalletManagerImpl.DATA_KEY_CRYPTO_WALLETS) as string).should.be.equal('test crypto wallets');
+        (decryptedObj.get(WalletManagerImpl.DATA_KEY_CRYPTO_WALLETS) as string)
+            .should.be.equal('test crypto wallets');
     });
 
     /**/

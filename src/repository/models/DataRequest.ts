@@ -21,6 +21,6 @@ export class DataRequest extends DeepCopy<DataRequest> {
         this.toPk = toPk || '';
         this.rootPk = rootPk || '';
         this.requestData = requestData || '';
-        this.responseData = responseData || '';
+        this.responseData = responseData;
     }
 }
