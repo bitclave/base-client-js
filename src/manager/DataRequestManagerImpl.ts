@@ -128,26 +128,26 @@ export class DataRequestManagerImpl implements DataRequestManager {
 
     /**
      * Returns list of fields requested for access by <me> from the client
-     * @param {string} requestedFromPk id (baseID) of the client whose permissions were requested
+     * @param {string} requestedFromPk id (baseID) of the client whose permissions were requested. is optional.
      * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
-    public async getRequestedPermissions(requestedFromPk: string): Promise<Array<FieldData>> {
-        const requests = await this.getRequests(this.account.publicKey, requestedFromPk);
-        const shared = await this.decodeRequestedPermissions(requests, requestedFromPk);
+    public async getRequestedPermissions(requestedFromPk?: string | undefined): Promise<Array<FieldData>> {
+        const requests = await this.getRequests(this.account.publicKey, requestedFromPk || null);
+        const shared = await this.decodeRequestedPermissions(requests, true);
 
-        return shared.getDataTo(requestedFromPk);
+        return requestedFromPk ? shared.getDataTo(requestedFromPk) : shared.toList();
     }
 
     /**
      * Returns list of fields requested for access by the client from <me>
-     * @param {string} whoRequestedPk id (baseID) of the client that asked for permission from <me>
+     * @param {string} whoRequestedPk id (baseID) of the client that asked for permission from <me>. is optional.
      * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
-    public async getRequestedPermissionsToMe(whoRequestedPk: string): Promise<Array<FieldData>> {
-        const requests = await this.getRequests(whoRequestedPk, this.account.publicKey);
-        const shared = await this.decodeRequestedPermissions(requests, whoRequestedPk);
+    public async getRequestedPermissionsToMe(whoRequestedPk?: string | undefined): Promise<Array<FieldData>> {
+        const requests = await this.getRequests(whoRequestedPk || null, this.account.publicKey);
+        const shared = await this.decodeRequestedPermissions(requests, false);
 
-        return shared.getDataTo(this.account.publicKey);
+        return whoRequestedPk ? shared.getDataTo(this.account.publicKey) : shared.toList();
     }
 
     /**
@@ -250,20 +250,21 @@ export class DataRequestManagerImpl implements DataRequestManager {
         return result;
     }
 
-    private async decodeRequestedPermissions(requests: Array<DataRequest>, pk: string): Promise<SharedData> {
+    private async decodeRequestedPermissions(requests: Array<DataRequest>, isToPk: boolean): Promise<SharedData> {
         const result: SharedData = new SharedData();
 
         for (const item of requests) {
             const isDeprecated = !item.rootPk || item.rootPk.length <= 0;
+            const ownerPk = isToPk ? item.toPk : item.fromPk;
 
             if (isDeprecated) {  // for Backward compatibility of deprecated data
-                let accepted: Map<string, string> = new Map();
+                let accepted: Map<string, AcceptedField> = new Map();
                 let requested: Set<string> = new Set();
 
                 try {
                     if (item.responseData.length > 0) {
                         const strDecryptRequestFields: string = await this.decrypt
-                            .decryptMessage(pk, item.responseData);
+                            .decryptMessage(ownerPk, item.responseData);
 
                         const jsonDecryptRequestFields = JSON.parse(strDecryptRequestFields);
                         accepted = JsonUtils.jsonToMap(jsonDecryptRequestFields);
@@ -274,7 +275,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
 
                 try {
                     if (item.requestData.trim().length > 0) {
-                        const strDecrypt: string = await this.decrypt.decryptMessage(pk, item.requestData);
+                        const strDecrypt: string = await this.decrypt.decryptMessage(ownerPk, item.requestData);
                         requested = new Set(JSON.parse(strDecrypt) as Array<string>);
                     }
                 } catch (e) {
@@ -282,10 +283,10 @@ export class DataRequestManagerImpl implements DataRequestManager {
                 }
 
                 Array.from(requested.keys())
-                    .forEach(field => result.set(new FieldData(item.fromPk, item.toPk, item.toPk, field)));
+                    .forEach(key => result.set(new FieldData(item.fromPk, item.toPk, item.toPk, key)));
 
                 accepted.forEach((value, key) =>
-                    result.set(new FieldData(item.fromPk, item.toPk, item.toPk, key, value))
+                    result.set(new FieldData(item.fromPk, item.toPk, item.toPk, key, value.pass))
                 );
 
             } else {
@@ -293,7 +294,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
 
                 if (item.responseData.length > 0) {
                     try {
-                        const strDecrypt: string = await this.decrypt.decryptMessage(pk, item.responseData);
+                        const strDecrypt: string = await this.decrypt.decryptMessage(ownerPk, item.responseData);
                         const jsonDecrypt = JSON.parse(strDecrypt);
 
                         const acceptedFiled: AcceptedField = Object.assign(

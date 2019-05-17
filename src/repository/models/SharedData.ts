@@ -24,9 +24,9 @@ export class SharedData {
     public set(data: FieldData): void {
         const array = this.data.get(data.to) || [];
 
-        const existed = array.find(item => item.key === data.key);
+        const existed = array.find(item => item.key === data.key && item.from === data.from);
         if (existed) {
-            existed.key = data.key;
+            existed.value = data.value;
         } else {
             array.push(data);
         }
@@ -60,6 +60,15 @@ export class SharedData {
 
     public getDataTo(to: string): Array<FieldData> {
         return this.data.get(to) || [];
+    }
+
+    public toList(): Array<FieldData> {
+        if (this.data.size <= 0) {
+            return [];
+        }
+
+        return Array.from(this.data.values())
+            .reduce((previousValue, currentValue) => previousValue.concat(currentValue));
     }
 
     public extractKeysByRoot(): Map<string, Map<string, FieldData>> {

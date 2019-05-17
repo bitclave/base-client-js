@@ -148,6 +148,18 @@ describe('Data Request Manager', async () => {
 
         requestedToBob.should.be.deep.eq(bobsFields);
 
+        const requestedFromAll = (await dataAlisa.requestManager
+            .getRequestedPermissions())
+            .map(item => item.key);
+
+        requestedFromAll.should.be.deep.eq(bobsFields);
+
+        const requestedToBobFromAll = (await dataBob.requestManager
+            .getRequestedPermissionsToMe())
+            .map(item => item.key);
+
+        requestedToBobFromAll.should.be.deep.eq(bobsFields);
+
         const grantFromAlisaToBob: Array<string> = await dataBob.requestManager
             .getGrantedPermissions(dataAlisa.keyPair.getPublicKey());
 

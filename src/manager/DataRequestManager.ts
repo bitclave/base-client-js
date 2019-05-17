@@ -51,17 +51,17 @@ export interface DataRequestManager {
 
     /**
      * Returns list of fields requested for access by <me> from the client
-     * @param {string} requestedFromPk id (baseID) of the client whose permissions were requested
+     * @param {string} requestedFromPk id (baseID) of the client whose permissions were requested. is optional.
      * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
-    getRequestedPermissions(requestedFromPk: string): Promise<Array<FieldData>>;
+    getRequestedPermissions(requestedFromPk?: string | undefined): Promise<Array<FieldData>>;
 
     /**
      * Returns list of fields requested for access by the client from <me>
-     * @param {string} whoRequestedPk id (baseID) of the client that asked for permission from <me>
+     * @param {string} whoRequestedPk id (baseID) of the client that asked for permission from <me>. is optional.
      * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
-    getRequestedPermissionsToMe(whoRequestedPk: string): Promise<Array<FieldData>>;
+    getRequestedPermissionsToMe(whoRequestedPk?: string | undefined): Promise<Array<FieldData>>;
 
     /**
      * Returns list of fields that <client> authorized <me> to access
