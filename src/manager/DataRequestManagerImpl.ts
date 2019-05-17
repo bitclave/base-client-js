@@ -156,6 +156,8 @@ export class DataRequestManagerImpl implements DataRequestManager {
     }
 
     /**
+     * @deprecated
+     *
      * Returns list of fields that <me> authorized <client> to access
      * @param {string} clientPk id (baseID) of the client that received access permission from <me>
      * @returns {Promise<Array<string>>} Array of field names that were authorized for access

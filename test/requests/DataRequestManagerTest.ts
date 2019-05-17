@@ -139,10 +139,22 @@ describe('Data Request Manager', async () => {
 
         grantFromAlisaToBob.length.should.be.equal(0);
 
-        const grantFromBobToAlisa: Array<string> = await dataBob.requestManager
-            .getGrantedPermissionsToMe(dataAlisa.keyPair.getPublicKey());
+        const requests = await dataAlisa.requestManager
+            .getRequests(dataAlisa.keyPair.getPublicKey(), dataBob.keyPair.getPublicKey());
 
-        grantFromBobToAlisa.should.be.deep.equal(bobsFields);
+        const grantFromBobToAlisa: Map<string, string | undefined> = (await dataAlisa.profileManager
+            .getAuthorizedData(requests))
+            .getKeyValue(dataBob.keyPair.getPublicKey());
+
+        const granted: Array<string> = [];
+
+        grantFromBobToAlisa.forEach((value, key) => {
+            if (value) {
+                granted.push(key);
+            }
+        });
+
+        granted.should.be.deep.equal(bobsFields);
     });
 
     it('grand access to field without requested permissions', async () => {
@@ -158,10 +170,22 @@ describe('Data Request Manager', async () => {
 
         grantFromAlisaToBob.length.should.be.equal(0);
 
-        const grantFromBobToAlisa: Array<string> = await dataBob.requestManager
-            .getGrantedPermissionsToMe(dataAlisa.keyPair.getPublicKey());
+        const requests = await dataAlisa.requestManager
+            .getRequests(dataAlisa.keyPair.getPublicKey(), dataBob.keyPair.getPublicKey());
 
-        grantFromBobToAlisa.should.be.deep.equal(bobsFields);
+        const grantFromBobToAlisa: Map<string, string | undefined> = (await dataAlisa.profileManager
+            .getAuthorizedData(requests))
+            .getKeyValue(dataBob.keyPair.getPublicKey());
+
+        const granted: Array<string> = [];
+
+        grantFromBobToAlisa.forEach((value, key) => {
+            if (value) {
+                granted.push(key);
+            }
+        });
+
+        granted.should.be.deep.equal(bobsFields);
     });
 
     it('grand access for client and re-share data', async () => {
@@ -182,10 +206,22 @@ describe('Data Request Manager', async () => {
         await dataBob.requestManager
             .grantAccessForClient(dataAlisa.keyPair.getPublicKey(), grantFields);
 
-        const grantFromBobToAlisa: Array<string> = await dataBob.requestManager
-            .getGrantedPermissionsToMe(dataAlisa.keyPair.getPublicKey());
+        const requests = await dataAlisa.requestManager
+            .getRequests(dataAlisa.keyPair.getPublicKey(), dataBob.keyPair.getPublicKey());
 
-        grantFromBobToAlisa.should.be.deep.equal(bobsFields);
+        const grantFromBobToAlisa: Map<string, string | undefined> = (await dataAlisa.profileManager
+            .getAuthorizedData(requests))
+            .getKeyValue(dataBob.keyPair.getPublicKey());
+
+        const granted: Array<string> = [];
+
+        grantFromBobToAlisa.forEach((value, key) => {
+            if (value) {
+                granted.push(key);
+            }
+        });
+
+        granted.should.be.deep.equal(bobsFields);
 
         const reshareFiled = new Map<string, AccessRight>([[bobsFields[0], AccessRight.R]]);
 
@@ -315,17 +351,33 @@ describe('Data Request Manager', async () => {
 
         grantFromAlisaToBob.length.should.be.equal(0);
 
-        let grantFromBobToAlisa: Array<string> = await dataBob.requestManager
-            .getGrantedPermissionsToMe(dataAlisa.keyPair.getPublicKey());
+        let requests = await dataAlisa.requestManager
+            .getRequests(dataAlisa.keyPair.getPublicKey(), dataBob.keyPair.getPublicKey());
 
-        grantFromBobToAlisa.should.be.deep.equal(bobsFields);
+        let grantFromBobToAlisa: Map<string, string | undefined> = (await dataAlisa.profileManager
+            .getAuthorizedData(requests))
+            .getKeyValue(dataBob.keyPair.getPublicKey());
+
+        const granted: Array<string> = [];
+
+        grantFromBobToAlisa.forEach((value, key) => {
+            if (value) {
+                granted.push(key);
+            }
+        });
+
+        granted.should.be.deep.equal(bobsFields);
 
         await dataBob.requestManager.revokeAccessForClient(dataAlisa.keyPair.getPublicKey(), bobsFields);
 
-        grantFromBobToAlisa = await dataBob.requestManager
-            .getGrantedPermissionsToMe(dataAlisa.keyPair.getPublicKey());
+        requests = await dataAlisa.requestManager
+            .getRequests(dataAlisa.keyPair.getPublicKey(), dataBob.keyPair.getPublicKey());
 
-        grantFromBobToAlisa.length.should.be.equal(0);
+        grantFromBobToAlisa = (await dataAlisa.profileManager
+            .getAuthorizedData(requests))
+            .getKeyValue(dataBob.keyPair.getPublicKey());
+
+        grantFromBobToAlisa.size.should.be.equal(0);
     });
 
     it('should be Alisa not nothing found from some pk', async () => {
