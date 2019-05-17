@@ -1,4 +1,5 @@
 import { DataRequest } from '../repository/models/DataRequest';
+import { FieldData } from '../repository/models/SharedData';
 import { AccessRight } from '../utils/keypair/Permissions';
 
 export interface DataRequestManager {
@@ -53,14 +54,14 @@ export interface DataRequestManager {
      * @param {string} requestedFromPk id (baseID) of the client whose permissions were requested
      * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
-    getRequestedPermissions(requestedFromPk: string): Promise<Array<string>>;
+    getRequestedPermissions(requestedFromPk: string): Promise<Array<FieldData>>;
 
     /**
      * Returns list of fields requested for access by the client from <me>
      * @param {string} whoRequestedPk id (baseID) of the client that asked for permission from <me>
      * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
-    getRequestedPermissionsToMe(whoRequestedPk: string): Promise<Array<string>>;
+    getRequestedPermissionsToMe(whoRequestedPk: string): Promise<Array<FieldData>>;
 
     /**
      * Returns list of fields that <client> authorized <me> to access

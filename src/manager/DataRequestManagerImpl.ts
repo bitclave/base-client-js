@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs/Rx';
 import Account from '../repository/models/Account';
 import { DataRequest } from '../repository/models/DataRequest';
+import { FieldData, SharedData } from '../repository/models/SharedData';
 import { DataRequestRepository } from '../repository/requests/DataRequestRepository';
 import { JsonUtils } from '../utils/JsonUtils';
 import { AcceptedField } from '../utils/keypair/AcceptedField';
@@ -130,9 +131,11 @@ export class DataRequestManagerImpl implements DataRequestManager {
      * @param {string} requestedFromPk id (baseID) of the client whose permissions were requested
      * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
-    public async getRequestedPermissions(requestedFromPk: string): Promise<Array<string>> {
+    public async getRequestedPermissions(requestedFromPk: string): Promise<Array<FieldData>> {
         const requests = await this.getRequests(this.account.publicKey, requestedFromPk);
-        return await this.decodeRequestedPermissions(requests, requestedFromPk);
+        const shared = await this.decodeRequestedPermissions(requests, requestedFromPk);
+
+        return shared.getDataTo(requestedFromPk);
     }
 
     /**
@@ -140,9 +143,11 @@ export class DataRequestManagerImpl implements DataRequestManager {
      * @param {string} whoRequestedPk id (baseID) of the client that asked for permission from <me>
      * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
-    public async getRequestedPermissionsToMe(whoRequestedPk: string): Promise<Array<string>> {
+    public async getRequestedPermissionsToMe(whoRequestedPk: string): Promise<Array<FieldData>> {
         const requests = await this.getRequests(whoRequestedPk, this.account.publicKey);
-        return await this.decodeRequestedPermissions(requests, whoRequestedPk);
+        const shared = await this.decodeRequestedPermissions(requests, whoRequestedPk);
+
+        return shared.getDataTo(this.account.publicKey);
     }
 
     /**
@@ -245,26 +250,70 @@ export class DataRequestManagerImpl implements DataRequestManager {
         return result;
     }
 
-    private async decodeRequestedPermissions(requests: Array<DataRequest>, clientPk: string): Promise<Array<string>> {
-        const result: Set<string> = new Set();
+    private async decodeRequestedPermissions(requests: Array<DataRequest>, pk: string): Promise<SharedData> {
+        const result: SharedData = new SharedData();
 
         for (const item of requests) {
-            if (!item.rootPk || item.rootPk.length <= 0 && item.requestData.trim().length > 0) {
-                try {
-                    // for Backward compatibility of deprecated data
-                    const strDecrypt: string = await this.decrypt.decryptMessage(clientPk, item.requestData);
-                    const json = JSON.parse(strDecrypt) as Array<string>;
-                    json.forEach(value => result.add(value));
+            const isDeprecated = !item.rootPk || item.rootPk.length <= 0;
 
+            if (isDeprecated) {  // for Backward compatibility of deprecated data
+                let accepted: Map<string, string> = new Map();
+                let requested: Set<string> = new Set();
+
+                try {
+                    if (item.responseData.length > 0) {
+                        const strDecryptRequestFields: string = await this.decrypt
+                            .decryptMessage(pk, item.responseData);
+
+                        const jsonDecryptRequestFields = JSON.parse(strDecryptRequestFields);
+                        accepted = JsonUtils.jsonToMap(jsonDecryptRequestFields);
+                    }
                 } catch (e) {
                     console.warn(e);
                 }
+
+                try {
+                    if (item.requestData.trim().length > 0) {
+                        const strDecrypt: string = await this.decrypt.decryptMessage(pk, item.requestData);
+                        requested = new Set(JSON.parse(strDecrypt) as Array<string>);
+                    }
+                } catch (e) {
+                    console.warn(e);
+                }
+
+                Array.from(requested.keys())
+                    .forEach(field => result.set(new FieldData(item.fromPk, item.toPk, item.toPk, field)));
+
+                accepted.forEach((value, key) =>
+                    result.set(new FieldData(item.fromPk, item.toPk, item.toPk, key, value))
+                );
+
             } else {
-                result.add(item.requestData);
+                let value: string | undefined;
+
+                if (item.responseData.length > 0) {
+                    try {
+                        const strDecrypt: string = await this.decrypt.decryptMessage(pk, item.responseData);
+                        const jsonDecrypt = JSON.parse(strDecrypt);
+
+                        const acceptedFiled: AcceptedField = Object.assign(
+                            new AcceptedField('', AccessRight.R),
+                            jsonDecrypt
+                        );
+
+                        if (acceptedFiled.pass && acceptedFiled.pass.length > 0) {
+                            value = acceptedFiled.pass;
+                        }
+                    } catch (e) {
+                        console.warn(e);
+                    }
+                }
+
+                result.set(new FieldData(item.fromPk, item.toPk, item.rootPk, item.requestData, value));
             }
         }
 
-        return Array.from(result.keys());
+        return result;
     }
 
     private async getDecodeGrantPermissions(requests: Array<DataRequest>, clientPk: string): Promise<Array<string>> {

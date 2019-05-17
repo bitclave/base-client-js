@@ -5,6 +5,7 @@ import { DataRequestManagerImpl } from '../../src/manager/DataRequestManagerImpl
 import { ProfileManager } from '../../src/manager/ProfileManager';
 import { ProfileManagerImpl } from '../../src/manager/ProfileManagerImpl';
 import Account from '../../src/repository/models/Account';
+import { FieldData } from '../../src/repository/models/SharedData';
 import { HttpTransportImpl } from '../../src/repository/source/http/HttpTransportImpl';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { RpcTransportImpl } from '../../src/repository/source/rpc/RpcTransportImpl';
@@ -107,19 +108,20 @@ describe('Data Request Manager', async () => {
 
         requestsByFrom[0].requestData.should.be.not.equal(bobsFields);
 
-        const requestedBobFromAlisa: Array<string> = await dataBob.requestManager.getRequestedPermissions(
+        const requestedBobFromAlisa: Array<FieldData> = await dataBob.requestManager.getRequestedPermissions(
             dataAlisa.keyPair.getPublicKey()
         );
 
         requestedBobFromAlisa.length.should.be.equal(0);
 
-        const requestedAlisaFromBob: Array<string> = await dataBob.requestManager
+        const requestedAlisaFromBob: Array<FieldData> = await dataBob.requestManager
             .getRequestedPermissionsToMe(dataAlisa.keyPair.getPublicKey());
 
         requestedAlisaFromBob.length.should.be.equal(bobsFields.length);
 
-        const requestedFromBob: Array<string> = await dataAlisa.requestManager
-            .getRequestedPermissions(dataBob.keyPair.getPublicKey());
+        const requestedFromBob: Array<string> = (await dataAlisa.requestManager
+            .getRequestedPermissions(dataBob.keyPair.getPublicKey()))
+            .map(item => item.key);
 
         requestedFromBob.should.be.deep.equal(bobsFields);
     });
@@ -133,6 +135,18 @@ describe('Data Request Manager', async () => {
         }
 
         await dataBob.requestManager.grantAccessForClient(dataAlisa.keyPair.getPublicKey(), grantFields);
+
+        const requestedFromAlisa = (await dataAlisa.requestManager
+            .getRequestedPermissions(dataBob.keyPair.getPublicKey()))
+            .map(item => item.key);
+
+        requestedFromAlisa.should.be.deep.eq(bobsFields);
+
+        const requestedToBob = (await dataBob.requestManager
+            .getRequestedPermissionsToMe(dataAlisa.keyPair.getPublicKey()))
+            .map(item => item.key);
+
+        requestedToBob.should.be.deep.eq(bobsFields);
 
         const grantFromAlisaToBob: Array<string> = await dataBob.requestManager
             .getGrantedPermissions(dataAlisa.keyPair.getPublicKey());
@@ -399,7 +413,7 @@ describe('Data Request Manager', async () => {
 
         grant.length.should.be.eq(0);
 
-        let requests: Array<string> = await dataAlisa.requestManager
+        let requests: Array<FieldData> = await dataAlisa.requestManager
             .getRequestedPermissions(dataBob.keyPair.getPublicKey());
 
         requests.length.should.be.eq(0);
