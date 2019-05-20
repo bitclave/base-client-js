@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs/Rx';
 import Account from '../repository/models/Account';
 import Offer from '../repository/models/Offer';
+import { Page } from '../repository/models/Page';
 import { OfferRepository } from '../repository/offer/OfferRepository';
 import { OfferManager } from './OfferManager';
 
@@ -34,6 +35,10 @@ export class OfferManagerImpl implements OfferManager {
         } else {
             return this.offerRepository.getOfferByOwner(this.account.publicKey);
         }
+    }
+
+    public getMyOffersAndPage(page?: number, size?: number): Promise<Page<Offer>> {
+        return this.offerRepository.getOfferByOwnerAndPage(this.account.publicKey, page, size);
     }
 
     public getAllOffers(): Promise<Array<Offer>> {
