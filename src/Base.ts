@@ -7,6 +7,8 @@ import { ExternalServicesManager } from './manager/ExternalServicesManager';
 import { ExternalServicesManagerImpl } from './manager/ExternalServicesManagerImpl';
 import { OfferManager } from './manager/OfferManager';
 import { OfferManagerImpl } from './manager/OfferManagerImpl';
+import { OfferRankManager } from './manager/OfferRankManager';
+import { OfferRankManagerImpl } from './manager/OfferRankManagerImpl';
 import { ProfileManager } from './manager/ProfileManager';
 import { ProfileManagerImpl } from './manager/ProfileManagerImpl';
 import { SearchManager } from './manager/SearchManager';
@@ -30,6 +32,7 @@ import { JsonObject } from './repository/models/JsonObject';
 import Offer from './repository/models/Offer';
 import { OfferPrice } from './repository/models/OfferPrice';
 import { OfferPriceRules } from './repository/models/OfferPriceRules';
+import { OfferRank } from './repository/models/OfferRank';
 import OfferSearch, { OfferResultAction } from './repository/models/OfferSearch';
 import OfferSearchResultItem from './repository/models/OfferSearchResultItem';
 import OfferShareData from './repository/models/OfferShareData';
@@ -46,6 +49,7 @@ import { OfferRepository } from './repository/offer/OfferRepository';
 import OfferRepositoryImpl from './repository/offer/OfferRepositoryImpl';
 import { OfferShareDataRepository } from './repository/offer/OfferShareDataRepository';
 import OfferShareDataRepositoryImpl from './repository/offer/OfferShareDataRepositoryImpl';
+import { OfferRankRepositoryImpl } from './repository/offerRank/OfferRankRepositoryImpl';
 import { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 import { DataRequestRepository } from './repository/requests/DataRequestRepository';
 import DataRequestRepositoryImpl from './repository/requests/DataRequestRepositoryImpl';
@@ -90,6 +94,7 @@ export { KeyPairFactory } from './utils/keypair/KeyPairFactory';
 export { RemoteSigner } from './utils/keypair/RemoteSigner';
 export { CryptoUtils } from './utils/CryptoUtils';
 export { WalletUtils } from './utils/WalletUtils';
+export { BitcoinUtils } from './utils/BitcoinUtils';
 export { JsonUtils } from './utils/JsonUtils';
 export { EthereumUtils } from './utils/EthereumUtils';
 export { KeyPair } from './utils/keypair/KeyPair';
@@ -98,11 +103,6 @@ export { Permissions, AccessRight } from './utils/keypair/Permissions';
 export { AcceptedField } from './utils/keypair/AcceptedField';
 export { RpcToken } from './utils/keypair/rpc/RpcToken';
 export { RpcAuth } from './utils/keypair/rpc/RpcAuth';
-
-import { OfferRankManager } from './manager/OfferRankManager';
-import { OfferRankManagerImpl } from './manager/OfferRankManagerImpl';
-import { OfferRank } from './repository/models/OfferRank';
-import { OfferRankRepositoryImpl } from './repository/offerRank/OfferRankRepositoryImpl';
 
 export {
     CryptoWallets,
@@ -309,6 +309,7 @@ export default class Base {
     get externalServicesManager(): ExternalServicesManager {
         return this._externalServicesManager;
     }
+
     get offerRankManager(): OfferRankManager {
         return this._offerRankManager;
     }
