@@ -25,6 +25,7 @@ import ClientDataRepositoryImpl from './repository/client/ClientDataRepositoryIm
 import Account from './repository/models/Account';
 import { DataRequest } from './repository/models/DataRequest';
 import { DeepCopy } from './repository/models/DeepCopy';
+import { FieldData } from './repository/models/FieldData';
 import { FileMeta } from './repository/models/FileMeta';
 import { JsonObject } from './repository/models/JsonObject';
 import Offer from './repository/models/Offer';
@@ -40,7 +41,7 @@ import { ExternalService } from './repository/models/services/ExternalService';
 import { HttpServiceCall } from './repository/models/services/HttpServiceCall';
 import { ServiceCall, ServiceCallType } from './repository/models/services/ServiceCall';
 import { ServiceResponse } from './repository/models/services/ServiceResponse';
-import { FieldData, SharedData } from './repository/models/SharedData';
+import { SharedData } from './repository/models/SharedData';
 import SimpleAccount from './repository/models/SimpleAccount';
 import { Site } from './repository/models/Site';
 import { OfferRepository } from './repository/offer/OfferRepository';

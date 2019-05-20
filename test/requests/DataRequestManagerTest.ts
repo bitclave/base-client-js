@@ -5,7 +5,7 @@ import { DataRequestManagerImpl } from '../../src/manager/DataRequestManagerImpl
 import { ProfileManager } from '../../src/manager/ProfileManager';
 import { ProfileManagerImpl } from '../../src/manager/ProfileManagerImpl';
 import Account from '../../src/repository/models/Account';
-import { FieldData } from '../../src/repository/models/SharedData';
+import { FieldData } from '../../src/repository/models/FieldData';
 import { HttpTransportImpl } from '../../src/repository/source/http/HttpTransportImpl';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { RpcTransportImpl } from '../../src/repository/source/rpc/RpcTransportImpl';

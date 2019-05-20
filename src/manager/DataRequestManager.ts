@@ -1,5 +1,5 @@
 import { DataRequest } from '../repository/models/DataRequest';
-import { FieldData } from '../repository/models/SharedData';
+import { FieldData } from '../repository/models/FieldData';
 import { AccessRight } from '../utils/keypair/Permissions';
 
 export interface DataRequestManager {
