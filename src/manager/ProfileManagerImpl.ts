@@ -2,8 +2,9 @@ import { Observable } from 'rxjs/Rx';
 import { ClientDataRepository } from '../repository/client/ClientDataRepository';
 import Account from '../repository/models/Account';
 import { DataRequest } from '../repository/models/DataRequest';
+import { FieldData } from '../repository/models/FieldData';
 import { FileMeta } from '../repository/models/FileMeta';
-import { FieldData, SharedData } from '../repository/models/SharedData';
+import { SharedData } from '../repository/models/SharedData';
 import { BasicLogger, Logger } from '../utils/BasicLogger';
 import { JsonUtils } from '../utils/JsonUtils';
 import { AcceptedField } from '../utils/keypair/AcceptedField';
@@ -140,20 +141,36 @@ export class ProfileManagerImpl implements ProfileManager {
 
         for (const data of acceptedRequests) {
             const isDeprecated = !data.rootPk || data.rootPk.length === 0;
-            const strDecrypt = await this.decrypt.decryptMessage(data.toPk, data.responseData);
+            let strDecrypt = '';
+
+            try {
+                if (data.responseData && data.responseData.length > 0) {
+                    strDecrypt = await this.decrypt.decryptMessage(data.toPk, data.responseData);
+                }
+            } catch (e) {
+                console.warn(e);
+            }
 
             if (isDeprecated) { // for Backward compatibility of deprecated data
-                const strDecryptRequestFields = await this.decrypt.decryptMessage(data.toPk, data.requestData);
+                try {
+                    const strDecryptRequestFields = await this.decrypt.decryptMessage(data.toPk, data.requestData);
 
-                (JSON.parse(strDecryptRequestFields) as Array<string>)
-                    .forEach(value => result.set(new FieldData(data.fromPk, data.toPk, data.toPk, value)));
+                    (JSON.parse(strDecryptRequestFields) as Array<string>)
+                        .forEach(value => result.set(new FieldData(data.fromPk, data.toPk, data.toPk, value)));
+                } catch (e) {
+                    console.warn(e);
+                }
 
-                const jsonDecrypt = JSON.parse(strDecrypt);
-                const arrayResponse: Map<string, AcceptedField> = JsonUtils.jsonToMap(jsonDecrypt);
+                try {
+                    const jsonDecrypt = JSON.parse(strDecrypt);
+                    const arrayResponse: Map<string, AcceptedField> = JsonUtils.jsonToMap(jsonDecrypt);
 
-                arrayResponse.forEach((value: AcceptedField, key: string) => {
-                    result.set(new FieldData(data.fromPk, data.toPk, data.toPk, key, value.pass));
-                });
+                    arrayResponse.forEach((value: AcceptedField, key: string) => {
+                        result.set(new FieldData(data.fromPk, data.toPk, data.toPk, key, value.pass));
+                    });
+                } catch (e) {
+                    console.warn(e);
+                }
 
             } else {
                 try {
