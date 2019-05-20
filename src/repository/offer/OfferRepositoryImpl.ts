@@ -1,5 +1,6 @@
 import { JsonObject } from '../models/JsonObject';
 import Offer from '../models/Offer';
+import { Page } from '../models/Page';
 import { HttpMethod } from '../source/http/HttpMethod';
 import { HttpTransport } from '../source/http/HttpTransport';
 import { OfferRepository } from './OfferRepository';
@@ -7,6 +8,7 @@ import { OfferRepository } from './OfferRepository';
 export default class OfferRepositoryImpl implements OfferRepository {
 
     private readonly OFFER_API: string = '/v1/client/{owner}/offer/{id}';
+    private readonly OFFER_API_PAGE: string = '/v1/client/{owner}/offer/{id}/owner?page={page}&size={size}';
 
     private transport: HttpTransport;
 
@@ -52,6 +54,16 @@ export default class OfferRepositoryImpl implements OfferRepository {
         ).then((response) => this.jsonToListOffers(response.json));
     }
 
+    public getOfferByOwnerAndPage(owner: string, page?: number, size?: number): Promise<Page<Offer>> {
+        return this.transport.sendRequest(
+            this.OFFER_API_PAGE.replace('{owner}', owner)
+            .replace('{id}', '')
+            .replace('{page}', (page || 0).toString())
+            .replace('{size}', (size || 20).toString()),
+            HttpMethod.Get
+        ).then((response) => this.jsonToPageResultItem(response.json));
+    }
+
     public getAllOffer(): Promise<Array<Offer>> {
         return this.transport.sendRequest(
             this.OFFER_API.replace('{owner}', '0x0').replace('{id}', ''),
@@ -68,5 +80,13 @@ export default class OfferRepositoryImpl implements OfferRepository {
 
     private jsonToListOffers(json: JsonObject<Array<Offer>>): Array<Offer> {
         return Object.keys(json).map(key => Offer.fromJson(json[key] as object));
+    }
+
+    private async jsonToPageResultItem(
+        json: JsonObject<Page<Offer>>
+    ): Promise<Page<Offer>> {
+        json.content = await this.jsonToListOffers(json.content as JsonObject<Array<Offer>>);
+
+        return Page.fromJson(json, Offer);
     }
 }

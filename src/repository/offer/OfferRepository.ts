@@ -1,4 +1,5 @@
 import Offer from '../models/Offer';
+import { Page } from '../models/Page';
 
 export interface OfferRepository {
 
@@ -11,6 +12,7 @@ export interface OfferRepository {
     getOfferByOwnerAndId(owner: string, id: number): Promise<Array<Offer>>;
 
     getOfferByOwner(owner: string): Promise<Array<Offer>>;
+    getOfferByOwnerAndPage(owner: string, page?: number, size?: number): Promise<Page<Offer>>;
 
     getAllOffer(): Promise<Array<Offer>>;
 
