@@ -1,5 +1,5 @@
 // tslint:disable:no-unused-expression
-import Base, { CompareAction, Offer, OfferRank } from '../../src/Base';
+import Base, { OfferRank } from '../../src/Base';
 import Account from '../../src/repository/models/Account';
 
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
@@ -26,6 +26,7 @@ async function createUser(user: Base, pass: string): Promise<Account> {
 
     return await user.accountManager.registration(pass, someSigMessage); // this method private.
 }
+
 function randomOfferId() {
     return (new Date()).getTime();
 }
@@ -50,7 +51,7 @@ describe('OfferRank', async () => {
         const rank = 112;
         const offerId = randomOfferId();
         const rankerId = 1;
-        const offerRank = new OfferRank({rank, offerId, rankerId});
+        const offerRank = new OfferRank(rank, offerId, rankerId);
         const created = await base.offerRankManager.update(offerRank);
         created.id.should.exist;
     });
@@ -65,7 +66,7 @@ describe('OfferRank', async () => {
         const updatedAt = offerRank.updatedAt;
 
         const rank = 112;
-        const forUpdating = new OfferRank({id, rank, offerId, rankerId, createdAt, updatedAt});
+        const forUpdating = offerRank.copy({rank: rank});
 
         const updated = await base.offerRankManager.update(forUpdating);
         updated.id.should.be.eql(id);

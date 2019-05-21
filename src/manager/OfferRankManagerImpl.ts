@@ -1,32 +1,35 @@
 import { OfferRank } from '../repository/models/OfferRank';
-import { OfferRankManager } from './OfferRankManager';
-
 import { OfferRankRepository } from '../repository/offerRank/OfferRankRepository';
+import { OfferRankManager } from './OfferRankManager';
 
 export class OfferRankManagerImpl implements OfferRankManager {
 
-    private offerRankRepository: OfferRankRepository;
-
-    constructor(repository: OfferRankRepository) {
-        this.offerRankRepository = repository;
+    constructor(private readonly offerRankRepository: OfferRankRepository) {
     }
-    public async getByOfferIdAndRankId(offerId: number, rankerId: number): Promise<OfferRank> {
+
+    public getByOfferIdAndRankId(offerId: number, rankerId: number): Promise<OfferRank> {
         return this.offerRankRepository.getByOfferIdAndRankId(offerId, rankerId);
     }
-    public async getByOfferId(offerId: number): Promise<Array<OfferRank>> {
+
+    public getByOfferId(offerId: number): Promise<Array<OfferRank>> {
         return this.offerRankRepository.getByOfferId(offerId);
     }
-    public async getById(offerRankId: number): Promise<OfferRank> {
+
+    public getById(offerRankId: number): Promise<OfferRank> {
         return this.offerRankRepository.getById(offerRankId);
     }
-    public async create(rank: number, rankerId: number, offerId: number): Promise<OfferRank> {
-        const offerRank = new OfferRank({rank, rankerId, offerId});
+
+    public create(rank: number, rankerId: number, offerId: number): Promise<OfferRank> {
+        const offerRank = new OfferRank(rank, offerId, rankerId);
+
         return this.offerRankRepository.save(offerRank);
     }
-    public async update(offerRank: OfferRank): Promise<OfferRank> {
+
+    public update(offerRank: OfferRank): Promise<OfferRank> {
         return this.offerRankRepository.update(offerRank);
     }
-    public async delete(offerRankId: number): Promise<number> {
+
+    public delete(offerRankId: number): Promise<number> {
         return this.offerRankRepository.delete(offerRankId);
     }
 }
