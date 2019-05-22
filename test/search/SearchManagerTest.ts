@@ -276,7 +276,7 @@ describe('Search Manager', async () => {
             throw e;
         }
     });
-    it.only ('should return offerSerches sorted by updateAt', async () => {
+    it ('should return offerSerches sorted by updateAt', async () => {
         try {
             const offer = offerFactory();
 
@@ -312,6 +312,51 @@ describe('Search Manager', async () => {
             content[0].offer.title.should.be.eql('1');
             content[1].offer.title.should.be.eql('3');
             content[2].offer.title.should.be.eql('2');
+        } catch (err) {
+            console.error(err);
+        }
+        async function pauseSeconds(sec: number): Promise<void> {
+            return new Promise(resolve => setTimeout(resolve, sec * 1000));
+        }
+    });
+    it.only ('should return offerSerches with default sorting if send nothing or undefined', async () => {
+        try {
+            const offer = offerFactory();
+
+            offer.title = '1';
+            const createdOffer1 = await userBase.offerManager.saveOffer(offer);
+            offer.title = '2';
+            const createdOffer2 = await userBase.offerManager.saveOffer(offer);
+            offer.title = '3';
+            const createdOffer3 = await userBase.offerManager.saveOffer(offer);
+
+            const searchRequest = requestFactory();
+            const createdSearchRequest = await userBase.searchManager.createRequest(searchRequest);
+
+            const offerSearch1 = new OfferSearch(createdSearchRequest.id, createdOffer1.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch1);
+
+            const offerSearch2 = new OfferSearch(createdSearchRequest.id, createdOffer2.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch2);
+
+            const offerSearch3 = new OfferSearch(createdSearchRequest.id, createdOffer3.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch3);
+
+            let searchRequests = await userBase.searchManager.getUserOfferSearches(0, 5, false, [], []);
+
+            let content = searchRequests.content;
+            content.length.should.be.eql(3);
+            content[0].offer.title.should.be.eql('1');
+            content[1].offer.title.should.be.eql('2');
+            content[2].offer.title.should.be.eql('3');
+
+            searchRequests = await userBase.searchManager.getUserOfferSearches(0, 5, false, [], [], undefined);
+
+            content = searchRequests.content;
+            content.length.should.be.eql(3);
+            content[0].offer.title.should.be.eql('1');
+            content[1].offer.title.should.be.eql('2');
+            content[2].offer.title.should.be.eql('3');
         } catch (err) {
             console.error(err);
         }

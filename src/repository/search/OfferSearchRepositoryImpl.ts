@@ -68,7 +68,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
                 .replace('{searchIds}', (searchIds || []).join(','))
                 .replace('{state}', (state || []).join(','))
                 .replace('{unique}', (unique ? '1' : '0'))
-                .replace('{sort}', sort.toString())
+                .replace('{sort}', sort && sort.toString())
             ,
             HttpMethod.Get
         ).then((response) => this.jsonToPageResultItem(response.json));
