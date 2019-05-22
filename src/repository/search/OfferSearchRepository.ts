@@ -1,3 +1,4 @@
+import { SortOfferSearch } from '../../manager/SearchManager';
 import OfferSearch, { OfferResultAction } from '../models/OfferSearch';
 import OfferSearchResultItem from '../models/OfferSearchResultItem';
 import { Page } from '../models/Page';
@@ -18,7 +19,8 @@ export interface OfferSearchRepository {
         size?: number,
         unique?: boolean,
         searchIds?: Array<number>,
-        state?: Array<OfferResultAction>
+        state?: Array<OfferResultAction>,
+        sort?: SortOfferSearch
     ): Promise<Page<OfferSearchResultItem>>;
 
     getSearchResult(clientId: string, searchRequestId: number): Promise<Page<OfferSearchResultItem>>;
