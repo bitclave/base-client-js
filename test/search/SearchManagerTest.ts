@@ -1,10 +1,10 @@
 // tslint:disable:no-unused-expression
 import Base, { CompareAction, Offer, OfferResultAction, OfferSearch, SearchRequest } from '../../src/Base';
+import { SortOfferSearch } from '../../src/manager/SearchManager';
 import Account from '../../src/repository/models/Account';
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import AuthenticatorHelper from '../AuthenticatorHelper';
-import { SortOfferSearch } from '../../src/manager/SearchManager';
 
 require('chai').use(require('chai-as-promised')).should();
 const someSigMessage = 'some unique message for signature';
