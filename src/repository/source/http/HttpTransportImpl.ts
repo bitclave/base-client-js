@@ -82,6 +82,9 @@ export class HttpTransportImpl implements HttpTransport {
             } catch (e) {
                 reject(e);
             }
+        }).catch(error => {
+            this.logger.error(JSON.stringify(error));
+            throw error;
         });
     }
 
