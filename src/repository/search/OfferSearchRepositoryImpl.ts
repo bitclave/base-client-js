@@ -1,3 +1,4 @@
+import { SortOfferSearch } from '../../manager/SearchManager';
 import { JsonUtils } from '../../utils/JsonUtils';
 import { JsonObject } from '../models/JsonObject';
 import Offer from '../models/Offer';
@@ -19,7 +20,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     private readonly OFFER_SEARCH_ADD_API = '/v1/search/result/';
     private readonly OFFER_SEARCH_BY_PARAMS_API =
         '/v1/search/result/user?owner={owner}&searchIds={searchIds}' +
-        '&state={state}&unique={unique}&page={page}&size={size}';
+        '&state={state}&unique={unique}&page={page}&size={size}&sort={sort}';
 
     private readonly OFFER_SEARCH_GET_BY_REQUEST_OR_SEARCH_API =
         '/v1/search/result?searchRequestId={searchRequestId}&offerSearchId={offerSearchId}';
@@ -56,7 +57,8 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         size: number = 20,
         unique: boolean = false,
         searchIds: Array<number> = [],
-        state: Array<OfferResultAction> = []
+        state: Array<OfferResultAction> = [],
+        sort: SortOfferSearch
     ): Promise<Page<OfferSearchResultItem>> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_BY_PARAMS_API
@@ -66,6 +68,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
                 .replace('{searchIds}', (searchIds || []).join(','))
                 .replace('{state}', (state || []).join(','))
                 .replace('{unique}', (unique ? '1' : '0'))
+                .replace('{sort}', sort && sort.toString())
             ,
             HttpMethod.Get
         ).then((response) => this.jsonToPageResultItem(response.json));

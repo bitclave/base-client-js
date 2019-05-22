@@ -11,7 +11,7 @@ import { OfferRankManager } from './manager/OfferRankManager';
 import { OfferRankManagerImpl } from './manager/OfferRankManagerImpl';
 import { ProfileManager } from './manager/ProfileManager';
 import { ProfileManagerImpl } from './manager/ProfileManagerImpl';
-import { SearchManager } from './manager/SearchManager';
+import { SearchManager, SortOfferSearch } from './manager/SearchManager';
 import { SearchManagerImpl } from './manager/SearchManagerImpl';
 import { VerifyManager } from './manager/VerifyManager';
 import { VerifyManagerImpl } from './manager/VerifyManagerImpl';
@@ -141,6 +141,7 @@ export {
     DataRequest,
     OfferManager,
     SearchManager,
+    SortOfferSearch,
     WalletManager,
     WalletManagerImpl,
     VerifyManager,
