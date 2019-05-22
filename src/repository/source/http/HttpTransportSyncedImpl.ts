@@ -31,6 +31,9 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
             if (this.transactions.length === 1) {
                 this.runTransaction(this.transactions[0]);
             }
+        }).catch(error => {
+            this.logger.error(JSON.stringify(error));
+            throw error;
         });
     }
 
@@ -56,7 +59,7 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
                     } else {
                         this.logger.error('Error runTransaction request', result);
                         transaction.reject(result);
-                        reject();
+                        reject(result);
                         this.callNextRequest();
                     }
                 };
@@ -65,7 +68,7 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
                     const result: Response<object> = new Response(request.responseText, request.status);
                     this.logger.error('Error runTransaction onErrorRequest', result);
                     transaction.reject(result);
-                    reject();
+                    reject(result);
                     this.callNextRequest();
                 };
 
@@ -81,9 +84,12 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
                 }
             } catch (e) {
                 transaction.reject(e);
-                reject();
+                reject(e);
                 this.callNextRequest();
             }
+        }).catch(error => {
+            this.logger.error(JSON.stringify(error));
+            throw error;
         });
     }
 
