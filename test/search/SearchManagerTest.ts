@@ -4,6 +4,7 @@ import Account from '../../src/repository/models/Account';
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import AuthenticatorHelper from '../AuthenticatorHelper';
+import { SortOfferSearch } from '../../src/manager/SearchManager';
 
 require('chai').use(require('chai-as-promised')).should();
 const someSigMessage = 'some unique message for signature';
@@ -273,6 +274,49 @@ describe('Search Manager', async () => {
         } catch (e) {
             console.log(e);
             throw e;
+        }
+    });
+    it.only ('should return offerSerches sorted by updateAt', async () => {
+        try {
+            const offer = offerFactory();
+
+            offer.title = '2';
+            const createdOffer2 = await userBase.offerManager.saveOffer(offer);
+            await pauseSeconds(1);
+
+            offer.title = '3';
+            const createdOffer3 = await userBase.offerManager.saveOffer(offer);
+            await pauseSeconds(1);
+
+            offer.title = '1';
+            const createdOffer1 = await userBase.offerManager.saveOffer(offer);
+
+            const searchRequest = requestFactory();
+            const createdSearchRequest = await userBase.searchManager.createRequest(searchRequest);
+
+            const offerSearch1 = new OfferSearch(createdSearchRequest.id, createdOffer1.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch1);
+
+            const offerSearch2 = new OfferSearch(createdSearchRequest.id, createdOffer2.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch2);
+
+            const offerSearch3 = new OfferSearch(createdSearchRequest.id, createdOffer3.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch3);
+
+            const searchRequests = await userBase
+                .searchManager
+                .getUserOfferSearches(0, 5, false, [], [], SortOfferSearch.updatedAt);
+
+            const content = searchRequests.content;
+            content.length.should.be.eql(3);
+            content[0].offer.title.should.be.eql('1');
+            content[1].offer.title.should.be.eql('3');
+            content[2].offer.title.should.be.eql('2');
+        } catch (err) {
+            console.error(err);
+        }
+        async function pauseSeconds(sec: number): Promise<void> {
+            return new Promise(resolve => setTimeout(resolve, sec * 1000));
         }
     });
 });
