@@ -6,7 +6,7 @@ import { Page } from '../repository/models/Page';
 import SearchRequest from '../repository/models/SearchRequest';
 import { OfferSearchRepository } from '../repository/search/OfferSearchRepository';
 import { SearchRequestRepository } from '../repository/search/SearchRequestRepository';
-import { SearchManager } from './SearchManager';
+import { SearchManager, SortOfferSearch } from './SearchManager';
 
 export class SearchManagerImpl implements SearchManager {
 
@@ -81,10 +81,11 @@ export class SearchManagerImpl implements SearchManager {
         size: number = 20,
         unique: boolean = false,
         searchIds: Array<number> = [],
-        state: Array<OfferResultAction> = []
+        state: Array<OfferResultAction> = [],
+        sort?: SortOfferSearch
     ): Promise<Page<OfferSearchResultItem>> {
         return this.offerSearchRepository
-            .getUserOfferSearches(this.account.publicKey, page, size, unique, searchIds, state);
+            .getUserOfferSearches(this.account.publicKey, page, size, unique, searchIds, state, sort);
     }
 
     public getSearchResultByOfferSearchId(offerSearchId: number): Promise<Page<OfferSearchResultItem>> {
