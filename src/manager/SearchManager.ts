@@ -37,7 +37,8 @@ export interface SearchManager {
         size?: number,
         unique?: boolean,
         searchIds?: Array<number>,
-        state?: Array<OfferResultAction>
+        state?: Array<OfferResultAction>,
+        sort?: SortOfferSearch
     ): Promise<Page<OfferSearchResultItem>>;
 
     complainToSearchItem(searchResultId: number): Promise<void>;
@@ -59,3 +60,4 @@ export interface SearchManager {
     getMySearchRequestsByTag(tag: string): Promise<Array<SearchRequest>>;
 
 }
+export enum SortOfferSearch { rank = 'rank', updatedAt = 'updatedAt'}
