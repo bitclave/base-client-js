@@ -319,7 +319,7 @@ describe('Search Manager', async () => {
             return new Promise(resolve => setTimeout(resolve, sec * 1000));
         }
     });
-    it.only ('should return offerSerches with default sorting if send nothing or undefined', async () => {
+    it ('should return offerSerches with default sorting if send nothing or undefined', async () => {
         try {
             const offer = offerFactory();
 
