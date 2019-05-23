@@ -3,6 +3,11 @@ import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import { Page } from '../repository/models/Page';
 import SearchRequest from '../repository/models/SearchRequest';
 
+export enum SortOfferSearch {
+    rank = 'rank',
+    updatedAt = 'updatedAt'
+}
+
 export interface SearchManager {
 
     createRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
@@ -58,6 +63,4 @@ export interface SearchManager {
     getSearchRequestsByOwnerAndTag(owner: string, tag: string): Promise<Array<SearchRequest>>;
 
     getMySearchRequestsByTag(tag: string): Promise<Array<SearchRequest>>;
-
 }
-export enum SortOfferSearch { rank = 'rank', updatedAt = 'updatedAt'}

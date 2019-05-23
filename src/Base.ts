@@ -76,10 +76,15 @@ import { MessageDecrypt } from './utils/keypair/MessageDecrypt';
 import { MessageEncrypt } from './utils/keypair/MessageEncrypt';
 import { MessageSigner } from './utils/keypair/MessageSigner';
 import { AbstractWalletValidator } from './utils/types/validators/AbstractWalletValidator';
+import { IsBasePublicKey } from './utils/types/validators/annotations/IsBasePublicKey';
+import { IsBtcAddress } from './utils/types/validators/annotations/IsBtcAddress';
+import { IsEthAddress } from './utils/types/validators/annotations/IsEthAddress';
+import { IsTypedArray } from './utils/types/validators/annotations/IsTypedArray';
 import { AppWalletValidator } from './utils/types/validators/AppWalletValidator';
 import { BtcWalletValidator } from './utils/types/validators/BtcWalletValidator';
 import { EthWalletValidator } from './utils/types/validators/EthWalletValidator';
 import { ValidationResult } from './utils/types/validators/ValidationResult';
+import { WalletsValidator } from './utils/types/validators/WalletsValidator';
 import { WalletValidator } from './utils/types/validators/WalletValidator';
 import { WalletValidatorStrategy } from './utils/types/validators/WalletValidatorStrategy';
 import { WalletUtils } from './utils/WalletUtils';
@@ -142,6 +147,10 @@ export {
     OfferManager,
     SearchManager,
     SortOfferSearch,
+    IsBasePublicKey,
+    IsBtcAddress,
+    IsEthAddress,
+    IsTypedArray,
     WalletManager,
     WalletManagerImpl,
     VerifyManager,
@@ -166,6 +175,7 @@ export {
     EthWalletValidator,
     ValidationResult,
     WalletValidator,
+    WalletsValidator,
     WalletValidatorStrategy,
     OfferRankManager,
     OfferRankManagerImpl,
