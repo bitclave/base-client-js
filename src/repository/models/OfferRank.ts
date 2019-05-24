@@ -2,7 +2,7 @@ export class OfferRank {
     public id: number;
     public rank: number;
     public offerId: number;
-    public rankerId: number;
+    public rankerId: string;
     public createdAt?: Date;
     public updatedAt?: Date;
 
