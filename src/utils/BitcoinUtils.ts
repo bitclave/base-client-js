@@ -1,5 +1,7 @@
 const Bitcore = require('bitcore-lib');
 const Message = require('bitcore-message');
+const Signature = Bitcore.crypto.Signature;
+const ECDSA = Bitcore.crypto.ECDSA;
 
 export class BitcoinUtils {
 
@@ -11,7 +13,18 @@ export class BitcoinUtils {
         return Bitcore.Address.isValid(address);
     }
 
-    public static isValidSignature(address: string, msg: string, sig: string): boolean {
-        return Message(msg).verify(address, sig);
+    public static isValidSignature(publicKey: string, msg: string, sig: string): boolean {
+        const hash = Message(msg).magicHash();
+
+        return ECDSA.verify(hash, sig, publicKey);
+    }
+
+    public static getPublicKeyBySignature(msg: string, sig: string): string {
+        const ecdsa = new ECDSA();
+
+        ecdsa.hashbuf = Message(msg).magicHash();
+        ecdsa.sig = Signature.fromCompact(Buffer.from(sig, 'base64'));
+
+        return ecdsa.toPublicKey();
     }
 }
