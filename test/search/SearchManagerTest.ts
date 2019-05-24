@@ -315,7 +315,7 @@ describe('Search Manager', async () => {
         } catch (err) {
             console.error(err);
         }
-        async function pauseSeconds(sec: number): Promise<void> {
+        async function pauseSeconds(sec: number): Promise<{}> {
             return new Promise(resolve => setTimeout(resolve, sec * 1000));
         }
     });
@@ -360,7 +360,7 @@ describe('Search Manager', async () => {
         } catch (err) {
             console.error(err);
         }
-        async function pauseSeconds(sec: number): Promise<void> {
+        async function pauseSeconds(sec: number): Promise<{}> {
             return new Promise(resolve => setTimeout(resolve, sec * 1000));
         }
     });
