@@ -47,6 +47,14 @@ export class ProfileManagerImpl implements ProfileManager {
         return this.signer.signMessage(data);
     }
 
+    public decryptMessage(senderPk: string, encryptedMessage: string): Promise<string> {
+        return this.decrypt.decryptMessage(senderPk, encryptedMessage);
+    }
+
+    public encryptMessage(recipientPk: string, message: string): Promise<string> {
+        return this.encrypt.encryptMessage(recipientPk, message);
+    }
+
     /**
      * Returns decrypted data of the authorized user.
      * @param {string | Array<string>} fieldKey is optional argument. get only requested keys.
