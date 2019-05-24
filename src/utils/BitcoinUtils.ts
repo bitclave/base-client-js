@@ -14,17 +14,28 @@ export class BitcoinUtils {
     }
 
     public static isValidSignature(publicKey: string, msg: string, sig: string): boolean {
-        const hash = Message(msg).magicHash();
+        try {
+            const hash = Message(msg).magicHash();
+            const ecdsa = new ECDSA();
 
-        return ECDSA.verify(hash, sig, publicKey);
+            ecdsa.hashbuf = hash;
+            ecdsa.sig = Signature.fromCompact(Buffer.from(sig, 'base64'));
+
+            const pk = ecdsa.toPublicKey();
+
+            return publicKey === pk.toString() && ECDSA.verify(hash, ecdsa.sig, pk);
+
+        } catch (e) {
+            return false;
+        }
     }
 
-    public static getPublicKeyBySignature(msg: string, sig: string): string {
+    public static signedMessageToPublicKey(msg: string, sig: string): string {
         const ecdsa = new ECDSA();
 
         ecdsa.hashbuf = Message(msg).magicHash();
         ecdsa.sig = Signature.fromCompact(Buffer.from(sig, 'base64'));
 
-        return ecdsa.toPublicKey();
+        return ecdsa.toPublicKey().toString();
     }
 }
