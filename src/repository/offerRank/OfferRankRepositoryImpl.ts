@@ -11,7 +11,7 @@ export class OfferRankRepositoryImpl implements OfferRankRepository {
     constructor(transport: HttpTransport) {
         this.transport = transport;
     }
-    public async getByOfferIdAndRankId(offerId: number, rankerId: number): Promise<OfferRank> {
+    public async getByOfferIdAndRankId(offerId: number, rankerId: string): Promise<OfferRank> {
         return this.transport.sendRequest<OfferRank>(
             this.OFFER_RANK_API,
             HttpMethod.Get,

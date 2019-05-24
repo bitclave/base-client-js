@@ -10,7 +10,7 @@ export class OfferRankManagerImpl implements OfferRankManager {
     constructor(repository: OfferRankRepository) {
         this.offerRankRepository = repository;
     }
-    public async getByOfferIdAndRankId(offerId: number, rankerId: number): Promise<OfferRank> {
+    public async getByOfferIdAndRankId(offerId: number, rankerId: string): Promise<OfferRank> {
         return this.offerRankRepository.getByOfferIdAndRankId(offerId, rankerId);
     }
     public async getByOfferId(offerId: number): Promise<Array<OfferRank>> {
@@ -19,7 +19,7 @@ export class OfferRankManagerImpl implements OfferRankManager {
     public async getById(offerRankId: number): Promise<OfferRank> {
         return this.offerRankRepository.getById(offerRankId);
     }
-    public async create(rank: number, rankerId: number, offerId: number): Promise<OfferRank> {
+    public async create(rank: number, rankerId: string, offerId: number): Promise<OfferRank> {
         const offerRank = new OfferRank({rank, rankerId, offerId});
         return this.offerRankRepository.save(offerRank);
     }
