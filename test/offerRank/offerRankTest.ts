@@ -74,9 +74,9 @@ describe('OfferRank', async () => {
         updated.updatedAt.should.not.be.eql(updatedAt);
     });
     it('should get OfferRanks by offerId', async () => {
-        const user1 = await createUser(base, 'OfferRankPassTest');
-        const user2 = await createUser(base, 'OfferRankPassTest');
-        const user3 = await createUser(base, 'OfferRankPassTest');
+        const user1 = await createUser(base, 'OfferRankPassTest1');
+        const user2 = await createUser(base, 'OfferRankPassTest2');
+        const user3 = await createUser(base, 'OfferRankPassTest3');
 
         const offerId = randomOfferId();
 
