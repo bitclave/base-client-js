@@ -471,7 +471,7 @@ describe('Search Manager', async () => {
             return new Promise(resolve => setTimeout(resolve, sec * 1000));
         }
     });
-    it.only ('should return offerSerches by state with price sorting', async () => {
+    it ('should return offerSerches by state with price sorting', async () => {
         try {
             const offer = offerFactory();
 
