@@ -42,12 +42,21 @@ export class SearchManagerImpl implements SearchManager {
         return this.offerSearchRepository.clone(this.account.publicKey, id, searchRequest);
     }
 
-    public getMyRequests(id: number = 0): Promise<Array<SearchRequest>> {
-        if (id > 0) {
+    public getMyRequests(id?: number): Promise<Array<SearchRequest>> {
+        if (id && id > 0) {
             return this.requestRepository.getSearchRequestByOwnerAndId(this.account.publicKey, id);
 
         } else {
             return this.requestRepository.getSearchRequestByOwner(this.account.publicKey);
+        }
+    }
+
+    public getRequestsByOwnerAndId(owner: string, id?: number): Promise<Array<SearchRequest>> {
+        if (id && id > 0) {
+            return this.requestRepository.getSearchRequestByOwnerAndId(owner, id);
+
+        } else {
+            return this.requestRepository.getSearchRequestByOwner(owner);
         }
     }
 
