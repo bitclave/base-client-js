@@ -8,7 +8,7 @@ import { Page } from '../models/Page';
 import SearchRequest from '../models/SearchRequest';
 import { HttpMethod } from '../source/http/HttpMethod';
 import { HttpTransport } from '../source/http/HttpTransport';
-import { OfferSearchRepository } from './OfferSearchRepository';
+import { OfferSearchRepository, OfferSearchRequestInterestMode } from './OfferSearchRepository';
 
 export class OfferSearchRepositoryImpl implements OfferSearchRepository {
 
@@ -25,7 +25,8 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     private readonly OFFER_SEARCH_GET_BY_REQUEST_OR_SEARCH_API =
         '/v1/search/result?searchRequestId={searchRequestId}&offerSearchId={offerSearchId}';
     private readonly OFFER_SEARCH_ADD_EVENT_API = '/v1/search/result/event/{id}';
-    private readonly OFFER_SEARCH_CREATE_BY_QUERY_API: string = '/v1/search/query?q={query}&page={page}&size={size}';
+    private readonly OFFER_SEARCH_CREATE_BY_QUERY_API: string =
+        '/v1/search/query?q={query}&page={page}&size={size}&interests={interests}&mode={mode}';
     private readonly OFFER_SEARCH_COUNT_BY_REQUEST_IDS_API: string = '/v1/search/count?ids={ids}';
     private transport: HttpTransport;
 
@@ -38,13 +39,17 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         query: string,
         searchRequestId: number,
         page: number = 0,
-        size: number = 20
+        size: number = 20,
+        interests?: Array<string>,
+        mode?: OfferSearchRequestInterestMode
     ): Promise<Page<OfferSearchResultItem>> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_CREATE_BY_QUERY_API
                 .replace('{query}', encodeURIComponent(query))
                 .replace('{page}', (page || 0).toString())
                 .replace('{size}', (size || 20).toString())
+                .replace('{interests}', (interests || []).toString())
+                .replace('{mode}', (mode || '').toString())
             ,
             HttpMethod.Post,
             searchRequestId

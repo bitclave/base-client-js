@@ -10,7 +10,9 @@ export interface OfferSearchRepository {
         query: string,
         searchRequestId: number,
         page?: number,
-        size?: number
+        size?: number,
+        interests?: Array<string>,
+        mode?: OfferSearchRequestInterestMode
     ): Promise<Page<OfferSearchResultItem>>;
 
     getUserOfferSearches(
@@ -45,3 +47,5 @@ export interface OfferSearchRepository {
 
     clone(owner: string, id: number, searchRequest: SearchRequest): Promise<Array<OfferSearch>>;
 }
+
+export enum OfferSearchRequestInterestMode { must = 'must', prefer = 'prefer'}
