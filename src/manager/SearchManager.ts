@@ -13,7 +13,9 @@ export interface SearchManager {
 
     cloneOfferSearch(id: number, searchRequest: SearchRequest): Promise<Array<OfferSearch>>;
 
-    getMyRequests(id: number): Promise<Array<SearchRequest>>;
+    getMyRequests(id?: number): Promise<Array<SearchRequest>>;
+
+    getRequestsByOwnerAndId(owner: string, id?: number): Promise<Array<SearchRequest>>;
 
     getAllRequests(): Promise<Array<SearchRequest>>;
 
