@@ -177,11 +177,15 @@ describe('Search Manager', async () => {
 
             searchRequests.length.should.be.eql(1);
 
-            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
+            searchRequests = (await userBase.searchManager.getUserOfferSearches(
+                0, 10, true, [], [], SortOfferSearch.updatedAt
+            )).content;
             searchRequests.length.should.be.eql(1);
 
             await userBase.searchManager.addEventToOfferSearch('updated', searchRequests[0].offerSearch.id);
-            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
+            searchRequests = (await userBase.searchManager.getUserOfferSearches(
+                0, 10, true, [], [], SortOfferSearch.updatedAt
+            )).content;
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.events.length.should.be.eql(2);
 
@@ -203,38 +207,44 @@ describe('Search Manager', async () => {
 
             const offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
             await userBase.searchManager.addResultItem(offerSearch);
-            let searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
+            let searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
 
             await userBase.searchManager.claimPurchaseForSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
-            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
+            searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.CLAIMPURCHASE);
 
             await userBase.searchManager.complainToSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
-            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
+            searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.COMPLAIN);
 
             await userBase.searchManager.evaluateSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
-            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
+            searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.EVALUATE);
 
             await userBase.searchManager.rejectSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
-            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
+            searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.REJECT);
 
             await businessBase.searchManager.confirmSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
-            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
+            searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.CONFIRMED);
+
+            async function getSearchRequests() {
+                return (await userBase.searchManager.getUserOfferSearches(
+                    0, 10, true, [], [], SortOfferSearch.updatedAt
+                )).content;
+            }
 
         } catch (e) {
             console.log(e);
@@ -312,51 +322,6 @@ describe('Search Manager', async () => {
             content[0].offer.title.should.be.eql('1');
             content[1].offer.title.should.be.eql('3');
             content[2].offer.title.should.be.eql('2');
-        } catch (err) {
-            console.error(err);
-        }
-        async function pauseSeconds(sec: number): Promise<{}> {
-            return new Promise(resolve => setTimeout(resolve, sec * 1000));
-        }
-    });
-    it ('should return offerSerches with default sorting if send nothing or undefined', async () => {
-        try {
-            const offer = offerFactory();
-
-            offer.title = '1';
-            const createdOffer1 = await userBase.offerManager.saveOffer(offer);
-            offer.title = '2';
-            const createdOffer2 = await userBase.offerManager.saveOffer(offer);
-            offer.title = '3';
-            const createdOffer3 = await userBase.offerManager.saveOffer(offer);
-
-            const searchRequest = requestFactory();
-            const createdSearchRequest = await userBase.searchManager.createRequest(searchRequest);
-
-            const offerSearch1 = new OfferSearch(createdSearchRequest.id, createdOffer1.id, ['created']);
-            await userBase.searchManager.addResultItem(offerSearch1);
-
-            const offerSearch2 = new OfferSearch(createdSearchRequest.id, createdOffer2.id, ['created']);
-            await userBase.searchManager.addResultItem(offerSearch2);
-
-            const offerSearch3 = new OfferSearch(createdSearchRequest.id, createdOffer3.id, ['created']);
-            await userBase.searchManager.addResultItem(offerSearch3);
-
-            let searchRequests = await userBase.searchManager.getUserOfferSearches(0, 5, false, [], []);
-
-            let content = searchRequests.content;
-            content.length.should.be.eql(3);
-            content[0].offer.title.should.be.eql('1');
-            content[1].offer.title.should.be.eql('2');
-            content[2].offer.title.should.be.eql('3');
-
-            searchRequests = await userBase.searchManager.getUserOfferSearches(0, 5, false, [], [], undefined);
-
-            content = searchRequests.content;
-            content.length.should.be.eql(3);
-            content[0].offer.title.should.be.eql('1');
-            content[1].offer.title.should.be.eql('2');
-            content[2].offer.title.should.be.eql('3');
         } catch (err) {
             console.error(err);
         }
