@@ -2,6 +2,7 @@ import OfferSearch, { OfferResultAction } from '../repository/models/OfferSearch
 import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import { Page } from '../repository/models/Page';
 import SearchRequest from '../repository/models/SearchRequest';
+import { OfferSearchRequestInterestMode } from '../repository/search/OfferSearchRepository';
 
 export interface SearchManager {
 
@@ -25,7 +26,9 @@ export interface SearchManager {
         query: string,
         searchRequestId: number,
         page?: number,
-        size?: number
+        size?: number,
+        interests?: Array<string>,
+        mode?: OfferSearchRequestInterestMode
     ): Promise<Page<OfferSearchResultItem>>;
 
     getSearchResult(searchRequestId: number): Promise<Page<OfferSearchResultItem>>;

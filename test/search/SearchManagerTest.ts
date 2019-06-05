@@ -1,5 +1,13 @@
 // tslint:disable:no-unused-expression
-import Base, { CompareAction, Offer, OfferPrice, OfferResultAction, OfferSearch, SearchRequest } from '../../src/Base';
+import Base, {
+    CompareAction,
+    Offer,
+    OfferPrice,
+    OfferResultAction,
+    OfferSearch,
+    OfferSearchRequestInterestMode,
+    SearchRequest
+} from '../../src/Base';
 import { SortOfferSearch } from '../../src/manager/SearchManager';
 import Account from '../../src/repository/models/Account';
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
@@ -498,6 +506,46 @@ describe('Search Manager', async () => {
         }
         async function pauseSeconds(sec: number): Promise<{}> {
             return new Promise(resolve => setTimeout(resolve, sec * 1000));
+        }
+    });
+    it('should return 200 in search results ranked by interests (only endpoint tested no data)', async () => {
+        try {
+            let rtSearchRequests = await userBase.searchManager.getMySearchRequestsByTag('rtSearch');
+            if (!rtSearchRequests || !rtSearchRequests.length) {
+                const searchRequest = requestFactory();
+                searchRequest.tags = new Map([['rtSearch', 'true']]);
+                rtSearchRequests = [await userBase.searchManager.createRequest(searchRequest)];
+            }
+
+            const result = await userBase.searchManager.createSearchResultByQuery(
+                'golf', rtSearchRequests[0].id, 0, 10,
+                ['interest_sports', 'interest_department_stores', 'interest_consumer_electronics'],
+                OfferSearchRequestInterestMode.prefer
+            );
+            result.should.be.exist;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    });
+    it('should return 200 search results filtered by interests (only endpoint tested no data)', async () => {
+        try {
+            let rtSearchRequests = await userBase.searchManager.getMySearchRequestsByTag('rtSearch');
+            if (!rtSearchRequests || !rtSearchRequests.length) {
+                const searchRequest = requestFactory();
+                searchRequest.tags = new Map([['rtSearch', 'true']]);
+                rtSearchRequests = [await userBase.searchManager.createRequest(searchRequest)];
+            }
+            const result = await userBase.searchManager.createSearchResultByQuery(
+                '*', 5111809,
+                0, 10,
+                ['interest_health_&_wellness', 'interest_home,_garden', 'interest_consumer_electronics'],
+                OfferSearchRequestInterestMode.must
+            );
+            result.should.be.exist;
+        } catch (err) {
+            console.log(err);
+            throw err;
         }
     });
 });

@@ -4,7 +4,7 @@ import OfferSearch, { OfferResultAction } from '../repository/models/OfferSearch
 import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import { Page } from '../repository/models/Page';
 import SearchRequest from '../repository/models/SearchRequest';
-import { OfferSearchRepository } from '../repository/search/OfferSearchRepository';
+import { OfferSearchRepository, OfferSearchRequestInterestMode } from '../repository/search/OfferSearchRepository';
 import { SearchRequestRepository } from '../repository/search/SearchRequestRepository';
 import { SearchManager, SortOfferSearch } from './SearchManager';
 
@@ -72,9 +72,19 @@ export class SearchManagerImpl implements SearchManager {
         query: string,
         searchRequestId: number,
         page?: number,
-        size?: number
+        size?: number,
+        interests?: Array<string>,
+        mode?: OfferSearchRequestInterestMode
     ): Promise<Page<OfferSearchResultItem>> {
-        return this.offerSearchRepository.createByQuery(this.account.publicKey, query, searchRequestId, page, size);
+        return this.offerSearchRepository.createByQuery(
+            this.account.publicKey,
+            query,
+            searchRequestId,
+            page,
+            size,
+            interests,
+            mode
+        );
     }
 
     public getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>> {
