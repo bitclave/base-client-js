@@ -48,11 +48,10 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
                 .replace('{query}', encodeURIComponent(query))
                 .replace('{page}', (page || 0).toString())
                 .replace('{size}', (size || 20).toString())
-                .replace('{interests}', (interests || []).toString())
                 .replace('{mode}', (mode || '').toString())
             ,
             HttpMethod.Post,
-            searchRequestId
+            {searchRequestId, interests}
         ).then((response) => this.jsonToPageResultItem(response.json));
     }
 
