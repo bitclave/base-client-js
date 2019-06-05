@@ -1,8 +1,8 @@
-import { OfferSearchRequestInterestMode } from 'src/repository/search/OfferSearchRepository';
 import OfferSearch, { OfferResultAction } from '../repository/models/OfferSearch';
 import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import { Page } from '../repository/models/Page';
 import SearchRequest from '../repository/models/SearchRequest';
+import { OfferSearchRequestInterestMode } from '../repository/search/OfferSearchRepository';
 
 export interface SearchManager {
 

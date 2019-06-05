@@ -1,5 +1,13 @@
 // tslint:disable:no-unused-expression
-import Base, { CompareAction, Offer, OfferPrice, OfferResultAction, OfferSearch, SearchRequest, OfferSearchRequestInterestMode } from '../../src/Base';
+import Base, {
+    CompareAction,
+    Offer,
+    OfferPrice,
+    OfferResultAction,
+    OfferSearch,
+    OfferSearchRequestInterestMode,
+    SearchRequest
+} from '../../src/Base';
 import { SortOfferSearch } from '../../src/manager/SearchManager';
 import Account from '../../src/repository/models/Account';
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
