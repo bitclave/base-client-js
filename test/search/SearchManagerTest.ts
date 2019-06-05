@@ -500,7 +500,7 @@ describe('Search Manager', async () => {
             return new Promise(resolve => setTimeout(resolve, sec * 1000));
         }
     });
-    it.only('should return 200 in search results ranked by interests (only endpoint tested no data)', async () => {
+    it('should return 200 in search results ranked by interests (only endpoint tested no data)', async () => {
         try {
             let rtSearchRequests = await userBase.searchManager.getMySearchRequestsByTag('rtSearch');
             if (!rtSearchRequests || !rtSearchRequests.length) {
@@ -520,7 +520,7 @@ describe('Search Manager', async () => {
             throw err;
         }
     });
-    it.only('should return 200 search results filtered by interests (only endpoint tested no data)', async () => {
+    it('should return 200 search results filtered by interests (only endpoint tested no data)', async () => {
         try {
             let rtSearchRequests = await userBase.searchManager.getMySearchRequestsByTag('rtSearch');
             if (!rtSearchRequests || !rtSearchRequests.length) {
