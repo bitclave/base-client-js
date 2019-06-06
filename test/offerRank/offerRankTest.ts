@@ -50,7 +50,7 @@ describe('OfferRank', async () => {
         const rank = 112;
         const offerId = randomOfferId();
         const rankerId = user.publicKey;
-        const offerRank = new OfferRank({rank, offerId, rankerId});
+        const offerRank = new OfferRank(rank, offerId, rankerId);
         const created = await base.offerRankManager.update(offerRank);
         created.id.should.exist;
     });
@@ -65,7 +65,7 @@ describe('OfferRank', async () => {
         const updatedAt = offerRank.updatedAt;
 
         const rank = 112;
-        const forUpdating = new OfferRank({id, rank, offerId, rankerId, createdAt, updatedAt});
+        const forUpdating = offerRank.copy({rank});
 
         const updated = await base.offerRankManager.update(forUpdating);
         updated.id.should.be.eql(id);
