@@ -39,8 +39,8 @@ async function createUser(user: Base, pass: string): Promise<Account> {
 
 describe('Search Manager', async () => {
 
-    const passPhraseSeller: string = 'Seller';
-    const passPhraseBusinessBuyer: string = 'Business';  // need 5 symbols
+    const passPhraseSeller: string = 'Seller user1 pass special for Search Manager tests';
+    const passPhraseBusinessBuyer: string = 'Business user2 pass special for Search Manager tests';
 
     const businessBase: Base = createBase();
     const userBase: Base = createBase();
@@ -294,6 +294,7 @@ describe('Search Manager', async () => {
             throw e;
         }
     });
+
     it ('should return offerSerches sorted by updateAt', async () => {
         try {
             const offer = offerFactory();
@@ -337,6 +338,7 @@ describe('Search Manager', async () => {
             return new Promise(resolve => setTimeout(resolve, sec * 1000));
         }
     });
+
     it ('should return offerSerches with price sorting', async () => {
         try {
             const offer = offerFactory();
@@ -390,6 +392,7 @@ describe('Search Manager', async () => {
             return new Promise(resolve => setTimeout(resolve, sec * 1000));
         }
     });
+
     it ('should return offerSerches by searchRequest ids with price sorting', async () => {
         try {
             const offer = offerFactory();
@@ -444,6 +447,7 @@ describe('Search Manager', async () => {
             return new Promise(resolve => setTimeout(resolve, sec * 1000));
         }
     });
+
     it ('should return offerSerches by state with price sorting', async () => {
         try {
             const offer = offerFactory();
@@ -508,6 +512,33 @@ describe('Search Manager', async () => {
             return new Promise(resolve => setTimeout(resolve, sec * 1000));
         }
     });
+});
+
+describe('search manager with search by query', async () => {
+    const passPhraseUser: string = 'User for search by query only';
+    const userBase: Base = createBase();
+    let userAccount: Account;
+    function createBase(): Base {
+        return new Base(
+            baseNodeUrl,
+            'localhost',
+            RepositoryStrategyType.Postgres,
+            rpcSignerHost
+        );
+    }
+    function requestFactory(): SearchRequest {
+        return new SearchRequest(new Map(
+            [
+                ['product', 'car'],
+                ['color', 'red'],
+                ['producer', 'mazda'],
+                ['models', 'RX8']
+            ]
+        ));
+    }
+    beforeEach(async () => {
+        userAccount = await createUser(userBase, passPhraseUser);
+    });
     it('should return 200 in search results ranked by interests (only endpoint tested no data)', async () => {
         try {
             let rtSearchRequests = await userBase.searchManager.getMySearchRequestsByTag('rtSearch');
@@ -537,8 +568,7 @@ describe('Search Manager', async () => {
                 rtSearchRequests = [await userBase.searchManager.createRequest(searchRequest)];
             }
             const result = await userBase.searchManager.createSearchResultByQuery(
-                '*', 5111809,
-                0, 10,
+                '*', rtSearchRequests[0].id, 0, 10,
                 ['interest_health_&_wellness', 'interest_home,_garden', 'interest_consumer_electronics'],
                 OfferSearchRequestInterestMode.must
             );
