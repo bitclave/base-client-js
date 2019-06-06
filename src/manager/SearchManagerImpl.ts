@@ -4,7 +4,7 @@ import OfferSearch, { OfferResultAction } from '../repository/models/OfferSearch
 import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import { Page } from '../repository/models/Page';
 import SearchRequest from '../repository/models/SearchRequest';
-import { OfferSearchRepository } from '../repository/search/OfferSearchRepository';
+import { OfferSearchRepository, OfferSearchRequestInterestMode } from '../repository/search/OfferSearchRepository';
 import { SearchRequestRepository } from '../repository/search/SearchRequestRepository';
 import { SearchManager, SortOfferSearch } from './SearchManager';
 
@@ -42,12 +42,21 @@ export class SearchManagerImpl implements SearchManager {
         return this.offerSearchRepository.clone(this.account.publicKey, id, searchRequest);
     }
 
-    public getMyRequests(id: number = 0): Promise<Array<SearchRequest>> {
-        if (id > 0) {
+    public getMyRequests(id?: number): Promise<Array<SearchRequest>> {
+        if (id && id > 0) {
             return this.requestRepository.getSearchRequestByOwnerAndId(this.account.publicKey, id);
 
         } else {
             return this.requestRepository.getSearchRequestByOwner(this.account.publicKey);
+        }
+    }
+
+    public getRequestsByOwnerAndId(owner: string, id?: number): Promise<Array<SearchRequest>> {
+        if (id && id > 0) {
+            return this.requestRepository.getSearchRequestByOwnerAndId(owner, id);
+
+        } else {
+            return this.requestRepository.getSearchRequestByOwner(owner);
         }
     }
 
@@ -63,9 +72,19 @@ export class SearchManagerImpl implements SearchManager {
         query: string,
         searchRequestId: number,
         page?: number,
-        size?: number
+        size?: number,
+        interests?: Array<string>,
+        mode?: OfferSearchRequestInterestMode
     ): Promise<Page<OfferSearchResultItem>> {
-        return this.offerSearchRepository.createByQuery(this.account.publicKey, query, searchRequestId, page, size);
+        return this.offerSearchRepository.createByQuery(
+            this.account.publicKey,
+            query,
+            searchRequestId,
+            page,
+            size,
+            interests,
+            mode
+        );
     }
 
     public getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>> {

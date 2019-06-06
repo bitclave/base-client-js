@@ -1,5 +1,13 @@
 // tslint:disable:no-unused-expression
-import Base, { CompareAction, Offer, OfferResultAction, OfferSearch, SearchRequest } from '../../src/Base';
+import Base, {
+    CompareAction,
+    Offer,
+    OfferPrice,
+    OfferResultAction,
+    OfferSearch,
+    OfferSearchRequestInterestMode,
+    SearchRequest
+} from '../../src/Base';
 import { SortOfferSearch } from '../../src/manager/SearchManager';
 import Account from '../../src/repository/models/Account';
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
@@ -31,8 +39,8 @@ async function createUser(user: Base, pass: string): Promise<Account> {
 
 describe('Search Manager', async () => {
 
-    const passPhraseSeller: string = 'Seller';
-    const passPhraseBusinessBuyer: string = 'Business';  // need 5 symbols
+    const passPhraseSeller: string = 'Seller user1 pass special for Search Manager tests';
+    const passPhraseBusinessBuyer: string = 'Business user2 pass special for Search Manager tests';
 
     const businessBase: Base = createBase();
     const userBase: Base = createBase();
@@ -177,11 +185,15 @@ describe('Search Manager', async () => {
 
             searchRequests.length.should.be.eql(1);
 
-            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
+            searchRequests = (await userBase.searchManager.getUserOfferSearches(
+                0, 10, true, [], [], SortOfferSearch.updatedAt
+            )).content;
             searchRequests.length.should.be.eql(1);
 
             await userBase.searchManager.addEventToOfferSearch('updated', searchRequests[0].offerSearch.id);
-            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
+            searchRequests = (await userBase.searchManager.getUserOfferSearches(
+                0, 10, true, [], [], SortOfferSearch.updatedAt
+            )).content;
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.events.length.should.be.eql(2);
 
@@ -203,38 +215,44 @@ describe('Search Manager', async () => {
 
             const offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
             await userBase.searchManager.addResultItem(offerSearch);
-            let searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
+            let searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
 
             await userBase.searchManager.claimPurchaseForSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
-            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
+            searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.CLAIMPURCHASE);
 
             await userBase.searchManager.complainToSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
-            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
+            searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.COMPLAIN);
 
             await userBase.searchManager.evaluateSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
-            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
+            searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.EVALUATE);
 
             await userBase.searchManager.rejectSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
-            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
+            searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.REJECT);
 
             await businessBase.searchManager.confirmSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
-            searchRequests = (await userBase.searchManager.getUserOfferSearches()).content;
+            searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.CONFIRMED);
+
+            async function getSearchRequests() {
+                return (await userBase.searchManager.getUserOfferSearches(
+                    0, 10, true, [], [], SortOfferSearch.updatedAt
+                )).content;
+            }
 
         } catch (e) {
             console.log(e);
@@ -276,6 +294,7 @@ describe('Search Manager', async () => {
             throw e;
         }
     });
+
     it ('should return offerSerches sorted by updateAt', async () => {
         try {
             const offer = offerFactory();
@@ -315,20 +334,30 @@ describe('Search Manager', async () => {
         } catch (err) {
             console.error(err);
         }
-        async function pauseSeconds(sec: number): Promise<void> {
+        async function pauseSeconds(sec: number): Promise<{}> {
             return new Promise(resolve => setTimeout(resolve, sec * 1000));
         }
     });
-    it ('should return offerSerches with default sorting if send nothing or undefined', async () => {
+
+    it ('should return offerSerches with price sorting', async () => {
         try {
             const offer = offerFactory();
 
             offer.title = '1';
+            offer.offerPrices = [new OfferPrice(0, 'description 100', '100')];
             const createdOffer1 = await userBase.offerManager.saveOffer(offer);
+
             offer.title = '2';
+            offer.offerPrices = [new OfferPrice(0, 'description 120', '120')];
             const createdOffer2 = await userBase.offerManager.saveOffer(offer);
+
             offer.title = '3';
+            offer.offerPrices = [new OfferPrice(0, 'description 110', '110')];
             const createdOffer3 = await userBase.offerManager.saveOffer(offer);
+
+            offer.title = '4';
+            offer.offerPrices = [new OfferPrice(0, 'description 1000', '1000')];
+            const createdOffer4 = await userBase.offerManager.saveOffer(offer);
 
             const searchRequest = requestFactory();
             const createdSearchRequest = await userBase.searchManager.createRequest(searchRequest);
@@ -342,26 +371,211 @@ describe('Search Manager', async () => {
             const offerSearch3 = new OfferSearch(createdSearchRequest.id, createdOffer3.id, ['created']);
             await userBase.searchManager.addResultItem(offerSearch3);
 
-            let searchRequests = await userBase.searchManager.getUserOfferSearches(0, 5, false, [], []);
+            const offerSearch4 = new OfferSearch(createdSearchRequest.id, createdOffer4.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch4);
 
-            let content = searchRequests.content;
-            content.length.should.be.eql(3);
-            content[0].offer.title.should.be.eql('1');
+            const searchRequests = await userBase.searchManager
+                .getUserOfferSearches(0, 5, false, [], [], SortOfferSearch.price);
+
+            const content = searchRequests.content;
+            content.length.should.be.eql(4);
+            content[0].offer.title.should.be.eql('4');
             content[1].offer.title.should.be.eql('2');
             content[2].offer.title.should.be.eql('3');
+            content[3].offer.title.should.be.eql('1');
 
-            searchRequests = await userBase.searchManager.getUserOfferSearches(0, 5, false, [], [], undefined);
-
-            content = searchRequests.content;
-            content.length.should.be.eql(3);
-            content[0].offer.title.should.be.eql('1');
-            content[1].offer.title.should.be.eql('2');
-            content[2].offer.title.should.be.eql('3');
         } catch (err) {
             console.error(err);
+            throw err;
         }
-        async function pauseSeconds(sec: number): Promise<void> {
+        async function pauseSeconds(sec: number): Promise<{}> {
             return new Promise(resolve => setTimeout(resolve, sec * 1000));
+        }
+    });
+
+    it ('should return offerSerches by searchRequest ids with price sorting', async () => {
+        try {
+            const offer = offerFactory();
+
+            offer.title = '1';
+            offer.offerPrices = [new OfferPrice(0, 'description 100', '100')];
+            const createdOffer1 = await userBase.offerManager.saveOffer(offer);
+
+            offer.title = '2';
+            offer.offerPrices = [new OfferPrice(0, 'description 120', '120')];
+            const createdOffer2 = await userBase.offerManager.saveOffer(offer);
+
+            offer.title = '3';
+            offer.offerPrices = [new OfferPrice(0, 'description 110', '110')];
+            const createdOffer3 = await userBase.offerManager.saveOffer(offer);
+
+            offer.title = '4';
+            offer.offerPrices = [new OfferPrice(0, 'description 1000', '1000')];
+            const createdOffer4 = await userBase.offerManager.saveOffer(offer);
+
+            const searchRequest1 = requestFactory();
+            const createdSearchRequest1 = await userBase.searchManager.createRequest(searchRequest1);
+
+            const searchRequest2 = requestFactory();
+            const createdSearchRequest2 = await userBase.searchManager.createRequest(searchRequest2);
+
+            const offerSearch1 = new OfferSearch(createdSearchRequest1.id, createdOffer1.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch1);
+
+            const offerSearch2 = new OfferSearch(createdSearchRequest2.id, createdOffer2.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch2);
+
+            const offerSearch3 = new OfferSearch(createdSearchRequest2.id, createdOffer3.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch3);
+
+            const offerSearch4 = new OfferSearch(createdSearchRequest1.id, createdOffer4.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch4);
+
+            const searchRequests = await userBase.searchManager
+                .getUserOfferSearches(0, 5, false, [createdSearchRequest1.id], [], SortOfferSearch.price);
+
+            const content = searchRequests.content;
+            content.length.should.be.eql(2);
+            content[0].offer.title.should.be.eql('4');
+            content[1].offer.title.should.be.eql('1');
+
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+        async function pauseSeconds(sec: number): Promise<{}> {
+            return new Promise(resolve => setTimeout(resolve, sec * 1000));
+        }
+    });
+
+    it ('should return offerSerches by state with price sorting', async () => {
+        try {
+            const offer = offerFactory();
+
+            offer.title = '1';
+            offer.offerPrices = [new OfferPrice(0, 'description 100', '100')];
+            const createdOffer1 = await userBase.offerManager.saveOffer(offer);
+
+            offer.title = '2';
+            offer.offerPrices = [new OfferPrice(0, 'description 120', '120')];
+            const createdOffer2 = await userBase.offerManager.saveOffer(offer);
+
+            offer.title = '3';
+            offer.offerPrices = [new OfferPrice(0, 'description 110', '110')];
+            const createdOffer3 = await userBase.offerManager.saveOffer(offer);
+
+            offer.title = '4';
+            offer.offerPrices = [new OfferPrice(0, 'description 1000', '1000')];
+            const createdOffer4 = await userBase.offerManager.saveOffer(offer);
+
+            const searchRequest1 = requestFactory();
+            const createdSearchRequest1 = await userBase.searchManager.createRequest(searchRequest1);
+
+            const offerSearch1 = new OfferSearch(createdSearchRequest1.id, createdOffer1.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch1);
+
+            const offerSearch2 = new OfferSearch(createdSearchRequest1.id, createdOffer2.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch2);
+
+            const offerSearch3 = new OfferSearch(createdSearchRequest1.id, createdOffer3.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch3);
+
+            const offerSearch4 = new OfferSearch(createdSearchRequest1.id, createdOffer4.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch4);
+
+            const searchRequests1 = await userBase.searchManager
+                .getUserOfferSearches(0, 5, false, [], [], SortOfferSearch.price);
+
+            const content1 = searchRequests1.content;
+            content1.length.should.be.eql(4);
+            content1[0].offer.title.should.be.eql('4');
+            content1[1].offer.title.should.be.eql('2');
+            content1[2].offer.title.should.be.eql('3');
+            content1[3].offer.title.should.be.eql('1');
+
+            await userBase.searchManager.confirmSearchItem(content1[0].offerSearch.id );
+            await userBase.searchManager.confirmSearchItem(content1[2].offerSearch.id );
+
+            const searchRequests = await userBase.searchManager
+                .getUserOfferSearches(0, 5, false, [], [OfferResultAction.CONFIRMED], SortOfferSearch.price);
+
+            const content = searchRequests.content;
+            content.length.should.be.eql(2);
+            content[0].offer.title.should.be.eql('4');
+            content[1].offer.title.should.be.eql('3');
+
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+        async function pauseSeconds(sec: number): Promise<{}> {
+            return new Promise(resolve => setTimeout(resolve, sec * 1000));
+        }
+    });
+});
+
+describe('search manager with search by query', async () => {
+    const passPhraseUser: string = 'User for search by query only';
+    const userBase: Base = createBase();
+    let userAccount: Account;
+    function createBase(): Base {
+        return new Base(
+            baseNodeUrl,
+            'localhost',
+            RepositoryStrategyType.Postgres,
+            rpcSignerHost
+        );
+    }
+    function requestFactory(): SearchRequest {
+        return new SearchRequest(new Map(
+            [
+                ['product', 'car'],
+                ['color', 'red'],
+                ['producer', 'mazda'],
+                ['models', 'RX8']
+            ]
+        ));
+    }
+    beforeEach(async () => {
+        userAccount = await createUser(userBase, passPhraseUser);
+    });
+    it('should return 200 in search results ranked by interests (only endpoint tested no data)', async () => {
+        try {
+            let rtSearchRequests = await userBase.searchManager.getMySearchRequestsByTag('rtSearch');
+            if (!rtSearchRequests || !rtSearchRequests.length) {
+                const searchRequest = requestFactory();
+                searchRequest.tags = new Map([['rtSearch', 'true']]);
+                rtSearchRequests = [await userBase.searchManager.createRequest(searchRequest)];
+            }
+
+            const result = await userBase.searchManager.createSearchResultByQuery(
+                'golf', rtSearchRequests[0].id, 0, 10,
+                ['interest_sports', 'interest_department_stores', 'interest_consumer_electronics'],
+                OfferSearchRequestInterestMode.prefer
+            );
+            result.should.be.exist;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    });
+    it('should return 200 search results filtered by interests (only endpoint tested no data)', async () => {
+        try {
+            let rtSearchRequests = await userBase.searchManager.getMySearchRequestsByTag('rtSearch');
+            if (!rtSearchRequests || !rtSearchRequests.length) {
+                const searchRequest = requestFactory();
+                searchRequest.tags = new Map([['rtSearch', 'true']]);
+                rtSearchRequests = [await userBase.searchManager.createRequest(searchRequest)];
+            }
+            const result = await userBase.searchManager.createSearchResultByQuery(
+                '*', rtSearchRequests[0].id, 0, 10,
+                ['interest_health_&_wellness', 'interest_home,_garden', 'interest_consumer_electronics'],
+                OfferSearchRequestInterestMode.must
+            );
+            result.should.be.exist;
+        } catch (err) {
+            console.log(err);
+            throw err;
         }
     });
 });

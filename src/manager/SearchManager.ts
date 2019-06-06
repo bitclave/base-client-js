@@ -2,10 +2,12 @@ import OfferSearch, { OfferResultAction } from '../repository/models/OfferSearch
 import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import { Page } from '../repository/models/Page';
 import SearchRequest from '../repository/models/SearchRequest';
+import { OfferSearchRequestInterestMode } from '../repository/search/OfferSearchRepository';
 
 export enum SortOfferSearch {
     rank = 'rank',
-    updatedAt = 'updatedAt'
+    updatedAt = 'updatedAt',
+    price = 'price'
 }
 
 export interface SearchManager {
@@ -18,7 +20,9 @@ export interface SearchManager {
 
     cloneOfferSearch(id: number, searchRequest: SearchRequest): Promise<Array<OfferSearch>>;
 
-    getMyRequests(id: number): Promise<Array<SearchRequest>>;
+    getMyRequests(id?: number): Promise<Array<SearchRequest>>;
+
+    getRequestsByOwnerAndId(owner: string, id?: number): Promise<Array<SearchRequest>>;
 
     getAllRequests(): Promise<Array<SearchRequest>>;
 
@@ -28,7 +32,9 @@ export interface SearchManager {
         query: string,
         searchRequestId: number,
         page?: number,
-        size?: number
+        size?: number,
+        interests?: Array<string>,
+        mode?: OfferSearchRequestInterestMode
     ): Promise<Page<OfferSearchResultItem>>;
 
     getSearchResult(searchRequestId: number): Promise<Page<OfferSearchResultItem>>;

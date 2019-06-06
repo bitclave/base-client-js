@@ -38,34 +38,34 @@ describe('OfferRank', async () => {
         rpcSignerHost
     );
     it('should create simple offer', async () => {
-        await createUser(base, 'OfferRankPassTest');
+        const user = await createUser(base, 'OfferRankPassTest');
         const rank = 11;
         const baseOfferId = randomOfferId();
-        const RANKER = 1;
+        const RANKER = user.publicKey;
         const offerRank = await base.offerRankManager.create(rank, RANKER, baseOfferId);
         offerRank.should.exist;
     });
     it('should create new OfferRank via update', async () => {
-        await createUser(base, 'OfferRankPassTest');
+        const user = await createUser(base, 'OfferRankPassTest');
         const rank = 112;
         const offerId = randomOfferId();
-        const rankerId = 1;
-        const offerRank = new OfferRank({rank, offerId, rankerId});
+        const rankerId = user.publicKey;
+        const offerRank = new OfferRank(rank, offerId, rankerId);
         const created = await base.offerRankManager.update(offerRank);
         created.id.should.exist;
     });
     it('should update created OfferRank via update', async () => {
+        const user = await createUser(base, 'OfferRankPassTest');
         const offerId = randomOfferId();
-        const rankerId = 1;
+        const rankerId = user.publicKey;
 
-        await createUser(base, 'OfferRankPassTest');
         const offerRank = await base.offerRankManager.create(11, rankerId, offerId);
         const id = offerRank.id;
         const createdAt = offerRank.createdAt;
         const updatedAt = offerRank.updatedAt;
 
         const rank = 112;
-        const forUpdating = new OfferRank({id, rank, offerId, rankerId, createdAt, updatedAt});
+        const forUpdating = offerRank.copy({rank});
 
         const updated = await base.offerRankManager.update(forUpdating);
         updated.id.should.be.eql(id);
@@ -74,12 +74,15 @@ describe('OfferRank', async () => {
         updated.updatedAt.should.not.be.eql(updatedAt);
     });
     it('should get OfferRanks by offerId', async () => {
-        await createUser(base, 'OfferRankPassTest');
+        const user1 = await createUser(base, 'OfferRankPassTest1');
+        const user2 = await createUser(base, 'OfferRankPassTest2');
+        const user3 = await createUser(base, 'OfferRankPassTest3');
+
         const offerId = randomOfferId();
 
-        await base.offerRankManager.create(11, 1, offerId);
-        await base.offerRankManager.create(22, 2, offerId);
-        await base.offerRankManager.create(33, 3, offerId);
+        await base.offerRankManager.create(11, user1.publicKey, offerId);
+        await base.offerRankManager.create(22, user2.publicKey, offerId);
+        await base.offerRankManager.create(33, user3.publicKey, offerId);
 
         const offerRanks = await base.offerRankManager.getByOfferId(offerId);
         offerRanks.length.should.be.eql(3);
@@ -87,10 +90,11 @@ describe('OfferRank', async () => {
     /*
     it('should not allow change OfferRank offerId', async () => {
         try {
-            await createUser(base, 'OfferRankPassTest');
+            const user = await createUser(base, 'OfferRankPassTest');
+            const rankerId = user.publicKey;
             const offerId = randomOfferId();
 
-            const created = await base.offerRankManager.create(11, 1, offerId);
+            const created = await base.offerRankManager.create(11, rankerId, offerId);
             created.offerId = 22;
             const updated = await base.offerRankManager.update(created);
             updated.should.be.an('object');
@@ -101,11 +105,12 @@ describe('OfferRank', async () => {
     });
     it('should not allow change RankId offerId', async () => {
         try {
-            await createUser(base, 'OfferRankPassTest');
+            const user = await createUser(base, 'OfferRankPassTest');
+            const user2 = await createUser(base, 'OfferRankPassTest');
             const offerId = randomOfferId();
 
-            const created = await base.offerRankManager.create(11, 1, offerId);
-            created.rankerId = 2;
+            const created = await base.offerRankManager.create(11, user.publicKey, offerId);
+            created.rankerId = user2.publicKey;
             const updated = await base.offerRankManager.update(created);
             updated.should.be.an('object');
             throw new Error('it an not happen becase we are expecting error');
@@ -115,11 +120,12 @@ describe('OfferRank', async () => {
     });
     */
     it('should update OfferRanks if exist OfferRank with the same OfferIf and RankerId', async () => {
-        await createUser(base, 'OfferRankPassTest');
+        const user = await createUser(base, 'OfferRankPassTest');
+        const rankerId = user.publicKey;
         const offerId = randomOfferId();
 
-        await base.offerRankManager.create(11, 1, offerId);
-        await base.offerRankManager.create(22, 1, offerId);
+        await base.offerRankManager.create(11, rankerId, offerId);
+        await base.offerRankManager.create(22, rankerId, offerId);
 
         const offerRanks = await base.offerRankManager.getByOfferId(offerId);
         offerRanks.length.should.be.eql(1);

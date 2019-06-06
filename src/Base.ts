@@ -53,7 +53,7 @@ import { OfferRankRepositoryImpl } from './repository/offerRank/OfferRankReposit
 import { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 import { DataRequestRepository } from './repository/requests/DataRequestRepository';
 import DataRequestRepositoryImpl from './repository/requests/DataRequestRepositoryImpl';
-import { OfferSearchRepository } from './repository/search/OfferSearchRepository';
+import { OfferSearchRepository, OfferSearchRequestInterestMode } from './repository/search/OfferSearchRepository';
 import { OfferSearchRepositoryImpl } from './repository/search/OfferSearchRepositoryImpl';
 import { SearchRequestRepository } from './repository/search/SearchRequestRepository';
 import SearchRequestRepositoryImpl from './repository/search/SearchRequestRepositoryImpl';
@@ -160,6 +160,7 @@ export {
     OfferSearch,
     OfferSearchRepository,
     OfferSearchRepositoryImpl,
+    OfferSearchRequestInterestMode,
     OfferSearchResultItem,
     OfferShareData,
     OfferShareDataRepository,
