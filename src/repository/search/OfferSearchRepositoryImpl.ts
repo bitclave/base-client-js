@@ -43,6 +43,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         interests?: Array<string>,
         mode?: OfferSearchRequestInterestMode
     ): Promise<Page<OfferSearchResultItem>> {
+
         return this.transport.sendRequest(
             this.OFFER_SEARCH_CREATE_BY_QUERY_API
                 .replace('{query}', encodeURIComponent(query))
@@ -51,7 +52,10 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
                 .replace('{mode}', (mode || '').toString())
             ,
             HttpMethod.Post,
-            {searchRequestId, interests}
+            {
+                searchRequestId,
+                interests: interests || []
+            }
         ).then((response) => this.jsonToPageResultItem(response.json));
     }
 
