@@ -26,7 +26,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         '/v1/search/result?searchRequestId={searchRequestId}&offerSearchId={offerSearchId}';
     private readonly OFFER_SEARCH_ADD_EVENT_API = '/v1/search/result/event/{id}';
     private readonly OFFER_SEARCH_CREATE_BY_QUERY_API: string =
-        '/v1/search/query?q={query}&page={page}&size={size}&interests={interests}&mode={mode}';
+        '/v1/search/query?q={query}&page={page}&size={size}&mode={mode}';
     private readonly OFFER_SEARCH_COUNT_BY_REQUEST_IDS_API: string = '/v1/search/count?ids={ids}';
     private transport: HttpTransport;
 
