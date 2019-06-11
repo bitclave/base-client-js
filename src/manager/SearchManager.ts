@@ -7,7 +7,8 @@ import { OfferSearchRequestInterestMode } from '../repository/search/OfferSearch
 export enum SortOfferSearch {
     rank = 'rank',
     updatedAt = 'updatedAt',
-    price = 'price'
+    price = 'price',
+    cashback = 'cashback'
 }
 
 export interface SearchManager {

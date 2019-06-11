@@ -512,6 +512,191 @@ describe('Search Manager', async () => {
             return new Promise(resolve => setTimeout(resolve, sec * 1000));
         }
     });
+
+    it ('should return offerSerches with cashback sorting', async () => {
+        try {
+            const offer = offerFactory();
+
+            offer.title = '1';
+            offer.tags.set('cashback', '0.5');
+            offer.offerPrices = [new OfferPrice(0, 'description 100', '100')];
+            const createdOffer1 = await userBase.offerManager.saveOffer(offer);
+
+            offer.title = '2';
+            offer.tags.set('cashback', '0.6');
+            offer.offerPrices = [new OfferPrice(0, 'description 120', '120')];
+            const createdOffer2 = await userBase.offerManager.saveOffer(offer);
+
+            offer.title = '3';
+            offer.tags.set('cashback', '1.7');
+            offer.offerPrices = [new OfferPrice(0, 'description 110', '110')];
+            const createdOffer3 = await userBase.offerManager.saveOffer(offer);
+
+            offer.title = '4';
+            offer.tags.set('cashback', '0.8');
+            offer.offerPrices = [new OfferPrice(0, 'description 1000', '1000')];
+            const createdOffer4 = await userBase.offerManager.saveOffer(offer);
+
+            const searchRequest = requestFactory();
+            const createdSearchRequest = await userBase.searchManager.createRequest(searchRequest);
+
+            const offerSearch1 = new OfferSearch(createdSearchRequest.id, createdOffer1.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch1);
+
+            const offerSearch2 = new OfferSearch(createdSearchRequest.id, createdOffer2.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch2);
+
+            const offerSearch3 = new OfferSearch(createdSearchRequest.id, createdOffer3.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch3);
+
+            const offerSearch4 = new OfferSearch(createdSearchRequest.id, createdOffer4.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch4);
+
+            const searchRequests = await userBase.searchManager
+                .getUserOfferSearches(0, 5, false, [], [], SortOfferSearch.cashback);
+
+            const content = searchRequests.content;
+            content.length.should.be.eql(4);
+            content[0].offer.title.should.be.eql('3');
+            content[1].offer.title.should.be.eql('4');
+            content[2].offer.title.should.be.eql('2');
+            content[3].offer.title.should.be.eql('1');
+
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+        async function pauseSeconds(sec: number): Promise<{}> {
+            return new Promise(resolve => setTimeout(resolve, sec * 1000));
+        }
+    });
+    it ('should return offerSerches by searchRequest ids with cashback sorting', async () => {
+        try {
+            const offer = offerFactory();
+
+            offer.title = '1';
+            offer.tags.set('cashback', '0.5');
+            offer.offerPrices = [new OfferPrice(0, 'description 100', '100')];
+            const createdOffer1 = await userBase.offerManager.saveOffer(offer);
+
+            offer.title = '2';
+            offer.tags.set('cashback', '0.6');
+            offer.offerPrices = [new OfferPrice(0, 'description 120', '120')];
+            const createdOffer2 = await userBase.offerManager.saveOffer(offer);
+
+            offer.title = '3';
+            offer.tags.set('cashback', '0.55');
+            offer.offerPrices = [new OfferPrice(0, 'description 110', '110')];
+            const createdOffer3 = await userBase.offerManager.saveOffer(offer);
+
+            offer.title = '4';
+            offer.tags.set('cashback', '1.5');
+            offer.offerPrices = [new OfferPrice(0, 'description 1000', '1000')];
+            const createdOffer4 = await userBase.offerManager.saveOffer(offer);
+
+            const searchRequest1 = requestFactory();
+            const createdSearchRequest1 = await userBase.searchManager.createRequest(searchRequest1);
+
+            const searchRequest2 = requestFactory();
+            const createdSearchRequest2 = await userBase.searchManager.createRequest(searchRequest2);
+
+            const offerSearch1 = new OfferSearch(createdSearchRequest1.id, createdOffer1.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch1);
+
+            const offerSearch2 = new OfferSearch(createdSearchRequest2.id, createdOffer2.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch2);
+
+            const offerSearch3 = new OfferSearch(createdSearchRequest2.id, createdOffer3.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch3);
+
+            const offerSearch4 = new OfferSearch(createdSearchRequest1.id, createdOffer4.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch4);
+
+            const searchRequests = await userBase.searchManager
+                .getUserOfferSearches(0, 5, false, [createdSearchRequest1.id], [], SortOfferSearch.cashback);
+
+            const content = searchRequests.content;
+            content.length.should.be.eql(2);
+            content[0].offer.title.should.be.eql('4');
+            content[1].offer.title.should.be.eql('1');
+
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+        async function pauseSeconds(sec: number): Promise<{}> {
+            return new Promise(resolve => setTimeout(resolve, sec * 1000));
+        }
+    });
+    it ('should return offerSerches by state with cashback sorting', async () => {
+        try {
+            const offer = offerFactory();
+
+            offer.title = '1';
+            offer.tags.set('cashback', '0.5');
+            offer.offerPrices = [new OfferPrice(0, 'description 100', '100')];
+            const createdOffer1 = await userBase.offerManager.saveOffer(offer);
+
+            offer.title = '2';
+            offer.tags.set('cashback', '1.7');
+            offer.offerPrices = [new OfferPrice(0, 'description 120', '120')];
+            const createdOffer2 = await userBase.offerManager.saveOffer(offer);
+
+            offer.title = '3';
+            offer.tags.set('cashback', '0.6');
+            offer.offerPrices = [new OfferPrice(0, 'description 110', '110')];
+            const createdOffer3 = await userBase.offerManager.saveOffer(offer);
+
+            offer.title = '4';
+            offer.tags.set('cashback', '1.5');
+            offer.offerPrices = [new OfferPrice(0, 'description 1000', '1000')];
+            const createdOffer4 = await userBase.offerManager.saveOffer(offer);
+
+            const searchRequest1 = requestFactory();
+            const createdSearchRequest1 = await userBase.searchManager.createRequest(searchRequest1);
+
+            const offerSearch1 = new OfferSearch(createdSearchRequest1.id, createdOffer1.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch1);
+
+            const offerSearch2 = new OfferSearch(createdSearchRequest1.id, createdOffer2.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch2);
+
+            const offerSearch3 = new OfferSearch(createdSearchRequest1.id, createdOffer3.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch3);
+
+            const offerSearch4 = new OfferSearch(createdSearchRequest1.id, createdOffer4.id, ['created']);
+            await userBase.searchManager.addResultItem(offerSearch4);
+
+            const searchRequests1 = await userBase.searchManager
+                .getUserOfferSearches(0, 5, false, [], [], SortOfferSearch.cashback);
+
+            const content1 = searchRequests1.content;
+            content1.length.should.be.eql(4);
+            content1[0].offer.title.should.be.eql('2');
+            content1[1].offer.title.should.be.eql('4');
+            content1[2].offer.title.should.be.eql('3');
+            content1[3].offer.title.should.be.eql('1');
+
+            await userBase.searchManager.confirmSearchItem(content1[0].offerSearch.id );
+            await userBase.searchManager.confirmSearchItem(content1[2].offerSearch.id );
+
+            const searchRequests = await userBase.searchManager
+                .getUserOfferSearches(0, 5, false, [], [OfferResultAction.CONFIRMED], SortOfferSearch.cashback);
+
+            const content = searchRequests.content;
+            content.length.should.be.eql(2);
+            content[0].offer.title.should.be.eql('2');
+            content[1].offer.title.should.be.eql('3');
+
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+        async function pauseSeconds(sec: number): Promise<{}> {
+            return new Promise(resolve => setTimeout(resolve, sec * 1000));
+        }
+    });
+
 });
 
 describe('search manager with search by query', async () => {
