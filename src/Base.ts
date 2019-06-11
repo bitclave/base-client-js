@@ -70,16 +70,22 @@ import { TransportFactory } from './repository/source/TransportFactory';
 import { VerifyRepository } from './repository/verify/VerifyRepository';
 import { VerifyRepositoryImpl } from './repository/verify/VerifyRepositoryImpl';
 import { BasicLogger, Logger } from './utils/BasicLogger';
+import { BitKeyPair } from './utils/keypair/BitKeyPair';
 import { KeyPairFactory } from './utils/keypair/KeyPairFactory';
 import { KeyPairHelper } from './utils/keypair/KeyPairHelper';
 import { MessageDecrypt } from './utils/keypair/MessageDecrypt';
 import { MessageEncrypt } from './utils/keypair/MessageEncrypt';
 import { MessageSigner } from './utils/keypair/MessageSigner';
 import { AbstractWalletValidator } from './utils/types/validators/AbstractWalletValidator';
+import { IsBasePublicKey } from './utils/types/validators/annotations/IsBasePublicKey';
+import { IsBtcAddress } from './utils/types/validators/annotations/IsBtcAddress';
+import { IsEthAddress } from './utils/types/validators/annotations/IsEthAddress';
+import { IsTypedArray } from './utils/types/validators/annotations/IsTypedArray';
 import { AppWalletValidator } from './utils/types/validators/AppWalletValidator';
 import { BtcWalletValidator } from './utils/types/validators/BtcWalletValidator';
 import { EthWalletValidator } from './utils/types/validators/EthWalletValidator';
 import { ValidationResult } from './utils/types/validators/ValidationResult';
+import { WalletsValidator } from './utils/types/validators/WalletsValidator';
 import { WalletValidator } from './utils/types/validators/WalletValidator';
 import { WalletValidatorStrategy } from './utils/types/validators/WalletValidatorStrategy';
 import { WalletUtils } from './utils/WalletUtils';
@@ -121,57 +127,65 @@ export {
 } from './utils/types/BaseTypes';
 
 export {
+    AbstractWalletValidator,
     Account,
     AccountManager,
-    JsonObject,
-    ProfileManager,
+    AppWalletValidator,
+    BitKeyPair,
+    BtcWalletValidator,
+    DataRequest,
+    DataRequestManager,
     DeepCopy,
-    ServiceCallType,
+    EthWalletValidator,
     ExternalService,
-    HttpServiceCall,
-    ServiceResponse,
-    ServiceCall,
     ExternalServicesManager,
     ExternalServicesRepository,
     FileMeta,
-    Page,
-    Pageable,
-    Profile,
-    DataRequestManager,
-    DataRequest,
-    OfferManager,
-    SearchManager,
-    SortOfferSearch,
-    WalletManager,
-    WalletManagerImpl,
-    VerifyManager,
+    HttpServiceCall,
+    HttpTransportImpl,
+    IsBasePublicKey,
+    IsBtcAddress,
+    IsEthAddress,
+    IsTypedArray,
+    JsonObject,
     Offer,
+    OfferManager,
     OfferPrice,
     OfferPriceRules,
-    SearchRequest,
-    OfferSearch,
-    Site,
-    SimpleAccount,
-    OfferSearchResultItem,
-    OfferResultAction,
-    OfferShareData,
-    OfferShareDataRepository,
-    OfferShareDataRepositoryImpl,
-    OfferSearchRepository,
-    OfferSearchRequestInterestMode,
-    OfferSearchRepositoryImpl,
-    HttpTransportImpl,
-    AbstractWalletValidator,
-    AppWalletValidator,
-    BtcWalletValidator,
-    EthWalletValidator,
-    ValidationResult,
-    WalletValidator,
-    WalletValidatorStrategy,
+    OfferRank,
     OfferRankManager,
     OfferRankManagerImpl,
     OfferRankRepositoryImpl,
-    OfferRank
+    OfferResultAction,
+    OfferSearch,
+    OfferSearchRepository,
+    OfferSearchRepositoryImpl,
+    OfferSearchRequestInterestMode,
+    OfferSearchResultItem,
+    OfferShareData,
+    OfferShareDataRepository,
+    OfferShareDataRepositoryImpl,
+    Page,
+    Pageable,
+    PermissionsSource,
+    Profile,
+    ProfileManager,
+    SearchManager,
+    SearchRequest,
+    ServiceCall,
+    ServiceCallType,
+    ServiceResponse,
+    SimpleAccount,
+    Site,
+    SiteDataSource,
+    SortOfferSearch,
+    ValidationResult,
+    VerifyManager,
+    WalletManager,
+    WalletManagerImpl,
+    WalletsValidator,
+    WalletValidator,
+    WalletValidatorStrategy,
 };
 
 export default class Base {
