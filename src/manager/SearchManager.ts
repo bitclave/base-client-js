@@ -65,4 +65,4 @@ export interface SearchManager {
     getMySearchRequestsByTag(tag: string): Promise<Array<SearchRequest>>;
 
 }
-export enum SortOfferSearch { rank = 'rank', updatedAt = 'updatedAt', price = 'price'}
+export enum SortOfferSearch { rank = 'rank', updatedAt = 'updatedAt', price = 'price', cashback = 'cashback'}
