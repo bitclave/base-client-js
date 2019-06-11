@@ -4,6 +4,13 @@ import { Page } from '../repository/models/Page';
 import SearchRequest from '../repository/models/SearchRequest';
 import { OfferSearchRequestInterestMode } from '../repository/search/OfferSearchRepository';
 
+export enum SortOfferSearch {
+    rank = 'rank',
+    updatedAt = 'updatedAt',
+    price = 'price',
+    cashback = 'cashback'
+}
+
 export interface SearchManager {
 
     createRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
@@ -63,6 +70,4 @@ export interface SearchManager {
     getSearchRequestsByOwnerAndTag(owner: string, tag: string): Promise<Array<SearchRequest>>;
 
     getMySearchRequestsByTag(tag: string): Promise<Array<SearchRequest>>;
-
 }
-export enum SortOfferSearch { rank = 'rank', updatedAt = 'updatedAt', price = 'price', cashback = 'cashback'}
