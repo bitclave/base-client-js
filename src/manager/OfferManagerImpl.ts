@@ -28,6 +28,11 @@ export class OfferManagerImpl implements OfferManager {
         }
     }
 
+    public shallowSaveOffer(offer: Offer): Promise<Offer> {
+        const offerId: number = offer.id;
+        return this.offerRepository.shallowUpdate(this.account.publicKey, offerId, offer);
+    }
+
     public getMyOffers(id: number = 0): Promise<Array<Offer>> {
         if (id > 0) {
             return this.offerRepository.getOfferByOwnerAndId(this.account.publicKey, id);

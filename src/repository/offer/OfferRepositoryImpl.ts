@@ -8,6 +8,7 @@ import { OfferRepository } from './OfferRepository';
 export default class OfferRepositoryImpl implements OfferRepository {
 
     private readonly OFFER_API: string = '/v1/client/{owner}/offer/{id}';
+    private readonly OFFER_SHALLOW_UPDATE_API: string = '/v1/client/{owner}/offer/shallow/{id}';
     private readonly OFFER_API_PAGE: string = '/v1/client/{owner}/offer/{id}/owner?page={page}&size={size}';
 
     private transport: HttpTransport;
@@ -27,6 +28,14 @@ export default class OfferRepositoryImpl implements OfferRepository {
     public update(owner: string, id: number, offer: Offer): Promise<Offer> {
         return this.transport.sendRequest(
             this.OFFER_API.replace('{owner}', owner).replace('{id}', id.toString()),
+            HttpMethod.Put,
+            offer.toJson()
+        ).then((response) => Offer.fromJson(response.json));
+    }
+
+    public shallowUpdate(owner: string, id: number, offer: Offer): Promise<Offer> {
+        return this.transport.sendRequest(
+            this.OFFER_SHALLOW_UPDATE_API.replace('{owner}', owner).replace('{id}', id.toString()),
             HttpMethod.Put,
             offer.toJson()
         ).then((response) => Offer.fromJson(response.json));
