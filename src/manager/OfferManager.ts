@@ -5,6 +5,8 @@ export interface OfferManager {
 
     saveOffer(offer: Offer): Promise<Offer>;
 
+    shallowSaveOffer(offer: Offer): Promise<Offer>;
+
     getMyOffers(id: number): Promise<Array<Offer>>;
 
     getMyOffersAndPage(page?: number, size?: number): Promise<Page<Offer>>;
