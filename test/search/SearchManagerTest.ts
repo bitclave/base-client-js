@@ -62,7 +62,8 @@ describe('Search Manager', async () => {
                 ['product', 'car'],
                 ['color', 'red'],
                 ['producer', 'mazda'],
-                ['models', 'RX8']
+                ['models', 'RX8'],
+                ['endDate', 'Mon Jul 22 3019 19:00:20 GMT+0000 (Coordinated Universal Time)']
             ]
         );
         const compareUserTag = new Map<string, string>(
@@ -295,7 +296,7 @@ describe('Search Manager', async () => {
         }
     });
 
-    it ('should return offerSerches sorted by updateAt', async () => {
+    it('should return offerSerches sorted by updateAt', async () => {
         try {
             const offer = offerFactory();
 
@@ -339,7 +340,7 @@ describe('Search Manager', async () => {
         }
     });
 
-    it ('should return offerSerches with price sorting', async () => {
+    it('should return offerSerches with price sorting', async () => {
         try {
             const offer = offerFactory();
 
@@ -393,7 +394,7 @@ describe('Search Manager', async () => {
         }
     });
 
-    it ('should return offerSerches by searchRequest ids with price sorting', async () => {
+    it('should return offerSerches by searchRequest ids with price sorting', async () => {
         try {
             const offer = offerFactory();
 
