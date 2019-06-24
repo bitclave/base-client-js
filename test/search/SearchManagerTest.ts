@@ -11,6 +11,8 @@ import Base, {
 import { SortOfferSearch } from '../../src/manager/SearchManager';
 import Account from '../../src/repository/models/Account';
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
+import { HttpMethod } from '../../src/repository/source/http/HttpMethod';
+import { Response } from '../../src/repository/source/http/Response';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 
@@ -742,6 +744,35 @@ describe('search manager with search by query', async () => {
                 OfferSearchRequestInterestMode.must
             );
             result.should.be.exist;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    });
+
+    it('should return list of suggestion', async () => {
+        try {
+            // @ts-ignore
+            const originFnc = userBase.searchManager.offerSearchRepository.transport.sendRequest;
+            const transportResult = ['nike'];
+
+            // @ts-ignore
+            userBase.searchManager.offerSearchRepository.transport.sendRequest = async (
+                path: string,
+                method: HttpMethod
+            ) => {
+                if (path === '/v1/search/query/suggest?q=nike&s=11' && method === HttpMethod.Get) {
+                    return new Response(transportResult, 200);
+                }
+
+                return null;
+            };
+
+            const result = await userBase.searchManager.getSuggestionByQuery('nike', 11);
+
+            // @ts-ignore
+            userBase.searchManager.offerSearchRepository.transport.sendRequest = originFnc;
+            result.should.be.eq(transportResult);
         } catch (err) {
             console.log(err);
             throw err;

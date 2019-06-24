@@ -5,6 +5,9 @@ import { Page } from '../models/Page';
 import SearchRequest from '../models/SearchRequest';
 
 export interface OfferSearchRepository {
+
+    getSuggestionByQuery(query: string, size?: number | undefined): Promise<Array<string>>;
+
     createByQuery(
         owner: string,
         query: string,

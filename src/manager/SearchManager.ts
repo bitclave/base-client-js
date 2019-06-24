@@ -29,6 +29,8 @@ export interface SearchManager {
 
     deleteRequest(id: number): Promise<number>;
 
+    getSuggestionByQuery(query: string, size?: number): Promise<Array<string>>;
+
     createSearchResultByQuery(
         query: string,
         searchRequestId: number,
