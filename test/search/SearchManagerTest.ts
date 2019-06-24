@@ -100,6 +100,7 @@ describe('Search Manager', async () => {
         await createUser(businessBase, passPhraseSeller);
         userAccount = await createUser(userBase, passPhraseBusinessBuyer);
     });
+
     after(async () => {
         // rpcClient.disconnect();
     });
@@ -207,6 +208,12 @@ describe('Search Manager', async () => {
         try {
             // Business:
             // create offer
+            const getSearchRequests = async () => {
+                return (await userBase.searchManager.getUserOfferSearches(
+                    0, 10, true, [], [], SortOfferSearch.updatedAt
+                )).content;
+            };
+
             const offer = offerFactory();
             const businessOffer = await businessBase.offerManager.saveOffer(offer);
 
@@ -247,13 +254,6 @@ describe('Search Manager', async () => {
             searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
             searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.CONFIRMED);
-
-            async function getSearchRequests() {
-                return (await userBase.searchManager.getUserOfferSearches(
-                    0, 10, true, [], [], SortOfferSearch.updatedAt
-                )).content;
-            }
-
         } catch (e) {
             console.log(e);
             throw e;
@@ -295,7 +295,7 @@ describe('Search Manager', async () => {
         }
     });
 
-    it ('should return offerSerches sorted by updateAt', async () => {
+    it('should return offerSerches sorted by updateAt', async () => {
         try {
             const offer = offerFactory();
 
@@ -334,12 +334,13 @@ describe('Search Manager', async () => {
         } catch (err) {
             console.error(err);
         }
+
         async function pauseSeconds(sec: number): Promise<{}> {
             return new Promise(resolve => setTimeout(resolve, sec * 1000));
         }
     });
 
-    it ('should return offerSerches with price sorting', async () => {
+    it('should return offerSerches with price sorting', async () => {
         try {
             const offer = offerFactory();
 
@@ -388,12 +389,9 @@ describe('Search Manager', async () => {
             console.error(err);
             throw err;
         }
-        async function pauseSeconds(sec: number): Promise<{}> {
-            return new Promise(resolve => setTimeout(resolve, sec * 1000));
-        }
     });
 
-    it ('should return offerSerches by searchRequest ids with price sorting', async () => {
+    it('should return offerSerches by searchRequest ids with price sorting', async () => {
         try {
             const offer = offerFactory();
 
@@ -443,12 +441,9 @@ describe('Search Manager', async () => {
             console.error(err);
             throw err;
         }
-        async function pauseSeconds(sec: number): Promise<{}> {
-            return new Promise(resolve => setTimeout(resolve, sec * 1000));
-        }
     });
 
-    it ('should return offerSerches by state with price sorting', async () => {
+    it('should return offerSerches by state with price sorting', async () => {
         try {
             const offer = offerFactory();
 
@@ -493,8 +488,8 @@ describe('Search Manager', async () => {
             content1[2].offer.title.should.be.eql('3');
             content1[3].offer.title.should.be.eql('1');
 
-            await userBase.searchManager.confirmSearchItem(content1[0].offerSearch.id );
-            await userBase.searchManager.confirmSearchItem(content1[2].offerSearch.id );
+            await userBase.searchManager.confirmSearchItem(content1[0].offerSearch.id);
+            await userBase.searchManager.confirmSearchItem(content1[2].offerSearch.id);
 
             const searchRequests = await userBase.searchManager
                 .getUserOfferSearches(0, 5, false, [], [OfferResultAction.CONFIRMED], SortOfferSearch.price);
@@ -508,12 +503,9 @@ describe('Search Manager', async () => {
             console.error(err);
             throw err;
         }
-        async function pauseSeconds(sec: number): Promise<{}> {
-            return new Promise(resolve => setTimeout(resolve, sec * 1000));
-        }
     });
 
-    it ('should return offerSerches with cashback sorting', async () => {
+    it('should return offerSerches with cashback sorting', async () => {
         try {
             const offer = offerFactory();
 
@@ -566,11 +558,9 @@ describe('Search Manager', async () => {
             console.error(err);
             throw err;
         }
-        async function pauseSeconds(sec: number): Promise<{}> {
-            return new Promise(resolve => setTimeout(resolve, sec * 1000));
-        }
     });
-    it ('should return offerSerches by searchRequest ids with cashback sorting', async () => {
+
+    it('should return offerSerches by searchRequest ids with cashback sorting', async () => {
         try {
             const offer = offerFactory();
 
@@ -624,11 +614,9 @@ describe('Search Manager', async () => {
             console.error(err);
             throw err;
         }
-        async function pauseSeconds(sec: number): Promise<{}> {
-            return new Promise(resolve => setTimeout(resolve, sec * 1000));
-        }
     });
-    it ('should return offerSerches by state with cashback sorting', async () => {
+
+    it('should return offerSerches by state with cashback sorting', async () => {
         try {
             const offer = offerFactory();
 
@@ -677,8 +665,8 @@ describe('Search Manager', async () => {
             content1[2].offer.title.should.be.eql('3');
             content1[3].offer.title.should.be.eql('1');
 
-            await userBase.searchManager.confirmSearchItem(content1[0].offerSearch.id );
-            await userBase.searchManager.confirmSearchItem(content1[2].offerSearch.id );
+            await userBase.searchManager.confirmSearchItem(content1[0].offerSearch.id);
+            await userBase.searchManager.confirmSearchItem(content1[2].offerSearch.id);
 
             const searchRequests = await userBase.searchManager
                 .getUserOfferSearches(0, 5, false, [], [OfferResultAction.CONFIRMED], SortOfferSearch.cashback);
@@ -692,17 +680,13 @@ describe('Search Manager', async () => {
             console.error(err);
             throw err;
         }
-        async function pauseSeconds(sec: number): Promise<{}> {
-            return new Promise(resolve => setTimeout(resolve, sec * 1000));
-        }
     });
 
 });
 
 describe('search manager with search by query', async () => {
-    const passPhraseUser: string = 'User for search by query only';
     const userBase: Base = createBase();
-    let userAccount: Account;
+
     function createBase(): Base {
         return new Base(
             baseNodeUrl,
@@ -711,6 +695,7 @@ describe('search manager with search by query', async () => {
             rpcSignerHost
         );
     }
+
     function requestFactory(): SearchRequest {
         return new SearchRequest(new Map(
             [
@@ -721,9 +706,7 @@ describe('search manager with search by query', async () => {
             ]
         ));
     }
-    beforeEach(async () => {
-        userAccount = await createUser(userBase, passPhraseUser);
-    });
+
     it('should return 200 in search results ranked by interests (only endpoint tested no data)', async () => {
         try {
             let rtSearchRequests = await userBase.searchManager.getMySearchRequestsByTag('rtSearch');
@@ -744,6 +727,7 @@ describe('search manager with search by query', async () => {
             throw err;
         }
     });
+
     it('should return 200 search results filtered by interests (only endpoint tested no data)', async () => {
         try {
             let rtSearchRequests = await userBase.searchManager.getMySearchRequestsByTag('rtSearch');
