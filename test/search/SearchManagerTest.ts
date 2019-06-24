@@ -687,6 +687,7 @@ describe('Search Manager', async () => {
 });
 
 describe('search manager with search by query', async () => {
+    const passPhraseUser: string = 'User for search by query only';
     const userBase: Base = createBase();
 
     function createBase(): Base {
@@ -697,6 +698,10 @@ describe('search manager with search by query', async () => {
             rpcSignerHost
         );
     }
+
+    beforeEach(async () => {
+        await createUser(userBase, passPhraseUser);
+    });
 
     function requestFactory(): SearchRequest {
         return new SearchRequest(new Map(
