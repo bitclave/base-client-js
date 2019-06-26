@@ -27,11 +27,23 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     private readonly OFFER_SEARCH_ADD_EVENT_API = '/v1/search/result/event/{id}';
     private readonly OFFER_SEARCH_CREATE_BY_QUERY_API: string =
         '/v1/search/query?q={query}&page={page}&size={size}&mode={mode}';
+    private readonly OFFER_SEARCH_SUGGESTION_BY_QUERY_API: string =
+        '/v1/search/query/suggest?q={query}&s={size}';
     private readonly OFFER_SEARCH_COUNT_BY_REQUEST_IDS_API: string = '/v1/search/count?ids={ids}';
     private transport: HttpTransport;
 
     constructor(transport: HttpTransport) {
         this.transport = transport;
+    }
+
+    public getSuggestionByQuery(query: string, size?: number | undefined): Promise<Array<string>> {
+        return this.transport.sendRequest(
+            this.OFFER_SEARCH_SUGGESTION_BY_QUERY_API
+                .replace('{query}', encodeURIComponent(query))
+                .replace('{size}', (size || 10).toString())
+            ,
+            HttpMethod.Get,
+        ).then((response) => response.originJson as Array<string>);
     }
 
     public createByQuery(
@@ -195,12 +207,12 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     ): Promise<Array<OfferSearchResultItem>> {
         return Object.keys(json)
             .map(key => {
-                     const rawOfferSearch = json[key] as JsonObject<OfferSearchResultItem>;
-                     return new OfferSearchResultItem(
-                         OfferSearch.fromJson(rawOfferSearch.offerSearch as object),
-                         Offer.fromJson(rawOfferSearch.offer as object)
-                     );
-                 }
+                    const rawOfferSearch = json[key] as JsonObject<OfferSearchResultItem>;
+                    return new OfferSearchResultItem(
+                        OfferSearch.fromJson(rawOfferSearch.offerSearch as object),
+                        Offer.fromJson(rawOfferSearch.offer as object)
+                    );
+                }
             );
     }
 

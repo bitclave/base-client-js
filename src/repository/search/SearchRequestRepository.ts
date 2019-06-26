@@ -17,5 +17,4 @@ export interface SearchRequestRepository {
     getAllSearchRequests(): Promise<Array<SearchRequest>>;
 
     getSearchRequestsByOwnerAndTag(owner: string, tag: string): Promise<Array<SearchRequest>>;
-
 }
