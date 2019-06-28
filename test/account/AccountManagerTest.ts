@@ -132,5 +132,7 @@ describe('Account Manager', async () => {
         account.createdAt.getTime().should.be.gt(0);
         account.updatedAt.getTime().should.be.gt(0);
         account.createdAt.getTime().should.be.eq(account.updatedAt.getTime());
+        const timeDelta = account.updatedAt.getTime() - account.createdAt.getTime();
+        timeDelta.should.be.lt(100);
     });
 });
