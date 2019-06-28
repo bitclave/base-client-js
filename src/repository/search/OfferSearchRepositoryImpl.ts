@@ -23,6 +23,8 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         '/v1/search/result/user?owner={owner}&searchIds={searchIds}' +
         '&state={state}&unique={unique}&page={page}&size={size}&sort={sort}&interaction={interaction}';
 
+    private readonly INTERACTIONS_API = '/v1/search/result/interaction?owner={owner}&offers={offers}&states={states}';
+
     private readonly OFFER_SEARCH_GET_BY_REQUEST_OR_SEARCH_API =
         '/v1/search/result?searchRequestId={searchRequestId}&offerSearchId={offerSearchId}';
     private readonly OFFER_SEARCH_ADD_EVENT_API = '/v1/search/result/event/{id}';
@@ -125,6 +127,21 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         ).then((response) => JsonUtils.jsonToMap<number, number>(response.json));
     }
 
+    public getInteractions(
+        owner: string,
+        offerIds?: Array<number> | undefined,
+        states?: Array<OfferResultAction> | undefined,
+    ): Promise<Array<OfferInteraction>> {
+
+        return this.transport.sendRequest(
+            this.INTERACTIONS_API
+                .replace('{owner}', owner)
+                .replace('{offers}', offerIds ? offerIds.join(',') : '')
+                .replace('{states}', states ? states.join(',') : ''),
+            HttpMethod.Get
+        ).then((response) => this.jsonToOfferInteractionList(response.json));
+    }
+
     public async complainToSearchItem(clientId: string, searchResultId: number): Promise<void> {
         await this.transport.sendRequest(
             this.OFFER_SEARCH_API
@@ -223,5 +240,11 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
 
     private async jsonToOfferSearchList(json: JsonObject<Array<OfferSearch>>): Promise<Array<OfferSearch>> {
         return Object.keys(json).map(key => OfferSearch.fromJson(json[key] as object));
+    }
+
+    private async jsonToOfferInteractionList(
+        json: JsonObject<Array<OfferInteraction>>
+    ): Promise<Array<OfferInteraction>> {
+        return Object.keys(json).map(key => OfferInteraction.fromJson(json[key] as object));
     }
 }

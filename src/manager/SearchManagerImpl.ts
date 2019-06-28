@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs/Rx';
 import Account from '../repository/models/Account';
-import { OfferResultAction } from '../repository/models/OfferInteraction';
+import { OfferInteraction, OfferResultAction } from '../repository/models/OfferInteraction';
 import { OfferSearch } from '../repository/models/OfferSearch';
 import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import { Page } from '../repository/models/Page';
@@ -111,6 +111,14 @@ export class SearchManagerImpl implements SearchManager {
     ): Promise<Page<OfferSearchResultItem>> {
         return this.offerSearchRepository
             .getUserOfferSearches(this.account.publicKey, page, size, unique, searchIds, state, sort, interaction);
+    }
+
+    public getInteractions(
+        offerIds?: Array<number> | undefined,
+        states?: Array<OfferResultAction> | undefined,
+        owner?: string | undefined
+    ): Promise<Array<OfferInteraction>> {
+        return this.offerSearchRepository.getInteractions(owner ? owner : this.account.publicKey, offerIds, states);
     }
 
     public getSearchResultByOfferSearchId(offerSearchId: number): Promise<Page<OfferSearchResultItem>> {

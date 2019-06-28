@@ -1,4 +1,4 @@
-import { OfferResultAction } from '../repository/models/OfferInteraction';
+import { OfferInteraction, OfferResultAction } from '../repository/models/OfferInteraction';
 import { OfferSearch } from '../repository/models/OfferSearch';
 import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import { Page } from '../repository/models/Page';
@@ -56,6 +56,12 @@ export interface SearchManager {
         sort?: SortOfferSearch,
         interaction?: boolean
     ): Promise<Page<OfferSearchResultItem>>;
+
+    getInteractions(
+        offerIds?: Array<number> | undefined,
+        states?: Array<OfferResultAction> | undefined,
+        owner?: string | undefined
+    ): Promise<Array<OfferInteraction>>;
 
     complainToSearchItem(searchResultId: number): Promise<void>;
 

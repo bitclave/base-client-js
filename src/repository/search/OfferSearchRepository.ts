@@ -1,5 +1,5 @@
 import { SortOfferSearch } from '../../manager/SearchManager';
-import { OfferResultAction } from '../models/OfferInteraction';
+import { OfferInteraction, OfferResultAction } from '../models/OfferInteraction';
 import { OfferSearch } from '../models/OfferSearch';
 import OfferSearchResultItem from '../models/OfferSearchResultItem';
 import { Page } from '../models/Page';
@@ -37,6 +37,12 @@ export interface OfferSearchRepository {
     getSearchResultByOfferSearchId(clientId: string, offerSearchId: number): Promise<Page<OfferSearchResultItem>>;
 
     getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>>;
+
+    getInteractions(
+        owner: string,
+        offerIds?: Array<number> | undefined,
+        states?: Array<OfferResultAction> | undefined
+    ): Promise<Array<OfferInteraction>>;
 
     complainToSearchItem(clientId: string, searchResultId: number): Promise<void>;
 

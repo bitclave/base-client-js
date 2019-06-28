@@ -1,4 +1,11 @@
-import Base, { CompareAction, Offer, OfferSearch, SearchRequest, WalletManagerImpl } from '../../src/Base';
+import Base, {
+    CompareAction,
+    Offer,
+    OfferResultAction,
+    OfferSearch,
+    SearchRequest,
+    WalletManagerImpl
+} from '../../src/Base';
 import Account from '../../src/repository/models/Account';
 import { OfferPrice } from '../../src/repository/models/OfferPrice';
 import { OfferPriceRules } from '../../src/repository/models/OfferPriceRules';
@@ -220,10 +227,27 @@ describe('Offer main scenario', async () => {
 
             await userBase.searchManager.addEventToOfferSearch('tram-param-pam', searchResult.id);
             await userBase.searchManager.addEventToOfferSearch('ta-da-bada', searchResult.id);
-            const updated = (await userBase.searchManager.getSearchResult(userSearchRequest.id)).content;
+            const updated = (await userBase.searchManager.getInteractions());
 
-            updated[0].offerSearch.events[0].should.be.eql('tram-param-pam');
-            updated[0].offerSearch.events[1].should.be.eql('ta-da-bada');
+            updated[0].events[0].should.be.eql('tram-param-pam');
+            updated[0].events[1].should.be.eql('ta-da-bada');
+
+            const byOfferId = (await userBase.searchManager.getInteractions([updated[0].offerId]));
+            byOfferId.length.should.be.eq(1);
+            byOfferId[0].offerId.should.be.eq(updated[0].offerId);
+
+            const byState = (await userBase.searchManager.getInteractions([], [OfferResultAction.NONE]));
+            byState.length.should.be.eq(1);
+            byState[0].state.should.be.eq(updated[0].state);
+
+            const byStateAndOffer = (await userBase.searchManager.getInteractions(
+                [updated[0].offerId],
+                [OfferResultAction.NONE]
+            ));
+            byStateAndOffer.length.should.be.eq(1);
+            byStateAndOffer[0].offerId.should.be.eq(updated[0].offerId);
+            byStateAndOffer[0].state.should.be.eq(updated[0].state);
+
         } catch (e) {
             console.log(e);
             throw e;
