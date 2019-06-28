@@ -60,9 +60,9 @@ export class SearchManagerImpl implements SearchManager {
         }
     }
 
-    public getAllRequests(): Promise<Array<SearchRequest>> {
-        return this.requestRepository.getAllSearchRequests();
-    }
+    // public getAllRequests(): Promise<Array<SearchRequest>> {
+    //     return this.requestRepository.getAllSearchRequests();
+    // }
 
     public deleteRequest(id: number): Promise<number> {
         return this.requestRepository.deleteById(this.account.publicKey, id);

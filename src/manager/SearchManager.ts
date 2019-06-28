@@ -25,7 +25,7 @@ export interface SearchManager {
 
     getRequestsByOwnerAndId(owner: string, id?: number): Promise<Array<SearchRequest>>;
 
-    getAllRequests(): Promise<Array<SearchRequest>>;
+    // getAllRequests(): Promise<Array<SearchRequest>>;
 
     deleteRequest(id: number): Promise<number>;
 
