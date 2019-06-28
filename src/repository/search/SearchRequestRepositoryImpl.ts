@@ -60,12 +60,12 @@ export default class SearchRequestRepositoryImpl implements SearchRequestReposit
         ).then((response) => this.jsonToListSearchRequests(response.json));
     }
 
-    public getAllSearchRequests(): Promise<Array<SearchRequest>> {
-        return this.transport.sendRequest(
-            this.SEARCH_REQUEST_API.replace('{owner}', '0x0').replace('{id}', ''),
-            HttpMethod.Get
-        ).then((response) => this.jsonToListSearchRequests(response.json));
-    }
+    // public getAllSearchRequests(): Promise<Array<SearchRequest>> {
+    //     return this.transport.sendRequest(
+    //         this.SEARCH_REQUEST_API.replace('{owner}', '0x0').replace('{id}', ''),
+    //         HttpMethod.Get
+    //     ).then((response) => this.jsonToListSearchRequests(response.json));
+    // }
 
     public getSearchRequestsByOwnerAndTag(owner: string, tag: string): Promise<Array<SearchRequest>> {
         return this.transport.sendRequest(
