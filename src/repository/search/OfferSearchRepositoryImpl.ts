@@ -2,7 +2,8 @@ import { SortOfferSearch } from '../../manager/SearchManager';
 import { JsonUtils } from '../../utils/JsonUtils';
 import { JsonObject } from '../models/JsonObject';
 import Offer from '../models/Offer';
-import OfferSearch, { OfferResultAction } from '../models/OfferSearch';
+import { OfferInteraction, OfferResultAction } from '../models/OfferInteraction';
+import { OfferSearch } from '../models/OfferSearch';
 import OfferSearchResultItem from '../models/OfferSearchResultItem';
 import { Page } from '../models/Page';
 import SearchRequest from '../models/SearchRequest';
@@ -20,7 +21,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     private readonly OFFER_SEARCH_ADD_API = '/v1/search/result/';
     private readonly OFFER_SEARCH_BY_PARAMS_API =
         '/v1/search/result/user?owner={owner}&searchIds={searchIds}' +
-        '&state={state}&unique={unique}&page={page}&size={size}&sort={sort}';
+        '&state={state}&unique={unique}&page={page}&size={size}&sort={sort}&interaction={interaction}';
 
     private readonly OFFER_SEARCH_GET_BY_REQUEST_OR_SEARCH_API =
         '/v1/search/result?searchRequestId={searchRequestId}&offerSearchId={offerSearchId}';
@@ -30,9 +31,8 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     private readonly OFFER_SEARCH_SUGGESTION_BY_QUERY_API: string =
         '/v1/search/query/suggest?q={query}&s={size}';
     private readonly OFFER_SEARCH_COUNT_BY_REQUEST_IDS_API: string = '/v1/search/count?ids={ids}';
-    private transport: HttpTransport;
 
-    constructor(transport: HttpTransport) {
+    constructor(private readonly transport: HttpTransport) {
         this.transport = transport;
     }
 
@@ -78,7 +78,8 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         unique: boolean = false,
         searchIds: Array<number> = [],
         state: Array<OfferResultAction> = [],
-        sort: SortOfferSearch
+        sort: SortOfferSearch,
+        interaction?: boolean
     ): Promise<Page<OfferSearchResultItem>> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_BY_PARAMS_API
@@ -89,6 +90,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
                 .replace('{state}', (state || []).join(','))
                 .replace('{unique}', (unique ? '1' : '0'))
                 .replace('{sort}', sort && sort.toString())
+                .replace('{interaction}', interaction === true ? '1' : '0')
             ,
             HttpMethod.Get
         ).then((response) => this.jsonToPageResultItem(response.json));
@@ -210,7 +212,10 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
                     const rawOfferSearch = json[key] as JsonObject<OfferSearchResultItem>;
                     return new OfferSearchResultItem(
                         OfferSearch.fromJson(rawOfferSearch.offerSearch as object),
-                        Offer.fromJson(rawOfferSearch.offer as object)
+                        Offer.fromJson(rawOfferSearch.offer as object),
+                        rawOfferSearch.interaction
+                        ? OfferInteraction.fromJson(rawOfferSearch.interaction as object)
+                        : undefined
                     );
                 }
             );
@@ -219,5 +224,4 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     private async jsonToOfferSearchList(json: JsonObject<Array<OfferSearch>>): Promise<Array<OfferSearch>> {
         return Object.keys(json).map(key => OfferSearch.fromJson(json[key] as object));
     }
-
 }

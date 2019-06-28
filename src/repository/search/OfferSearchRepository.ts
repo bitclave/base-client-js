@@ -1,8 +1,11 @@
 import { SortOfferSearch } from '../../manager/SearchManager';
-import OfferSearch, { OfferResultAction } from '../models/OfferSearch';
+import { OfferResultAction } from '../models/OfferInteraction';
+import { OfferSearch } from '../models/OfferSearch';
 import OfferSearchResultItem from '../models/OfferSearchResultItem';
 import { Page } from '../models/Page';
 import SearchRequest from '../models/SearchRequest';
+
+export enum OfferSearchRequestInterestMode { must = 'must', prefer = 'prefer'}
 
 export interface OfferSearchRepository {
 
@@ -25,7 +28,8 @@ export interface OfferSearchRepository {
         unique?: boolean,
         searchIds?: Array<number>,
         state?: Array<OfferResultAction>,
-        sort?: SortOfferSearch
+        sort?: SortOfferSearch,
+        interaction?: boolean
     ): Promise<Page<OfferSearchResultItem>>;
 
     getSearchResult(clientId: string, searchRequestId: number): Promise<Page<OfferSearchResultItem>>;
@@ -50,5 +54,3 @@ export interface OfferSearchRepository {
 
     clone(owner: string, id: number, searchRequest: SearchRequest): Promise<Array<OfferSearch>>;
 }
-
-export enum OfferSearchRequestInterestMode { must = 'must', prefer = 'prefer'}

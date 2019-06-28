@@ -68,5 +68,4 @@ export class OfferRankRepositoryImpl implements OfferRankRepository {
     private jsonToListOfferRanks(json: JsonObject<Array<OfferRank>>): Array<OfferRank> {
         return Object.keys(json).map(key => OfferRank.fromJson(json[key] as object));
     }
-
 }

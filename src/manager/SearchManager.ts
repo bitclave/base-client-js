@@ -1,4 +1,5 @@
-import OfferSearch, { OfferResultAction } from '../repository/models/OfferSearch';
+import { OfferResultAction } from '../repository/models/OfferInteraction';
+import { OfferSearch } from '../repository/models/OfferSearch';
 import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import { Page } from '../repository/models/Page';
 import SearchRequest from '../repository/models/SearchRequest';
@@ -37,7 +38,7 @@ export interface SearchManager {
         page?: number,
         size?: number,
         interests?: Array<string>,
-        mode?: OfferSearchRequestInterestMode
+        mode?: OfferSearchRequestInterestMode,
     ): Promise<Page<OfferSearchResultItem>>;
 
     getSearchResult(searchRequestId: number): Promise<Page<OfferSearchResultItem>>;
@@ -52,7 +53,8 @@ export interface SearchManager {
         unique?: boolean,
         searchIds?: Array<number>,
         state?: Array<OfferResultAction>,
-        sort?: SortOfferSearch
+        sort?: SortOfferSearch,
+        interaction?: boolean
     ): Promise<Page<OfferSearchResultItem>>;
 
     complainToSearchItem(searchResultId: number): Promise<void>;

@@ -1,5 +1,5 @@
 import Account from '../models/Account';
-import OfferSearch from '../models/OfferSearch';
+import { OfferSearch } from '../models/OfferSearch';
 import { HttpMethod } from '../source/http/HttpMethod';
 import { HttpTransport } from '../source/http/HttpTransport';
 import { VerifyRepository } from './VerifyRepository';

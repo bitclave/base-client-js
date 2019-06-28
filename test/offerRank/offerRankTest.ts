@@ -1,5 +1,5 @@
 // tslint:disable:no-unused-expression
-import Base, { CompareAction, Offer, OfferRank } from '../../src/Base';
+import Base, { OfferRank } from '../../src/Base';
 import Account from '../../src/repository/models/Account';
 
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
@@ -26,6 +26,7 @@ async function createUser(user: Base, pass: string): Promise<Account> {
 
     return await user.accountManager.registration(pass, someSigMessage); // this method private.
 }
+
 function randomOfferId() {
     return (new Date()).getTime();
 }
