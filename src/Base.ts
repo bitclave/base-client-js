@@ -30,10 +30,11 @@ import { DeepCopy } from './repository/models/DeepCopy';
 import { FileMeta } from './repository/models/FileMeta';
 import { JsonObject } from './repository/models/JsonObject';
 import Offer from './repository/models/Offer';
+import { OfferInteraction, OfferResultAction } from './repository/models/OfferInteraction';
 import { OfferPrice } from './repository/models/OfferPrice';
 import { OfferPriceRules } from './repository/models/OfferPriceRules';
 import { OfferRank } from './repository/models/OfferRank';
-import OfferSearch, { OfferResultAction } from './repository/models/OfferSearch';
+import { OfferSearch } from './repository/models/OfferSearch';
 import OfferSearchResultItem from './repository/models/OfferSearchResultItem';
 import OfferShareData from './repository/models/OfferShareData';
 import { Page, Pageable } from './repository/models/Page';
@@ -157,6 +158,7 @@ export {
     OfferRankManagerImpl,
     OfferRankRepositoryImpl,
     OfferResultAction,
+    OfferInteraction,
     OfferSearch,
     OfferSearchRepository,
     OfferSearchRepositoryImpl,

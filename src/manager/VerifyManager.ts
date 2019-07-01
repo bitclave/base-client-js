@@ -1,5 +1,5 @@
 import Account from '../repository/models/Account';
-import OfferSearch from '../repository/models/OfferSearch';
+import { OfferSearch } from '../repository/models/OfferSearch';
 
 export interface VerifyManager {
 

@@ -2,6 +2,7 @@
 import Base, {
     CompareAction,
     Offer,
+    OfferInteraction,
     OfferPrice,
     OfferResultAction,
     OfferSearch,
@@ -177,7 +178,7 @@ describe('Search Manager', async () => {
             const searchRequest = requestFactory();
             const insertedSearchRequest = await userBase.searchManager.createRequest(searchRequest);
 
-            const offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
+            const offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id);
             await userBase.searchManager.addResultItem(offerSearch);
 
             let searchRequests = (await userBase.searchManager.getSearchResult(insertedSearchRequest.id)).content;
@@ -195,10 +196,10 @@ describe('Search Manager', async () => {
 
             await userBase.searchManager.addEventToOfferSearch('updated', searchRequests[0].offerSearch.id);
             searchRequests = (await userBase.searchManager.getUserOfferSearches(
-                0, 10, true, [], [], SortOfferSearch.updatedAt
+                0, 10, true, [], [], SortOfferSearch.updatedAt, true
             )).content;
             searchRequests.length.should.be.eql(1);
-            searchRequests[0].offerSearch.events.length.should.be.eql(2);
+            (searchRequests[0].interaction as OfferInteraction).events.length.should.be.eql(1);
 
         } catch (e) {
             console.log(e);
@@ -212,7 +213,7 @@ describe('Search Manager', async () => {
             // create offer
             const getSearchRequests = async () => {
                 return (await userBase.searchManager.getUserOfferSearches(
-                    0, 10, true, [], [], SortOfferSearch.updatedAt
+                    0, 10, true, [], [], SortOfferSearch.updatedAt, true
                 )).content;
             };
 
@@ -222,7 +223,7 @@ describe('Search Manager', async () => {
             const searchRequest = requestFactory();
             const insertedSearchRequest = await userBase.searchManager.createRequest(searchRequest);
 
-            const offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
+            const offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id);
             await userBase.searchManager.addResultItem(offerSearch);
             let searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
@@ -231,31 +232,31 @@ describe('Search Manager', async () => {
             searchRequests.length.should.be.eql(1);
             searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
-            searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.CLAIMPURCHASE);
+            (searchRequests[0].interaction as OfferInteraction).state.should.be.eql(OfferResultAction.CLAIMPURCHASE);
 
             await userBase.searchManager.complainToSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
             searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
-            searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.COMPLAIN);
+            (searchRequests[0].interaction as OfferInteraction).state.should.be.eql(OfferResultAction.COMPLAIN);
 
             await userBase.searchManager.evaluateSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
             searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
-            searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.EVALUATE);
+            (searchRequests[0].interaction as OfferInteraction).state.should.be.eql(OfferResultAction.EVALUATE);
 
             await userBase.searchManager.rejectSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
             searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
-            searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.REJECT);
+            (searchRequests[0].interaction as OfferInteraction).state.should.be.eql(OfferResultAction.REJECT);
 
             await businessBase.searchManager.confirmSearchItem(searchRequests[0].offerSearch.id);
             searchRequests.length.should.be.eql(1);
             searchRequests = await getSearchRequests();
             searchRequests.length.should.be.eql(1);
-            searchRequests[0].offerSearch.state.should.be.eql(OfferResultAction.CONFIRMED);
+            (searchRequests[0].interaction as OfferInteraction).state.should.be.eql(OfferResultAction.CONFIRMED);
         } catch (e) {
             console.log(e);
             throw e;
@@ -272,7 +273,7 @@ describe('Search Manager', async () => {
             const searchRequest = requestFactory();
             const insertedSearchRequest = await userBase.searchManager.createRequest(searchRequest);
 
-            const offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
+            const offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id);
             await userBase.searchManager.addResultItem(offerSearch);
 
             let searchRequests = (await userBase.searchManager.getSearchResult(insertedSearchRequest.id)).content;
@@ -315,13 +316,13 @@ describe('Search Manager', async () => {
             const searchRequest = requestFactory();
             const createdSearchRequest = await userBase.searchManager.createRequest(searchRequest);
 
-            const offerSearch1 = new OfferSearch(createdSearchRequest.id, createdOffer1.id, ['created']);
+            const offerSearch1 = new OfferSearch(createdSearchRequest.id, createdOffer1.id);
             await userBase.searchManager.addResultItem(offerSearch1);
 
-            const offerSearch2 = new OfferSearch(createdSearchRequest.id, createdOffer2.id, ['created']);
+            const offerSearch2 = new OfferSearch(createdSearchRequest.id, createdOffer2.id);
             await userBase.searchManager.addResultItem(offerSearch2);
 
-            const offerSearch3 = new OfferSearch(createdSearchRequest.id, createdOffer3.id, ['created']);
+            const offerSearch3 = new OfferSearch(createdSearchRequest.id, createdOffer3.id);
             await userBase.searchManager.addResultItem(offerSearch3);
 
             const searchRequests = await userBase
@@ -365,16 +366,16 @@ describe('Search Manager', async () => {
             const searchRequest = requestFactory();
             const createdSearchRequest = await userBase.searchManager.createRequest(searchRequest);
 
-            const offerSearch1 = new OfferSearch(createdSearchRequest.id, createdOffer1.id, ['created']);
+            const offerSearch1 = new OfferSearch(createdSearchRequest.id, createdOffer1.id);
             await userBase.searchManager.addResultItem(offerSearch1);
 
-            const offerSearch2 = new OfferSearch(createdSearchRequest.id, createdOffer2.id, ['created']);
+            const offerSearch2 = new OfferSearch(createdSearchRequest.id, createdOffer2.id);
             await userBase.searchManager.addResultItem(offerSearch2);
 
-            const offerSearch3 = new OfferSearch(createdSearchRequest.id, createdOffer3.id, ['created']);
+            const offerSearch3 = new OfferSearch(createdSearchRequest.id, createdOffer3.id);
             await userBase.searchManager.addResultItem(offerSearch3);
 
-            const offerSearch4 = new OfferSearch(createdSearchRequest.id, createdOffer4.id, ['created']);
+            const offerSearch4 = new OfferSearch(createdSearchRequest.id, createdOffer4.id);
             await userBase.searchManager.addResultItem(offerSearch4);
 
             const searchRequests = await userBase.searchManager
@@ -419,16 +420,16 @@ describe('Search Manager', async () => {
             const searchRequest2 = requestFactory();
             const createdSearchRequest2 = await userBase.searchManager.createRequest(searchRequest2);
 
-            const offerSearch1 = new OfferSearch(createdSearchRequest1.id, createdOffer1.id, ['created']);
+            const offerSearch1 = new OfferSearch(createdSearchRequest1.id, createdOffer1.id);
             await userBase.searchManager.addResultItem(offerSearch1);
 
-            const offerSearch2 = new OfferSearch(createdSearchRequest2.id, createdOffer2.id, ['created']);
+            const offerSearch2 = new OfferSearch(createdSearchRequest2.id, createdOffer2.id);
             await userBase.searchManager.addResultItem(offerSearch2);
 
-            const offerSearch3 = new OfferSearch(createdSearchRequest2.id, createdOffer3.id, ['created']);
+            const offerSearch3 = new OfferSearch(createdSearchRequest2.id, createdOffer3.id);
             await userBase.searchManager.addResultItem(offerSearch3);
 
-            const offerSearch4 = new OfferSearch(createdSearchRequest1.id, createdOffer4.id, ['created']);
+            const offerSearch4 = new OfferSearch(createdSearchRequest1.id, createdOffer4.id);
             await userBase.searchManager.addResultItem(offerSearch4);
 
             const searchRequests = await userBase.searchManager
@@ -468,16 +469,16 @@ describe('Search Manager', async () => {
             const searchRequest1 = requestFactory();
             const createdSearchRequest1 = await userBase.searchManager.createRequest(searchRequest1);
 
-            const offerSearch1 = new OfferSearch(createdSearchRequest1.id, createdOffer1.id, ['created']);
+            const offerSearch1 = new OfferSearch(createdSearchRequest1.id, createdOffer1.id);
             await userBase.searchManager.addResultItem(offerSearch1);
 
-            const offerSearch2 = new OfferSearch(createdSearchRequest1.id, createdOffer2.id, ['created']);
+            const offerSearch2 = new OfferSearch(createdSearchRequest1.id, createdOffer2.id);
             await userBase.searchManager.addResultItem(offerSearch2);
 
-            const offerSearch3 = new OfferSearch(createdSearchRequest1.id, createdOffer3.id, ['created']);
+            const offerSearch3 = new OfferSearch(createdSearchRequest1.id, createdOffer3.id);
             await userBase.searchManager.addResultItem(offerSearch3);
 
-            const offerSearch4 = new OfferSearch(createdSearchRequest1.id, createdOffer4.id, ['created']);
+            const offerSearch4 = new OfferSearch(createdSearchRequest1.id, createdOffer4.id);
             await userBase.searchManager.addResultItem(offerSearch4);
 
             const searchRequests1 = await userBase.searchManager
@@ -534,16 +535,16 @@ describe('Search Manager', async () => {
             const searchRequest = requestFactory();
             const createdSearchRequest = await userBase.searchManager.createRequest(searchRequest);
 
-            const offerSearch1 = new OfferSearch(createdSearchRequest.id, createdOffer1.id, ['created']);
+            const offerSearch1 = new OfferSearch(createdSearchRequest.id, createdOffer1.id);
             await userBase.searchManager.addResultItem(offerSearch1);
 
-            const offerSearch2 = new OfferSearch(createdSearchRequest.id, createdOffer2.id, ['created']);
+            const offerSearch2 = new OfferSearch(createdSearchRequest.id, createdOffer2.id);
             await userBase.searchManager.addResultItem(offerSearch2);
 
-            const offerSearch3 = new OfferSearch(createdSearchRequest.id, createdOffer3.id, ['created']);
+            const offerSearch3 = new OfferSearch(createdSearchRequest.id, createdOffer3.id);
             await userBase.searchManager.addResultItem(offerSearch3);
 
-            const offerSearch4 = new OfferSearch(createdSearchRequest.id, createdOffer4.id, ['created']);
+            const offerSearch4 = new OfferSearch(createdSearchRequest.id, createdOffer4.id);
             await userBase.searchManager.addResultItem(offerSearch4);
 
             const searchRequests = await userBase.searchManager
@@ -592,16 +593,16 @@ describe('Search Manager', async () => {
             const searchRequest2 = requestFactory();
             const createdSearchRequest2 = await userBase.searchManager.createRequest(searchRequest2);
 
-            const offerSearch1 = new OfferSearch(createdSearchRequest1.id, createdOffer1.id, ['created']);
+            const offerSearch1 = new OfferSearch(createdSearchRequest1.id, createdOffer1.id);
             await userBase.searchManager.addResultItem(offerSearch1);
 
-            const offerSearch2 = new OfferSearch(createdSearchRequest2.id, createdOffer2.id, ['created']);
+            const offerSearch2 = new OfferSearch(createdSearchRequest2.id, createdOffer2.id);
             await userBase.searchManager.addResultItem(offerSearch2);
 
-            const offerSearch3 = new OfferSearch(createdSearchRequest2.id, createdOffer3.id, ['created']);
+            const offerSearch3 = new OfferSearch(createdSearchRequest2.id, createdOffer3.id);
             await userBase.searchManager.addResultItem(offerSearch3);
 
-            const offerSearch4 = new OfferSearch(createdSearchRequest1.id, createdOffer4.id, ['created']);
+            const offerSearch4 = new OfferSearch(createdSearchRequest1.id, createdOffer4.id);
             await userBase.searchManager.addResultItem(offerSearch4);
 
             const searchRequests = await userBase.searchManager
@@ -645,16 +646,16 @@ describe('Search Manager', async () => {
             const searchRequest1 = requestFactory();
             const createdSearchRequest1 = await userBase.searchManager.createRequest(searchRequest1);
 
-            const offerSearch1 = new OfferSearch(createdSearchRequest1.id, createdOffer1.id, ['created']);
+            const offerSearch1 = new OfferSearch(createdSearchRequest1.id, createdOffer1.id);
             await userBase.searchManager.addResultItem(offerSearch1);
 
-            const offerSearch2 = new OfferSearch(createdSearchRequest1.id, createdOffer2.id, ['created']);
+            const offerSearch2 = new OfferSearch(createdSearchRequest1.id, createdOffer2.id);
             await userBase.searchManager.addResultItem(offerSearch2);
 
-            const offerSearch3 = new OfferSearch(createdSearchRequest1.id, createdOffer3.id, ['created']);
+            const offerSearch3 = new OfferSearch(createdSearchRequest1.id, createdOffer3.id);
             await userBase.searchManager.addResultItem(offerSearch3);
 
-            const offerSearch4 = new OfferSearch(createdSearchRequest1.id, createdOffer4.id, ['created']);
+            const offerSearch4 = new OfferSearch(createdSearchRequest1.id, createdOffer4.id);
             await userBase.searchManager.addResultItem(offerSearch4);
 
             const searchRequests1 = await userBase.searchManager
