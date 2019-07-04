@@ -26,7 +26,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     private readonly INTERACTIONS_API = '/v1/search/result/interaction?owner={owner}&offers={offers}&states={states}';
 
     private readonly OFFER_SEARCH_GET_BY_REQUEST_OR_SEARCH_API =
-        '/v1/search/result?searchRequestId={searchRequestId}&offerSearchId={offerSearchId}';
+        '/v1/search/result?searchRequestId={searchRequestId}&offerSearchId={offerSearchId}&page={page}&size={size}';
     private readonly OFFER_SEARCH_ADD_EVENT_API = '/v1/search/result/event/{id}';
     private readonly OFFER_SEARCH_CREATE_BY_QUERY_API: string =
         '/v1/search/query?q={query}&page={page}&size={size}&mode={mode}';
@@ -98,23 +98,34 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         ).then((response) => this.jsonToPageResultItem(response.json));
     }
 
-    public getSearchResult(clientId: string, searchRequestId: number): Promise<Page<OfferSearchResultItem>> {
+    public getSearchResult(
+        clientId: string,
+        searchRequestId: number,
+        page?: number,
+        size?: number
+    ): Promise<Page<OfferSearchResultItem>> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_GET_BY_REQUEST_OR_SEARCH_API
                 .replace('{searchRequestId}', searchRequestId.toString())
-                .replace('{offerSearchId}', '0'),
+                .replace('{offerSearchId}', '0')
+                .replace('{page}', (page || 0).toString())
+                .replace('{size}', (size || 20).toString()),
             HttpMethod.Get
         ).then((response) => this.jsonToPageResultItem(response.json));
     }
 
     public getSearchResultByOfferSearchId(
         clientId: string,
-        offerSearchId: number
+        offerSearchId: number,
+        page?: number,
+        size?: number
     ): Promise<Page<OfferSearchResultItem>> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_GET_BY_REQUEST_OR_SEARCH_API
                 .replace('{searchRequestId}', '0')
-                .replace('{offerSearchId}', offerSearchId.toString()),
+                .replace('{offerSearchId}', offerSearchId.toString())
+                .replace('{page}', (page || 0).toString())
+                .replace('{size}', (size || 20).toString()),
             HttpMethod.Get
         ).then((response) => this.jsonToPageResultItem(response.json));
     }

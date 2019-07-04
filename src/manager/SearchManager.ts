@@ -26,7 +26,7 @@ export interface SearchManager {
 
     getRequestsByOwnerAndId(owner: string, id?: number): Promise<Array<SearchRequest>>;
 
-    // getAllRequests(): Promise<Array<SearchRequest>>;
+    getRequestsByPage(page?: number, size?: number): Promise<Page<SearchRequest>>;
 
     deleteRequest(id: number): Promise<number>;
 
@@ -41,9 +41,13 @@ export interface SearchManager {
         mode?: OfferSearchRequestInterestMode,
     ): Promise<Page<OfferSearchResultItem>>;
 
-    getSearchResult(searchRequestId: number): Promise<Page<OfferSearchResultItem>>;
+    getSearchResult(searchRequestId: number, page?: number, size?: number): Promise<Page<OfferSearchResultItem>>;
 
-    getSearchResultByOfferSearchId(offerSearchId: number): Promise<Page<OfferSearchResultItem>>;
+    getSearchResultByOfferSearchId(
+        offerSearchId: number,
+        page?: number,
+        size?: number
+    ): Promise<Page<OfferSearchResultItem>>;
 
     getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>>;
 

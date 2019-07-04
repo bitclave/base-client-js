@@ -8,11 +8,8 @@ import { OfferManager } from './OfferManager';
 export class OfferManagerImpl implements OfferManager {
 
     private account: Account = new Account();
-    private offerRepository: OfferRepository;
 
-    constructor(offerRepository: OfferRepository, authAccountBehavior: Observable<Account>) {
-        this.offerRepository = offerRepository;
-
+    constructor(private readonly offerRepository: OfferRepository, authAccountBehavior: Observable<Account>) {
         authAccountBehavior
             .subscribe(this.onChangeAccount.bind(this));
     }
@@ -46,8 +43,16 @@ export class OfferManagerImpl implements OfferManager {
         return this.offerRepository.getOfferByOwnerAndPage(this.account.publicKey, page, size);
     }
 
+    /**
+     * @deprecated
+     * @see getOffersByPage
+     */
     public getAllOffers(): Promise<Array<Offer>> {
         return this.offerRepository.getAllOffer();
+    }
+
+    public getOffersByPage(page?: number, size?: number): Promise<Page<Offer>> {
+        return this.offerRepository.getOffersByPage(page, size);
     }
 
     public deleteOffer(id: number): Promise<number> {
@@ -65,5 +70,4 @@ export class OfferManagerImpl implements OfferManager {
     private onChangeAccount(account: Account) {
         this.account = account;
     }
-
 }

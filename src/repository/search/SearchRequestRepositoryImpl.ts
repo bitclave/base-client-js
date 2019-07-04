@@ -1,4 +1,5 @@
 import { JsonObject } from '../models/JsonObject';
+import { Page } from '../models/Page';
 import SearchRequest from '../models/SearchRequest';
 import { HttpMethod } from '../source/http/HttpMethod';
 import { HttpTransport } from '../source/http/HttpTransport';
@@ -7,11 +8,9 @@ import { SearchRequestRepository } from './SearchRequestRepository';
 export default class SearchRequestRepositoryImpl implements SearchRequestRepository {
 
     private readonly SEARCH_REQUEST_API: string = '/v1/client/{owner}/search/request/{id}';
+    private readonly SEARCH_REQUEST_PAGEABLE_API: string = '/v1/search/requests?page={page}&size={size}';
 
-    private transport: HttpTransport;
-
-    constructor(transport: HttpTransport) {
-        this.transport = transport;
+    constructor(private readonly transport: HttpTransport) {
     }
 
     public create(owner: string, searchRequest: SearchRequest): Promise<SearchRequest> {
@@ -60,13 +59,6 @@ export default class SearchRequestRepositoryImpl implements SearchRequestReposit
         ).then((response) => this.jsonToListSearchRequests(response.json));
     }
 
-    // public getAllSearchRequests(): Promise<Array<SearchRequest>> {
-    //     return this.transport.sendRequest(
-    //         this.SEARCH_REQUEST_API.replace('{owner}', '0x0').replace('{id}', ''),
-    //         HttpMethod.Get
-    //     ).then((response) => this.jsonToListSearchRequests(response.json));
-    // }
-
     public getSearchRequestsByOwnerAndTag(owner: string, tag: string): Promise<Array<SearchRequest>> {
         return this.transport.sendRequest(
             this.SEARCH_REQUEST_API.replace('{owner}', owner).replace('{id}', 'tag/' + tag),
@@ -74,8 +66,24 @@ export default class SearchRequestRepositoryImpl implements SearchRequestReposit
         ).then((response) => this.jsonToListSearchRequests(response.json));
     }
 
+    public getSearchRequestByPage(page?: number, size?: number): Promise<Page<SearchRequest>> {
+        return this.transport.sendRequest(
+            this.SEARCH_REQUEST_PAGEABLE_API
+                .replace('{page}', (page || 0).toString())
+                .replace('{size}', (size || 20).toString()),
+            HttpMethod.Get
+        ).then((response) => this.jsonToPageResultItem(response.json));
+    }
+
+    private async jsonToPageResultItem(
+        json: JsonObject<Page<SearchRequest>>
+    ): Promise<Page<SearchRequest>> {
+        json.content = await this.jsonToListSearchRequests(json.content as JsonObject<Array<SearchRequest>>);
+
+        return Page.fromJson(json, SearchRequest);
+    }
+
     private jsonToListSearchRequests(json: JsonObject<Array<SearchRequest>>): Array<SearchRequest> {
         return Object.keys(json).map(key => SearchRequest.fromJson(json[key] as object));
     }
-
 }

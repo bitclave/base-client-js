@@ -784,4 +784,16 @@ describe('search manager with search by query', async () => {
             throw err;
         }
     });
+
+    it('should return page with searchRequests', async () => {
+        try {
+            const requests = await userBase.searchManager.getRequestsByPage();
+
+            const expected = Math.min(20, requests.total);
+            requests.content.length.should.be.eql(expected);
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    });
 });

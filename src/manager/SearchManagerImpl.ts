@@ -61,9 +61,9 @@ export class SearchManagerImpl implements SearchManager {
         }
     }
 
-    // public getAllRequests(): Promise<Array<SearchRequest>> {
-    //     return this.requestRepository.getAllSearchRequests();
-    // }
+    public getRequestsByPage(page?: number, size?: number): Promise<Page<SearchRequest>> {
+        return this.requestRepository.getSearchRequestByPage(page, size);
+    }
 
     public deleteRequest(id: number): Promise<number> {
         return this.requestRepository.deleteById(this.account.publicKey, id);
@@ -96,8 +96,12 @@ export class SearchManagerImpl implements SearchManager {
         return this.offerSearchRepository.getCountBySearchRequestIds(searchRequestIds);
     }
 
-    public getSearchResult(searchRequestId: number): Promise<Page<OfferSearchResultItem>> {
-        return this.offerSearchRepository.getSearchResult(this.account.publicKey, searchRequestId);
+    public getSearchResult(
+        searchRequestId: number,
+        page?: number,
+        size?: number
+    ): Promise<Page<OfferSearchResultItem>> {
+        return this.offerSearchRepository.getSearchResult(this.account.publicKey, searchRequestId, page, size);
     }
 
     public getUserOfferSearches(
@@ -121,8 +125,17 @@ export class SearchManagerImpl implements SearchManager {
         return this.offerSearchRepository.getInteractions(owner ? owner : this.account.publicKey, offerIds, states);
     }
 
-    public getSearchResultByOfferSearchId(offerSearchId: number): Promise<Page<OfferSearchResultItem>> {
-        return this.offerSearchRepository.getSearchResultByOfferSearchId(this.account.publicKey, offerSearchId);
+    public getSearchResultByOfferSearchId(
+        offerSearchId: number,
+        page?: number,
+        size?: number
+    ): Promise<Page<OfferSearchResultItem>> {
+        return this.offerSearchRepository.getSearchResultByOfferSearchId(
+            this.account.publicKey,
+            offerSearchId,
+            page,
+            size
+        );
     }
 
     public complainToSearchItem(searchResultId: number): Promise<void> {
