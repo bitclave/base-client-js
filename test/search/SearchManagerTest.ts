@@ -331,9 +331,9 @@ describe('Search Manager', async () => {
 
             const content = searchRequests.content;
             content.length.should.be.eql(3);
-            content[0].offer.title.should.be.eql('1');
-            content[1].offer.title.should.be.eql('3');
-            content[2].offer.title.should.be.eql('2');
+            content[0].offer.title.should.be.eql('3');
+            content[1].offer.title.should.be.eql('2');
+            content[2].offer.title.should.be.eql('1');
         } catch (err) {
             console.error(err);
         }
