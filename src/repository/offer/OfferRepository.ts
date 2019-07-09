@@ -14,10 +14,16 @@ export interface OfferRepository {
     getOfferByOwnerAndId(owner: string, id: number): Promise<Array<Offer>>;
 
     getOfferByOwner(owner: string): Promise<Array<Offer>>;
+
     getOfferByOwnerAndPage(owner: string, page?: number, size?: number): Promise<Page<Offer>>;
 
+    getOffersByPage(page?: number, size?: number): Promise<Page<Offer>>;
+
+    /**
+     * @deprecated
+     * @see getOffersByPage
+     */
     getAllOffer(): Promise<Array<Offer>>;
 
     getOffersByOwnerAndTag(owner: string, tag: string): Promise<Array<Offer>>;
-
 }

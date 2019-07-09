@@ -10,5 +10,4 @@ export class EthereumUtils {
     public static createSig<T>(privateKey: string, data: MessageData<T>): string {
         return SigUtil.personalSign(Buffer.from(privateKey, 'hex'), data);
     }
-
 }

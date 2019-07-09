@@ -10,6 +10,7 @@ export default class OfferRepositoryImpl implements OfferRepository {
     private readonly OFFER_API: string = '/v1/client/{owner}/offer/{id}';
     private readonly OFFER_SHALLOW_UPDATE_API: string = '/v1/client/{owner}/offer/shallow/{id}';
     private readonly OFFER_API_PAGE: string = '/v1/client/{owner}/offer/{id}/owner?page={page}&size={size}';
+    private readonly OFFERS_PAGEABLE_API: string = '/v1/offers?page={page}&size={size}';
 
     private transport: HttpTransport;
 
@@ -73,6 +74,19 @@ export default class OfferRepositoryImpl implements OfferRepository {
         ).then((response) => this.jsonToPageResultItem(response.json));
     }
 
+    public getOffersByPage(page?: number, size?: number): Promise<Page<Offer>> {
+        return this.transport.sendRequest(
+            this.OFFERS_PAGEABLE_API
+                .replace('{page}', (page || 0).toString())
+                .replace('{size}', (size || 20).toString()),
+            HttpMethod.Get
+        ).then((response) => this.jsonToPageResultItem(response.json));
+    }
+
+    /**
+     * @deprecated
+     * @see getOffersByPage
+     */
     public getAllOffer(): Promise<Array<Offer>> {
         return this.transport.sendRequest(
             this.OFFER_API.replace('{owner}', '0x0').replace('{id}', ''),

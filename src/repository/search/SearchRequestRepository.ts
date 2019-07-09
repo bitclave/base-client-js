@@ -1,3 +1,4 @@
+import { Page } from '../models/Page';
 import SearchRequest from '../models/SearchRequest';
 
 export interface SearchRequestRepository {
@@ -14,7 +15,7 @@ export interface SearchRequestRepository {
 
     getSearchRequestByOwner(owner: string): Promise<Array<SearchRequest>>;
 
-    // getAllSearchRequests(): Promise<Array<SearchRequest>>;
-
     getSearchRequestsByOwnerAndTag(owner: string, tag: string): Promise<Array<SearchRequest>>;
+
+    getSearchRequestByPage(page?: number, size?: number): Promise<Page<SearchRequest>>;
 }

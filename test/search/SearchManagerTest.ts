@@ -331,9 +331,9 @@ describe('Search Manager', async () => {
 
             const content = searchRequests.content;
             content.length.should.be.eql(3);
-            content[0].offer.title.should.be.eql('1');
-            content[1].offer.title.should.be.eql('3');
-            content[2].offer.title.should.be.eql('2');
+            content[0].offer.title.should.be.eql('3');
+            content[1].offer.title.should.be.eql('2');
+            content[2].offer.title.should.be.eql('1');
         } catch (err) {
             console.error(err);
         }
@@ -779,6 +779,18 @@ describe('search manager with search by query', async () => {
             // @ts-ignore
             userBase.searchManager.offerSearchRepository.transport.sendRequest = originFnc;
             result.should.be.eq(transportResult);
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    });
+
+    it('should return page with searchRequests', async () => {
+        try {
+            const requests = await userBase.searchManager.getRequestsByPage();
+
+            const expected = Math.min(20, requests.total);
+            requests.content.length.should.be.eql(expected);
         } catch (err) {
             console.log(err);
             throw err;
