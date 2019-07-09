@@ -21,7 +21,7 @@ export interface SearchManager {
 
     cloneRequest(searchRequestIds: Array<number>): Promise<Array<SearchRequest>>;
 
-    cloneOfferSearch(originalToCopyOfferSearchIds: Array<Pair<number, number>>): Promise<Array<OfferSearch>>;
+    cloneOfferSearch(originToCopySearchRequestIds: Array<Pair<number, number>>): Promise<Array<OfferSearch>>;
 
     getMyRequests(id?: number): Promise<Array<SearchRequest>>;
 

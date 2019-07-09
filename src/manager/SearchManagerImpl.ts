@@ -40,8 +40,8 @@ export class SearchManagerImpl implements SearchManager {
         return this.requestRepository.clone(this.account.publicKey, searchRequestIds);
     }
 
-    public cloneOfferSearch(originalToCopyOfferSearchIds: Array<Pair<number, number>>): Promise<Array<OfferSearch>> {
-        return this.offerSearchRepository.clone(this.account.publicKey, originalToCopyOfferSearchIds);
+    public cloneOfferSearch(originToCopySearchRequestIds: Array<Pair<number, number>>): Promise<Array<OfferSearch>> {
+        return this.offerSearchRepository.clone(this.account.publicKey, originToCopySearchRequestIds);
     }
 
     public getMyRequests(id?: number): Promise<Array<SearchRequest>> {

@@ -219,12 +219,12 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
 
     public clone(
         owner: string,
-        originalToCopyOfferSearchIds: Array<Pair<number, number>>
+        originToCopySearchRequestIds: Array<Pair<number, number>>
     ): Promise<Array<OfferSearch>> {
         return this.transport.sendRequest(
             this.OFFER_SEARCH_ADD_API_V2 + owner,
             HttpMethod.Put,
-            originalToCopyOfferSearchIds
+            originToCopySearchRequestIds
         ).then((response) => this.jsonToOfferSearchList(response.json));
     }
 
