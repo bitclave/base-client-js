@@ -3,7 +3,7 @@ import { OfferInteraction, OfferResultAction } from '../models/OfferInteraction'
 import { OfferSearch } from '../models/OfferSearch';
 import OfferSearchResultItem from '../models/OfferSearchResultItem';
 import { Page } from '../models/Page';
-import SearchRequest from '../models/SearchRequest';
+import { Pair } from '../models/Pair';
 
 export enum OfferSearchRequestInterestMode { must = 'must', prefer = 'prefer'}
 
@@ -68,5 +68,5 @@ export interface OfferSearchRepository {
 
     addEventToOfferSearch(event: string, offerSearchId: number): Promise<void>;
 
-    clone(owner: string, id: number, searchRequest: SearchRequest): Promise<Array<OfferSearch>>;
+    clone(owner: string, originalToCopyOfferSearchIds: Array<Pair<number, number>>): Promise<Array<OfferSearch>>;
 }

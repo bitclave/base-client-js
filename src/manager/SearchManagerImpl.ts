@@ -4,6 +4,7 @@ import { OfferInteraction, OfferResultAction } from '../repository/models/OfferI
 import { OfferSearch } from '../repository/models/OfferSearch';
 import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import { Page } from '../repository/models/Page';
+import { Pair } from '../repository/models/Pair';
 import SearchRequest from '../repository/models/SearchRequest';
 import { OfferSearchRepository, OfferSearchRequestInterestMode } from '../repository/search/OfferSearchRepository';
 import { SearchRequestRepository } from '../repository/search/SearchRequestRepository';
@@ -35,12 +36,12 @@ export class SearchManagerImpl implements SearchManager {
         return this.requestRepository.update(this.account.publicKey, searchRequest.id, searchRequest);
     }
 
-    public cloneRequest(searchRequest: SearchRequest): Promise<SearchRequest> {
-        return this.requestRepository.clone(this.account.publicKey, searchRequest);
+    public cloneRequest(searchRequestIds: Array<number>): Promise<Array<SearchRequest>> {
+        return this.requestRepository.clone(this.account.publicKey, searchRequestIds);
     }
 
-    public cloneOfferSearch(id: number, searchRequest: SearchRequest): Promise<Array<OfferSearch>> {
-        return this.offerSearchRepository.clone(this.account.publicKey, id, searchRequest);
+    public cloneOfferSearch(originalToCopyOfferSearchIds: Array<Pair<number, number>>): Promise<Array<OfferSearch>> {
+        return this.offerSearchRepository.clone(this.account.publicKey, originalToCopyOfferSearchIds);
     }
 
     public getMyRequests(id?: number): Promise<Array<SearchRequest>> {
@@ -177,5 +178,4 @@ export class SearchManagerImpl implements SearchManager {
     private onChangeAccount(account: Account) {
         this.account = account;
     }
-
 }
