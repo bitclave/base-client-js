@@ -285,9 +285,11 @@ describe('Search Manager', async () => {
             searchRequests = (await userBase.searchManager.getSearchResult(clonedSearchRequest.id)).content;
             searchRequests.length.should.be.eql(1);
 
+            const copyToSearchRequest = await userBase.searchManager.createRequest(searchRequest);
+
             const clonedSearchRequest2 = await userBase.searchManager.cloneOfferSearch(
                 clonedSearchRequest.id,
-                searchRequest
+                copyToSearchRequest
             );
             clonedSearchRequest2.length.should.be.eql(1);
             clonedSearchRequest2[0].offerId.should.be.eql(businessOffer.id);
