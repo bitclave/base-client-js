@@ -6,7 +6,7 @@ import { OfferInteraction, OfferResultAction } from '../models/OfferInteraction'
 import { OfferSearch } from '../models/OfferSearch';
 import OfferSearchResultItem from '../models/OfferSearchResultItem';
 import { Page } from '../models/Page';
-import SearchRequest from '../models/SearchRequest';
+import { Pair } from '../models/Pair';
 import { HttpMethod } from '../source/http/HttpMethod';
 import { HttpTransport } from '../source/http/HttpTransport';
 import { OfferSearchRepository, OfferSearchRequestInterestMode } from './OfferSearchRepository';
@@ -19,6 +19,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
     private readonly OFFER_SEARCH_CONFIRM_API = '/v1/search/result/confirm/{id}';
     private readonly OFFER_SEARCH_CLAIM_PURCHASE_API = '/v1/search/result/claimpurchase/{id}';
     private readonly OFFER_SEARCH_ADD_API = '/v1/search/result/';
+    private readonly OFFER_SEARCH_ADD_API_V2 = '/v2/search/result/';
     private readonly OFFER_SEARCH_BY_PARAMS_API =
         '/v1/search/result/user?owner={owner}&searchIds={searchIds}' +
         '&state={state}&unique={unique}&page={page}&size={size}&sort={sort}&interaction={interaction}';
@@ -216,11 +217,14 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         );
     }
 
-    public clone(owner: string, id: number, searchRequest: SearchRequest): Promise<Array<OfferSearch>> {
+    public clone(
+        owner: string,
+        originToCopySearchRequestIds: Array<Pair<number, number>>
+    ): Promise<Array<OfferSearch>> {
         return this.transport.sendRequest(
-            this.OFFER_SEARCH_ADD_API + owner + '/' + id,
+            this.OFFER_SEARCH_ADD_API_V2 + owner,
             HttpMethod.Put,
-            searchRequest.toJson()
+            originToCopySearchRequestIds
         ).then((response) => this.jsonToOfferSearchList(response.json));
     }
 

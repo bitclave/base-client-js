@@ -2,6 +2,7 @@ import { OfferInteraction, OfferResultAction } from '../repository/models/OfferI
 import { OfferSearch } from '../repository/models/OfferSearch';
 import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import { Page } from '../repository/models/Page';
+import { Pair } from '../repository/models/Pair';
 import SearchRequest from '../repository/models/SearchRequest';
 import { OfferSearchRequestInterestMode } from '../repository/search/OfferSearchRepository';
 
@@ -18,9 +19,9 @@ export interface SearchManager {
 
     updateRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
 
-    cloneRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
+    cloneRequest(searchRequestIds: Array<number>): Promise<Array<SearchRequest>>;
 
-    cloneOfferSearch(id: number, searchRequest: SearchRequest): Promise<Array<OfferSearch>>;
+    cloneOfferSearch(originToCopySearchRequestIds: Array<Pair<number, number>>): Promise<Array<OfferSearch>>;
 
     getMyRequests(id?: number): Promise<Array<SearchRequest>>;
 

@@ -8,6 +8,7 @@ import { SearchRequestRepository } from './SearchRequestRepository';
 export default class SearchRequestRepositoryImpl implements SearchRequestRepository {
 
     private readonly SEARCH_REQUEST_API: string = '/v1/client/{owner}/search/request/{id}';
+    private readonly SEARCH_REQUEST_API_V2: string = '/v2/client/{owner}/search/request/{id}';
     private readonly SEARCH_REQUEST_PAGEABLE_API: string = '/v1/search/requests?page={page}&size={size}';
 
     constructor(private readonly transport: HttpTransport) {
@@ -29,12 +30,12 @@ export default class SearchRequestRepositoryImpl implements SearchRequestReposit
         ).then((response) => SearchRequest.fromJson(response.json));
     }
 
-    public clone(owner: string, searchRequest: SearchRequest): Promise<SearchRequest> {
+    public clone(owner: string, searchRequestIds: Array<number>): Promise<Array<SearchRequest>> {
         return this.transport.sendRequest(
-            this.SEARCH_REQUEST_API.replace('{owner}', owner).replace('{id}', ''),
+            this.SEARCH_REQUEST_API_V2.replace('{owner}', owner).replace('{id}', ''),
             HttpMethod.Put,
-            searchRequest.toJson()
-        ).then((response) => SearchRequest.fromJson(response.json));
+            searchRequestIds
+        ).then((response) => this.jsonToListSearchRequests(response.json));
     }
 
     public deleteById(owner: string, id: number): Promise<number> {

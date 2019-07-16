@@ -38,6 +38,7 @@ import { OfferSearch } from './repository/models/OfferSearch';
 import OfferSearchResultItem from './repository/models/OfferSearchResultItem';
 import OfferShareData from './repository/models/OfferShareData';
 import { Page, Pageable } from './repository/models/Page';
+import { Pair } from './repository/models/Pair';
 import Profile from './repository/models/Profile';
 import SearchRequest from './repository/models/SearchRequest';
 import { ExternalService } from './repository/models/services/ExternalService';
@@ -167,6 +168,7 @@ export {
     OfferShareData,
     OfferShareDataRepository,
     OfferShareDataRepositoryImpl,
+    Pair,
     Page,
     Pageable,
     PermissionsSource,

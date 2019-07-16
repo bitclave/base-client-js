@@ -11,6 +11,7 @@ import Base, {
 } from '../../src/Base';
 import { SortOfferSearch } from '../../src/manager/SearchManager';
 import Account from '../../src/repository/models/Account';
+import { Pair } from '../../src/repository/models/Pair';
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
 import { HttpMethod } from '../../src/repository/source/http/HttpMethod';
 import { Response } from '../../src/repository/source/http/Response';
@@ -279,21 +280,33 @@ describe('Search Manager', async () => {
             let searchRequests = (await userBase.searchManager.getSearchResult(insertedSearchRequest.id)).content;
             searchRequests.length.should.be.eql(1);
 
-            const clonedSearchRequest = await userBase.searchManager.cloneRequest(insertedSearchRequest);
-            clonedSearchRequest.should.be.exist;
+            const clonedSearchRequest = await userBase.searchManager.cloneRequest([insertedSearchRequest.id]);
+            clonedSearchRequest.length.should.be.eq(1);
 
-            searchRequests = (await userBase.searchManager.getSearchResult(clonedSearchRequest.id)).content;
+            searchRequests = (await userBase.searchManager.getSearchResult(clonedSearchRequest[0].id)).content;
             searchRequests.length.should.be.eql(1);
 
-            const copyToSearchRequest = await userBase.searchManager.createRequest(searchRequest);
+            let clonedOfferSearch = (await userBase.searchManager.getSearchResult(clonedSearchRequest[0].id)).content;
+            clonedOfferSearch.length.should.be.eql(1);
+            clonedOfferSearch[0].offer.id.should.be.eq(offerSearch.offerId);
+            clonedOfferSearch[0].offerSearch.offerId.should.be.eq(offerSearch.offerId);
+            clonedOfferSearch[0].offerSearch.owner.should.be.eq(clonedSearchRequest[0].owner);
+
+            const freeSearchRequest = await userBase.searchManager.createRequest(searchRequest);
 
             const clonedSearchRequest2 = await userBase.searchManager.cloneOfferSearch(
-                clonedSearchRequest.id,
-                copyToSearchRequest
+                [new Pair<number, number>(clonedSearchRequest[0].id, freeSearchRequest.id)],
             );
+
             clonedSearchRequest2.length.should.be.eql(1);
             clonedSearchRequest2[0].offerId.should.be.eql(businessOffer.id);
             clonedSearchRequest2[0].id.should.not.eql(searchRequests[0].offerSearch.id);
+
+            clonedOfferSearch = (await userBase.searchManager.getSearchResult(freeSearchRequest.id)).content;
+            clonedOfferSearch.length.should.be.eql(1);
+            clonedOfferSearch[0].offerSearch.offerId.should.be.eq(offerSearch.offerId);
+            clonedOfferSearch[0].offerSearch.owner.should.be.eq(freeSearchRequest.owner);
+
         } catch (e) {
             console.log(e);
             throw e;
