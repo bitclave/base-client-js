@@ -30,6 +30,16 @@ export default class SearchRequestRepositoryImpl implements SearchRequestReposit
         ).then((response) => SearchRequest.fromJson(response.json));
     }
 
+    public updateBatch(owner: string, searchRequests: Array<SearchRequest>): Promise<Array<SearchRequest>> {
+        const body = searchRequests.map(item => item.toJson());
+
+        return this.transport.sendRequest(
+            this.SEARCH_REQUEST_API_V2.replace('{owner}', owner).replace('/{id}', ''),
+            HttpMethod.Post,
+            body
+        ).then((response) => this.jsonToListSearchRequests(response.json));
+    }
+
     public clone(owner: string, searchRequestIds: Array<number>): Promise<Array<SearchRequest>> {
         return this.transport.sendRequest(
             this.SEARCH_REQUEST_API_V2.replace('{owner}', owner).replace('{id}', ''),

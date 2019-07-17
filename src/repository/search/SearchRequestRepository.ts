@@ -7,6 +7,8 @@ export interface SearchRequestRepository {
 
     update(owner: string, id: number, searchRequest: SearchRequest): Promise<SearchRequest>;
 
+    updateBatch(owner: string, searchRequests: Array<SearchRequest>): Promise<Array<SearchRequest>>;
+
     clone(owner: string, searchRequestIds: Array<number>): Promise<Array<SearchRequest>>;
 
     deleteById(owner: string, id: number): Promise<number>;
