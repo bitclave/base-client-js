@@ -128,7 +128,9 @@ describe('Search Manager', async () => {
                 ]
             );
 
-            const updatedSearchRequest = await userBase.searchManager.updateRequest(insertedSearchRequest);
+            const updatedSearchRequest = await userBase
+                .searchManager
+                .updateRequest(insertedSearchRequest) as SearchRequest;
 
             searchRequests = await userBase.searchManager.getMyRequests(updatedSearchRequest.id);
             searchRequests.length.should.be.eql(1);
@@ -137,6 +139,32 @@ describe('Search Manager', async () => {
             await userBase.searchManager.deleteRequest(updatedSearchRequest.id);
             searchRequests = await userBase.searchManager.getMyRequests(updatedSearchRequest.id);
             searchRequests.length.should.be.eql(0);
+
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    });
+
+    it('should create Search Requests by batch', async () => {
+        try {
+            const searchRequest = requestFactory();
+            const insertedSearchRequest1 = await userBase.searchManager.createRequest(searchRequest);
+            const insertedSearchRequest2 = await userBase.searchManager.createRequest(searchRequest);
+
+            let searchRequests = await userBase.searchManager.getMyRequests();
+
+            searchRequests.length.should.be.eql(2);
+
+            const updatedSearchRequest = await userBase
+                .searchManager
+                .updateRequest([insertedSearchRequest1, insertedSearchRequest2]) as Array<SearchRequest>;
+
+            searchRequests = await userBase.searchManager.getMyRequests();
+            searchRequests.length.should.be.eql(2);
+
+            await userBase.searchManager.deleteRequest(updatedSearchRequest[0].id);
+            await userBase.searchManager.deleteRequest(updatedSearchRequest[1].id);
 
         } catch (e) {
             console.log(e);

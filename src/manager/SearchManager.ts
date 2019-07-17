@@ -17,7 +17,7 @@ export interface SearchManager {
 
     createRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
 
-    updateRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
+    updateRequest(searchRequest: SearchRequest | Array<SearchRequest>): Promise<SearchRequest | Array<SearchRequest>>;
 
     cloneRequest(searchRequestIds: Array<number>): Promise<Array<SearchRequest>>;
 
