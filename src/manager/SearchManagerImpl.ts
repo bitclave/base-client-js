@@ -86,7 +86,8 @@ export class SearchManagerImpl implements SearchManager {
         page?: number,
         size?: number,
         interests?: Array<string>,
-        mode?: OfferSearchRequestInterestMode
+        mode?: OfferSearchRequestInterestMode,
+        filters?: Map<string, Array<string>>
     ): Promise<Page<OfferSearchResultItem>> {
         return this.offerSearchRepository.createByQuery(
             this.account.publicKey,
@@ -95,7 +96,8 @@ export class SearchManagerImpl implements SearchManager {
             page,
             size,
             interests,
-            mode
+            mode,
+            filters
         );
     }
 

@@ -56,10 +56,21 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         page: number = 0,
         size: number = 20,
         interests?: Array<string>,
-        mode?: OfferSearchRequestInterestMode
+        mode?: OfferSearchRequestInterestMode,
+        filters?: Map<string, Array<string>>
     ): Promise<Page<OfferSearchResultItem>> {
 
-        return this.transport.sendRequest(
+        const mapToObj = ( (aMap: Map<string, Array<string>> | undefined, addInterests: Array<string> = []): object => {
+            const obj = {
+                interests: addInterests
+            };
+            if (aMap) {
+                aMap.forEach ((v, k) => { obj[k] = v; });
+            }
+            return obj;
+        });
+
+        return this.transport.sendRequest<Page<OfferSearchResultItem>>(
             this.OFFER_SEARCH_CREATE_BY_QUERY_API
                 .replace('{query}', encodeURIComponent(query))
                 .replace('{page}', (page || 0).toString())
@@ -69,7 +80,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
             HttpMethod.Post,
             {
                 searchRequestId,
-                interests: interests || []
+                filters: mapToObj(filters, interests)
             }
         ).then((response) => this.jsonToPageResultItem(response.json));
     }
@@ -84,7 +95,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         sort: SortOfferSearch,
         interaction?: boolean
     ): Promise<Page<OfferSearchResultItem>> {
-        return this.transport.sendRequest(
+        return this.transport.sendRequest<Page<OfferSearchResultItem>>(
             this.OFFER_SEARCH_BY_PARAMS_API
                 .replace('{owner}', clientId)
                 .replace('{page}', (page || 0).toString())
@@ -105,7 +116,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         page?: number,
         size?: number
     ): Promise<Page<OfferSearchResultItem>> {
-        return this.transport.sendRequest(
+        return this.transport.sendRequest<Page<OfferSearchResultItem>>(
             this.OFFER_SEARCH_GET_BY_REQUEST_OR_SEARCH_API
                 .replace('{searchRequestId}', searchRequestId.toString())
                 .replace('{offerSearchId}', '0')
@@ -121,7 +132,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         page?: number,
         size?: number
     ): Promise<Page<OfferSearchResultItem>> {
-        return this.transport.sendRequest(
+        return this.transport.sendRequest<Page<OfferSearchResultItem>>(
             this.OFFER_SEARCH_GET_BY_REQUEST_OR_SEARCH_API
                 .replace('{searchRequestId}', '0')
                 .replace('{offerSearchId}', offerSearchId.toString())
@@ -145,7 +156,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         states?: Array<OfferResultAction> | undefined,
     ): Promise<Array<OfferInteraction>> {
 
-        return this.transport.sendRequest(
+        return this.transport.sendRequest<Array<OfferInteraction>>(
             this.INTERACTIONS_API
                 .replace('{owner}', owner)
                 .replace('{offers}', offerIds ? offerIds.join(',') : '')
@@ -221,7 +232,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         owner: string,
         originToCopySearchRequestIds: Array<Pair<number, number>>
     ): Promise<Array<OfferSearch>> {
-        return this.transport.sendRequest(
+        return this.transport.sendRequest<Array<OfferSearch>>(
             this.OFFER_SEARCH_ADD_API_V2 + owner,
             HttpMethod.Put,
             originToCopySearchRequestIds
