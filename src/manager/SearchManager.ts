@@ -40,6 +40,7 @@ export interface SearchManager {
         size?: number,
         interests?: Array<string>,
         mode?: OfferSearchRequestInterestMode,
+        filters?: Map<string, Array<string>>
     ): Promise<Page<OfferSearchResultItem>>;
 
     getSearchResult(searchRequestId: number, page?: number, size?: number): Promise<Page<OfferSearchResultItem>>;

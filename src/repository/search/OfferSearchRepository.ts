@@ -18,7 +18,8 @@ export interface OfferSearchRepository {
         page?: number,
         size?: number,
         interests?: Array<string>,
-        mode?: OfferSearchRequestInterestMode
+        mode?: OfferSearchRequestInterestMode,
+        filters?: Map<string, Array<string>>
     ): Promise<Page<OfferSearchResultItem>>;
 
     getUserOfferSearches(
