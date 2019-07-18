@@ -758,6 +758,33 @@ describe('search manager with search by query', async () => {
         }
     });
 
+    it('should return 200 search results filtered by advanced filters', async () => {
+        try {
+            let rtSearchRequests = await userBase.searchManager.getMySearchRequestsByTag('rtSearch');
+            if (!rtSearchRequests || !rtSearchRequests.length) {
+                const searchRequest = requestFactory();
+                searchRequest.tags = new Map([['rtSearch', 'true']]);
+                rtSearchRequests = [await userBase.searchManager.createRequest(searchRequest)];
+            }
+
+            const filters = new Map();
+            filters.set('megaType', ['product', 'store']);
+            filters.set('color', ['red', 'yellow']);
+            filters.set('price', ['100-200', '500-1000']);
+
+            const result = await userBase.searchManager.createSearchResultByQuery(
+                '*', rtSearchRequests[0].id, 0, 10,
+                ['interest_health_&_wellness', 'interest_home,_garden', 'interest_consumer_electronics'],
+                OfferSearchRequestInterestMode.must,
+                filters
+            );
+            result.should.be.exist;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    });
+
     it('should return list of suggestion', async () => {
         try {
             // @ts-ignore
