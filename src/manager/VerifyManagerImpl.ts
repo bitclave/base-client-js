@@ -31,4 +31,8 @@ export class VerifyManagerImpl implements VerifyManager {
     public getDanglingOfferInteractions(): Promise<Array<OfferInteraction>> {
         return this.verifyRepository.getDanglingOfferInteractions();
     }
+
+    public fixDanglingOfferSearchesByCreatingInteractions(): Promise<Array<OfferInteraction>> {
+        return this.verifyRepository.fixDanglingOfferSearchesByCreatingInteractions();
+    }
 }
