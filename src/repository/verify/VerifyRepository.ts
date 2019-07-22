@@ -12,4 +12,6 @@ export interface VerifyRepository {
     getDanglingOfferSearches(type: number): Promise<Array<OfferSearch>>;
 
     getDanglingOfferInteractions(): Promise<Array<OfferInteraction>>;
+
+    fixDanglingOfferSearchesByCreatingInteractions(): Promise<Array<OfferInteraction>>;
 }

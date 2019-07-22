@@ -12,6 +12,7 @@ export class VerifyRepositoryImpl implements VerifyRepository {
     private readonly VERIFY_GET_ALL_ACCOUNTS_API = '/dev/verify/account/all';
     private readonly VERIFY_GET_DANGLING_OFFER_SEARCH_API = '/dev/verify/offersearch/dangling/{type}';
     private readonly VERIFY_GET_DANGLING_OFFER_INTERACTION_API = '/dev/verify/offerinteraction/dangling';
+    private readonly VERIFY_FIX_OFFER_SEARCH_API = '/dev/verify/offersearch/fix';
 
     private transport: HttpTransport;
 
@@ -53,6 +54,13 @@ export class VerifyRepositoryImpl implements VerifyRepository {
     public getDanglingOfferInteractions(): Promise<Array<OfferInteraction>> {
         return this.transport.sendRequest(
             this.VERIFY_GET_DANGLING_OFFER_INTERACTION_API,
+            HttpMethod.Get
+        ).then((response) => this.jsonToOfferInteractionList(response.json));
+    }
+
+    public fixDanglingOfferSearchesByCreatingInteractions(): Promise<Array<OfferInteraction>> {
+        return this.transport.sendRequest(
+            this.VERIFY_FIX_OFFER_SEARCH_API,
             HttpMethod.Get
         ).then((response) => this.jsonToOfferInteractionList(response.json));
     }

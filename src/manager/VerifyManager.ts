@@ -14,4 +14,5 @@ export interface VerifyManager {
 
     getDanglingOfferInteractions(): Promise<Array<OfferInteraction>>;
 
+    fixDanglingOfferSearchesByCreatingInteractions(): Promise<Array<OfferInteraction>>;
 }
