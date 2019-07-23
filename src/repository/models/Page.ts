@@ -25,6 +25,7 @@ export class Page<T> extends DeepCopy<Page<T>> {
     public readonly size: number;
     public readonly totalPages: number;
     public readonly totalElements: number;
+    public readonly counters?: object;
 
     // tslint:disable-next-line:callable-types
     public static fromJson<T>(json: object, Creator: { new(): T; }): Page<T> {
@@ -37,6 +38,7 @@ export class Page<T> extends DeepCopy<Page<T>> {
         );
         const content: Array<T> = (raw.content as Array<T>)
             .map((item: T) => Object.assign(new Creator(), item));
+        const counters: object = raw.counters as object || {};
 
         return new Page<T>(
             raw.total as number,
@@ -48,7 +50,8 @@ export class Page<T> extends DeepCopy<Page<T>> {
             raw.number as number,
             raw.size as number,
             raw.totalPages as number,
-            raw.totalElements as number
+            raw.totalElements as number,
+            counters
         );
     }
 
@@ -63,7 +66,8 @@ export class Page<T> extends DeepCopy<Page<T>> {
         number: number,
         size: number,
         totalPages: number,
-        totalElements: number
+        totalElements: number,
+        counters: object = {}
     ) {
         super();
         this.total = total;
@@ -76,6 +80,7 @@ export class Page<T> extends DeepCopy<Page<T>> {
         this.size = size;
         this.totalPages = totalPages;
         this.totalElements = totalElements;
+        this.counters = counters;
     }
 
     protected deepCopyFromJson(): Page<T> {

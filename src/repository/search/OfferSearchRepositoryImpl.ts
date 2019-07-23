@@ -243,7 +243,6 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         json: JsonObject<Page<OfferSearchResultItem>>
     ): Promise<Page<OfferSearchResultItem>> {
         json.content = await this.jsonToListResult(json.content as JsonObject<Array<OfferSearchResultItem>>);
-
         return Page.fromJson(json, OfferSearchResultItem);
     }
 

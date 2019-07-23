@@ -815,7 +815,7 @@ describe('search manager with search by query', async () => {
                 rtSearchRequests = [await userBase.searchManager.createRequest(searchRequest)];
             }
             const result = await userBase.searchManager.createSearchResultByQuery(
-                '*', rtSearchRequests[0].id, 0, 10,
+                '*', rtSearchRequests[0].id, 2, 10,
                 ['interest_health_&_wellness', 'interest_home,_garden', 'interest_consumer_electronics'],
                 OfferSearchRequestInterestMode.must
             );
