@@ -1,6 +1,7 @@
 import Account from '../repository/models/Account';
 import { OfferInteraction } from '../repository/models/OfferInteraction';
 import { OfferSearch } from '../repository/models/OfferSearch';
+import SearchRequest from '../repository/models/SearchRequest';
 import { VerifyRepository } from '../repository/verify/VerifyRepository';
 import { VerifyManager } from './VerifyManager';
 
@@ -34,5 +35,9 @@ export class VerifyManagerImpl implements VerifyManager {
 
     public fixDanglingOfferSearchesByCreatingInteractions(): Promise<Array<OfferInteraction>> {
         return this.verifyRepository.fixDanglingOfferSearchesByCreatingInteractions();
+    }
+
+    public getSearchRequestWithSameTags(): Promise<Array<SearchRequest>> {
+        return this.verifyRepository.getSearchRequestWithSameTags();
     }
 }
