@@ -1,6 +1,7 @@
 import Account from '../repository/models/Account';
 import { OfferInteraction } from '../repository/models/OfferInteraction';
 import { OfferSearch } from '../repository/models/OfferSearch';
+import SearchRequest from '../repository/models/SearchRequest';
 
 export interface VerifyManager {
 
@@ -15,4 +16,6 @@ export interface VerifyManager {
     getDanglingOfferInteractions(): Promise<Array<OfferInteraction>>;
 
     fixDanglingOfferSearchesByCreatingInteractions(): Promise<Array<OfferInteraction>>;
+
+    getSearchRequestWithSameTags(): Promise<Array<SearchRequest>>;
 }
