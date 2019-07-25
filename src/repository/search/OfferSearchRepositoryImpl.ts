@@ -62,7 +62,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         filters?: Map<string, Array<string>>
     ): Promise<Page<OfferSearchResultItem>> {
 
-        const data = owner == null || owner.length == 0
+        const data = !owner || owner.length === 0
                      ? new SearchByQueryParams(searchRequestId, filters)
                      : new SignedSearchByQueryParams(searchRequestId, filters);
 

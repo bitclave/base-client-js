@@ -87,11 +87,11 @@ export class Page<T> extends DeepCopy<Page<T>> {
         this.counters = counters;
     }
 
-    protected deepCopyFromJson(): Page<T> {
+    public toJson(): object {
         throw new Error('method not supported');
     }
 
-    public toJson(): object {
+    protected deepCopyFromJson(): Page<T> {
         throw new Error('method not supported');
     }
 }
