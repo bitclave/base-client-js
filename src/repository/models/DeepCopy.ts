@@ -1,5 +1,5 @@
-import { JsonTransform } from './JsonTransform';
 import { JsonObject } from './JsonObject';
+import { JsonTransform } from './JsonTransform';
 
 export abstract class DeepCopy<T> extends JsonTransform {
     // tslint:disable-next-line:callable-types

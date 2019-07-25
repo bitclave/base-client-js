@@ -1,4 +1,4 @@
 export abstract class JsonTransform {
 
-    abstract toJson(): object;
+    public abstract toJson(): object;
 }
