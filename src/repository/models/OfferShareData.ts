@@ -1,6 +1,7 @@
 import { DeepCopy } from './DeepCopy';
 
 export default class OfferShareData extends DeepCopy<OfferShareData> {
+
     public readonly offerSearchId: number = 0;
     public offerOwner: string = '0x0';
     public clientId: string = '0x0';
@@ -16,4 +17,7 @@ export default class OfferShareData extends DeepCopy<OfferShareData> {
         this.priceId = priceId;
     }
 
+    public toJson(): object {
+        return this;
+    }
 }
