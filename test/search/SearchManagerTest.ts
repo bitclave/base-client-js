@@ -758,7 +758,7 @@ describe('search manager with search by query', async () => {
         ));
     }
 
-    it('should return 200 search results filtered by advanced filters', async () => {
+    it('should return 200 search results filtered by advanced filters with not authorized client', async () => {
         try {
             let rtSearchRequests = await userBase.searchManager.getMySearchRequestsByTag('rtSearch');
             if (!rtSearchRequests || !rtSearchRequests.length) {
@@ -774,6 +774,28 @@ describe('search manager with search by query', async () => {
 
             const result = await userBase.searchManager.createSearchResultByQuery(
                 '*', rtSearchRequests[0].id, 0, 10,
+                ['interest_health_&_wellness', 'interest_home,_garden', 'interest_consumer_electronics'],
+                OfferSearchRequestInterestMode.must,
+                filters
+            );
+            result.should.be.exist;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    });
+
+    it('should return 200 search results filtered by advanced filters', async () => {
+        try {
+            const unAuthorizedClient = createBase();
+
+            const filters = new Map();
+            filters.set('megaType', ['product', 'store']);
+            filters.set('color', ['red', 'yellow']);
+            filters.set('price', ['100-200', '500-1000']);
+
+            const result = await unAuthorizedClient.searchManager.createSearchResultByQuery(
+                '*', 0, 0, 10,
                 ['interest_health_&_wellness', 'interest_home,_garden', 'interest_consumer_electronics'],
                 OfferSearchRequestInterestMode.must,
                 filters

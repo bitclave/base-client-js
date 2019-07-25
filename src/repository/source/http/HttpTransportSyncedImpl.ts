@@ -1,4 +1,5 @@
 import { FileMeta } from '../../models/FileMeta';
+import { JsonTransform } from '../../models/JsonTransform';
 import { HttpMethod } from './HttpMethod';
 import { HttpTransportImpl } from './HttpTransportImpl';
 import { InterceptorCortege } from './InterceptorCortege';
@@ -25,7 +26,16 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
         fileMeta?: FileMeta
     ): Promise<Response<T>> {
         return new Promise<Response<T>>((resolve, reject) => {
-            const cortege: InterceptorCortege = new InterceptorCortege(path, method, this.headers, data, fileMeta);
+            const dataJson = (data instanceof JsonTransform) ? (data as JsonTransform).toJson() : data;
+
+            const cortege: InterceptorCortege = new InterceptorCortege(
+                path,
+                method,
+                this.headers,
+                dataJson,
+                data,
+                fileMeta
+            );
             this.transactions.push(new Transaction(resolve, reject, cortege));
 
             if (this.transactions.length === 1) {

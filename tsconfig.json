@@ -23,7 +23,10 @@
     "strictNullChecks": true,
     "downlevelIteration": true,
     "suppressImplicitAnyIndexErrors": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "types": [
+      "reflect-metadata"
+    ]
   },
   "exclude": [
     "node_modules",

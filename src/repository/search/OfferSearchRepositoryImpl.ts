@@ -7,6 +7,8 @@ import { OfferSearch } from '../models/OfferSearch';
 import OfferSearchResultItem from '../models/OfferSearchResultItem';
 import { Page } from '../models/Page';
 import { Pair } from '../models/Pair';
+import { SearchByQueryParams } from '../models/SearchByQueryParams';
+import { SignedSearchByQueryParams } from '../models/SignedSearchByQueryParams';
 import { HttpMethod } from '../source/http/HttpMethod';
 import { HttpTransport } from '../source/http/HttpTransport';
 import { OfferSearchRepository, OfferSearchRequestInterestMode } from './OfferSearchRepository';
@@ -60,15 +62,11 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         filters?: Map<string, Array<string>>
     ): Promise<Page<OfferSearchResultItem>> {
 
-        const mapToObj = ( (aMap: Map<string, Array<string>> | undefined, addInterests: Array<string> = []): object => {
-            const obj = {
-                interests: addInterests
-            };
-            if (aMap) {
-                aMap.forEach ((v, k) => { obj[k] = v; });
-            }
-            return obj;
-        });
+        const data = owner == null || owner.length == 0
+                     ? new SearchByQueryParams(searchRequestId, filters)
+                     : new SignedSearchByQueryParams(searchRequestId, filters);
+
+        data.setInterests(interests);
 
         return this.transport.sendRequest<Page<OfferSearchResultItem>>(
             this.OFFER_SEARCH_CREATE_BY_QUERY_API
@@ -78,10 +76,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
                 .replace('{mode}', (mode || '').toString())
             ,
             HttpMethod.Post,
-            {
-                searchRequestId,
-                filters: mapToObj(filters, interests)
-            }
+            data
         ).then((response) => this.jsonToPageResultItem(response.json));
     }
 

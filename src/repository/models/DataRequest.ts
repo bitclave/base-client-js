@@ -19,4 +19,7 @@ export default class DataRequest extends DeepCopy<DataRequest> {
         this.responseData = responseData;
     }
 
+    public toJson(): object {
+        return this;
+    }
 }

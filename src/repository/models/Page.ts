@@ -12,6 +12,10 @@ export class Pageable extends DeepCopy<Pageable> {
         this.page = page;
         this.size = size;
     }
+
+    public toJson(): object {
+        return this;
+    }
 }
 
 export class Page<T> extends DeepCopy<Page<T>> {
@@ -84,6 +88,10 @@ export class Page<T> extends DeepCopy<Page<T>> {
     }
 
     protected deepCopyFromJson(): Page<T> {
+        throw new Error('method not supported');
+    }
+
+    public toJson(): object {
         throw new Error('method not supported');
     }
 }

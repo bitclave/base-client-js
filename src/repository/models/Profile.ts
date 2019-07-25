@@ -17,5 +17,4 @@ export default class Profile {
     get account(): Account {
         return this._account;
     }
-
 }

@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { BehaviorSubject } from 'rxjs/Rx';
 import { AccountManager } from './manager/AccountManager';
 import { AccountManagerImpl } from './manager/AccountManagerImpl';
@@ -29,6 +30,7 @@ import DataRequest from './repository/models/DataRequest';
 import { DeepCopy } from './repository/models/DeepCopy';
 import { FileMeta } from './repository/models/FileMeta';
 import { JsonObject } from './repository/models/JsonObject';
+import { JsonTransform } from './repository/models/JsonTransform';
 import Offer from './repository/models/Offer';
 import { OfferInteraction, OfferResultAction } from './repository/models/OfferInteraction';
 import { OfferPrice } from './repository/models/OfferPrice';
@@ -150,6 +152,7 @@ export {
     IsEthAddress,
     IsTypedArray,
     JsonObject,
+    JsonTransform,
     Offer,
     OfferManager,
     OfferPrice,

@@ -1,5 +1,6 @@
 import { BasicLogger, Logger } from '../../../utils/BasicLogger';
 import { FileMeta } from '../../models/FileMeta';
+import { JsonTransform } from '../../models/JsonTransform';
 import { HttpInterceptor } from './HttpInterceptor';
 import { HttpMethod } from './HttpMethod';
 import { HttpTransport } from './HttpTransport';
@@ -49,7 +50,15 @@ export class HttpTransportImpl implements HttpTransport {
     ): Promise<Response<T>> {
         return new Promise<Response<T>>(async (resolve, reject) => {
             try {
-                const cortege = await this.acceptInterceptor(new InterceptorCortege(path, method, this.headers, data));
+                const dataJson = (data instanceof JsonTransform) ? (data as JsonTransform).toJson() : data;
+
+                const cortege = await this.acceptInterceptor(new InterceptorCortege(
+                    path,
+                    method,
+                    this.headers,
+                    dataJson,
+                    data
+                ));
 
                 const url = cortege.path ? this.getHost() + cortege.path : this.getHost();
                 const request: XMLHttpRequest = new XMLHttpRequest();
