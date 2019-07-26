@@ -1,6 +1,8 @@
 import { JsonUtils } from '../../utils/JsonUtils';
+import { excludeNonce } from '../source/http/NonceInterceptor';
 import { JsonTransform } from './JsonTransform';
 
+@excludeNonce
 export class SignedSearchByQueryParams extends JsonTransform {
 
     public readonly searchRequestId: number;
