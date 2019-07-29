@@ -27,11 +27,17 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
     ): Promise<Response<T>> {
         return new Promise<Response<T>>((resolve, reject) => {
             const dataJson = (data instanceof JsonTransform) ? (data as JsonTransform).toJson() : data;
+            const headers = new Map<string, string>();
+
+            if (dataJson) {
+                headers.set('Accept', 'application/json');
+                headers.set('Content-Type', 'application/json');
+            }
 
             const cortege: InterceptorCortege = new InterceptorCortege(
                 path,
                 method,
-                this.headers,
+                headers,
                 dataJson,
                 data,
                 fileMeta
@@ -90,7 +96,7 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
                         request.setRequestHeader(key, value);
                     });
 
-                    request.send(JSON.stringify(cortege.data ? cortege.data : {}));
+                    request.send(cortege.data ? JSON.stringify(cortege.data) : null);
                 }
             } catch (e) {
                 transaction.reject(e);

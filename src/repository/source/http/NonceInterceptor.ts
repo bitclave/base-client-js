@@ -4,12 +4,12 @@ import { HttpInterceptor } from './HttpInterceptor';
 import { InterceptorCortege } from './InterceptorCortege';
 import SignedRequest from './SignedRequest';
 
-export const excludeNonce = (target: object) =>
+export const ExcludeNonce = (target: object) =>
     Reflect.defineMetadata(NonceInterceptor.DECORATOR_KEY, null, target);
 
 export default class NonceInterceptor implements HttpInterceptor {
 
-    public static DECORATOR_KEY = 'decorator:excludeNonce';
+    public static DECORATOR_KEY = 'decorator:ExcludeNonce';
 
     private messageSigner: MessageSigner;
     private nonceSource: NonceSource;

@@ -62,11 +62,15 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
         filters?: Map<string, Array<string>>
     ): Promise<Page<OfferSearchResultItem>> {
 
-        const data = !owner || owner.length === 0
-                     ? new SearchByQueryParams(searchRequestId, filters)
-                     : new SignedSearchByQueryParams(searchRequestId, filters);
+        let data;
 
-        data.setInterests(interests);
+        if ((interests && interests.length > 0) || (filters && filters.size > 0)) {
+            data = !owner || owner.length === 0
+                   ? new SearchByQueryParams(searchRequestId, filters)
+                   : new SignedSearchByQueryParams(searchRequestId, filters);
+
+            data.setInterests(interests);
+        }
 
         return this.transport.sendRequest<Page<OfferSearchResultItem>>(
             this.OFFER_SEARCH_CREATE_BY_QUERY_API
