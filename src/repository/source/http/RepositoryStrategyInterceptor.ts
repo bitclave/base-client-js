@@ -14,12 +14,11 @@ export class RepositoryStrategyInterceptor implements HttpInterceptor {
         this.strategy = strategy;
     }
 
-    public onIntercept(cortege: InterceptorCortege): Promise<InterceptorCortege> {
-        return new Promise<InterceptorCortege>(resolve => {
+    public async onIntercept(cortege: InterceptorCortege): Promise<InterceptorCortege> {
+        if (this.strategy !== RepositoryStrategyType.Postgres) {
             cortege.headers.set('Strategy', this.strategy);
+        }
 
-            resolve(cortege);
-        });
+        return cortege;
     }
-
 }

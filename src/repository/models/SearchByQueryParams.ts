@@ -1,8 +1,8 @@
-import { excludeNonce } from '../source/http/NonceInterceptor';
-import { excludeSignature } from '../source/http/SignInterceptor';
+import { ExcludeNonce } from '../source/http/NonceInterceptor';
+import { ExcludeSignature } from '../source/http/SignInterceptor';
 import { SignedSearchByQueryParams } from './SignedSearchByQueryParams';
 
-@excludeSignature
-@excludeNonce
+@ExcludeSignature
+@ExcludeNonce
 export class SearchByQueryParams extends SignedSearchByQueryParams {
 }

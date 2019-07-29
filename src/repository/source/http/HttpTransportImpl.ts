@@ -20,12 +20,6 @@ export class HttpTransportImpl implements HttpTransport {
 
     protected interceptors: Array<HttpInterceptor> = [];
 
-    protected headers: Map<string, string> = new Map<string, string>(
-        [
-            ['Accept', 'application/json'], ['Content-Type', 'application/json']
-        ]
-    );
-
     protected readonly host: string;
     protected readonly logger: Logger;
 
@@ -51,11 +45,17 @@ export class HttpTransportImpl implements HttpTransport {
         return new Promise<Response<T>>(async (resolve, reject) => {
             try {
                 const dataJson = (data instanceof JsonTransform) ? (data as JsonTransform).toJson() : data;
+                const headers = new Map<string, string>();
+
+                if (dataJson) {
+                    headers.set('Accept', 'application/json');
+                    headers.set('Content-Type', 'application/json');
+                }
 
                 const cortege = await this.acceptInterceptor(new InterceptorCortege(
                     path,
                     method,
-                    this.headers,
+                    headers,
                     dataJson,
                     data
                 ));
@@ -86,7 +86,7 @@ export class HttpTransportImpl implements HttpTransport {
                         request.setRequestHeader(key, value);
                     });
 
-                    request.send(JSON.stringify(cortege.data ? cortege.data : {}));
+                    request.send(cortege.data ? JSON.stringify(cortege.data) : null);
                 }
             } catch (e) {
                 reject(e);

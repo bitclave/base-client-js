@@ -758,7 +758,7 @@ describe('search manager with search by query', async () => {
         ));
     }
 
-    it('should return 200 search results filtered by advanced filters with not authorized client', async () => {
+    it('should return 200 search results filtered by advanced filters', async () => {
         try {
             let rtSearchRequests = await userBase.searchManager.getMySearchRequestsByTag('rtSearch');
             if (!rtSearchRequests || !rtSearchRequests.length) {
@@ -785,7 +785,7 @@ describe('search manager with search by query', async () => {
         }
     });
 
-    it('should return 200 search results filtered by advanced filters', async () => {
+    it('should return 200 search results filtered by advanced filters with not authorized client', async () => {
         try {
             const unAuthorizedClient = createBase();
 
@@ -799,6 +799,21 @@ describe('search manager with search by query', async () => {
                 ['interest_health_&_wellness', 'interest_home,_garden', 'interest_consumer_electronics'],
                 OfferSearchRequestInterestMode.must,
                 filters
+            );
+            result.should.be.exist;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    });
+
+    it('should return 200 search results with not authorized client without body', async () => {
+        try {
+            const unAuthorizedClient = createBase();
+            const result = await unAuthorizedClient.searchManager.createSearchResultByQuery(
+                '*', 0, 0, 10,
+                [],
+                OfferSearchRequestInterestMode.must,
             );
             result.should.be.exist;
         } catch (err) {
