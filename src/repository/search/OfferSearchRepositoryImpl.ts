@@ -64,7 +64,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
 
         let data;
 
-        if ((interests && interests.length > 0) || (filters && filters.size > 0)) {
+        if ((interests && interests.length > 0) || (filters && filters.size > 0) || searchRequestId > 0) {
             data = !owner || owner.length === 0
                    ? new SearchByQueryParams(searchRequestId, filters)
                    : new SignedSearchByQueryParams(searchRequestId, filters);
