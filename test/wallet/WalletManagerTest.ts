@@ -23,7 +23,8 @@ import {
     BtcWalletData,
     CryptoWallets,
     CryptoWalletsData,
-    EthWalletData
+    EthWalletData,
+    UsdWalletData
 } from '../../src/utils/types/BaseTypes';
 import { WalletVerificationCodes } from '../../src/utils/types/validators/ValidationResult';
 import { WalletUtils } from '../../src/utils/WalletUtils';
@@ -294,7 +295,7 @@ describe('Wallet manager test', async () => {
         validation.state.length.should.be.eq(0);
     });
 
-    it('create APP/ETH/BTC for CryptoWallets record by BASE interface', async () => {
+    it('create APP/ETH/BTC/USD for CryptoWallets record by BASE interface', async () => {
         const pbkdf2: string = CryptoUtils.PBKDF2('some password', 256);
         const hash = Bitcore.crypto.Hash.sha256(new Bitcore.deps.Buffer(pbkdf2));
         const bn = Bitcore.crypto.BN.fromBuffer(hash);
@@ -308,25 +309,32 @@ describe('Wallet manager test', async () => {
         const app: AppWalletData = WalletUtils.createAppWalletData(
             baseId,
         );
+
+        const usd: UsdWalletData = WalletUtils.createUsdWalletData(
+            baseId,
+            'test@test.com'
+        );
+
         const btc: BtcWalletData = WalletUtils.createBtcWalletData(
             baseId,
             addr,
             privateKeyHex
         );
+
         const eth: EthWalletData = WalletUtils.createEthereumWalletData(
             baseId,
             '0x42cb8ae103896daee71ebb5dca5367f16727164a',
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
         );
 
-        const walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app]));
+        const walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app], [usd]));
 
         const validation = WalletUtils.validateWalletsData(baseId, walletsData);
 
         validation.length.should.be.eq(0);
     });
 
-    it('create APP/ETH/BTC for CryptoWallets with wrong signature', async () => {
+    it('create APP/ETH/BTC/USD for CryptoWallets with wrong signature', async () => {
         const pbkdf2: string = CryptoUtils.PBKDF2('some password', 256);
         const hash = Bitcore.crypto.Hash.sha256(new Bitcore.deps.Buffer(pbkdf2));
         const bn = Bitcore.crypto.BN.fromBuffer(hash);
@@ -340,18 +348,25 @@ describe('Wallet manager test', async () => {
         const app: AppWalletData = WalletUtils.createAppWalletData(
             baseId,
         );
+
+        const usd: UsdWalletData = WalletUtils.createUsdWalletData(
+            baseId,
+            'test@test.com'
+        );
+
         const btc: BtcWalletData = WalletUtils.createBtcWalletData(
             baseId,
             addr,
             privateKeyHex
         );
+
         const eth: EthWalletData = WalletUtils.createEthereumWalletData(
             baseId,
             '0x42cb8ae103896daee71ebb5dca5367f16727164a',
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
         );
 
-        const walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app]));
+        const walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app], [usd]));
 
         let validation = WalletUtils.validateWalletsData(baseId, walletsData);
         validation.length.should.be.eq(0);
@@ -387,33 +402,51 @@ describe('Wallet manager test', async () => {
         const app: AppWalletData = WalletUtils.createAppWalletData(
             baseId,
         );
+
+        const usd: UsdWalletData = WalletUtils.createUsdWalletData(
+            baseId,
+            'test@test.com'
+        );
+
         const btc: BtcWalletData = WalletUtils.createBtcWalletData(
             baseId,
             addr,
             privateKeyHex
         );
+
         const eth: EthWalletData = WalletUtils.createEthereumWalletData(
             baseId,
             '0x42cb8ae103896daee71ebb5dca5367f16727164a',
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
         );
 
-        let walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth, eth], [btc], [app]));
+        let walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets(
+            [eth, eth],
+            [btc],
+            [app],
+            [usd]
+        ));
         let validation = WalletUtils.validateWalletsData(baseId, walletsData);
         validation.length.should.be.eq(1);
         validation[0].message[0].should.be.eq('eth should be have only unique items');
         validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
 
-        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc, btc], [app]));
+        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc, btc], [app], [usd]));
         validation = WalletUtils.validateWalletsData(baseId, walletsData);
         validation.length.should.be.eq(1);
         validation[0].message[0].should.be.eq('btc should be have only unique items');
         validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
 
-        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app, app]));
+        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app, app], [usd]));
         validation = WalletUtils.validateWalletsData(baseId, walletsData);
         validation.length.should.be.eq(1);
         validation[0].message[0].should.be.eq('app should be have only unique items');
+        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+
+        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app], [usd, usd]));
+        validation = WalletUtils.validateWalletsData(baseId, walletsData);
+        validation.length.should.be.eq(1);
+        validation[0].message[0].should.be.eq('usd should be have only unique items');
         validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
     });
 
@@ -431,33 +464,66 @@ describe('Wallet manager test', async () => {
         const app: AppWalletData = WalletUtils.createAppWalletData(
             baseId,
         );
+
+        const usd: UsdWalletData = WalletUtils.createUsdWalletData(
+            baseId,
+            'test@test.com'
+        );
+
         const btc: BtcWalletData = WalletUtils.createBtcWalletData(
             baseId,
             addr,
             privateKeyHex
         );
+
         const eth: EthWalletData = WalletUtils.createEthereumWalletData(
             baseId,
             '0x42cb8ae103896daee71ebb5dca5367f16727164a',
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
         );
 
-        let walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth, btc, app], [btc], [app]));
+        let walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets(
+            [eth, btc, app, usd],
+            [btc],
+            [app],
+            [usd]
+        ));
         let validation = WalletUtils.validateWalletsData(baseId, walletsData);
         validation.length.should.be.eq(1);
         validation[0].message[0].should.be.eq('eth should be type of EthWalletData');
         validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
 
-        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc, eth, app], [app]));
+        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets(
+            [eth],
+            [btc, eth, app, usd],
+            [app],
+            [usd]
+        ));
         validation = WalletUtils.validateWalletsData(baseId, walletsData);
         validation.length.should.be.eq(1);
         validation[0].message[0].should.be.eq('btc should be type of BtcWalletData');
         validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
 
-        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app, eth, btc]));
+        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets(
+            [eth],
+            [btc],
+            [app, eth, btc, usd],
+            [usd]
+        ));
         validation = WalletUtils.validateWalletsData(baseId, walletsData);
         validation.length.should.be.eq(1);
         validation[0].message[0].should.be.eq('app should be type of AppWalletData');
+        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+
+        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets(
+            [eth],
+            [btc],
+            [app],
+            [app, eth, btc, usd]
+        ));
+        validation = WalletUtils.validateWalletsData(baseId, walletsData);
+        validation.length.should.be.eq(1);
+        validation[0].message[0].should.be.eq('usd should be type of UsdWalletData');
         validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
     });
 
@@ -474,6 +540,12 @@ describe('Wallet manager test', async () => {
 
         const app: AppWalletData = WalletUtils.createAppWalletData(
             baseId,
+            false
+        );
+
+        const usd: UsdWalletData = WalletUtils.createUsdWalletData(
+            baseId,
+            'testtest.com',
             false
         );
 
@@ -500,8 +572,11 @@ describe('Wallet manager test', async () => {
         validation.state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
 
         validation = WalletUtils.WALLET_VALIDATOR.validateCryptoWallet(app);
-
         validation.message[0].should.be.eq('must be valid Bitclave App address');
+        validation.state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+
+        validation = WalletUtils.WALLET_VALIDATOR.validateCryptoWallet(usd);
+        validation.message[0].should.be.eq('must be valid Bitclave Base Id');
         validation.state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
     });
 
@@ -517,6 +592,12 @@ describe('Wallet manager test', async () => {
 
         const app: AppWalletData = WalletUtils.createAppWalletData(
             'some wrong address',
+            false
+        );
+
+        const usd: UsdWalletData = WalletUtils.createUsdWalletData(
+            'some wrong address',
+            'test@test.com',
             false
         );
 
@@ -543,8 +624,11 @@ describe('Wallet manager test', async () => {
         validation.state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
 
         validation = WalletUtils.WALLET_VALIDATOR.validateCryptoWallet(app);
-
         validation.message[0].should.be.eq('must be valid Bitclave App address');
+        validation.state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+
+        validation = WalletUtils.WALLET_VALIDATOR.validateCryptoWallet(usd);
+        validation.message[0].should.be.eq('must be valid Bitclave Base Id');
         validation.state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
     });
 });

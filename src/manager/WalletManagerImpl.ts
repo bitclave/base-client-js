@@ -28,7 +28,7 @@ export class WalletManagerImpl implements WalletManager {
     }
 
     public async createCryptoWalletsData(cryptoWallets: CryptoWallets): Promise<CryptoWalletsData> {
-        const allWallets = cryptoWallets.eth.concat(cryptoWallets.app, cryptoWallets.btc);
+        const allWallets = cryptoWallets.eth.concat(cryptoWallets.app, cryptoWallets.btc, cryptoWallets.usd);
 
         allWallets.forEach(wallet => {
             const errors = this.walletValidator.validateCryptoWallet(wallet);
@@ -68,5 +68,4 @@ export class WalletManagerImpl implements WalletManager {
     private onChangeAccount(account: Account) {
         this.account = account;
     }
-
 }

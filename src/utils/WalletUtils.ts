@@ -10,7 +10,9 @@ import {
     EthCryptoWallet,
     EthWalletData,
     StringSignedMessage,
-    SupportSignedMessageData
+    SupportSignedMessageData,
+    UsdCryptoWallet,
+    UsdWalletData
 } from './types/BaseTypes';
 import { ValidationResult } from './types/validators/ValidationResult';
 import { WalletsValidator } from './types/validators/WalletsValidator';
@@ -24,7 +26,11 @@ export class WalletUtils {
         baseId: string,
         cryptoWallets: CryptoWalletsData
     ): Array<ValidationResult<StringSignedMessage>> {
-        const allWallets = cryptoWallets.data.eth.concat(cryptoWallets.data.app, cryptoWallets.data.btc);
+        const allWallets = cryptoWallets.data.eth.concat(
+            cryptoWallets.data.app,
+            cryptoWallets.data.btc,
+            cryptoWallets.data.usd
+        );
         let result: Array<ValidationResult<StringSignedMessage>> = [];
 
         allWallets.forEach(wallet => {
@@ -85,6 +91,17 @@ export class WalletUtils {
     public static createAppWalletData(baseId: string, validation?: boolean): AppWalletData {
         const record = new AppWalletData(new AppCryptoWallet(baseId, baseId));
         const walletData = new AppWalletData(record.data, CryptoUtils.keccak256(baseId));
+
+        if (validation === undefined || validation) {
+            WalletUtils.validateWalletWithThrow(walletData);
+        }
+
+        return walletData;
+    }
+
+    public static createUsdWalletData(baseId: string, address: string, validation?: boolean): UsdWalletData {
+        const record = new UsdWalletData(new UsdCryptoWallet(baseId, address));
+        const walletData = new UsdWalletData(record.data, CryptoUtils.keccak256(`${baseId}${address}`));
 
         if (validation === undefined || validation) {
             WalletUtils.validateWalletWithThrow(walletData);
