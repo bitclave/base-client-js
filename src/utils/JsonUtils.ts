@@ -18,5 +18,4 @@ export class JsonUtils {
 
         return result as T;
     }
-
 }

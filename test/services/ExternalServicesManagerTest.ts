@@ -75,7 +75,7 @@ describe('External Services Manager', async () => {
     });
 
     it('should be call request GET Account', async () => {
-        if (!userAccount) {
+        if (!userAccount || !service) {
             return;
         }
 
@@ -94,7 +94,7 @@ describe('External Services Manager', async () => {
     });
 
     it('should be call request GET with query args', async () => {
-        if (!userAccount) {
+        if (!userAccount || !service) {
             return;
         }
 
@@ -116,7 +116,7 @@ describe('External Services Manager', async () => {
     // Number '0' will convert to Double '0.0' in GSON library.
     // PR for fix it https://github.com/google/gson/pull/1290
     it('should be call request POST', async () => {
-        if (!userAccount) {
+        if (!userAccount || !service) {
             return;
         }
 
