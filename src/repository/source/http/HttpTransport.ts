@@ -16,5 +16,4 @@ export interface HttpTransport {
     ): Promise<Response<T>>;
 
     addInterceptor(interceptor: HttpInterceptor): HttpTransport;
-
 }
