@@ -137,7 +137,7 @@ export class CryptoWallets {
     public readonly app: Array<AppWalletData>;
 
     @IsTypedArray(() => UsdWalletData, true)
-    public readonly usd: Array<AppWalletData>;
+    public readonly usd: Array<UsdWalletData>;
 
     public static fromJson(json: JsonObject<CryptoWallets>): CryptoWallets {
         const eth = ((json.eth as Array<JsonObject<EthWalletData>>) || [])
