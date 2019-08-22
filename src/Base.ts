@@ -145,8 +145,6 @@ export {
     DataRequestManager,
     SharedData,
     FieldData,
-    JsonObject,
-    ProfileManager,
     DeepCopy,
     EthWalletValidator,
     ExternalService,

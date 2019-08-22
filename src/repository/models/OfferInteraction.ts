@@ -21,7 +21,7 @@ export class OfferInteraction extends DeepCopy<OfferInteraction> {
     }
 
     constructor(offerId: number = 0, events: Array<string> = []) {
-        super();
+        super(OfferInteraction);
         this.offerId = offerId || 0;
         this.createdAt = new Date();
         this.updatedAt = new Date();

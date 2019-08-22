@@ -11,4 +11,8 @@ export class AcceptedField extends DeepCopy<AcceptedField> {
         this.pass = pass || '';
         this.access = access || AccessRight.R;
     }
+
+    public toJson(): object {
+        return JSON.parse(JSON.stringify(this));
+    }
 }

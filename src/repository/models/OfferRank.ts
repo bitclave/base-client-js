@@ -24,7 +24,7 @@ export class OfferRank extends DeepCopy<OfferRank> {
         public readonly createdAt: Date = new Date(),
         public readonly updatedAt: Date = new Date()
     ) {
-        super();
+        super(OfferRank);
         this.id = 0;
         this.rank = rank || 0;
         this.offerId = offerId || 0;
