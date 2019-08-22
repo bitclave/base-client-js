@@ -1,34 +1,55 @@
-import OfferSearch, { OfferResultAction } from '../repository/models/OfferSearch';
+import { OfferInteraction, OfferResultAction } from '../repository/models/OfferInteraction';
+import { OfferSearch } from '../repository/models/OfferSearch';
 import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import { Page } from '../repository/models/Page';
+import { Pair } from '../repository/models/Pair';
 import SearchRequest from '../repository/models/SearchRequest';
+import { OfferSearchRequestInterestMode } from '../repository/search/OfferSearchRepository';
+
+export enum SortOfferSearch {
+    rank = 'rank',
+    updatedAt = 'updatedAt',
+    price = 'price',
+    cashback = 'cashback'
+}
 
 export interface SearchManager {
 
     createRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
 
-    updateRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
+    updateRequest(searchRequest: SearchRequest | Array<SearchRequest>): Promise<SearchRequest | Array<SearchRequest>>;
 
-    cloneRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
+    cloneRequest(searchRequestIds: Array<number>): Promise<Array<SearchRequest>>;
 
-    cloneOfferSearch(id: number, searchRequest: SearchRequest): Promise<Array<OfferSearch>>;
+    cloneOfferSearch(originToCopySearchRequestIds: Array<Pair<number, number>>): Promise<Array<OfferSearch>>;
 
-    getMyRequests(id: number): Promise<Array<SearchRequest>>;
+    getMyRequests(id?: number): Promise<Array<SearchRequest>>;
 
-    getAllRequests(): Promise<Array<SearchRequest>>;
+    getRequestsByOwnerAndId(owner: string, id?: number): Promise<Array<SearchRequest>>;
+
+    getRequestsByPage(page?: number, size?: number): Promise<Page<SearchRequest>>;
 
     deleteRequest(id: number): Promise<number>;
+
+    getSuggestionByQuery(query: string, size?: number): Promise<Array<string>>;
 
     createSearchResultByQuery(
         query: string,
         searchRequestId: number,
         page?: number,
-        size?: number
+        size?: number,
+        interests?: Array<string>,
+        mode?: OfferSearchRequestInterestMode,
+        filters?: Map<string, Array<string>>
     ): Promise<Page<OfferSearchResultItem>>;
 
-    getSearchResult(searchRequestId: number): Promise<Page<OfferSearchResultItem>>;
+    getSearchResult(searchRequestId: number, page?: number, size?: number): Promise<Page<OfferSearchResultItem>>;
 
-    getSearchResultByOfferSearchId(offerSearchId: number): Promise<Page<OfferSearchResultItem>>;
+    getSearchResultByOfferSearchId(
+        offerSearchId: number,
+        page?: number,
+        size?: number
+    ): Promise<Page<OfferSearchResultItem>>;
 
     getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>>;
 
@@ -37,8 +58,16 @@ export interface SearchManager {
         size?: number,
         unique?: boolean,
         searchIds?: Array<number>,
-        state?: Array<OfferResultAction>
+        state?: Array<OfferResultAction>,
+        sort?: SortOfferSearch,
+        interaction?: boolean
     ): Promise<Page<OfferSearchResultItem>>;
+
+    getInteractions(
+        offerIds?: Array<number> | undefined,
+        states?: Array<OfferResultAction> | undefined,
+        owner?: string | undefined
+    ): Promise<Array<OfferInteraction>>;
 
     complainToSearchItem(searchResultId: number): Promise<void>;
 
@@ -57,5 +86,4 @@ export interface SearchManager {
     getSearchRequestsByOwnerAndTag(owner: string, tag: string): Promise<Array<SearchRequest>>;
 
     getMySearchRequestsByTag(tag: string): Promise<Array<SearchRequest>>;
-
 }

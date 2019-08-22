@@ -1,4 +1,5 @@
 import { FileMeta } from '../../models/FileMeta';
+import { JsonTransform } from '../../models/JsonTransform';
 import { HttpMethod } from './HttpMethod';
 import { HttpTransportImpl } from './HttpTransportImpl';
 import { InterceptorCortege } from './InterceptorCortege';
@@ -25,12 +26,30 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
         fileMeta?: FileMeta
     ): Promise<Response<T>> {
         return new Promise<Response<T>>((resolve, reject) => {
-            const cortege: InterceptorCortege = new InterceptorCortege(path, method, this.headers, data, fileMeta);
+            const dataJson = (data instanceof JsonTransform) ? (data as JsonTransform).toJson() : data;
+            const headers = new Map<string, string>();
+
+            if (dataJson) {
+                headers.set('Accept', 'application/json');
+                headers.set('Content-Type', 'application/json');
+            }
+
+            const cortege: InterceptorCortege = new InterceptorCortege(
+                path,
+                method,
+                headers,
+                dataJson,
+                data,
+                fileMeta
+            );
             this.transactions.push(new Transaction(resolve, reject, cortege));
 
             if (this.transactions.length === 1) {
                 this.runTransaction(this.transactions[0]);
             }
+        }).catch(error => {
+            this.logger.error(JSON.stringify(error));
+            throw error;
         });
     }
 
@@ -56,7 +75,7 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
                     } else {
                         this.logger.error('Error runTransaction request', result);
                         transaction.reject(result);
-                        reject();
+                        reject(result);
                         this.callNextRequest();
                     }
                 };
@@ -65,7 +84,7 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
                     const result: Response<object> = new Response(request.responseText, request.status);
                     this.logger.error('Error runTransaction onErrorRequest', result);
                     transaction.reject(result);
-                    reject();
+                    reject(result);
                     this.callNextRequest();
                 };
 
@@ -77,13 +96,16 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
                         request.setRequestHeader(key, value);
                     });
 
-                    request.send(JSON.stringify(cortege.data ? cortege.data : {}));
+                    request.send(cortege.data ? JSON.stringify(cortege.data) : null);
                 }
             } catch (e) {
                 transaction.reject(e);
-                reject();
+                reject(e);
                 this.callNextRequest();
             }
+        }).catch(error => {
+            this.logger.error(JSON.stringify(error));
+            throw error;
         });
     }
 

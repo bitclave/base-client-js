@@ -23,4 +23,8 @@ export class DataRequest extends DeepCopy<DataRequest> {
         this.requestData = requestData || '';
         this.responseData = responseData;
     }
+
+    public toJson(): object {
+        return this;
+    }
 }

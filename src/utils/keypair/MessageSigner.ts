@@ -5,5 +5,4 @@ export interface MessageSigner {
     checkSig(data: string, sig: string): Promise<boolean>;
 
     getPublicKey(): string;
-
 }

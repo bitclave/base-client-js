@@ -6,6 +6,10 @@ export interface ProfileManager {
 
     signMessage(data: string): Promise<string>;
 
+    encryptMessage(recipientPk: string, message: string): Promise<string>;
+
+    decryptMessage(senderPk: string, encryptedMessage: string): Promise<string>;
+
     /**
      * Returns decrypted data of the authorized user.
      * @param {fieldKey: string | Array<string>} fieldKey is optional argument. get only requested keys.

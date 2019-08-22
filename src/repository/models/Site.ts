@@ -15,4 +15,7 @@ export class Site extends DeepCopy<Site> {
         this.confidential = confidential;
     }
 
+    public toJson(): object {
+        return this;
+    }
 }

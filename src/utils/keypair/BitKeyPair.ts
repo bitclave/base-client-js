@@ -15,7 +15,7 @@ const ECIES = require('bitcore-ecies');
 const Mnemonic = require('bitcore-mnemonic');
 
 declare interface PublicKey {
-    toString(radix: number): string;
+    toString(): string;
 }
 
 declare interface PrivateKey {
@@ -68,7 +68,7 @@ export class BitKeyPair implements KeyPairHelper {
             this.addr = this.privateKey.toAddress();
 
             const privateKeyHex: string = this.privateKey.toString(16);
-            const publicKeyHex = this.publicKey.toString(16);
+            const publicKeyHex = this.publicKey.toString();
 
             resolve(new KeyPair(privateKeyHex, publicKeyHex));
         });
@@ -102,7 +102,7 @@ export class BitKeyPair implements KeyPairHelper {
     }
 
     public getPublicKey(): string {
-        return this.publicKey.toString(16);
+        return this.publicKey.toString();
     }
 
     public getAddr(): string {

@@ -9,4 +9,8 @@ export class ExternalService extends DeepCopy<ExternalService> {
         this.publicKey = publicKey || '';
         this.endpoint = endpoint || '';
     }
+
+    public toJson(): object {
+        return this;
+    }
 }

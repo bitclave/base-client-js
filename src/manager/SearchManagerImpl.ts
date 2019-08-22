@@ -1,12 +1,14 @@
 import { Observable } from 'rxjs/Rx';
 import Account from '../repository/models/Account';
-import OfferSearch, { OfferResultAction } from '../repository/models/OfferSearch';
+import { OfferInteraction, OfferResultAction } from '../repository/models/OfferInteraction';
+import { OfferSearch } from '../repository/models/OfferSearch';
 import OfferSearchResultItem from '../repository/models/OfferSearchResultItem';
 import { Page } from '../repository/models/Page';
+import { Pair } from '../repository/models/Pair';
 import SearchRequest from '../repository/models/SearchRequest';
-import { OfferSearchRepository } from '../repository/search/OfferSearchRepository';
+import { OfferSearchRepository, OfferSearchRequestInterestMode } from '../repository/search/OfferSearchRepository';
 import { SearchRequestRepository } from '../repository/search/SearchRequestRepository';
-import { SearchManager } from './SearchManager';
+import { SearchManager, SortOfferSearch } from './SearchManager';
 
 export class SearchManagerImpl implements SearchManager {
 
@@ -30,20 +32,26 @@ export class SearchManagerImpl implements SearchManager {
         return this.requestRepository.create(this.account.publicKey, searchRequest);
     }
 
-    public updateRequest(searchRequest: SearchRequest): Promise<SearchRequest> {
-        return this.requestRepository.update(this.account.publicKey, searchRequest.id, searchRequest);
+    public updateRequest(
+        searchRequest: SearchRequest | Array<SearchRequest>
+    ): Promise<SearchRequest | Array<SearchRequest>> {
+        if (searchRequest instanceof Array) {
+            return this.requestRepository.updateBatch(this.account.publicKey, searchRequest);
+        } else {
+            return this.requestRepository.update(this.account.publicKey, searchRequest.id, searchRequest);
+        }
     }
 
-    public cloneRequest(searchRequest: SearchRequest): Promise<SearchRequest> {
-        return this.requestRepository.clone(this.account.publicKey, searchRequest);
+    public cloneRequest(searchRequestIds: Array<number>): Promise<Array<SearchRequest>> {
+        return this.requestRepository.clone(this.account.publicKey, searchRequestIds);
     }
 
-    public cloneOfferSearch(id: number, searchRequest: SearchRequest): Promise<Array<OfferSearch>> {
-        return this.offerSearchRepository.clone(this.account.publicKey, id, searchRequest);
+    public cloneOfferSearch(originToCopySearchRequestIds: Array<Pair<number, number>>): Promise<Array<OfferSearch>> {
+        return this.offerSearchRepository.clone(this.account.publicKey, originToCopySearchRequestIds);
     }
 
-    public getMyRequests(id: number = 0): Promise<Array<SearchRequest>> {
-        if (id > 0) {
+    public getMyRequests(id?: number): Promise<Array<SearchRequest>> {
+        if (id && id > 0) {
             return this.requestRepository.getSearchRequestByOwnerAndId(this.account.publicKey, id);
 
         } else {
@@ -51,29 +59,58 @@ export class SearchManagerImpl implements SearchManager {
         }
     }
 
-    public getAllRequests(): Promise<Array<SearchRequest>> {
-        return this.requestRepository.getAllSearchRequests();
+    public getRequestsByOwnerAndId(owner: string, id?: number): Promise<Array<SearchRequest>> {
+        if (id && id > 0) {
+            return this.requestRepository.getSearchRequestByOwnerAndId(owner, id);
+
+        } else {
+            return this.requestRepository.getSearchRequestByOwner(owner);
+        }
+    }
+
+    public getRequestsByPage(page?: number, size?: number): Promise<Page<SearchRequest>> {
+        return this.requestRepository.getSearchRequestByPage(page, size);
     }
 
     public deleteRequest(id: number): Promise<number> {
         return this.requestRepository.deleteById(this.account.publicKey, id);
     }
 
+    public getSuggestionByQuery(query: string, size?: number): Promise<Array<string>> {
+        return this.offerSearchRepository.getSuggestionByQuery(query, size);
+    }
+
     public createSearchResultByQuery(
         query: string,
         searchRequestId: number,
         page?: number,
-        size?: number
+        size?: number,
+        interests?: Array<string>,
+        mode?: OfferSearchRequestInterestMode,
+        filters?: Map<string, Array<string>>
     ): Promise<Page<OfferSearchResultItem>> {
-        return this.offerSearchRepository.createByQuery(this.account.publicKey, query, searchRequestId, page, size);
+        return this.offerSearchRepository.createByQuery(
+            this.account.publicKey,
+            query,
+            searchRequestId,
+            page,
+            size,
+            interests,
+            mode,
+            filters
+        );
     }
 
     public getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>> {
         return this.offerSearchRepository.getCountBySearchRequestIds(searchRequestIds);
     }
 
-    public getSearchResult(searchRequestId: number): Promise<Page<OfferSearchResultItem>> {
-        return this.offerSearchRepository.getSearchResult(this.account.publicKey, searchRequestId);
+    public getSearchResult(
+        searchRequestId: number,
+        page?: number,
+        size?: number
+    ): Promise<Page<OfferSearchResultItem>> {
+        return this.offerSearchRepository.getSearchResult(this.account.publicKey, searchRequestId, page, size);
     }
 
     public getUserOfferSearches(
@@ -81,14 +118,33 @@ export class SearchManagerImpl implements SearchManager {
         size: number = 20,
         unique: boolean = false,
         searchIds: Array<number> = [],
-        state: Array<OfferResultAction> = []
+        state: Array<OfferResultAction> = [],
+        sort?: SortOfferSearch,
+        interaction?: boolean
     ): Promise<Page<OfferSearchResultItem>> {
         return this.offerSearchRepository
-            .getUserOfferSearches(this.account.publicKey, page, size, unique, searchIds, state);
+            .getUserOfferSearches(this.account.publicKey, page, size, unique, searchIds, state, sort, interaction);
     }
 
-    public getSearchResultByOfferSearchId(offerSearchId: number): Promise<Page<OfferSearchResultItem>> {
-        return this.offerSearchRepository.getSearchResultByOfferSearchId(this.account.publicKey, offerSearchId);
+    public getInteractions(
+        offerIds?: Array<number> | undefined,
+        states?: Array<OfferResultAction> | undefined,
+        owner?: string | undefined
+    ): Promise<Array<OfferInteraction>> {
+        return this.offerSearchRepository.getInteractions(owner ? owner : this.account.publicKey, offerIds, states);
+    }
+
+    public getSearchResultByOfferSearchId(
+        offerSearchId: number,
+        page?: number,
+        size?: number
+    ): Promise<Page<OfferSearchResultItem>> {
+        return this.offerSearchRepository.getSearchResultByOfferSearchId(
+            this.account.publicKey,
+            offerSearchId,
+            page,
+            size
+        );
     }
 
     public complainToSearchItem(searchResultId: number): Promise<void> {
@@ -130,5 +186,4 @@ export class SearchManagerImpl implements SearchManager {
     private onChangeAccount(account: Account) {
         this.account = account;
     }
-
 }

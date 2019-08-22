@@ -1,4 +1,4 @@
-import { IsJSON, IsString, ValidateNested } from 'class-validator';
+import { IsEmail, IsJSON, IsString, ValidateNested } from 'class-validator';
 import { MessageData, SignedMessageData } from 'eth-sig-util';
 import { JsonObject } from '../../repository/models/JsonObject';
 import { IsBasePublicKey } from './validators/annotations/IsBasePublicKey';
@@ -116,6 +116,16 @@ export class AppCryptoWallet extends CryptoWallet {
     }
 }
 
+export class UsdCryptoWallet extends CryptoWallet {
+    @IsEmail()
+    public readonly address: string;
+
+    constructor(baseId: string, address: string) {
+        super(baseId, address);
+        this.address = address;
+    }
+}
+
 export class CryptoWallets {
     @IsTypedArray(() => EthWalletData, true)
     public readonly eth: Array<EthWalletData>;
@@ -125,6 +135,9 @@ export class CryptoWallets {
 
     @IsTypedArray(() => AppWalletData, true)
     public readonly app: Array<AppWalletData>;
+
+    @IsTypedArray(() => UsdWalletData, true)
+    public readonly usd: Array<UsdWalletData>;
 
     public static fromJson(json: JsonObject<CryptoWallets>): CryptoWallets {
         const eth = ((json.eth as Array<JsonObject<EthWalletData>>) || [])
@@ -136,13 +149,22 @@ export class CryptoWallets {
         const app = ((json.app as Array<JsonObject<AppWalletData>>) || [])
             .map(item => AppWalletData.fromJson(item as JsonObject<AppWalletData>));
 
-        return new CryptoWallets(eth, btc, app);
+        const usd = ((json.usd as Array<JsonObject<UsdWalletData>>) || [])
+            .map(item => UsdWalletData.fromJson(item as JsonObject<UsdWalletData>));
+
+        return new CryptoWallets(eth, btc, app, usd);
     }
 
-    constructor(eth: Array<EthWalletData>, btc: Array<BtcWalletData>, app: Array<AppWalletData>) {
-        this.eth = eth;
-        this.btc = btc;
-        this.app = app;
+    constructor(
+        eth?: Array<EthWalletData>,
+        btc?: Array<BtcWalletData>,
+        app?: Array<AppWalletData>,
+        usd?: Array<UsdWalletData>
+    ) {
+        this.eth = eth || [];
+        this.btc = btc || [];
+        this.app = app || [];
+        this.usd = usd || [];
     }
 }
 
@@ -161,6 +183,12 @@ export class BtcWalletData extends SupportSignedMessageData<BtcCryptoWallet> {
 export class AppWalletData extends SupportSignedMessageData<AppCryptoWallet> {
     public static fromJson(json: JsonObject<AppWalletData>): AppWalletData {
         return new AppWalletData(Object.assign(new AppCryptoWallet('', ''), json.data), json.sig as string);
+    }
+}
+
+export class UsdWalletData extends SupportSignedMessageData<UsdCryptoWallet> {
+    public static fromJson(json: JsonObject<UsdWalletData>): UsdWalletData {
+        return new UsdWalletData(Object.assign(new UsdCryptoWallet('', ''), json.data), json.sig as string);
     }
 }
 

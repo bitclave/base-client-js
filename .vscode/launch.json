@@ -11,14 +11,10 @@
         "name": "Single test",
         "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
         "args": [
-          "-u",
-          "tdd",
-          "--timeout",
-          "999999",
-          "--colors",
-          "--require",
-          "ts-node/register",
-          "${workspaceFolder}/test/file/*.ts"
+            "-r", "ts-node/register",
+            "--timeout", "500000",
+            "--colors",
+            "${workspaceFolder}/test/search/*.ts"
         ],
         "internalConsoleOptions": "openOnSessionStart",
         "env": {

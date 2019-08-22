@@ -4,7 +4,12 @@ import { HttpInterceptor } from './HttpInterceptor';
 import { InterceptorCortege } from './InterceptorCortege';
 import SignedRequest from './SignedRequest';
 
+export const ExcludeNonce = (target: object) =>
+    Reflect.defineMetadata(NonceInterceptor.DECORATOR_KEY, null, target);
+
 export default class NonceInterceptor implements HttpInterceptor {
+
+    public static DECORATOR_KEY = 'decorator:ExcludeNonce';
 
     private messageSigner: MessageSigner;
     private nonceSource: NonceSource;
@@ -14,16 +19,16 @@ export default class NonceInterceptor implements HttpInterceptor {
         this.nonceSource = nonceSource;
     }
 
-    public onIntercept(cortege: InterceptorCortege): Promise<InterceptorCortege> {
-        return !(cortege.data instanceof SignedRequest) && !cortege.isTransaction()
-               ? Promise.resolve(cortege)
+    public async onIntercept(cortege: InterceptorCortege): Promise<InterceptorCortege> {
+        if ((cortege.data instanceof SignedRequest) && cortege.isTransaction()) {
+            const metaKeys = cortege.originalData && Reflect.getMetadataKeys(cortege.originalData.constructor);
 
-               : this.nonceSource.getNonce(this.messageSigner.getPublicKey())
-                   .then(nonce => {
-                       (cortege.data as SignedRequest).nonce = ++nonce;
+            if (!metaKeys || metaKeys.length <= 0 || metaKeys.indexOf(NonceInterceptor.DECORATOR_KEY) <= -1) {
+                const nonce = await this.nonceSource.getNonce(this.messageSigner.getPublicKey());
+                (cortege.data as SignedRequest).nonce = nonce + 1;
+            }
+        }
 
-                       return cortege;
-                   });
+        return cortege;
     }
-
 }

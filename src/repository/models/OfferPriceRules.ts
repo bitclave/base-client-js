@@ -3,6 +3,7 @@ import { DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
 
 export class OfferPriceRules extends DeepCopy<OfferPriceRules> {
+
     public readonly id: number;
     public readonly rulesKey: string;
     public readonly value: string;

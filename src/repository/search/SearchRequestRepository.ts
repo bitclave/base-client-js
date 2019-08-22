@@ -1,3 +1,4 @@
+import { Page } from '../models/Page';
 import SearchRequest from '../models/SearchRequest';
 
 export interface SearchRequestRepository {
@@ -6,7 +7,9 @@ export interface SearchRequestRepository {
 
     update(owner: string, id: number, searchRequest: SearchRequest): Promise<SearchRequest>;
 
-    clone(owner: string, searchRequest: SearchRequest): Promise<SearchRequest>;
+    updateBatch(owner: string, searchRequests: Array<SearchRequest>): Promise<Array<SearchRequest>>;
+
+    clone(owner: string, searchRequestIds: Array<number>): Promise<Array<SearchRequest>>;
 
     deleteById(owner: string, id: number): Promise<number>;
 
@@ -14,8 +17,7 @@ export interface SearchRequestRepository {
 
     getSearchRequestByOwner(owner: string): Promise<Array<SearchRequest>>;
 
-    getAllSearchRequests(): Promise<Array<SearchRequest>>;
-
     getSearchRequestsByOwnerAndTag(owner: string, tag: string): Promise<Array<SearchRequest>>;
 
+    getSearchRequestByPage(page?: number, size?: number): Promise<Page<SearchRequest>>;
 }

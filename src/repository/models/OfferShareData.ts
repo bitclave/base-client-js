@@ -17,4 +17,7 @@ export default class OfferShareData extends DeepCopy<OfferShareData> {
         this.priceId = priceId;
     }
 
+    public toJson(): object {
+        return this;
+    }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@bitclave/base-client-js",
-  "version": "0.4.30",
+  "version": "0.4.64",
   "description": "Base JS library for BASE-platform",
   "main": "dist/Base.node.js",
   "browser": "dist/Base.js",
@@ -72,6 +72,7 @@
     "eth-sig-util": "^1.4.2",
     "ethereumjs-abi": "^0.6.5",
     "node-fetch": "^2.2.0",
+    "reflect-metadata": "^0.1.13",
     "rxjs": "^5.5.10",
     "web3-utils": "^1.0.0-beta.52",
     "xmlhttprequest": "^1.8.0"

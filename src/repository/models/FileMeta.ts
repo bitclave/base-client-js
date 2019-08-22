@@ -13,8 +13,8 @@ export class FileMeta extends DeepCopy<FileMeta> {
     public readonly updatedAt: Date = new Date();
 
     public static fromJson(json: JsonObject<FileMeta>): FileMeta {
-        json.createdAt = new Date((json.createdAt as string) || new Date().getTime());
-        json.updatedAt = new Date((json.updatedAt as string) || new Date().getTime());
+        json.createdAt = new Date((json.createdAt as string) || new Date());
+        json.updatedAt = new Date((json.updatedAt as string) || new Date());
 
         return Object.assign(new FileMeta(), json);
     }

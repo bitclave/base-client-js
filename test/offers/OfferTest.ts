@@ -101,6 +101,7 @@ describe('Offer CRUD', async () => {
             throw e;
         }
     });
+
     it('should create offer with multiprice', async () => {
         try {
             const offer = offerFactory(true);
@@ -112,6 +113,7 @@ describe('Offer CRUD', async () => {
             throw e;
         }
     });
+
     it('should update existed offer with multiprice', async () => {
         try {
             const updatedTitle = 'updated title';
@@ -149,6 +151,7 @@ describe('Offer CRUD', async () => {
             throw e;
         }
     });
+
     it('should delete existed offer with multiprice', async () => {
         try {
 
@@ -166,6 +169,7 @@ describe('Offer CRUD', async () => {
             throw e;
         }
     });
+
     it('should get existed offer with tag', async () => {
         try {
             const offer = offerFactory();
@@ -175,6 +179,18 @@ describe('Offer CRUD', async () => {
 
             existedOffers.length.should.be.eql(1);
 
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    });
+
+    it('should return page with offers', async () => {
+        try {
+            const existedOffers = await baseSeller.offerManager.getOffersByPage();
+
+            const expected = Math.min(20, existedOffers.total);
+            existedOffers.content.length.should.be.eql(expected);
         } catch (e) {
             console.log(e);
             throw e;

@@ -1,4 +1,5 @@
 import Offer from '../models/Offer';
+import { Page } from '../models/Page';
 
 export interface OfferRepository {
 
@@ -6,14 +7,23 @@ export interface OfferRepository {
 
     update(owner: string, id: number, offer: Offer): Promise<Offer>;
 
+    shallowUpdate(owner: string, id: number, offer: Offer): Promise<Offer>;
+
     deleteById(owner: string, id: number): Promise<number>;
 
     getOfferByOwnerAndId(owner: string, id: number): Promise<Array<Offer>>;
 
     getOfferByOwner(owner: string): Promise<Array<Offer>>;
 
+    getOfferByOwnerAndPage(owner: string, page?: number, size?: number): Promise<Page<Offer>>;
+
+    getOffersByPage(page?: number, size?: number): Promise<Page<Offer>>;
+
+    /**
+     * @deprecated
+     * @see getOffersByPage
+     */
     getAllOffer(): Promise<Array<Offer>>;
 
     getOffersByOwnerAndTag(owner: string, tag: string): Promise<Array<Offer>>;
-
 }

@@ -4,25 +4,30 @@ import {
     CryptoWallet,
     EthWalletData,
     StringSignedMessage,
-    SupportSignedMessageData
+    SupportSignedMessageData,
+    UsdWalletData
 } from '../BaseTypes';
 import { AppWalletValidator } from './AppWalletValidator';
 import { BtcWalletValidator } from './BtcWalletValidator';
 import { EthWalletValidator } from './EthWalletValidator';
+import { UsdWalletValidator } from './UsdWalletValidator';
 import { ValidationResult } from './ValidationResult';
 import { WalletValidator } from './WalletValidator';
 
 export class WalletValidatorStrategy implements WalletValidator<CryptoWallet, SupportSignedMessageData<CryptoWallet>> {
+
     public static readonly VALIDATOR_TYPE_ETH: string = 'ETH';
     public static readonly VALIDATOR_TYPE_BTC: string = 'BTC';
     public static readonly VALIDATOR_TYPE_APP: string = 'APP';
+    public static readonly VALIDATOR_TYPE_USD: string = 'USD';
 
     private readonly validators: Map<string, WalletValidator<CryptoWallet, SupportSignedMessageData<CryptoWallet>>> =
         new Map(
             [
                 [WalletValidatorStrategy.VALIDATOR_TYPE_ETH, new EthWalletValidator()],
                 [WalletValidatorStrategy.VALIDATOR_TYPE_BTC, new BtcWalletValidator()],
-                [WalletValidatorStrategy.VALIDATOR_TYPE_APP, new AppWalletValidator()]
+                [WalletValidatorStrategy.VALIDATOR_TYPE_APP, new AppWalletValidator()],
+                [WalletValidatorStrategy.VALIDATOR_TYPE_USD, new UsdWalletValidator()]
             ]
         );
 
@@ -70,6 +75,9 @@ export class WalletValidatorStrategy implements WalletValidator<CryptoWallet, Su
 
         } else if (wallet instanceof AppWalletData) {
             return WalletValidatorStrategy.VALIDATOR_TYPE_APP;
+
+        } else if (wallet instanceof UsdWalletData) {
+            return WalletValidatorStrategy.VALIDATOR_TYPE_USD;
 
         } else {
             throw new Error('unsupported type of data');
