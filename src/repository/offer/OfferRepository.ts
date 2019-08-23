@@ -7,6 +7,8 @@ export interface OfferRepository {
 
     update(owner: string, id: number, offer: Offer): Promise<Offer>;
 
+    updateBulk(owner: string, offers: Array<Offer>): Promise<Array<number>>;
+
     shallowUpdate(owner: string, id: number, offer: Offer): Promise<Offer>;
 
     deleteById(owner: string, id: number): Promise<number>;
