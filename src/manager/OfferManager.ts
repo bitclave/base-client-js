@@ -5,6 +5,8 @@ export interface OfferManager {
 
     saveOffer(offer: Offer): Promise<Offer>;
 
+    updateBulkOffers(offers: Array<Offer>): Promise<Array<number>>;
+
     shallowSaveOffer(offer: Offer): Promise<Offer>;
 
     getMyOffers(id: number): Promise<Array<Offer>>;

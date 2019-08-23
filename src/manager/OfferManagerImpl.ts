@@ -24,6 +24,9 @@ export class OfferManagerImpl implements OfferManager {
             return this.offerRepository.update(this.account.publicKey, offerId, offer);
         }
     }
+    public updateBulkOffers(offers: Array<Offer>): Promise<Array<number>> {
+        return this.offerRepository.updateBulk(this.account.publicKey, offers);
+    }
 
     public shallowSaveOffer(offer: Offer): Promise<Offer> {
         const offerId: number = offer.id;
