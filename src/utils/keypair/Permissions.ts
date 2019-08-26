@@ -7,7 +7,6 @@ export class Permissions {
     constructor(fields: Map<string, AccessRight> = new Map()) {
         this.fields = fields || new Map();
     }
-
 }
 
 export enum AccessRight {

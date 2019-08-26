@@ -23,7 +23,7 @@ export class OfferPrice extends DeepCopy<OfferPrice> {
         worth: string = '',
         rules: Array<OfferPriceRules> = new Array<OfferPriceRules>()
     ) {
-        super();
+        super(OfferPrice);
         this.id = id;
         this.description = description;
         this.worth = worth;

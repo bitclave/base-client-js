@@ -10,8 +10,8 @@ export default class OfferShareData extends DeepCopy<OfferShareData> {
     public accepted: boolean = false;
     public readonly priceId: number;
 
-    constructor(offerSearchId: number, clientResponse: string, priceId: number) {
-        super();
+    constructor(offerSearchId: number = 0, clientResponse: string = '', priceId: number = 0) {
+        super(OfferShareData);
         this.offerSearchId = offerSearchId;
         this.clientResponse = clientResponse;
         this.priceId = priceId;

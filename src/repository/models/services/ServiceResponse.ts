@@ -17,7 +17,7 @@ export class ServiceResponse extends DeepCopy<ServiceResponse> {
     }
 
     constructor(headers: Map<string, Array<string>> = new Map(), status: number = 0, body?: object) {
-        super();
+        super(ServiceResponse);
         this.headers = headers || new Map();
         this.status = status || 0;
         this.body = body;

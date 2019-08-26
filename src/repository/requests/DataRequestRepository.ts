@@ -1,10 +1,12 @@
-import DataRequest from '../models/DataRequest';
+import { DataRequest } from '../models/DataRequest';
 
 export interface DataRequestRepository {
 
-    requestPermissions(toPk: string, encryptedRequest: string): Promise<number>;
+    requestPermissions(toPk: string, dataRequests: Array<DataRequest>): Promise<void>;
 
-    grantAccessForClient(fromPk: string, toPk: string, encryptedResponse: string): Promise<number>;
+    grantAccessForClient(dataRequests: Array<DataRequest>): Promise<void>;
+
+    revokeAccessForClient(dataRequests: Array<DataRequest>): Promise<void>;
 
     getRequests(fromPk: string | null, toPk: string | null): Promise<Array<DataRequest>>;
 
@@ -14,5 +16,4 @@ export interface DataRequestRepository {
         encryptedClientResponse: string,
         priceId: number
     ): Promise<void>;
-
 }

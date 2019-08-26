@@ -1,6 +1,6 @@
 import { AccountRepository } from '../account/AccountRepository';
 import Account from '../models/Account';
-import DataRequest from '../models/DataRequest';
+import { DataRequest } from '../models/DataRequest';
 import { Site } from '../models/Site';
 import { DataRequestRepository } from '../requests/DataRequestRepository';
 import { SiteRepository } from '../site/SiteRepository';

@@ -1,4 +1,6 @@
+import { DataRequest } from '../repository/models/DataRequest';
 import { FileMeta } from '../repository/models/FileMeta';
+import { SharedData } from '../repository/models/SharedData';
 
 export interface ProfileManager {
 
@@ -27,21 +29,22 @@ export interface ProfileManager {
 
     /**
      * Decrypts accepted personal data {@link DataRequest#responseData}.
-     * @param {string} recipientPk  Public key of the user that shared the data
-     * @param {string} encryptedData encrypted data {@link DataRequest#responseData}.
+     * @param {Array<DataRequest>} acceptedRequests is array {@link DataRequest}
+     * with accepted encrypted data {@link DataRequest#responseData}.
      *
-     * @returns {Promise<Map<string, string>>} Map key => value.
+     * @returns {Promise<SharedData>}  sharedData->FieldData-> value is client value or undefined if not
+     * let access.
      */
-    getAuthorizedData(recipientPk: string, encryptedData: string): Promise<Map<string, string>>;
+    getAuthorizedData(acceptedRequests: Array<DataRequest>): Promise<SharedData>;
 
     /**
      * Returns decryption keys for approved personal data {@link DataRequest#responseData}.
-     * @param {string} recipientPk  Public key of the user that shared the data
-     * @param {string} encryptedData encrypted data {@link DataRequest#responseData}.
+     * @param {Array<DataRequest>} encryptedData is array {@link DataRequest}
+     * with accepted encrypted data {@link DataRequest#responseData}.
      *
-     * @returns {Promise<Map<string, string>>} Map key (fieldName) => value (Password).
+     * @returns {Promise<SharedData>} sharedData->FieldData-> value is Password.
      */
-    getAuthorizedEncryptionKeys(recipientPk: string, encryptedData: string): Promise<Map<string, string>>;
+    getAuthorizedEncryptionKeys(encryptedData: Array<DataRequest>): Promise<SharedData>;
 
     /**
      * Encrypts and stores personal data in BASE.

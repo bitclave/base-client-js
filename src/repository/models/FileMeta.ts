@@ -27,7 +27,7 @@ export class FileMeta extends DeepCopy<FileMeta> {
         size: number = 0,
         content?: string
     ) {
-        super();
+        super(FileMeta);
         this.id = id || 0;
         this.publicKey = publicKey || '0x0';
         this.name = name || '';

@@ -2,8 +2,11 @@ import { JsonObject } from './JsonObject';
 import { JsonTransform } from './JsonTransform';
 
 export abstract class DeepCopy<T> extends JsonTransform {
+
     // tslint:disable-next-line:callable-types
-    private readonly creator: { new(): T; };
+    protected constructor(private readonly creator: { new(): T }) {
+        super();
+    }
 
     public copy(changeArgs?: JsonObject<T>): T {
         const copy = this.deepCopyFromJson();

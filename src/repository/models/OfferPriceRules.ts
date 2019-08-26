@@ -23,7 +23,7 @@ export class OfferPriceRules extends DeepCopy<OfferPriceRules> {
         value: string = '',
         rule: CompareAction = CompareAction.EQUALLY
     ) {
-        super();
+        super(OfferPriceRules);
         this.id = id;
         this.rulesKey = rulesKey;
         this.value = value;

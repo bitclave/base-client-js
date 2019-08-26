@@ -24,7 +24,7 @@ export default class OfferSearchResultItem extends DeepCopy<OfferSearchResultIte
         offer: Offer = new Offer(),
         interaction?: OfferInteraction | undefined
     ) {
-        super();
+        super(OfferSearchResultItem);
         this.offerSearch = offerSearch;
         this.offer = offer;
         this.interaction = interaction;
