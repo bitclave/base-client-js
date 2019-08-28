@@ -65,8 +65,7 @@ export default class ClientDataRepositoryImpl implements ClientDataRepository {
         }
 
         return this.transport
-            .sendRequest(path, HttpMethod.Post, pk, file)
+            .sendRequest<FileMeta>(path, HttpMethod.Post, pk, file)
             .then((response) => FileMeta.fromJson(response.json));
     }
-
 }

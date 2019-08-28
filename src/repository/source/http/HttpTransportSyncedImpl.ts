@@ -17,6 +17,7 @@ if ((typeof window !== 'undefined' && window.hasOwnProperty('XMLHttpRequest'))) 
 
 export class HttpTransportSyncedImpl extends HttpTransportImpl {
 
+    // @ts-ignore
     private transactions: Array<Transaction> = [];
 
     public sendRequest<T>(
@@ -42,7 +43,7 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
                 data,
                 fileMeta
             );
-            this.transactions.push(new Transaction(resolve, reject, cortege));
+            this.transactions.push(new Transaction<T>(resolve, reject, cortege));
 
             if (this.transactions.length === 1) {
                 this.runTransaction(this.transactions[0]);
@@ -53,7 +54,7 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
         });
     }
 
-    private runTransaction(transaction: Transaction): Promise<Response<object>> {
+    private runTransaction(transaction: Transaction<object>): Promise<Response<object>> {
         return new Promise<Response<object>>(async (resolve, reject) => {
             try {
                 await this.acceptInterceptor(transaction.cortege);
@@ -116,5 +117,4 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
             this.runTransaction(this.transactions[0]);
         }
     }
-
 }

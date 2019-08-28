@@ -173,7 +173,8 @@ export class AccountManagerImpl implements AccountManager {
             })
             .catch(err => {
                 // tslint:disable-next-line:max-line-length
-                this.logger.error(`base-client-js:syncAccount failure: ${account.publicKey} err: ${err}, ${JSON.stringify(err)}`);
+                this.logger.error(`base-client-js:syncAccount failure: ${account.publicKey} err: ${err}, ${JSON.stringify(
+                    err)}`);
                 throw err;
             });
     }
