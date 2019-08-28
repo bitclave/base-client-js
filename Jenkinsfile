@@ -44,7 +44,9 @@ spec:
 """
         }
     }
-    
+    triggers {
+        upstream(upstreamProjects: 'base-client-js-builder/master', threshold: hudson.model.Result.SUCCESS)
+    }
     stages {
         stage('Build') { 
             steps {
