@@ -47,6 +47,7 @@ spec:
         stage('Build') { 
             steps {
                 container('nodejs') {
+                    sh 'ls -la'
                     sh "npm install"
                     sh "npm run build"
                 }
