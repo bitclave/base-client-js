@@ -1,4 +1,17 @@
 pipeline {
+    environment {
+        // CI = 'true' 
+        // PROJECT = "bitclave-jenkins-ci"
+        PROJECT = "bitclave-base"
+        APP_NAME = "base-client-js"
+        FE_SVC_NAME = "${APP_NAME}-frontend"
+        CLUSTER = "base-first"
+        CLUSTER_ZONE = "us-central1-f"
+        // BRANCH_NAME = "master"
+        IMAGE_TAG = "gcr.io/bitclave-jenkins-ci/${APP_NAME}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
+        BUILDER_IMAGE_TAG = "gcr.io/bitclave-jenkins-ci/base-client-js-builder"
+        JENKINS_CRED = "bitclave-jenkins-ci"
+    }
     agent {
     kubernetes {
       label 'jenkins-builder'
@@ -31,19 +44,7 @@ spec:
 """
         }
     }
-    environment {
-        // CI = 'true' 
-        // PROJECT = "bitclave-jenkins-ci"
-        PROJECT = "bitclave-base"
-        APP_NAME = "base-client-js"
-        FE_SVC_NAME = "${APP_NAME}-frontend"
-        CLUSTER = "base-first"
-        CLUSTER_ZONE = "us-central1-f"
-        // BRANCH_NAME = "master"
-        IMAGE_TAG = "gcr.io/bitclave-jenkins-ci/${APP_NAME}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
-        BUILDER_IMAGE_TAG = "gcr.io/bitclave-jenkins-ci/base-client-js-builder"
-        JENKINS_CRED = "bitclave-jenkins-ci"
-    }
+    
     stages {
         stage('Build base-client-js Builder') {
             steps {
