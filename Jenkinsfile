@@ -48,7 +48,8 @@ spec:
             steps {
                 container('nodejs') {
                     sh 'ls -la'
-                    sh 'rm -rf .git'
+                    sh 'git version'
+                    sh 'git ls-remote origin'
                     sh "npm install"
                     sh "npm run build"
                 }
