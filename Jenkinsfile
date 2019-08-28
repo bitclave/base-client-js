@@ -1,14 +1,63 @@
 pipeline {
     agent {
-    dockerfile true
+    kubernetes {
+      label 'jenkins-builder'
+      defaultContainer 'jnlp'
+      yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+labels:
+  component: ci
+spec:
+  # Use service account that can deploy to all namespaces
+  serviceAccountName: cd-jenkins
+  containers:
+  - name: nodejs
+    image: node:8-alpine
+    command:
+    - cat
+    tty: true
+  - name: gcloud
+    image: gcr.io/cloud-builders/gcloud
+    command:
+    - cat
+    tty: true
+  - name: kubectl
+    image: gcr.io/cloud-builders/kubectl
+    command:
+    - cat
+    tty: true
+"""
+        }
     }
-    
+    environment {
+        // CI = 'true' 
+        // PROJECT = "bitclave-jenkins-ci"
+        PROJECT = "bitclave-base"
+        APP_NAME = "base-client-js"
+        FE_SVC_NAME = "${APP_NAME}-frontend"
+        CLUSTER = "base-first"
+        CLUSTER_ZONE = "us-central1-f"
+        // BRANCH_NAME = "master"
+        IMAGE_TAG = "gcr.io/bitclave-jenkins-ci/${APP_NAME}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
+        BUILDER_IMAGE_TAG = "gcr.io/bitclave-jenkins-ci/base-client-js-builder"
+        JENKINS_CRED = "bitclave-jenkins-ci"
+    }
     stages {
+        stage('Build base-client-js Builder') {
+            steps {
+                sh 'printenv'
+                sh 'echo ${IMAGE_TAG}'
+                container('gcloud') {
+                sh "PYTHONUNBUFFERED=1 gcloud builds submit -t ${BUILDER_IMAGE_TAG} ."
+                }
+            }
+        }
         stage('Build') { 
             steps {
-                container('nodejs') {
+                container("${BUILDER_IMAGE_TAG}") {
                     sh 'ls -la'
-                    sh 'node --version'
                     sh 'git version'
                     sh 'git ls-remote origin'
                     sh "npm install"
@@ -18,22 +67,13 @@ pipeline {
         }
         stage('Test') { 
             steps {
-                container('nodejs') {
+                container("${BUILDER_IMAGE_TAG}") {
                     sh 'node ./external/Signer.js --authPK 02e2d9c04891bf7f9934041d7171ade343e540f5d18bd357cde4ef175da3de7e06 --host https://base2-bitclva-com.herokuapp.com &'
                     sh 'npm test' 
                 }
             }
         }
 
-        // stage('Build Container') {
-        //     steps {
-        //         sh 'printenv'
-        //         sh 'echo ${IMAGE_TAG}'
-        //         container('gcloud') {
-        //         sh "PYTHONUNBUFFERED=1 gcloud builds submit -t ${IMAGE_TAG} ."
-        //         }
-        //     }
-        // }
         // stage('Deploy Production') {
         // // Production branch
         // steps{
