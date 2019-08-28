@@ -27,7 +27,7 @@ spec:
   serviceAccountName: cd-jenkins
   containers:
   - name: nodejs
-    image: ${BUILDER_IMAGE_TAG}
+    image: gcr.io/bitclave-jenkins-ci/base-client-js-builder
     command:
     - cat
     tty: true
