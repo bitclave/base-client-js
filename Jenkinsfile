@@ -48,6 +48,7 @@ spec:
             steps {
                 container('nodejs') {
                     sh 'ls -la'
+                    sh 'rm -rf .git'
                     sh "npm install"
                     sh "npm run build"
                 }
