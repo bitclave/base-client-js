@@ -1,4 +1,4 @@
-import { DeepCopy } from './DeepCopy';
+import { ClassCreator, DeepCopy } from './DeepCopy';
 
 export default class OfferShareData extends DeepCopy<OfferShareData> {
 
@@ -11,7 +11,7 @@ export default class OfferShareData extends DeepCopy<OfferShareData> {
     public readonly priceId: number;
 
     constructor(offerSearchId: number = 0, clientResponse: string = '', priceId: number = 0) {
-        super(OfferShareData);
+        super();
         this.offerSearchId = offerSearchId;
         this.clientResponse = clientResponse;
         this.priceId = priceId;
@@ -19,5 +19,9 @@ export default class OfferShareData extends DeepCopy<OfferShareData> {
 
     public toJson(): object {
         return this;
+    }
+
+    protected getClass(): ClassCreator<OfferShareData> {
+        return OfferShareData;
     }
 }

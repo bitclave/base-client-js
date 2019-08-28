@@ -1,4 +1,4 @@
-import { DeepCopy } from './DeepCopy';
+import { ClassCreator, DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
 
 export default class SimpleAccount extends DeepCopy<SimpleAccount> {
@@ -16,7 +16,7 @@ export default class SimpleAccount extends DeepCopy<SimpleAccount> {
     }
 
     constructor(publicKey: string = '', nonce: number = 0) {
-        super(SimpleAccount);
+        super();
         this.publicKey = publicKey;
         this.nonce = nonce;
     }
@@ -31,5 +31,9 @@ export default class SimpleAccount extends DeepCopy<SimpleAccount> {
 
     protected deepCopyFromJson(): SimpleAccount {
         return SimpleAccount.fromJson(this.toJson() as JsonObject<SimpleAccount>);
+    }
+
+    protected getClass(): ClassCreator<SimpleAccount> {
+        return SimpleAccount;
     }
 }

@@ -1,4 +1,4 @@
-import { DeepCopy } from './DeepCopy';
+import { ClassCreator, DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
 
 export class FileMeta extends DeepCopy<FileMeta> {
@@ -27,7 +27,7 @@ export class FileMeta extends DeepCopy<FileMeta> {
         size: number = 0,
         content?: string
     ) {
-        super(FileMeta);
+        super();
         this.id = id || 0;
         this.publicKey = publicKey || '0x0';
         this.name = name || '';
@@ -46,5 +46,9 @@ export class FileMeta extends DeepCopy<FileMeta> {
 
     protected deepCopyFromJson(): FileMeta {
         return FileMeta.fromJson(this.toJson() as JsonObject<FileMeta>);
+    }
+
+    protected getClass(): ClassCreator<FileMeta> {
+        return FileMeta;
     }
 }

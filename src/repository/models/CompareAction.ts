@@ -6,5 +6,4 @@ export enum CompareAction {
     MORE_OR_EQUAL = 'MORE_OR_EQUAL',
     MORE = 'MORE',
     LESS = 'LESS'
-
 }

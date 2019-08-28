@@ -1,5 +1,5 @@
 import { CompareAction } from './CompareAction';
-import { DeepCopy } from './DeepCopy';
+import { ClassCreator, DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
 
 export class OfferPriceRules extends DeepCopy<OfferPriceRules> {
@@ -23,7 +23,7 @@ export class OfferPriceRules extends DeepCopy<OfferPriceRules> {
         value: string = '',
         rule: CompareAction = CompareAction.EQUALLY
     ) {
-        super(OfferPriceRules);
+        super();
         this.id = id;
         this.rulesKey = rulesKey;
         this.value = value;
@@ -88,5 +88,9 @@ export class OfferPriceRules extends DeepCopy<OfferPriceRules> {
 
     protected deepCopyFromJson(): OfferPriceRules {
         return OfferPriceRules.fromJson(this.toJson());
+    }
+
+    protected getClass(): ClassCreator<OfferPriceRules> {
+        return OfferPriceRules;
     }
 }

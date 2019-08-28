@@ -1,12 +1,12 @@
 import { JsonObject } from './JsonObject';
 import { JsonTransform } from './JsonTransform';
 
-export abstract class DeepCopy<T> extends JsonTransform {
-
+export interface ClassCreator<T> {
     // tslint:disable-next-line:callable-types
-    protected constructor(private readonly creator: { new(): T }) {
-        super();
-    }
+    new(): T;
+}
+
+export abstract class DeepCopy<T> extends JsonTransform {
 
     public copy(changeArgs?: JsonObject<T>): T {
         const copy = this.deepCopyFromJson();
@@ -20,6 +20,8 @@ export abstract class DeepCopy<T> extends JsonTransform {
     }
 
     protected deepCopyFromJson(): T {
-        return Object.assign(new this.creator(), this.toJson());
+        return Object.assign(Reflect.construct(this.getClass(), []), this.toJson());
     }
+
+    protected abstract getClass(): ClassCreator<T>;
 }

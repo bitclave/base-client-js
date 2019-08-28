@@ -1,4 +1,4 @@
-import { DeepCopy } from './DeepCopy';
+import { ClassCreator, DeepCopy } from './DeepCopy';
 
 export class Site extends DeepCopy<Site> {
 
@@ -8,7 +8,7 @@ export class Site extends DeepCopy<Site> {
     public readonly confidential: boolean;
 
     constructor(id: number = 0, origin: string = '', publicKey: string = '', confidential: boolean = false) {
-        super(Site);
+        super();
         this.id = id;
         this.origin = origin;
         this.publicKey = publicKey;
@@ -17,5 +17,9 @@ export class Site extends DeepCopy<Site> {
 
     public toJson(): object {
         return this;
+    }
+
+    protected getClass(): ClassCreator<Site> {
+        return Site;
     }
 }

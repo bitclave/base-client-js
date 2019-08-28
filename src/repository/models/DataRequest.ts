@@ -1,4 +1,4 @@
-import { DeepCopy } from './DeepCopy';
+import { ClassCreator, DeepCopy } from './DeepCopy';
 
 export class DataRequest extends DeepCopy<DataRequest> {
 
@@ -16,7 +16,7 @@ export class DataRequest extends DeepCopy<DataRequest> {
         requestData: string = '',
         responseData: string = ''
     ) {
-        super(DataRequest);
+        super();
         this.fromPk = fromPk || '';
         this.toPk = toPk || '';
         this.rootPk = rootPk || '';
@@ -26,5 +26,9 @@ export class DataRequest extends DeepCopy<DataRequest> {
 
     public toJson(): object {
         return this;
+    }
+
+    protected getClass(): ClassCreator<DataRequest> {
+        return DataRequest;
     }
 }

@@ -1,5 +1,5 @@
 import { JsonUtils } from '../../utils/JsonUtils';
-import { DeepCopy } from './DeepCopy';
+import { ClassCreator, DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
 
 export default class SearchRequest extends DeepCopy<SearchRequest> {
@@ -21,7 +21,7 @@ export default class SearchRequest extends DeepCopy<SearchRequest> {
     }
 
     constructor(tags: Map<string, string> = new Map()) {
-        super(SearchRequest);
+        super();
         this.tags = tags;
     }
 
@@ -37,5 +37,9 @@ export default class SearchRequest extends DeepCopy<SearchRequest> {
 
     protected deepCopyFromJson(): SearchRequest {
         return SearchRequest.fromJson(this.toJson());
+    }
+
+    protected getClass(): ClassCreator<SearchRequest> {
+        return SearchRequest;
     }
 }
