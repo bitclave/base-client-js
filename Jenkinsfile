@@ -49,9 +49,6 @@ spec:
         stage('Build') { 
             steps {
                 container("nodejs") {
-                    sh 'ls -la'
-                    sh 'git version'
-                    sh 'git ls-remote origin'
                     sh "npm install"
                     sh "npm run build"
                 }
