@@ -1,0 +1,49 @@
+pipeline {
+    environment {
+        BUILDER_IMAGE_TAG = "gcr.io/bitclave-jenkins-ci/base-client-js-builder"
+    }
+    agent {
+    kubernetes {
+      label 'jenkins-builder'
+      defaultContainer 'jnlp'
+      yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+labels:
+  component: ci
+spec:
+  # Use service account that can deploy to all namespaces
+  serviceAccountName: cd-jenkins
+  containers:
+  - name: nodejs
+    image: gcr.io/bitclave-jenkins-ci/base-client-js-builder
+    command:
+    - cat
+    tty: true
+  - name: gcloud
+    image: gcr.io/cloud-builders/gcloud
+    command:
+    - cat
+    tty: true
+  - name: kubectl
+    image: gcr.io/cloud-builders/kubectl
+    command:
+    - cat
+    tty: true
+"""
+        }
+    }
+    
+    stages {
+        stage('Build base-client-js Builder') {
+            steps {
+                sh 'printenv'
+                sh 'echo ${IMAGE_TAG}'
+                container('gcloud') {
+                sh "PYTHONUNBUFFERED=1 gcloud builds submit -t ${BUILDER_IMAGE_TAG} ."
+                }
+            }
+        }
+    }
+}
