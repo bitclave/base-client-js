@@ -117,4 +117,9 @@ spec:
         //     }
         // }
     }
+    post {
+        always {
+            archiveArtifacts artifacts: 'dist/Base.js', fingerprint: true
+        }
+    }
 }
