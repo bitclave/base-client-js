@@ -46,15 +46,6 @@ spec:
     }
     
     stages {
-        stage('Build base-client-js Builder') {
-            steps {
-                sh 'printenv'
-                sh 'echo ${IMAGE_TAG}'
-                container('gcloud') {
-                sh "PYTHONUNBUFFERED=1 gcloud builds submit -t ${BUILDER_IMAGE_TAG} ."
-                }
-            }
-        }
         stage('Build') { 
             steps {
                 container("nodejs") {
