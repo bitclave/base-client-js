@@ -14,7 +14,7 @@ spec:
   serviceAccountName: cd-jenkins
   containers:
   - name: nodejs
-    image: node:10-alpine
+    image: node:12-alpine
     command:
     - cat
     tty: true
