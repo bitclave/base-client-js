@@ -47,7 +47,7 @@ spec:
         stage('Build') { 
             steps {
                 container('nodejs') {
-                    sh "npm install"
+                    sh "npm install --loglevel verbose"
                     sh "npm run build"
                 }
             }
