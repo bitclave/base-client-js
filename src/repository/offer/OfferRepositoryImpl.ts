@@ -51,31 +51,31 @@ export default class OfferRepositoryImpl implements OfferRepository {
     }
 
     public getOfferByOwnerAndId(owner: string, id: number): Promise<Array<Offer>> {
-        return this.transport.sendRequest(
+        return this.transport.sendRequest<Array<Offer>>(
             this.OFFER_API.replace('{owner}', owner).replace('{id}', id.toString()),
             HttpMethod.Get
         ).then((response) => this.jsonToListOffers(response.json));
     }
 
     public getOfferByOwner(owner: string): Promise<Array<Offer>> {
-        return this.transport.sendRequest(
+        return this.transport.sendRequest<Array<Offer>>(
             this.OFFER_API.replace('{owner}', owner).replace('{id}', ''),
             HttpMethod.Get
         ).then((response) => this.jsonToListOffers(response.json));
     }
 
     public getOfferByOwnerAndPage(owner: string, page?: number, size?: number): Promise<Page<Offer>> {
-        return this.transport.sendRequest(
+        return this.transport.sendRequest<Page<Offer>>(
             this.OFFER_API_PAGE.replace('{owner}', owner)
-            .replace('{id}', '')
-            .replace('{page}', (page || 0).toString())
-            .replace('{size}', (size || 20).toString()),
+                .replace('{id}', '')
+                .replace('{page}', (page || 0).toString())
+                .replace('{size}', (size || 20).toString()),
             HttpMethod.Get
         ).then((response) => this.jsonToPageResultItem(response.json));
     }
 
     public getOffersByPage(page?: number, size?: number): Promise<Page<Offer>> {
-        return this.transport.sendRequest(
+        return this.transport.sendRequest<Page<Offer>>(
             this.OFFERS_PAGEABLE_API
                 .replace('{page}', (page || 0).toString())
                 .replace('{size}', (size || 20).toString()),
@@ -88,14 +88,14 @@ export default class OfferRepositoryImpl implements OfferRepository {
      * @see getOffersByPage
      */
     public getAllOffer(): Promise<Array<Offer>> {
-        return this.transport.sendRequest(
+        return this.transport.sendRequest<Array<Offer>>(
             this.OFFER_API.replace('{owner}', '0x0').replace('{id}', ''),
             HttpMethod.Get
         ).then((response) => this.jsonToListOffers(response.json));
     }
 
     public getOffersByOwnerAndTag(owner: string, tag: string): Promise<Array<Offer>> {
-        return this.transport.sendRequest(
+        return this.transport.sendRequest<Array<Offer>>(
             this.OFFER_API.replace('{owner}', owner).replace('{id}', 'tag/' + tag),
             HttpMethod.Get
         ).then((response) => this.jsonToListOffers(response.json));

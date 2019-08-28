@@ -1,4 +1,4 @@
-import { DeepCopy } from './DeepCopy';
+import { ClassCreator, DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
 
 export class OfferSearch extends DeepCopy<OfferSearch> {
@@ -17,7 +17,7 @@ export class OfferSearch extends DeepCopy<OfferSearch> {
     }
 
     constructor(searchRequestId: number = 0, offerId: number = 0) {
-        super(OfferSearch);
+        super();
         this.searchRequestId = searchRequestId || 0;
         this.offerId = offerId || 0;
         this.createdAt = new Date();
@@ -33,5 +33,9 @@ export class OfferSearch extends DeepCopy<OfferSearch> {
 
     protected deepCopyFromJson(): OfferSearch {
         return OfferSearch.fromJson(this.toJson());
+    }
+
+    protected getClass(): ClassCreator<OfferSearch> {
+        return OfferSearch;
     }
 }

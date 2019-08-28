@@ -1,5 +1,5 @@
 import { JsonUtils } from '../../../utils/JsonUtils';
-import { DeepCopy } from '../DeepCopy';
+import { ClassCreator, DeepCopy } from '../DeepCopy';
 import { JsonObject } from '../JsonObject';
 
 export class ServiceResponse extends DeepCopy<ServiceResponse> {
@@ -17,7 +17,7 @@ export class ServiceResponse extends DeepCopy<ServiceResponse> {
     }
 
     constructor(headers: Map<string, Array<string>> = new Map(), status: number = 0, body?: object) {
-        super(ServiceResponse);
+        super();
         this.headers = headers || new Map();
         this.status = status || 0;
         this.body = body;
@@ -32,5 +32,9 @@ export class ServiceResponse extends DeepCopy<ServiceResponse> {
 
     protected deepCopyFromJson(): ServiceResponse {
         return ServiceResponse.fromJson(this.toJson() as JsonObject<ServiceResponse>);
+    }
+
+    protected getClass(): ClassCreator<ServiceResponse> {
+        return ServiceResponse;
     }
 }

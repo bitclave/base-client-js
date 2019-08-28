@@ -58,7 +58,7 @@ export class RpcKeyPair implements RemoteKeyPairHelper {
     }
 
     public encryptFields(fields: Map<string, string>): Promise<Map<string, string>> {
-        return this.rpcTransport.request(
+        return this.rpcTransport.request<object>(
             'encryptFields',
             new RpcDecryptEncryptFields(this.clientData.accessToken, JsonUtils.mapToJson(fields), new Map())
         ).then((response) => JsonUtils.jsonToMap<string, string>(response));
@@ -76,7 +76,7 @@ export class RpcKeyPair implements RemoteKeyPairHelper {
         data: Map<string, AccessRight>
     ): Promise<Map<string, string>> {
 
-        const resultJson = await this.rpcTransport.request(
+        const resultJson = await this.rpcTransport.request<object>(
             'encryptFieldsWithPermissions',
             new RpcPermissionsFields(this.clientData.accessToken, recipient, JsonUtils.mapToJson(data))
         );
@@ -92,7 +92,7 @@ export class RpcKeyPair implements RemoteKeyPairHelper {
     }
 
     public decryptFields(fields: Map<string, string>, passwords?: Map<string, string>): Promise<Map<string, string>> {
-        return this.rpcTransport.request(
+        return this.rpcTransport.request<object>(
             'decryptFields',
             new RpcDecryptEncryptFields(
                 this.clientData.accessToken,

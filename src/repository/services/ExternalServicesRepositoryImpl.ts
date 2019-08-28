@@ -16,7 +16,7 @@ export class ExternalServicesRepositoryImpl implements ExternalServicesRepositor
     }
 
     public callExternalService(serviceCall: ServiceCall): Promise<ServiceResponse> {
-        return this.transport.sendRequest(
+        return this.transport.sendRequest<ServiceResponse>(
             this.EXTERNAL_SERVICES_API,
             HttpMethod.Post,
             serviceCall.toJson()

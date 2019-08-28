@@ -1,4 +1,4 @@
-import { DeepCopy } from './DeepCopy';
+import { ClassCreator, DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
 
 export class OfferRank extends DeepCopy<OfferRank> {
@@ -24,7 +24,7 @@ export class OfferRank extends DeepCopy<OfferRank> {
         public readonly createdAt: Date = new Date(),
         public readonly updatedAt: Date = new Date()
     ) {
-        super(OfferRank);
+        super();
         this.id = 0;
         this.rank = rank || 0;
         this.offerId = offerId || 0;
@@ -43,5 +43,9 @@ export class OfferRank extends DeepCopy<OfferRank> {
 
     protected deepCopyFromJson(): OfferRank {
         return OfferRank.fromJson(this.toJson());
+    }
+
+    protected getClass(): ClassCreator<OfferRank> {
+        return OfferRank;
     }
 }

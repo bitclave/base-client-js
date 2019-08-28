@@ -1,5 +1,5 @@
 import { AccessRight } from '../../utils/keypair/Permissions';
-import { DeepCopy } from './DeepCopy';
+import { ClassCreator, DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
 import { OfferPriceRules } from './OfferPriceRules';
 
@@ -23,7 +23,7 @@ export class OfferPrice extends DeepCopy<OfferPrice> {
         worth: string = '',
         rules: Array<OfferPriceRules> = new Array<OfferPriceRules>()
     ) {
-        super(OfferPrice);
+        super();
         this.id = id;
         this.description = description;
         this.worth = worth;
@@ -57,5 +57,9 @@ export class OfferPrice extends DeepCopy<OfferPrice> {
 
     protected deepCopyFromJson(): OfferPrice {
         return OfferPrice.fromJson(this.toJson());
+    }
+
+    protected getClass(): ClassCreator<OfferPrice> {
+        return OfferPrice;
     }
 }

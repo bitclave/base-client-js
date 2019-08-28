@@ -1,4 +1,4 @@
-import { DeepCopy } from './DeepCopy';
+import { ClassCreator, DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
 
 export class Pageable extends DeepCopy<Pageable> {
@@ -7,7 +7,7 @@ export class Pageable extends DeepCopy<Pageable> {
     public readonly size: number;
 
     constructor(sort: string = '', page: number = 0, size: number = 0) {
-        super(Pageable);
+        super();
         this.sort = sort;
         this.page = page;
         this.size = size;
@@ -15,6 +15,10 @@ export class Pageable extends DeepCopy<Pageable> {
 
     public toJson(): object {
         return this;
+    }
+
+    protected getClass(): ClassCreator<Pageable> {
+        return Pageable;
     }
 }
 
@@ -73,7 +77,7 @@ export class Page<T> extends DeepCopy<Page<T>> {
         totalElements: number = 0,
         counters: object = {}
     ) {
-        super(Page);
+        super();
         this.total = total;
         this.content = content;
         this.pageable = pageable;
@@ -93,5 +97,9 @@ export class Page<T> extends DeepCopy<Page<T>> {
 
     protected deepCopyFromJson(): Page<T> {
         throw new Error('method not supported');
+    }
+
+    protected getClass(): ClassCreator<Page<T>> {
+        return Page;
     }
 }

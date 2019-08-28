@@ -18,7 +18,7 @@ export default class AccountRepositoryImpl implements AccountRepository {
 
     public registration(account: Account): Promise<Account> {
         return this.transport
-            .sendRequest(this.SIGN_UP, HttpMethod.Post, account.toSimpleAccount())
+            .sendRequest<Account>(this.SIGN_UP, HttpMethod.Post, account.toSimpleAccount())
             .then((response) => Account.fromJson(response.json))
             .catch(err => {
                 throw err;
@@ -27,7 +27,7 @@ export default class AccountRepositoryImpl implements AccountRepository {
 
     public checkAccount(account: Account): Promise<Account> {
         return this.transport
-            .sendRequest(this.SIGN_IN, HttpMethod.Post, account.toSimpleAccount())
+            .sendRequest<Account>(this.SIGN_IN, HttpMethod.Post, account.toSimpleAccount())
             .then((response) => Account.fromJson(response.json))
             .catch(err => {
                 throw err;
@@ -43,5 +43,4 @@ export default class AccountRepositoryImpl implements AccountRepository {
             .sendRequest(this.GET_NONCE + account.publicKey, HttpMethod.Get)
             .then((response) => parseInt(response.json.toString(), 10));
     }
-
 }
