@@ -14,7 +14,7 @@ spec:
   serviceAccountName: cd-jenkins
   containers:
   - name: nodejs
-    image: node:8-alpine
+    image: ${BUILDER_IMAGE_TAG}
     command:
     - cat
     tty: true
@@ -56,7 +56,7 @@ spec:
         }
         stage('Build') { 
             steps {
-                container("${BUILDER_IMAGE_TAG}") {
+                container("nodejs") {
                     sh 'ls -la'
                     sh 'git version'
                     sh 'git ls-remote origin'
@@ -67,7 +67,7 @@ spec:
         }
         stage('Test') { 
             steps {
-                container("${BUILDER_IMAGE_TAG}") {
+                container("nodejs") {
                     sh 'node ./external/Signer.js --authPK 02e2d9c04891bf7f9934041d7171ade343e540f5d18bd357cde4ef175da3de7e06 --host https://base2-bitclva-com.herokuapp.com &'
                     sh 'npm test' 
                 }
