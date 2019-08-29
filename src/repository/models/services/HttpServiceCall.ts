@@ -1,6 +1,6 @@
 import { JsonUtils } from '../../../utils/JsonUtils';
 import { HttpMethod } from '../../source/http/HttpMethod';
-import { DeepCopy } from '../DeepCopy';
+import { ClassCreator, DeepCopy } from '../DeepCopy';
 import { JsonObject } from '../JsonObject';
 import { ServiceCall, ServiceCallType } from './ServiceCall';
 
@@ -54,5 +54,9 @@ export class HttpServiceCall extends DeepCopy<HttpServiceCall> implements Servic
 
     protected deepCopyFromJson(): HttpServiceCall {
         return HttpServiceCall.fromJson(this.toJson() as JsonObject<HttpServiceCall>);
+    }
+
+    protected getClass(): ClassCreator<HttpServiceCall> {
+        return HttpServiceCall;
     }
 }

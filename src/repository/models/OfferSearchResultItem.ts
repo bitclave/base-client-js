@@ -1,4 +1,4 @@
-import { DeepCopy } from './DeepCopy';
+import { ClassCreator, DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
 import Offer from './Offer';
 import { OfferInteraction } from './OfferInteraction';
@@ -40,5 +40,9 @@ export default class OfferSearchResultItem extends DeepCopy<OfferSearchResultIte
 
     protected deepCopyFromJson(): OfferSearchResultItem {
         return OfferSearchResultItem.fromJson(this.toJson());
+    }
+
+    protected getClass(): ClassCreator<OfferSearchResultItem> {
+        return OfferSearchResultItem;
     }
 }

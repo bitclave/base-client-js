@@ -1,3 +1,4 @@
+import { ClassCreator } from './DeepCopy';
 import { JsonObject } from './JsonObject';
 import SimpleAccount from './SimpleAccount';
 
@@ -31,5 +32,9 @@ export default class Account extends SimpleAccount {
 
     protected deepCopyFromJson(): SimpleAccount {
         return Account.fromJson(this.toJson() as JsonObject<Account>);
+    }
+
+    protected getClass(): ClassCreator<Account> {
+        return Account;
     }
 }

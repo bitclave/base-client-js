@@ -1,5 +1,5 @@
 import { JsonUtils } from '../../../utils/JsonUtils';
-import { DeepCopy } from '../DeepCopy';
+import { ClassCreator, DeepCopy } from '../DeepCopy';
 import { JsonObject } from '../JsonObject';
 
 export class ServiceResponse extends DeepCopy<ServiceResponse> {
@@ -32,5 +32,9 @@ export class ServiceResponse extends DeepCopy<ServiceResponse> {
 
     protected deepCopyFromJson(): ServiceResponse {
         return ServiceResponse.fromJson(this.toJson() as JsonObject<ServiceResponse>);
+    }
+
+    protected getClass(): ClassCreator<ServiceResponse> {
+        return ServiceResponse;
     }
 }

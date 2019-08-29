@@ -1,4 +1,4 @@
-import { DeepCopy } from './DeepCopy';
+import { ClassCreator, DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
 
 export class OfferRank extends DeepCopy<OfferRank> {
@@ -43,5 +43,9 @@ export class OfferRank extends DeepCopy<OfferRank> {
 
     protected deepCopyFromJson(): OfferRank {
         return OfferRank.fromJson(this.toJson());
+    }
+
+    protected getClass(): ClassCreator<OfferRank> {
+        return OfferRank;
     }
 }

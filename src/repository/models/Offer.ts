@@ -1,6 +1,6 @@
 import { JsonUtils } from '../../utils/JsonUtils';
 import { CompareAction } from './CompareAction';
-import { DeepCopy } from './DeepCopy';
+import { ClassCreator, DeepCopy } from './DeepCopy';
 import { OfferPrice } from './OfferPrice';
 import { OfferPriceRules } from './OfferPriceRules';
 
@@ -125,5 +125,9 @@ export default class Offer extends DeepCopy<Offer> {
 
     protected deepCopyFromJson(): Offer {
         return Offer.fromJson(this.toJson());
+    }
+
+    protected getClass(): ClassCreator<Offer> {
+        return Offer;
     }
 }

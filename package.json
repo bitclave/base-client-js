@@ -1,6 +1,6 @@
 {
   "name": "@bitclave/base-client-js",
-  "version": "0.4.64",
+  "version": "0.4.67",
   "description": "Base JS library for BASE-platform",
   "main": "dist/Base.node.js",
   "browser": "dist/Base.js",
@@ -105,7 +105,7 @@
     "tslint-webpack-plugin": "^2.0.4",
     "typedoc": "^0.14.2",
     "typedoc-webpack-plugin": "^1.1.4",
-    "typescript": "^2.8.1",
+    "typescript": "=3.5.3",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3"
   }

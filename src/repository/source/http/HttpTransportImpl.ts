@@ -65,7 +65,7 @@ export class HttpTransportImpl implements HttpTransport {
                 request.open(method, url);
 
                 request.onload = () => {
-                    const result: Response<object> = new Response(request.responseText, request.status);
+                    const result: Response<T> = new Response(request.responseText, request.status);
                     if (request.status >= 200 && request.status < 300) {
                         resolve(result);
 

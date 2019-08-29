@@ -13,16 +13,18 @@ export default class ClientDataRepositoryImplMock implements ClientDataRepositor
         this._clientData.set(id, data);
     }
 
-    public getData(id: string, fieldKey?: string | Array<string> | undefined): Promise<Map<string, string>> {
+    public async getData(id: string, fieldKey?: string | Array<string> | undefined): Promise<Map<string, string>> {
         const map = this._clientData.get(id) || new Map();
         let fields: Array<string> = [];
         const fieldsSet = new Set<string>();
+
         if (fieldKey && typeof fieldKey === 'string') {
             fields.push(fieldKey);
 
         } else if (fieldKey && typeof fieldKey === 'object' && fieldKey instanceof Array) {
             fields = fieldKey;
         }
+
         fields.forEach(key => fieldsSet.add(key));
 
         const filtered = new Map();
@@ -32,7 +34,7 @@ export default class ClientDataRepositoryImplMock implements ClientDataRepositor
             }
         });
 
-        return Promise.resolve(filtered);
+        return filtered;
     }
 
     public updateData(id: string, data: Map<string, string>): Promise<Map<string, string>> {

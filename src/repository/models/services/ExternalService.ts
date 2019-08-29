@@ -1,4 +1,4 @@
-import { DeepCopy } from '../DeepCopy';
+import { ClassCreator, DeepCopy } from '../DeepCopy';
 
 export class ExternalService extends DeepCopy<ExternalService> {
     public readonly publicKey: string;
@@ -12,5 +12,9 @@ export class ExternalService extends DeepCopy<ExternalService> {
 
     public toJson(): object {
         return this;
+    }
+
+    protected getClass(): ClassCreator<ExternalService> {
+        return ExternalService;
     }
 }

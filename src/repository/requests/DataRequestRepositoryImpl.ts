@@ -1,4 +1,4 @@
-import DataRequest from '../models/DataRequest';
+import { DataRequest } from '../models/DataRequest';
 import OfferShareData from '../models/OfferShareData';
 import { HttpMethod } from '../source/http/HttpMethod';
 import { HttpTransport } from '../source/http/HttpTransport';
@@ -16,27 +16,28 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
         this.transport = transport;
     }
 
-    public requestPermissions(toPk: string, encryptedRequest: string): Promise<number> {
-        const data: DataRequest = new DataRequest(toPk, encryptedRequest);
-        return this.transport
-            .sendRequest(
-                this.DATA_REQUEST,
-                HttpMethod.Post,
-                data
-            ).then((response) => parseInt(response.json.toString(), 10));
+    public async requestPermissions(toPk: string, dataRequests: Array<DataRequest>): Promise<void> {
+        await this.transport.sendRequest(
+            this.DATA_REQUEST,
+            HttpMethod.Post,
+            dataRequests
+        );
     }
 
-    public grantAccessForClient(fromPk: string, toPk: string, encryptedResponse: string): Promise<number> {
-        const data: DataRequest = new DataRequest(toPk, '');
-        data.responseData = encryptedResponse;
-        data.fromPk = fromPk;
+    public async grantAccessForClient(dataRequests: Array<DataRequest>): Promise<void> {
+        await this.transport.sendRequest(
+            this.GRANT_ACCESS_FOR_CLIENT,
+            HttpMethod.Post,
+            dataRequests
+        );
+    }
 
-        return this.transport
-            .sendRequest(
-                this.GRANT_ACCESS_FOR_CLIENT,
-                HttpMethod.Post,
-                data
-            ).then((response) => parseInt(response.json.toString(), 10));
+    public async revokeAccessForClient(dataRequests: Array<DataRequest>): Promise<void> {
+        await this.transport.sendRequest(
+            this.GRANT_ACCESS_FOR_CLIENT,
+            HttpMethod.Delete,
+            dataRequests
+        );
     }
 
     public getRequests(fromPk: string | null, toPk: string | null): Promise<Array<DataRequest>> {
@@ -49,7 +50,7 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
                 this.DATA_REQUEST + `?${strParams}`,
                 HttpMethod.Get
             ).then((response) => (response.originJson as Array<DataRequest>)
-                .map(item => Object.assign(new DataRequest(), item))
+                .map(item => Object.assign(new DataRequest('', '', '', '', ''), item))
             );
     }
 
@@ -78,5 +79,4 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
     private isEmpty(value: string | null): boolean {
         return value == null || value === undefined || value.trim().length === 0;
     }
-
 }

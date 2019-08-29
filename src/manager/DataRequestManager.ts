@@ -1,4 +1,5 @@
-import DataRequest from '../repository/models/DataRequest';
+import { DataRequest } from '../repository/models/DataRequest';
+import { FieldData } from '../repository/models/FieldData';
 import { AccessRight } from '../utils/keypair/Permissions';
 
 export interface DataRequestManager {
@@ -9,9 +10,9 @@ export interface DataRequestManager {
      * @param {Array<string>} fields Array of name identifiers for the requested data fields
      * (e.g. this is keys in {Map<string, string>}).
      *
-     * @returns {Promise<number>} Returns requestID upon successful request record creation.
+     * @returns {Promise<void>}
      */
-    requestPermissions(recipientPk: string, fields: Array<string>): Promise<number>;
+    requestPermissions(recipientPk: string, fields: Array<string>): Promise<void>;
 
     /**
      * Returns a list of outstanding data access requests, where data access requests meet the provided search criteria.
@@ -25,26 +26,42 @@ export interface DataRequestManager {
     /**
      * Grants access to specific fields of my data to a client.
      * @param {string} clientPk id (baseID) of the client that is authorized for data access.
-     * @param {Map<string, AccessRight>} acceptedFields. Array of field names that are authorized for access
+     * @param {Map<string, AccessRight>} acceptedFields. Map of field names and {AccessRight}
+     * that are authorized for access.
+     * (e.g. these are keys in {Map<string, string>} - personal data).
+     * @param {string} rootPk ID (baseID) of the client that is the data owner. by default it's your id.
+     *
+     * @returns {Promise<void>}
+     */
+    grantAccessForClient(
+        clientPk: string,
+        acceptedFields: Map<string, AccessRight>,
+        rootPk?: string
+    ): Promise<void>;
+
+    /**
+     * revoke access to specific fields of my data to a client.
+     * @param {string} clientPk id (baseID) of the client that is authorized for data access.
+     * @param {Array<string>} revokeFields. Array of field names that are authorized for access
      * (e.g. these are keys in {Map<string, string>} - personal data).
      *
-     * @returns {Promise<number>}
+     * @returns {Promise<void>}
      */
-    grantAccessForClient(clientPk: string, acceptedFields: Map<string, AccessRight>): Promise<number>;
+    revokeAccessForClient(clientPk: string, revokeFields: Array<string>): Promise<void>;
 
     /**
      * Returns list of fields requested for access by <me> from the client
-     * @param {string} requestedFromPk id (baseID) of the client whose permissions were requested
+     * @param {string} requestedFromPk id (baseID) of the client whose permissions were requested. is optional.
      * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
-    getRequestedPermissions(requestedFromPk: string): Promise<Array<string>>;
+    getRequestedPermissions(requestedFromPk?: string | undefined): Promise<Array<FieldData>>;
 
     /**
      * Returns list of fields requested for access by the client from <me>
-     * @param {string} whoRequestedPk id (baseID) of the client that asked for permission from <me>
+     * @param {string} whoRequestedPk id (baseID) of the client that asked for permission from <me>. is optional.
      * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
-    getRequestedPermissionsToMe(whoRequestedPk: string): Promise<Array<string>>;
+    getRequestedPermissionsToMe(whoRequestedPk?: string | undefined): Promise<Array<FieldData>>;
 
     /**
      * Returns list of fields that <client> authorized <me> to access
@@ -54,6 +71,8 @@ export interface DataRequestManager {
     getGrantedPermissions(clientPk: string): Promise<Array<string>>;
 
     /**
+     * @deprecated
+     *
      * Returns list of fields that <me> authorized <client> to access
      * @param {string} clientPk id (baseID) of the client that received access permission from <me>
      * @returns {Promise<Array<string>>} Array of field names that were authorized for access

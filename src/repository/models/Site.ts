@@ -1,4 +1,4 @@
-import { DeepCopy } from './DeepCopy';
+import { ClassCreator, DeepCopy } from './DeepCopy';
 
 export class Site extends DeepCopy<Site> {
 
@@ -17,5 +17,9 @@ export class Site extends DeepCopy<Site> {
 
     public toJson(): object {
         return this;
+    }
+
+    protected getClass(): ClassCreator<Site> {
+        return Site;
     }
 }

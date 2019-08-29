@@ -1,8 +1,11 @@
 import { Observable } from 'rxjs/Rx';
 import Account from '../repository/models/Account';
-import DataRequest from '../repository/models/DataRequest';
+import { DataRequest } from '../repository/models/DataRequest';
+import { FieldData } from '../repository/models/FieldData';
+import { SharedData } from '../repository/models/SharedData';
 import { DataRequestRepository } from '../repository/requests/DataRequestRepository';
 import { JsonUtils } from '../utils/JsonUtils';
+import { AcceptedField } from '../utils/keypair/AcceptedField';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { AccessRight } from '../utils/keypair/Permissions';
@@ -36,15 +39,13 @@ export class DataRequestManagerImpl implements DataRequestManager {
      * @param {Array<string>} fields Array of name identifiers for the requested data fields
      * (e.g. this is keys in {Map<string, string>}).
      *
-     * @returns {Promise<number>} Returns requestID upon successful request record creation.
+     * @returns {Promise<void>}
      */
-    public requestPermissions(recipientPk: string, fields: Array<string>): Promise<number> {
-        return this.encrypt
-            .encryptMessage(recipientPk, JSON.stringify(fields).toLowerCase())
-            .then((encrypted: string) => this.dataRequestRepository.requestPermissions(recipientPk, encrypted))
-            .catch(err => {
-                throw err;
-            });
+    public async requestPermissions(recipientPk: string, fields: Array<string>): Promise<void> {
+        const requestDataList = fields
+            .map(item => new DataRequest(this.account.publicKey, recipientPk, recipientPk, item.toLowerCase(), ''));
+
+        return this.dataRequestRepository.requestPermissions(recipientPk, requestDataList);
     }
 
     /**
@@ -63,32 +64,91 @@ export class DataRequestManagerImpl implements DataRequestManager {
      * @param {string} clientPk id (baseID) of the client that is authorized for data access.
      * @param {Map<string, AccessRight>} acceptedFields. Array of field names that are authorized for access
      * (e.g. these are keys in {Map<string, string>} - personal data).
+     * @param {string} rootPk ID (baseID) of the client that is the data owner.
      *
-     * @returns {Promise<number>}
+     * @returns {Promise<void>}
      */
-    public async grantAccessForClient(clientPk: string, acceptedFields: Map<string, AccessRight>): Promise<number> {
-        const response: string = await this.encrypt.encryptPermissionsFields(clientPk, acceptedFields);
-        return await this.dataRequestRepository.grantAccessForClient(clientPk, this.account.publicKey, response);
+    public async grantAccessForClient(
+        clientPk: string,
+        acceptedFields: Map<string, AccessRight>,
+        rootPk?: string,
+    ): Promise<void> {
+        let encrypted: Map<string, string> = new Map();
+        rootPk = rootPk ? rootPk : this.account.publicKey;
+
+        if (rootPk === this.account.publicKey) {
+            encrypted = await this.encrypt.encryptFieldsWithPermissions(
+                clientPk,
+                acceptedFields
+            );
+        } else {
+            encrypted = await this.encryptGrantedFields(
+                clientPk,
+                rootPk,
+                new Set(acceptedFields.keys())
+            );
+        }
+
+        const requestDataList: Array<DataRequest> = [];
+
+        for (const [key, value] of encrypted.entries()) {
+            requestDataList.push(
+                new DataRequest(
+                    clientPk,
+                    this.account.publicKey,
+                    rootPk,
+                    key.toLowerCase(),
+                    value
+                )
+            );
+        }
+
+        return await this.dataRequestRepository.grantAccessForClient(requestDataList);
+    }
+
+    /**
+     * revoke access to specific fields of my data to a client.
+     * @param {string} clientPk id (baseID) of the client that is authorized for data access.
+     * @param {Array<string>} revokeFields. Array of field names that are authorized for access
+     * (e.g. these are keys in {Map<string, string>} - personal data).
+     *
+     * @returns {Promise<void>}
+     */
+    public async revokeAccessForClient(clientPk: string, revokeFields: Array<string>): Promise<void> {
+        const requestDataList = revokeFields.map(item =>
+            new DataRequest(
+                clientPk,
+                this.account.publicKey,
+                this.account.publicKey,
+                item.toLowerCase(),
+                ''
+            ));
+
+        return this.dataRequestRepository.revokeAccessForClient(requestDataList);
     }
 
     /**
      * Returns list of fields requested for access by <me> from the client
-     * @param {string} requestedFromPk id (baseID) of the client whose permissions were requested
+     * @param {string} requestedFromPk id (baseID) of the client whose permissions were requested. is optional.
      * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
-    public async getRequestedPermissions(requestedFromPk: string): Promise<Array<string>> {
-        const requests = await this.getRequests(this.account.publicKey, requestedFromPk);
-        return await this.decodeRequestedPermissions(requests, requestedFromPk);
+    public async getRequestedPermissions(requestedFromPk?: string | undefined): Promise<Array<FieldData>> {
+        const requests = await this.getRequests(this.account.publicKey, requestedFromPk || null);
+        const shared = await this.decodeRequestedPermissions(requests, true);
+
+        return requestedFromPk ? shared.getDataTo(requestedFromPk) : shared.toList();
     }
 
     /**
      * Returns list of fields requested for access by the client from <me>
-     * @param {string} whoRequestedPk id (baseID) of the client that asked for permission from <me>
+     * @param {string} whoRequestedPk id (baseID) of the client that asked for permission from <me>. is optional.
      * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
-    public async getRequestedPermissionsToMe(whoRequestedPk: string): Promise<Array<string>> {
-        const requests = await this.getRequests(whoRequestedPk, this.account.publicKey);
-        return await this.decodeRequestedPermissions(requests, whoRequestedPk);
+    public async getRequestedPermissionsToMe(whoRequestedPk?: string | undefined): Promise<Array<FieldData>> {
+        const requests = await this.getRequests(whoRequestedPk || null, this.account.publicKey);
+        const shared = await this.decodeRequestedPermissions(requests, false);
+
+        return whoRequestedPk ? shared.getDataTo(this.account.publicKey) : shared.toList();
     }
 
     /**
@@ -102,6 +162,8 @@ export class DataRequestManagerImpl implements DataRequestManager {
     }
 
     /**
+     * @deprecated
+     *
      * Returns list of fields that <me> authorized <client> to access
      * @param {string} clientPk id (baseID) of the client that received access permission from <me>
      * @returns {Promise<Array<string>>} Array of field names that were authorized for access
@@ -161,32 +223,135 @@ export class DataRequestManagerImpl implements DataRequestManager {
             }).catch(reason => encrypted);
     }
 
-    private async decodeRequestedPermissions(requests: Array<DataRequest>, clientPk: string): Promise<Array<string>> {
-        if (requests.length > 0 && requests[0].requestData.trim().length > 0) {
-            try {
-                const strDecrypt: string = await this.decrypt.decryptMessage(clientPk, requests[0].requestData);
+    private async encryptGrantedFields(
+        recipientPk: string,
+        rootPk: string,
+        shareFields: Set<string>
+    ): Promise<Map<string, string>> {
+        const result: Map<string, string> = new Map();
+        const requests = await this.getRequests(this.account.publicKey, null);
+        const filtered = requests.filter(item => item.rootPk === rootPk && shareFields.has(item.requestData));
+        const availableData = new Map<string, DataRequest>();
 
-                return JSON.parse(strDecrypt);
+        filtered.forEach(item => availableData.set(item.requestData, item));
 
-            } catch (e) {
-                return [];
-            }
-        } else {
-            return [];
+        for (const data of availableData.values()) {
+            const strDecrypt: string = await this.decrypt.decryptMessage(data.toPk, data.responseData);
+            const jsonDecrypt = JSON.parse(strDecrypt);
+            const acceptedByRoot: AcceptedField = Object.assign(
+                new AcceptedField('', AccessRight.R),
+                jsonDecrypt
+            );
+
+            const accepted = acceptedByRoot.copy({access: AccessRight.R});
+            const value = await this.encrypt.encryptMessage(recipientPk, JSON.stringify(accepted));
+            result.set(data.requestData, value);
         }
+
+        return result;
+    }
+
+    private async decodeRequestedPermissions(requests: Array<DataRequest>, isToPk: boolean): Promise<SharedData> {
+        const result: SharedData = new SharedData();
+
+        for (const item of requests) {
+            const isDeprecated = !item.rootPk || item.rootPk.length <= 0;
+            const ownerPk = isToPk ? item.toPk : item.fromPk;
+
+            if (isDeprecated) {  // for Backward compatibility of deprecated data
+                let accepted: Map<string, AcceptedField> = new Map();
+                let requested: Set<string> = new Set();
+
+                try {
+                    if (item.responseData.length > 0) {
+                        const strDecryptRequestFields: string = await this.decrypt
+                            .decryptMessage(ownerPk, item.responseData);
+
+                        const jsonDecryptRequestFields = JSON.parse(strDecryptRequestFields);
+                        accepted = JsonUtils.jsonToMap(jsonDecryptRequestFields);
+                    }
+                } catch (e) {
+                    console.warn(e);
+                }
+
+                try {
+                    if (item.requestData.trim().length > 0) {
+                        const strDecrypt: string = await this.decrypt.decryptMessage(ownerPk, item.requestData);
+                        requested = new Set(JSON.parse(strDecrypt) as Array<string>);
+                    }
+                } catch (e) {
+                    console.warn(e);
+                }
+
+                Array.from(requested.keys())
+                    .forEach(key => result.set(new FieldData(item.fromPk, item.toPk, item.toPk, key)));
+
+                accepted.forEach((value, key) =>
+                    result.set(new FieldData(item.fromPk, item.toPk, item.toPk, key, value.pass))
+                );
+
+            } else {
+                let value: string | undefined;
+
+                if (item.responseData.length > 0) {
+                    try {
+                        const strDecrypt: string = await this.decrypt.decryptMessage(ownerPk, item.responseData);
+                        const jsonDecrypt = JSON.parse(strDecrypt);
+
+                        const acceptedFiled: AcceptedField = Object.assign(
+                            new AcceptedField('', AccessRight.R),
+                            jsonDecrypt
+                        );
+
+                        if (acceptedFiled.pass && acceptedFiled.pass.length > 0) {
+                            value = acceptedFiled.pass;
+                        }
+                    } catch (e) {
+                        console.warn(e);
+                    }
+                }
+
+                result.set(new FieldData(item.fromPk, item.toPk, item.rootPk, item.requestData, value));
+            }
+        }
+
+        return result;
     }
 
     private async getDecodeGrantPermissions(requests: Array<DataRequest>, clientPk: string): Promise<Array<string>> {
-        if (requests.length > 0 && requests[0].responseData.trim().length > 0) {
-            const strDecrypt: string = await this.decrypt.decryptMessage(clientPk, requests[0].responseData);
-            const jsonDecrypt = JSON.parse(strDecrypt);
-            const mapResponse: Map<string, string> = JsonUtils.jsonToMap(jsonDecrypt);
+        const result: Set<string> = new Set();
 
-            return Array.from(mapResponse.keys());
+        for (const item of requests) {
+            if (item.responseData.trim().length > 0) {
+                // for Backward compatibility of deprecated data
+                const strDecrypt: string = await this.decrypt.decryptMessage(clientPk, item.responseData);
+                const jsonDecrypt = JSON.parse(strDecrypt);
 
-        } else {
-            return [];
+                if (!item.rootPk || item.rootPk.length <= 0) {
+                    try {
+                        const mapResponse: Map<string, string> = JsonUtils.jsonToMap(jsonDecrypt);
+
+                        Array.from(mapResponse.keys())
+                            .forEach(value => result.add(value));
+
+                    } catch (e) {
+                        console.warn(e);
+                    }
+
+                } else {
+                    const acceptedFiled: AcceptedField = Object.assign(
+                        new AcceptedField('', AccessRight.R),
+                        jsonDecrypt
+                    );
+
+                    if (acceptedFiled.pass && acceptedFiled.pass.length > 0) {
+                        result.add(item.requestData);
+                    }
+                }
+            }
         }
+
+        return Array.from(result.keys());
     }
 
     private onChangeAccount(account: Account) {

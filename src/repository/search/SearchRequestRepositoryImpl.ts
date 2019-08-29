@@ -33,7 +33,7 @@ export default class SearchRequestRepositoryImpl implements SearchRequestReposit
     public updateBatch(owner: string, searchRequests: Array<SearchRequest>): Promise<Array<SearchRequest>> {
         const body = searchRequests.map(item => item.toJson());
 
-        return this.transport.sendRequest(
+        return this.transport.sendRequest<Array<SearchRequest>>(
             this.SEARCH_REQUEST_API_V2.replace('{owner}', owner).replace('/{id}', ''),
             HttpMethod.Post,
             body
@@ -41,7 +41,7 @@ export default class SearchRequestRepositoryImpl implements SearchRequestReposit
     }
 
     public clone(owner: string, searchRequestIds: Array<number>): Promise<Array<SearchRequest>> {
-        return this.transport.sendRequest(
+        return this.transport.sendRequest<Array<SearchRequest>>(
             this.SEARCH_REQUEST_API_V2.replace('{owner}', owner).replace('{id}', ''),
             HttpMethod.Put,
             searchRequestIds
@@ -57,28 +57,28 @@ export default class SearchRequestRepositoryImpl implements SearchRequestReposit
     }
 
     public getSearchRequestByOwnerAndId(owner: string, id: number): Promise<Array<SearchRequest>> {
-        return this.transport.sendRequest(
+        return this.transport.sendRequest<Array<SearchRequest>>(
             this.SEARCH_REQUEST_API.replace('{owner}', owner).replace('{id}', id.toString()),
             HttpMethod.Get
         ).then((response) => this.jsonToListSearchRequests(response.json));
     }
 
     public getSearchRequestByOwner(owner: string): Promise<Array<SearchRequest>> {
-        return this.transport.sendRequest(
+        return this.transport.sendRequest<Array<SearchRequest>>(
             this.SEARCH_REQUEST_API.replace('{owner}', owner).replace('{id}', ''),
             HttpMethod.Get
         ).then((response) => this.jsonToListSearchRequests(response.json));
     }
 
     public getSearchRequestsByOwnerAndTag(owner: string, tag: string): Promise<Array<SearchRequest>> {
-        return this.transport.sendRequest(
+        return this.transport.sendRequest<Array<SearchRequest>>(
             this.SEARCH_REQUEST_API.replace('{owner}', owner).replace('{id}', 'tag/' + tag),
             HttpMethod.Get
         ).then((response) => this.jsonToListSearchRequests(response.json));
     }
 
     public getSearchRequestByPage(page?: number, size?: number): Promise<Page<SearchRequest>> {
-        return this.transport.sendRequest(
+        return this.transport.sendRequest<Page<SearchRequest>>(
             this.SEARCH_REQUEST_PAGEABLE_API
                 .replace('{page}', (page || 0).toString())
                 .replace('{size}', (size || 20).toString()),
