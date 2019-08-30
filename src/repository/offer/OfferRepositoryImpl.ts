@@ -42,6 +42,7 @@ export default class OfferRepositoryImpl implements OfferRepository {
         return this.transport
             .sendRequest(URL, HttpMethod.Put, data)
             .then((response) => {
+                // tslint:disable-next-line:no-any
                 return response.json as any as Array<number>;
             }
         );
