@@ -9,6 +9,7 @@ export default class OfferRepositoryImpl implements OfferRepository {
 
     private readonly OFFER_API: string = '/v1/client/{owner}/offer/{id}';
     private readonly OFFER_SHALLOW_UPDATE_API: string = '/v1/client/{owner}/offer/shallow/{id}';
+    private readonly OFFER_BULK_UPDATE_API: string = '/v1/client/{owner}/offer/bulk/';
     private readonly OFFER_API_PAGE: string = '/v1/client/{owner}/offer/{id}/owner?page={page}&size={size}';
     private readonly OFFERS_PAGEABLE_API: string = '/v1/offers?page={page}&size={size}';
 
@@ -32,6 +33,18 @@ export default class OfferRepositoryImpl implements OfferRepository {
             HttpMethod.Put,
             offer.toJson()
         ).then((response) => Offer.fromJson(response.json));
+    }
+
+    public updateBulk(owner: string, offers: Array<Offer>): Promise<Array<number>> {
+        const data = offers.map( e => e.toJson());
+        console.log(`DEBUG: updated bulk. ${data.length} offers are been saving`);
+        const URL = this.OFFER_BULK_UPDATE_API.replace('{owner}', owner);
+        return this.transport
+            .sendRequest(URL, HttpMethod.Put, data)
+            .then((response) => {
+                return response.json as any as Array<number>;
+            }
+        );
     }
 
     public shallowUpdate(owner: string, id: number, offer: Offer): Promise<Offer> {
