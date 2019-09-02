@@ -1,8 +1,12 @@
 import { DataRequest } from '../repository/models/DataRequest';
 import { FieldData } from '../repository/models/FieldData';
+import { InputGraphData } from '../repository/models/InputGraphData';
+import { OutputGraphData } from '../repository/models/OutputGraphData';
 import { AccessRight } from '../utils/keypair/Permissions';
 
 export interface DataRequestManager {
+
+    getRequestsGraph(data: InputGraphData): Promise<OutputGraphData>;
 
     /**
      * Creates data access request to a specific user for a specific personal data.

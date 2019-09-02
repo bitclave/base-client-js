@@ -40,6 +40,7 @@ import { OfferRank } from './repository/models/OfferRank';
 import { OfferSearch } from './repository/models/OfferSearch';
 import OfferSearchResultItem from './repository/models/OfferSearchResultItem';
 import OfferShareData from './repository/models/OfferShareData';
+import { GraphLink, LinkType, OutputGraphData } from './repository/models/OutputGraphData';
 import { Page, Pageable } from './repository/models/Page';
 import { Pair } from './repository/models/Pair';
 import Profile from './repository/models/Profile';
@@ -151,6 +152,7 @@ export {
     ExternalServicesManager,
     ExternalServicesRepository,
     FileMeta,
+    GraphLink,
     HttpServiceCall,
     HttpTransportImpl,
     IsBasePublicKey,
@@ -159,6 +161,8 @@ export {
     IsTypedArray,
     JsonObject,
     JsonTransform,
+    LinkType,
+    OutputGraphData,
     Offer,
     OfferManager,
     OfferPrice,

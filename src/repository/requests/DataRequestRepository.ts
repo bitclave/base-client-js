@@ -1,6 +1,10 @@
 import { DataRequest } from '../models/DataRequest';
+import { InputGraphData } from '../models/InputGraphData';
+import { OutputGraphData } from '../models/OutputGraphData';
 
 export interface DataRequestRepository {
+
+    getRequestsGraph(data: InputGraphData): Promise<OutputGraphData>;
 
     requestPermissions(toPk: string, dataRequests: Array<DataRequest>): Promise<void>;
 

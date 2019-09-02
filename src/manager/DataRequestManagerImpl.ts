@@ -2,6 +2,8 @@ import { Observable } from 'rxjs/Rx';
 import Account from '../repository/models/Account';
 import { DataRequest } from '../repository/models/DataRequest';
 import { FieldData } from '../repository/models/FieldData';
+import { InputGraphData } from '../repository/models/InputGraphData';
+import { OutputGraphData } from '../repository/models/OutputGraphData';
 import { SharedData } from '../repository/models/SharedData';
 import { DataRequestRepository } from '../repository/requests/DataRequestRepository';
 import { JsonUtils } from '../utils/JsonUtils';
@@ -31,6 +33,10 @@ export class DataRequestManagerImpl implements DataRequestManager {
 
         authAccountBehavior
             .subscribe(this.onChangeAccount.bind(this));
+    }
+
+    public getRequestsGraph(data: InputGraphData): Promise<OutputGraphData> {
+        return this.dataRequestRepository.getRequestsGraph(data);
     }
 
     /**
