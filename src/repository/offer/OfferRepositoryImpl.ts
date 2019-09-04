@@ -36,16 +36,14 @@ export default class OfferRepositoryImpl implements OfferRepository {
     }
 
     public updateBulk(owner: string, offers: Array<Offer>): Promise<Array<number>> {
-        const data = offers.map( e => e.toJson());
-        console.log(`DEBUG: updated bulk. ${data.length} offers are been saving`);
+        const data = offers.map(e => e.toJson());
         const URL = this.OFFER_BULK_UPDATE_API.replace('{owner}', owner);
+
+        console.log(`DEBUG: updated bulk. ${data.length} offers are been saving`);
+
         return this.transport
             .sendRequest(URL, HttpMethod.Put, data)
-            .then((response) => {
-                // tslint:disable-next-line:no-any
-                return response.json as any as Array<number>;
-            }
-        );
+            .then((response) => response.originJson as Array<number>);
     }
 
     public shallowUpdate(owner: string, id: number, offer: Offer): Promise<Offer> {
