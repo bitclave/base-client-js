@@ -3,8 +3,13 @@ import { HttpInterceptor } from './HttpInterceptor';
 import { InterceptorCortege } from './InterceptorCortege';
 import SignedRequest from './SignedRequest';
 
-export const ExcludeSignature = (target: object) =>
-    Reflect.defineMetadata(SignInterceptor.DECORATOR_KEY, null, target);
+export enum ExcludeSignatureType {
+    EXCLUDE_SIG = 'EXCLUDE_SIG',
+    EXCLUDE_WRAPPER = 'EXCLUDE_WRAPPER'
+}
+
+export const ExcludeSignature = (exclude: ExcludeSignatureType = ExcludeSignatureType.EXCLUDE_SIG) =>
+    (target: object) => Reflect.defineMetadata(SignInterceptor.DECORATOR_KEY, exclude, target);
 
 export default class SignInterceptor implements HttpInterceptor {
 
@@ -26,6 +31,13 @@ export default class SignInterceptor implements HttpInterceptor {
             if (!metaKeys || metaKeys.length <= 0 || metaKeys.indexOf(SignInterceptor.DECORATOR_KEY) <= -1) {
                 sig = await this.messageSigner.signMessage(JSON.stringify(cortege.data));
                 publicKey = this.messageSigner.getPublicKey();
+
+            } else {
+                const metaData = Reflect.getMetadata(SignInterceptor.DECORATOR_KEY, cortege.originalData!.constructor);
+
+                if (ExcludeSignatureType[metaData as string] === ExcludeSignatureType.EXCLUDE_WRAPPER) {
+                    return cortege;
+                }
             }
 
             cortege.data = new SignedRequest(

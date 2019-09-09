@@ -1,11 +1,14 @@
 import { DataRequest } from '../models/DataRequest';
+import { InputGraphData } from '../models/InputGraphData';
 import OfferShareData from '../models/OfferShareData';
+import { OutputGraphData } from '../models/OutputGraphData';
 import { HttpMethod } from '../source/http/HttpMethod';
 import { HttpTransport } from '../source/http/HttpTransport';
 import { DataRequestRepository } from './DataRequestRepository';
 
 export default class DataRequestRepositoryImpl implements DataRequestRepository {
 
+    private readonly DATA_REQUEST_GRAPH_API: string = '/v1/data/request/graph';
     private readonly DATA_REQUEST: string = '/v1/data/request/';
     private readonly GRANT_ACCESS_FOR_CLIENT: string = '/v1/data/grant/request/';
     private readonly GRANT_ACCESS_FOR_OFFER: string = '/v1/data/grant/offer/';
@@ -14,6 +17,14 @@ export default class DataRequestRepositoryImpl implements DataRequestRepository 
 
     constructor(transport: HttpTransport) {
         this.transport = transport;
+    }
+
+    public getRequestsGraph(data: InputGraphData): Promise<OutputGraphData> {
+        return this.transport.sendRequest<OutputGraphData>(
+            this.DATA_REQUEST_GRAPH_API,
+            HttpMethod.Post,
+            data
+        ).then((response) => OutputGraphData.fromJson(response.json));
     }
 
     public async requestPermissions(toPk: string, dataRequests: Array<DataRequest>): Promise<void> {
