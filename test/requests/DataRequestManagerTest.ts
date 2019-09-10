@@ -1,11 +1,14 @@
 import * as assert from 'assert';
+import 'reflect-metadata';
 import { BehaviorSubject } from 'rxjs/Rx';
+import Base, { RepositoryStrategyType } from '../../src/Base';
 import { DataRequestManager } from '../../src/manager/DataRequestManager';
 import { DataRequestManagerImpl } from '../../src/manager/DataRequestManagerImpl';
 import { ProfileManager } from '../../src/manager/ProfileManager';
 import { ProfileManagerImpl } from '../../src/manager/ProfileManagerImpl';
 import Account from '../../src/repository/models/Account';
 import { FieldData } from '../../src/repository/models/FieldData';
+import { InputGraphData } from '../../src/repository/models/InputGraphData';
 import { HttpTransportImpl } from '../../src/repository/source/http/HttpTransportImpl';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { RpcTransportImpl } from '../../src/repository/source/rpc/RpcTransportImpl';
@@ -18,6 +21,7 @@ import ClientDataRepositoryImplMock from '../profile/ClientDataRepositoryImplMoc
 import DataRequestRepositoryImplMock from './DataRequestRepositoryImplMock';
 
 const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
+const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
 
 require('chai')
     .use(require('chai-as-promised'))
@@ -25,6 +29,7 @@ require('chai')
 const dataRepository: DataRequestRepositoryImplMock = new DataRequestRepositoryImplMock();
 const clientRepository = new ClientDataRepositoryImplMock();
 const rpcTransport: RpcTransport = new RpcTransportImpl(new HttpTransportImpl(rpcSignerHost));
+const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
 class SimpleUser {
     public readonly requestManager: DataRequestManager;
@@ -36,6 +41,29 @@ class SimpleUser {
         this.profileManager = profileManager;
         this.keyPair = keyPair;
     }
+}
+
+function createBase(): Base {
+    return new Base(
+        baseNodeUrl,
+        'localhost',
+        RepositoryStrategyType.Postgres,
+        rpcSignerHost
+    );
+}
+
+async function createUser(user: Base, pass: string): Promise<Account> {
+    let accessToken: string = '';
+    try {
+        accessToken = await authenticatorHelper.generateAccessToken(pass);
+        await user.accountManager.authenticationByAccessToken(accessToken, pass);
+        await user.accountManager.unsubscribe();
+    } catch (e) {
+        console.log('check createUser', e);
+        // ignore error if user not exist
+    }
+
+    return await user.accountManager.registration(pass, pass); // this method private.
 }
 
 async function createDataRequestManager(passPhrase: string): Promise<SimpleUser> {
@@ -450,5 +478,101 @@ describe('Data Request Manager', async () => {
             .decryptMessage(dataAlisa.keyPair.getPublicKey(), message);
 
         assert.ok(result === message, 'WTF?');
+    });
+
+    it('check reshare-graph (user, kyc, shepherd)', async () => {
+        const alisa = await createBase();
+        await createUser(alisa, 'alisa pass alisa pass alisa pass');
+
+        const shepherd = await createBase();
+        await createUser(shepherd, 'shepherd pass shepherd pass shepherd pass');
+
+        const kyc = await createBase();
+        await createUser(kyc, 'kyc pass kyc pass kyc pass');
+
+        // Alisa - save own data
+        await alisa.profileManager.updateData(
+            new Map([['some_data', 'some_value'], ['kyc_doc', 'kyc_data_value']])
+        );
+
+        // Alisa grant access some_data field for Shepherd
+        await alisa.dataRequestManager
+            .grantAccessForClient(
+                shepherd.accountManager.getAccount().publicKey,
+                new Map([['some_data', AccessRight.R]])
+            );
+
+        // Alisa grant access kyc_doc for Kyc
+        await alisa.dataRequestManager
+            .grantAccessForClient(kyc.accountManager.getAccount().publicKey, new Map([['kyc_doc', AccessRight.R]]));
+
+        // Kyc - save own data
+        await kyc.profileManager.updateData(new Map([['kyc_data', 'some_kyc_data_value']]));
+
+        // Kyc grant access kyc_data for Alisa
+        await kyc.dataRequestManager
+            .grantAccessForClient(alisa.accountManager.getAccount().publicKey, new Map([['kyc_data', AccessRight.R]]));
+
+        await alisa.dataRequestManager.grantAccessForClient(
+            shepherd.accountManager.getAccount().publicKey,
+            new Map([['kyc_data', AccessRight.R]]),
+            kyc.accountManager.getAccount().publicKey
+        );
+
+        const graph = await alisa.dataRequestManager.getRequestsGraph(new InputGraphData(
+            [
+                alisa.accountManager.getAccount().publicKey,
+                shepherd.accountManager.getAccount().publicKey,
+                kyc.accountManager.getAccount().publicKey
+            ]
+        ));
+
+        assert(graph.clients.has(alisa.accountManager.getAccount().publicKey));
+        assert(graph.clients.has(shepherd.accountManager.getAccount().publicKey));
+        assert(graph.clients.has(kyc.accountManager.getAccount().publicKey));
+
+        const clients = Array.from(graph.clients);
+        assert(clients[0] === alisa.accountManager.getAccount().publicKey);
+        assert(clients[1] === shepherd.accountManager.getAccount().publicKey);
+        assert(clients[2] === kyc.accountManager.getAccount().publicKey);
+
+        const expectedResult = [
+            {
+                'from': 0,
+                'to': 1,
+                'key': 'some_data',
+                'type': 'SHARE'
+            },
+            {
+                'from': 0,
+                'to': 2,
+                'key': 'kyc_doc',
+                'type': 'SHARE'
+            },
+            {
+                'from': 0,
+                'to': 1,
+                'key': 'kyc_data',
+                'type': 'RESHARE'
+            },
+            {
+                'from': 2,
+                'to': 0,
+                'key': 'kyc_data',
+                'type': 'SHARE'
+            }
+        ];
+
+        const sorted = graph.links.sort((a, b) => a.from - b.from);
+
+        sorted.should.be.deep.eq(expectedResult);
+
+        try {
+            await alisa.accountManager.unsubscribe();
+            await shepherd.accountManager.unsubscribe();
+            await kyc.accountManager.unsubscribe();
+        } catch (e) {
+            console.warn(e);
+        }
     });
 });
