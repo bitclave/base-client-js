@@ -1,5 +1,7 @@
 import { DataRequest } from '../../src/repository/models/DataRequest';
+import { InputGraphData } from '../../src/repository/models/InputGraphData';
 import OfferShareData from '../../src/repository/models/OfferShareData';
+import { OutputGraphData } from '../../src/repository/models/OutputGraphData';
 import { DataRequestRepository } from '../../src/repository/requests/DataRequestRepository';
 
 class DataRequestTree extends DataRequest {
@@ -218,4 +220,7 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
         return result;
     }
 
+    public getRequestsGraph(data: InputGraphData): Promise<OutputGraphData> {
+        throw Error('getRequestsGraph not implemented in mock');
+    }
 }

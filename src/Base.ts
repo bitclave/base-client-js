@@ -30,6 +30,7 @@ import { DataRequest } from './repository/models/DataRequest';
 import { DeepCopy } from './repository/models/DeepCopy';
 import { FieldData } from './repository/models/FieldData';
 import { FileMeta } from './repository/models/FileMeta';
+import { InputGraphData } from './repository/models/InputGraphData';
 import { JsonObject } from './repository/models/JsonObject';
 import { JsonTransform } from './repository/models/JsonTransform';
 import Offer from './repository/models/Offer';
@@ -155,6 +156,7 @@ export {
     GraphLink,
     HttpServiceCall,
     HttpTransportImpl,
+    InputGraphData,
     IsBasePublicKey,
     IsBtcAddress,
     IsEthAddress,
