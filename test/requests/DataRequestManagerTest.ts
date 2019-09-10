@@ -26,6 +26,7 @@ const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.hero
 require('chai')
     .use(require('chai-as-promised'))
     .should();
+
 const dataRepository: DataRequestRepositoryImplMock = new DataRequestRepositoryImplMock();
 const clientRepository = new ClientDataRepositoryImplMock();
 const rpcTransport: RpcTransport = new RpcTransportImpl(new HttpTransportImpl(rpcSignerHost));
@@ -560,12 +561,11 @@ describe('Data Request Manager', async () => {
                 'to': 0,
                 'key': 'kyc_data',
                 'type': 'SHARE'
-            }
+            },
         ];
 
-        const sorted = graph.links.sort((a, b) => a.from - b.from);
-
-        sorted.should.be.deep.eq(expectedResult);
+        assert(graph.links.length === 4);
+        graph.links.should.have.deep.members(expectedResult);
 
         try {
             await alisa.accountManager.unsubscribe();
