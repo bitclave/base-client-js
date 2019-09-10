@@ -68,7 +68,6 @@ async function createUser(user: Base, pass: string): Promise<Account> {
 }
 
 async function createDataRequestManager(passPhrase: string): Promise<SimpleUser> {
-    const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
     const keyPairHelper: RemoteKeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
     const accessToken = await authenticatorHelper.generateAccessToken(passPhrase);
 
@@ -539,28 +538,28 @@ describe('Data Request Manager', async () => {
 
         const expectedResult = [
             {
-                'from': 0,
-                'to': 1,
-                'key': 'some_data',
-                'type': 'SHARE'
+                from: 0,
+                to: 1,
+                key: 'some_data',
+                type: 'SHARE'
             },
             {
-                'from': 0,
-                'to': 2,
-                'key': 'kyc_doc',
-                'type': 'SHARE'
+                from: 0,
+                to: 2,
+                key: 'kyc_doc',
+                type: 'SHARE'
             },
             {
-                'from': 0,
-                'to': 1,
-                'key': 'kyc_data',
-                'type': 'RESHARE'
+                from: 0,
+                to: 1,
+                key: 'kyc_data',
+                type: 'RESHARE'
             },
             {
-                'from': 2,
-                'to': 0,
-                'key': 'kyc_data',
-                'type': 'SHARE'
+                from: 2,
+                to: 0,
+                key: 'kyc_data',
+                type: 'SHARE'
             },
         ];
 
