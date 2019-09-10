@@ -105,6 +105,10 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
         this.shareData.add(new OfferShareData(offerId, encryptedClientResponse, priceId));
     }
 
+    public getRequestsGraph(data: InputGraphData): Promise<OutputGraphData> {
+        throw Error('getRequestsGraph not implemented in mock');
+    }
+
     private async findRequest(
         fromPk: string | null,
         toPk: string | null,
@@ -218,9 +222,5 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
         }
 
         return result;
-    }
-
-    public getRequestsGraph(data: InputGraphData): Promise<OutputGraphData> {
-        throw Error('getRequestsGraph not implemented in mock');
     }
 }
