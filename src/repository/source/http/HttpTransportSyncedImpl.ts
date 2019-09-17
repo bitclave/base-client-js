@@ -76,7 +76,7 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
                     } else {
                         this.logger.error('Error runTransaction request', result);
                         transaction.reject(result);
-                        reject(result);
+                        // reject(result);
                         this.callNextRequest();
                     }
                 };
