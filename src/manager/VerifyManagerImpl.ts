@@ -40,4 +40,8 @@ export class VerifyManagerImpl implements VerifyManager {
     public getSearchRequestWithSameTags(): Promise<Array<SearchRequest>> {
         return this.verifyRepository.getSearchRequestWithSameTags();
     }
+
+    public getSearchRequestWithoutOwner(): Promise<Array<SearchRequest>> {
+        return this.verifyRepository.getSearchRequestWithoutOwner();
+    }
 }
