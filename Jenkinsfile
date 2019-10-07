@@ -51,8 +51,6 @@ spec:
         stage('Build') { 
             steps {
                 container("nodejs") {
-                    sh "su node"
-                    sh "su node -c whoami"
                     sh "su node -c 'npm install'"
                     sh "su node -c 'npm run build'"
                 }
@@ -61,7 +59,6 @@ spec:
         stage('Test') { 
             steps {
                 container("nodejs") {
-                    sh "su node"
                     sh 'node ./external/Signer.js --authPK 02e2d9c04891bf7f9934041d7171ade343e540f5d18bd357cde4ef175da3de7e06 --host https://base2-bitclva-com.herokuapp.com &'
                     sh 'npm test' 
                 }
