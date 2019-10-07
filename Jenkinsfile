@@ -53,8 +53,8 @@ spec:
                 container("nodejs") {
                     sh "su node"
                     sh "su node -c whoami"
-                    sh "su node -c npm install"
-                    sh "su node -c npm run build"
+                    sh "su node -c 'npm install'"
+                    sh "su node -c 'npm run build'"
                 }
             }
         }
