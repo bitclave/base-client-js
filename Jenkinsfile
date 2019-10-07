@@ -52,9 +52,9 @@ spec:
             steps {
                 container("nodejs") {
                     sh "su node"
-                    sh "whoami"
-                    sh "npm install"
-                    sh "npm run build"
+                    sh "su node && whoami"
+                    sh "su node && npm install"
+                    sh "su node && npm run build"
                 }
             }
         }
