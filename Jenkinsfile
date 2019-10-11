@@ -14,12 +14,14 @@ pipeline {
     }
     agent {
     kubernetes {
-      label 'jenkins-builder'
+      label 'jenkins-builder-base-client-js'
       defaultContainer 'jnlp'
       yaml """
 apiVersion: v1
 kind: Pod
 metadata:
+    labels:
+        project: base-client-js
 labels:
   component: ci
 spec:
