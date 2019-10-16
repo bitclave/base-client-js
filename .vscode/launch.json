@@ -14,7 +14,7 @@
             "-r", "ts-node/register",
             "--timeout", "500000",
             "--colors",
-            "${workspaceFolder}/test/search/*.ts"
+            "${workspaceFolder}/test/offers/offerTest.ts"
         ],
         "internalConsoleOptions": "openOnSessionStart",
         "env": {
@@ -38,7 +38,7 @@
         ],
         "internalConsoleOptions": "openOnSessionStart",
         "env": {
-          "BASE_NODE_URL":"http://localhost:8090"
+          "BASE_NODE_URL":"http://localhost:8080"
         }
       },
       {

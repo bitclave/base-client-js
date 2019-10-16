@@ -101,6 +101,173 @@ describe('Offer CRUD', async () => {
             throw e;
         }
     });
+    it('should bulk update of simple offers', async () => {
+        try {
+            const bulkSize = 10;
+            const bulk = [];
+
+            for (let i = 0; i < bulkSize; i++) {
+
+                let offer = offerFactory();
+                bulk.push(offer);
+
+                offer = offerFactory();
+                const savedOffer = await baseSeller.offerManager.saveOffer(offer);
+                bulk.push(savedOffer);
+            }
+            const createdOffer = await baseSeller.offerManager.updateBulkOffers(bulk);
+
+            createdOffer.length.should.be.eql(bulkSize * 2);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    });
+    it('should bulk update offers with multiprice', async () => {
+        try {
+            const bulkSize = 10;
+            const bulk = [];
+
+            for (let i = 0; i < bulkSize; i++) {
+
+                let offer = offerFactory(true);
+                bulk.push(offer);
+
+                offer = offerFactory(true);
+                const savedOffer = await baseSeller.offerManager.saveOffer(offer);
+                bulk.push(savedOffer);
+            }
+            const createdOffer = await baseSeller.offerManager.updateBulkOffers(bulk);
+
+            createdOffer.length.should.be.eql(bulkSize * 2);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    });
+
+    it('should bulk update offers with multiprice', async () => {
+        try {
+            const bulkSize = 10;
+            const bulk = [];
+
+            for (let i = 0; i < bulkSize; i++) {
+                const offer = offerFactory(true);
+                bulk.push(offer);
+            }
+            const createdOffer = await baseSeller.offerManager.updateBulkOffers(bulk);
+
+            createdOffer.length.should.be.eql(bulkSize);
+
+            for (let i = 0; i < bulkSize; i++) {
+                const offers = await baseSeller.offerManager.getMyOffers(createdOffer[i]);
+                const one = offers[0];
+                one.offerPrices.length.should.be.eql(bulk[i].offerPrices.length);
+                for (let j = 0; j < one.offerPrices.length; j++) {
+                    one.offerPrices[j].rules.length.should.be.eql(bulk[i].offerPrices[j].rules.length);
+                }
+            }
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    });
+
+    it('should bulk update offers check by fields', async () => {
+        try {
+            const bulk = [];
+
+            const offer1 = offerFactory();
+            offer1.title = '1 new simple';
+            bulk.push(offer1);
+
+            const offer2 = offerFactory(true);
+            offer2.title = '2 new with price';
+            bulk.push(offer2);
+
+            const offer3 = offerFactory();
+            offer3.title = '3 saved simple';
+            const savedOffer1 = await baseSeller.offerManager.saveOffer(offer3);
+            savedOffer1.title = '3 updated simple';
+            bulk.push(savedOffer1);
+
+            const offer4 = offerFactory(true);
+            offer4.title = '4 saved with price';
+            const savedOffer2 = await baseSeller.offerManager.saveOffer(offer4);
+            savedOffer2.title = '4 updated with price';
+            bulk.push( savedOffer2);
+
+            const bulkUpdatedOffer = await baseSeller.offerManager.updateBulkOffers(bulk);
+
+            bulkUpdatedOffer.length.should.be.eql(bulk.length);
+            const one = (await baseSeller.offerManager.getMyOffers(bulkUpdatedOffer[0]))[0];
+            const two = (await baseSeller.offerManager.getMyOffers(bulkUpdatedOffer[1]))[0];
+            const three = (await baseSeller.offerManager.getMyOffers(bulkUpdatedOffer[2]))[0];
+            const four = (await baseSeller.offerManager.getMyOffers(bulkUpdatedOffer[3]))[0];
+
+            one.title.should.be.eql('1 new simple');
+            two.title.should.be.eql('2 new with price');
+            three.title.should.be.eql('3 updated simple');
+            four.title.should.be.eql('4 updated with price');
+
+            two.offerPrices.length.should.be.eql(offer2.offerPrices.length);
+            four.offerPrices.length.should.be.eql(offer4.offerPrices.length);
+
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    });
+
+    it.only('speed test', async () => {
+        try {
+            const bulk = [];
+            for (let i = 0; i < 50; i++) {
+                const offer = offerFactory(true);
+                bulk.push(offer);
+            }
+            const start = new Date();
+            await baseSeller.offerManager.updateBulkOffers(bulk);
+            const finish = new Date();
+            const delta = finish.getTime() -  start.getTime();
+            console.log(`${delta}ms`);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    });
+
+    // it('should bulk update handle error: create new Offer', async () => {
+    //     try {
+    //         const bulk = [];
+
+    //         const offer3 = offerFactory();
+    //         offer3.title = '1 saved simple';
+    //         const savedOffer1 = await baseSeller.offerManager.saveOffer(offer3);
+    //         savedOffer1.title = '1 updated simple';
+    //         bulk.push(savedOffer1);
+
+    //         const offer4 = offerFactory(true);
+    //         offer4.title = '2 saved with price';
+    //         const savedOffer2 = await baseSeller.offerManager.saveOffer(offer4);
+    //         savedOffer2.title = '2 updated with price';
+    //         bulk.push( savedOffer2);
+
+    //         await baseSeller.offerManager.deleteOffer(savedOffer2.id);
+
+    //         await baseSeller.offerManager.updateBulkOffers(bulk);
+
+    //         const one = (await baseSeller.offerManager.getMyOffers(offer3.id))[0];
+    //         const two = (await baseSeller.offerManager.getMyOffers(offer4.id))[0];
+
+    //         one.title.should.be.eql(savedOffer1.title);
+    //         two.title.should.be.eql(savedOffer2.title);
+
+    //     } catch (e) {
+    //         console.log(e);
+    //         throw e;
+    //     }
+    // });
 
     it('should create offer with multiprice', async () => {
         try {
