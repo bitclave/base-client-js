@@ -17,4 +17,6 @@ export interface VerifyRepository {
     fixDanglingOfferSearchesByCreatingInteractions(): Promise<Array<OfferInteraction>>;
 
     getSearchRequestWithSameTags(): Promise<Array<SearchRequest>>;
+
+    getSearchRequestWithoutOwner(): Promise<Array<SearchRequest>>;
 }

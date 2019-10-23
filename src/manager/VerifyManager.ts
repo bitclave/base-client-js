@@ -18,4 +18,6 @@ export interface VerifyManager {
     fixDanglingOfferSearchesByCreatingInteractions(): Promise<Array<OfferInteraction>>;
 
     getSearchRequestWithSameTags(): Promise<Array<SearchRequest>>;
+
+    getSearchRequestWithoutOwner(): Promise<Array<SearchRequest>>;
 }

@@ -17,6 +17,7 @@ export class VerifyRepositoryImpl implements VerifyRepository {
     private readonly VERIFY_FIX_OFFER_SEARCH_API = '/dev/verify/offersearch/fix';
 
     private readonly VERIFY_GET_SEARCH_REQUEST_SAME_TAG_API = '/dev/verify/searchrequest/sametag';
+    private readonly VERIFY_GET_SEARCH_REQUEST_WITHOUT_OWNER = '/dev/verify/searchrequest/noowner';
 
     private transport: HttpTransport;
 
@@ -72,6 +73,13 @@ export class VerifyRepositoryImpl implements VerifyRepository {
     public getSearchRequestWithSameTags(): Promise<Array<SearchRequest>> {
         return this.transport.sendRequest(
             this.VERIFY_GET_SEARCH_REQUEST_SAME_TAG_API,
+            HttpMethod.Get
+        ).then((response) => this.jsonToSearchRequestList(response.json));
+    }
+
+    public getSearchRequestWithoutOwner(): Promise<Array<SearchRequest>> {
+        return this.transport.sendRequest(
+            this.VERIFY_GET_SEARCH_REQUEST_WITHOUT_OWNER,
             HttpMethod.Get
         ).then((response) => this.jsonToSearchRequestList(response.json));
     }
