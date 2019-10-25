@@ -15,8 +15,13 @@ export enum SortOfferSearch {
 
 export interface SearchManager {
 
+    /**
+     * deprecated (@see updateRequest)
+     * @param searchRequest
+     */
     createRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
 
+    // fixme change name of method to putRequests
     updateRequest(searchRequest: SearchRequest | Array<SearchRequest>): Promise<SearchRequest | Array<SearchRequest>>;
 
     cloneRequest(searchRequestIds: Array<number>): Promise<Array<SearchRequest>>;
