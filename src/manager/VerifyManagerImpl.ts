@@ -44,4 +44,9 @@ export class VerifyManagerImpl implements VerifyManager {
     public getSearchRequestWithoutOwner(): Promise<Array<SearchRequest>> {
         return this.verifyRepository.getSearchRequestWithoutOwner();
     }
+
+    public getOfferInteractionsByOfferIdsAndOwners(offerIds: Array<number>, 
+                                                   owners: Array<string>): Promise<Array<OfferInteraction>> {
+    return this.verifyRepository.getOfferInteractionsByOfferIdsAndOwners(offerIds, owners);
+    }
 }

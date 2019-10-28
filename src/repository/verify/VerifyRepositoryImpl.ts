@@ -19,6 +19,8 @@ export class VerifyRepositoryImpl implements VerifyRepository {
     private readonly VERIFY_GET_SEARCH_REQUEST_SAME_TAG_API = '/dev/verify/searchrequest/sametag';
     private readonly VERIFY_GET_SEARCH_REQUEST_WITHOUT_OWNER = '/dev/verify/searchrequest/noowner';
 
+    private readonly VERIFY_GET_OFFER_INTERACTIONS_API = '/dev/verify/offerinteraction/list';
+
     private transport: HttpTransport;
 
     constructor(transport: HttpTransport) {
@@ -82,6 +84,16 @@ export class VerifyRepositoryImpl implements VerifyRepository {
             this.VERIFY_GET_SEARCH_REQUEST_WITHOUT_OWNER,
             HttpMethod.Get
         ).then((response) => this.jsonToSearchRequestList(response.json));
+    }
+
+    public getOfferInteractionsByOfferIdsAndOwners(offerIds: Array<number>, 
+                                                   owners: Array<string>): Promise<Array<OfferInteraction>> {
+        const data = {offerIds, owners};
+        return this.transport.sendRequest(
+        this.VERIFY_GET_OFFER_INTERACTIONS_API,
+        HttpMethod.Post,
+        data
+        ).then((response) => this.jsonToOfferInteractionList(response.json));
     }
 
     private async jsonToOfferInteractionList(json: object): Promise<Array<OfferInteraction>> {

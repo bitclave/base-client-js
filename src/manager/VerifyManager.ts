@@ -20,4 +20,7 @@ export interface VerifyManager {
     getSearchRequestWithSameTags(): Promise<Array<SearchRequest>>;
 
     getSearchRequestWithoutOwner(): Promise<Array<SearchRequest>>;
+
+    getOfferInteractionsByOfferIdsAndOwners(offerIds: Array<number>, 
+                                            owners: Array<string>): Promise<Array<OfferInteraction>>;
 }
