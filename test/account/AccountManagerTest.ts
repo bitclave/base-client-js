@@ -68,6 +68,29 @@ describe('Account Manager', async () => {
         rpcTransport.disconnect();
     });
 
+    it('should return boolean value of created account', async () => {
+        const user = new Base(
+            baseNodeUrl,
+            'localhost',
+            RepositoryStrategyType.Postgres
+        );
+
+        const pass = 'some pass for test user';
+        const message = 'someSigMessage';
+
+        let isExisted = await user.accountManager.isRegistered(pass, message);
+        isExisted.should.be.eq(false);
+        await user.accountManager.registration(pass, message);
+
+        isExisted = await user.accountManager.isRegistered(pass, message);
+        isExisted.should.be.eq(true);
+
+        await user.accountManager.unsubscribe();
+
+        isExisted = await user.accountManager.isRegistered(pass, message);
+        isExisted.should.be.eq(false);
+    });
+
     it('should register same account and change it', async () => {
         await accountManager.authenticationByAccessToken(alisaAccessToken, messageForSigAlisa);
         authAccountBehavior.getValue().publicKey.should.be.equal(accountAlisa.publicKey);

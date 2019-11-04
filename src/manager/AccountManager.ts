@@ -50,6 +50,16 @@ export interface AccountManager {
     checkAccount(mnemonicPhrase: string, message: string): Promise<Account>;
 
     /**
+     * Checks if user with provided mnemonic phrase is already registered in the system.
+     * @param {string} mnemonicPhrase Mnemonic phrase for Public/Private key pair
+     * generation for asymmetric encryption scheme.
+     * @param {string} message on the basis of which a signature will be created to verify the public key
+     *
+     * @returns {Promise<boolean>} if client exist its true or false
+     */
+    isRegistered(mnemonicPhrase: string, message: string): Promise<boolean>;
+
+    /**
      * Allows user to unsubscribe from BASE. Delets all his data
      *
      * @returns {Promise<void>} void if client exist or http exception if fail.

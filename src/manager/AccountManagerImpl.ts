@@ -132,6 +132,27 @@ export class AccountManagerImpl implements AccountManager {
     }
 
     /**
+     * Checks if user with provided mnemonic phrase is already registered in the system.
+     * @param {string} mnemonicPhrase Mnemonic phrase for Public/Private key pair
+     * generation for asymmetric encryption scheme.
+     * @param {string} message on the basis of which a signature will be created to verify the public key
+     *
+     * @returns {Promise<boolean>} if client exist its true or false
+     */
+    public async isRegistered(mnemonicPhrase: string, message: string): Promise<boolean> {
+        try {
+            this.checkSigMessage(message);
+        } catch (e) {
+            return false;
+        }
+
+        const keyPair = await this.keyPairCreator.createKeyPair(mnemonicPhrase);
+        const account = await this.generateAccount(keyPair);
+
+        return this.accountRepository.isRegistered(account);
+    }
+
+    /**
      * Allows user to unsubscribe from BASE. Delets all his data
      *
      * @returns {Promise<event>} void if client exist or http exception if fail.

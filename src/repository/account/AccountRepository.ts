@@ -6,8 +6,9 @@ export interface AccountRepository {
 
     checkAccount(account: Account): Promise<Account>;
 
+    isRegistered(account: Account): Promise<boolean>;
+
     unsubscribe(account: Account): Promise<void>;
 
     getNonce(account: Account): Promise<number>;
-
 }
