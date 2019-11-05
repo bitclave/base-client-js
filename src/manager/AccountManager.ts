@@ -14,7 +14,7 @@ export interface AccountManager {
      * generation for asymmetric encryption scheme.
      * @param {string} message on the basis of which a signature will be created to verify the public key
      *
-     * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
+     * @returns {Promise<Account>} {Account} if client exist or create new user.
      */
     authenticationByPassPhrase(passPhrase: string, message: string): Promise<Account>;
 
