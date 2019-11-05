@@ -196,4 +196,261 @@ describe('Offer CRUD', async () => {
             throw e;
         }
     });
+
+    // bulk update tests
+    describe('bulk offer update', async () => {
+        it('should return proper id sequence of created/updated mix offers', async () => {
+            try {
+                const bulkSize = 10;
+                const bulk = [];
+
+                for (let i = 0; i < bulkSize; i++) {
+
+                    let offer = offerFactory();
+                    bulk.push(offer);
+
+                    offer = offerFactory();
+                    const savedOffer = await baseSeller.offerManager.saveOffer(offer);
+                    bulk.push(savedOffer);
+                }
+                const createdOffer = await baseSeller.offerManager.updateBulkOffers(bulk);
+
+                createdOffer.length.should.be.eql(bulkSize * 2);
+
+                createdOffer.forEach( (id, index) => {
+                    const sentId = bulk[index].id;
+                    if ( (sentId !== 0) && (sentId !== id) ) {
+                        throw new Error('wrong sequence');
+                    }
+                });
+            } catch (e) {
+                console.log(e);
+                throw e;
+            }
+        });
+        it('should update whaen offer description and title changed', async () => {
+            try {
+                const bulkSize = 10;
+                const bulk = [];
+
+                for (let i = 0; i < bulkSize; i++) {
+                    const offer = offerFactory(true);
+                    const savedOffer = await baseSeller.offerManager.saveOffer(offer);
+                    const updated = savedOffer.copy ({description: `test ${i}`, title: `test ${i}`});
+                    bulk.push(updated);
+                }
+                console.log(bulk);
+
+                const createdOffer = await baseSeller.offerManager.updateBulkOffers(bulk);
+
+                createdOffer.length.should.be.eql(bulkSize);
+
+                for (let i = 0; i < bulkSize; i++ ) {
+                    const id = createdOffer[i];
+                    const updatedOffer = (await baseSeller.offerManager.getMyOffers(id))[0];
+                    updatedOffer.title.should.be.eql(`test ${i}`);
+                    updatedOffer.description.should.be.eql(`test ${i}`);
+                }
+            } catch (e) {
+                console.log(e);
+                throw e;
+            }
+        });
+        it('should update when offer price description changed', async () => {
+            try {
+                const bulkSize = 10;
+                const bulk = [];
+
+                for (let i = 0; i < bulkSize; i++) {
+                    const offer = offerFactory(true);
+                    const savedOffer = await baseSeller.offerManager.saveOffer(offer);
+                    savedOffer.offerPrices[0] = savedOffer.offerPrices[0].copy({description: `test ${i}`});
+                    savedOffer.offerPrices[1] = savedOffer.offerPrices[1].copy({description: `test ${i}`});
+                    savedOffer.offerPrices[2] = savedOffer.offerPrices[2].copy({description: `test ${i}`});
+                    bulk.push(savedOffer);
+                }
+                console.log(bulk);
+
+                const createdOffer = await baseSeller.offerManager.updateBulkOffers(bulk);
+
+                createdOffer.length.should.be.eql(bulkSize);
+
+                for (let i = 0; i < bulkSize; i++ ) {
+                    const id = createdOffer[i];
+                    const updatedOffer = (await baseSeller.offerManager.getMyOffers(id))[0];
+                    updatedOffer.offerPrices[0].description.should.be.eql(`test ${i}`);
+                    updatedOffer.offerPrices[1].description.should.be.eql(`test ${i}`);
+                    updatedOffer.offerPrices[2].description.should.be.eql(`test ${i}`);
+                }
+            } catch (e) {
+                console.log(e);
+                throw e;
+            }
+        });
+        it.skip('should update when offer price deleted', async () => {
+            try {
+                const bulkSize = 10;
+                const bulk = [];
+
+                for (let i = 0; i < bulkSize; i++) {
+                    const offer = offerFactory(true);
+                    const savedOffer = await baseSeller.offerManager.saveOffer(offer);
+                    savedOffer.offerPrices = [savedOffer.offerPrices[0].copy({description: `test ${i}`})];
+                    bulk.push(savedOffer);
+                }
+                console.log(bulk);
+
+                const createdOffer = await baseSeller.offerManager.updateBulkOffers(bulk);
+
+                createdOffer.length.should.be.eql(bulkSize);
+
+                for (let i = 0; i < bulkSize; i++ ) {
+                    const id = createdOffer[i];
+                    const updatedOffer = (await baseSeller.offerManager.getMyOffers(id))[0];
+                    updatedOffer.offerPrices[0].description.should.be.eql(`test ${i}`);
+                    updatedOffer.offerPrices.length.should.be.eql(1);
+                }
+            } catch (e) {
+                console.log(e);
+                throw e;
+            }
+        });
+        it('should update when new tag was added', async () => {
+            try {
+                const bulkSize = 10;
+                const bulk = [];
+
+                for (let i = 0; i < bulkSize; i++) {
+                    const offer = offerFactory(true);
+                    const savedOffer = await baseSeller.offerManager.saveOffer(offer);
+                    savedOffer.tags.set('test1', `test ${i}`);
+                    bulk.push(savedOffer);
+                }
+                console.log(bulk);
+
+                const createdOffer = await baseSeller.offerManager.updateBulkOffers(bulk);
+
+                createdOffer.length.should.be.eql(bulkSize);
+
+                for (let i = 0; i < bulkSize; i++ ) {
+                    const id = createdOffer[i];
+                    const updatedOffer = (await baseSeller.offerManager.getMyOffers(id))[0];
+                    updatedOffer.tags.get('product').should.be.eql('car');
+                    updatedOffer.tags.get('test1').should.be.eql(`test ${i}`);
+                }
+            } catch (e) {
+                console.log(e);
+                throw e;
+            }
+        });
+        it('should update when existed tag value changed', async () => {
+            try {
+                const bulkSize = 10;
+                const bulk = [];
+
+                for (let i = 0; i < bulkSize; i++) {
+                    const offer = offerFactory(true);
+                    const savedOffer = await baseSeller.offerManager.saveOffer(offer);
+                    savedOffer.tags.set('product', `test ${i}`);
+                    bulk.push(savedOffer);
+                }
+                console.log(bulk);
+
+                const createdOffer = await baseSeller.offerManager.updateBulkOffers(bulk);
+
+                createdOffer.length.should.be.eql(bulkSize);
+
+                for (let i = 0; i < bulkSize; i++ ) {
+                    const id = createdOffer[i];
+                    const updatedOffer = (await baseSeller.offerManager.getMyOffers(id))[0];
+                    updatedOffer.tags.get('product').should.be.eql(`test ${i}`);
+                }
+            } catch (e) {
+                console.log(e);
+                throw e;
+            }
+        });
+        it.skip('should update when tag was deleted', async () => {
+            try {
+                const bulkSize = 10;
+                const bulk = [];
+
+                for (let i = 0; i < bulkSize; i++) {
+                    const offer = offerFactory(true);
+                    const savedOffer = await baseSeller.offerManager.saveOffer(offer);
+                    savedOffer.tags.clear();
+                    bulk.push(savedOffer);
+                }
+                console.log(bulk);
+
+                const createdOffer = await baseSeller.offerManager.updateBulkOffers(bulk);
+
+                createdOffer.length.should.be.eql(bulkSize);
+
+                for (let i = 0; i < bulkSize; i++ ) {
+                    const id = createdOffer[i];
+                    const updatedOffer = (await baseSeller.offerManager.getMyOffers(id))[0];
+                    updatedOffer.tags.get('product').should.be.eql('car');
+                }
+            } catch (e) {
+                console.log(e);
+                throw e;
+            }
+        });
+        it('should update when existed compare tag value changed', async () => {
+            try {
+                const bulkSize = 10;
+                const bulk = [];
+
+                for (let i = 0; i < bulkSize; i++) {
+                    const offer = offerFactory(true);
+                    const savedOffer = await baseSeller.offerManager.saveOffer(offer);
+                    savedOffer.compare.set('age', `${i}`);
+                    bulk.push(savedOffer);
+                }
+                console.log(bulk);
+
+                const createdOffer = await baseSeller.offerManager.updateBulkOffers(bulk);
+
+                createdOffer.length.should.be.eql(bulkSize);
+
+                for (let i = 0; i < bulkSize; i++ ) {
+                    const id = createdOffer[i];
+                    const updatedOffer = (await baseSeller.offerManager.getMyOffers(id))[0];
+                    updatedOffer.compare.get('age').should.be.eql(`${i}`);
+                }
+            } catch (e) {
+                console.log(e);
+                throw e;
+            }
+        });
+        it('should update when existed offer rules changed', async () => {
+            try {
+                const bulkSize = 10;
+                const bulk = [];
+
+                for (let i = 0; i < bulkSize; i++) {
+                    const offer = offerFactory(true);
+                    const savedOffer = await baseSeller.offerManager.saveOffer(offer);
+                    savedOffer.rules.set('age', CompareAction.EQUALLY);
+                    bulk.push(savedOffer);
+                }
+                console.log(bulk);
+
+                const createdOffer = await baseSeller.offerManager.updateBulkOffers(bulk);
+
+                createdOffer.length.should.be.eql(bulkSize);
+
+                for (let i = 0; i < bulkSize; i++ ) {
+                    const id = createdOffer[i];
+                    const updatedOffer = (await baseSeller.offerManager.getMyOffers(id))[0];
+                    updatedOffer.rules.get('age').should.be.eql(CompareAction.EQUALLY);
+                }
+            } catch (e) {
+                console.log(e);
+                throw e;
+            }
+        });
+    });
+
 });

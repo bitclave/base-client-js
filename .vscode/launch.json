@@ -14,7 +14,7 @@
             "-r", "ts-node/register",
             "--timeout", "500000",
             "--colors",
-            "${workspaceFolder}/test/search/*.ts"
+            "${workspaceFolder}/test/offers/OfferTest.ts"
         ],
         "internalConsoleOptions": "openOnSessionStart",
         "env": {
