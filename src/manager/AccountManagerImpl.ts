@@ -50,23 +50,18 @@ export class AccountManagerImpl implements AccountManager {
      * generation for asymmetric encryption scheme.
      * @param {string} message on the basis of which a signature will be created to verify the public key
      *
-     * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
+     * @returns {Promise<Account>} {Account} if client exist or create new user.
      */
     public async authenticationByPassPhrase(passPhrase: string, message: string): Promise<Account> {
         this.checkSigMessage(message);
 
         if (!(this.keyPairCreator instanceof RpcKeyPair)) {
-            let acc: Account;
-            try {
-                acc = await this.checkAccount(passPhrase, message);
-                this.logger.info(`Returning user logged via  base-client-js ${acc.publicKey}`);
-            } catch (err) {
-                acc = await this.registration(passPhrase, message);
-                this.logger.info(`New user logged via  base-client-js ${acc.publicKey}`);
-            }
+            const account = await this.lazyRegistration(passPhrase, message);
+            this.logger.info(`lazy registration user logged via  base-client-js ${account.publicKey}`);
 
-            return acc;
+            return account;
         }
+
         this.logger.debug(`key pair helper does not support pass-phrase authentication`);
         throw new Error('key pair helper does not support pass-phrase authentication');
     }
@@ -132,27 +127,6 @@ export class AccountManagerImpl implements AccountManager {
     }
 
     /**
-     * Checks if user with provided mnemonic phrase is already registered in the system.
-     * @param {string} mnemonicPhrase Mnemonic phrase for Public/Private key pair
-     * generation for asymmetric encryption scheme.
-     * @param {string} message on the basis of which a signature will be created to verify the public key
-     *
-     * @returns {Promise<boolean>} if client exist its true or false
-     */
-    public async isRegistered(mnemonicPhrase: string, message: string): Promise<boolean> {
-        try {
-            this.checkSigMessage(message);
-        } catch (e) {
-            return false;
-        }
-
-        const keyPair = await this.keyPairCreator.createKeyPair(mnemonicPhrase);
-        const account = await this.generateAccount(keyPair);
-
-        return this.accountRepository.isRegistered(account);
-    }
-
-    /**
      * Allows user to unsubscribe from BASE. Delets all his data
      *
      * @returns {Promise<event>} void if client exist or http exception if fail.
@@ -176,6 +150,15 @@ export class AccountManagerImpl implements AccountManager {
         return new Promise<string>(resolve => {
             resolve(BitKeyPair.getPublicKeyFromMnemonic(mnemonicPhrase));
         });
+    }
+
+    private lazyRegistration(mnemonicPhrase: string, message: string): Promise<Account> {
+        this.checkSigMessage(message);
+
+        return this.keyPairCreator.createKeyPair(mnemonicPhrase)
+            .then(this.generateAccount)
+            .then((account) => this.accountRepository.lazyRegistration(account))
+            .then(account => this.onGetAccount(account, message));
     }
 
     private checkSigMessage(message: string) {

@@ -12,9 +12,13 @@ import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 import AccountRepositoryImplMock from './AccountRepositoryImplMock';
 
+require('chai').use(require('chai-as-promised')).should();
+
 const chai = require('chai');
-chai.use(require('chai-as-promised'))
-    .should();
+const chaiAsPromised = require('chai-as-promised');
+
+const expect = chai.expect;
+chai.use(chaiAsPromised);
 
 describe('Account Manager', async () => {
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
@@ -68,7 +72,7 @@ describe('Account Manager', async () => {
         rpcTransport.disconnect();
     });
 
-    it('should return boolean value of created account', async () => {
+    it('should lazy create user value of created account', async () => {
         const user = new Base(
             baseNodeUrl,
             'localhost',
@@ -78,17 +82,15 @@ describe('Account Manager', async () => {
         const pass = 'some pass for test user';
         const message = 'someSigMessage';
 
-        let isExisted = await user.accountManager.isRegistered(pass, message);
-        isExisted.should.be.eq(false);
-        await user.accountManager.registration(pass, message);
+        await expect(user.accountManager.checkAccount(pass, message)).should.throw;
 
-        isExisted = await user.accountManager.isRegistered(pass, message);
-        isExisted.should.be.eq(true);
+        await expect(user.accountManager.authenticationByPassPhrase(pass, message)).should.be.exist;
+        await expect(user.accountManager.checkAccount(pass, message)).should.be.exist;
+        await expect(user.accountManager.authenticationByPassPhrase(pass, message)).should.be.exist;
 
         await user.accountManager.unsubscribe();
 
-        isExisted = await user.accountManager.isRegistered(pass, message);
-        isExisted.should.be.eq(false);
+        await expect(user.accountManager.checkAccount(pass, message)).should.throw;
     });
 
     it('should register same account and change it', async () => {

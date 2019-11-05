@@ -7,7 +7,7 @@ export default class AccountRepositoryImpl implements AccountRepository {
 
     private readonly SIGN_UP: string = '/v1/registration';
     private readonly SIGN_IN: string = '/v1/exist';
-    private readonly ACCOUNT_EXIST: string = '/v1/existed';
+    private readonly LAZY_REGISTRATION: string = '/v1/lazy-registration';
     private readonly DELETE: string = '/v1/delete';
     private readonly GET_NONCE: string = '/v1/nonce/';
 
@@ -26,6 +26,12 @@ export default class AccountRepositoryImpl implements AccountRepository {
             });
     }
 
+    public lazyRegistration(account: Account): Promise<Account> {
+        return this.transport
+            .sendRequest<Account>(this.LAZY_REGISTRATION, HttpMethod.Post, account.toSimpleAccount())
+            .then((response) => Account.fromJson(response.json));
+    }
+
     public checkAccount(account: Account): Promise<Account> {
         return this.transport
             .sendRequest<Account>(this.SIGN_IN, HttpMethod.Post, account.toSimpleAccount())
@@ -33,12 +39,6 @@ export default class AccountRepositoryImpl implements AccountRepository {
             .catch(err => {
                 throw err;
             });
-    }
-
-    public isRegistered(account: Account): Promise<boolean> {
-        return this.transport
-            .sendRequest<boolean>(this.ACCOUNT_EXIST, HttpMethod.Post, account.toSimpleAccount())
-            .then((response) => Boolean(response.originJson));
     }
 
     public async unsubscribe(account: Account): Promise<void> {
