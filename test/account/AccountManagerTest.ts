@@ -12,9 +12,13 @@ import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 import AccountRepositoryImplMock from './AccountRepositoryImplMock';
 
+require('chai').use(require('chai-as-promised')).should();
+
 const chai = require('chai');
-chai.use(require('chai-as-promised'))
-    .should();
+const chaiAsPromised = require('chai-as-promised');
+
+const expect = chai.expect;
+chai.use(chaiAsPromised);
 
 describe('Account Manager', async () => {
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
@@ -66,6 +70,27 @@ describe('Account Manager', async () => {
 
     after(async () => {
         rpcTransport.disconnect();
+    });
+
+    it('should lazy create user value of created account', async () => {
+        const user = new Base(
+            baseNodeUrl,
+            'localhost',
+            RepositoryStrategyType.Postgres
+        );
+
+        const pass = 'some pass for test user';
+        const message = 'someSigMessage';
+
+        await expect(user.accountManager.checkAccount(pass, message)).should.throw;
+
+        await expect(user.accountManager.authenticationByPassPhrase(pass, message)).should.be.exist;
+        await expect(user.accountManager.checkAccount(pass, message)).should.be.exist;
+        await expect(user.accountManager.authenticationByPassPhrase(pass, message)).should.be.exist;
+
+        await user.accountManager.unsubscribe();
+
+        await expect(user.accountManager.checkAccount(pass, message)).should.throw;
     });
 
     it('should register same account and change it', async () => {
