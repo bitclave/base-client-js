@@ -94818,7 +94818,7 @@ function () {
         map.forEach(function (value, key) {
           result[key] = function (args, origin) {
             if (value.second === null || value.second === undefined) {
-              return value.first();
+              return value.first(origin);
             }
 
             var client;
@@ -94826,15 +94826,13 @@ function () {
             var model = typeof arg !== null && typeof value.second !== 'string' ? Object.assign(new value.second(), arg) : arg;
 
             if (model instanceof AccessToken_1.default) {
-              client = _this.clientService.getClient(model.accessToken);
+              client = _this.clientService.checkAccessToken(model, origin);
 
               if (!client) {
                 throw new Error('access denied');
-              } // fixme enable check few origins
-              // if (client && ( client.origin !== origin && client.type !== TokenType.BASIC)) {
-              //     throw new Error('access denied');
-              // }
+              }
 
+              client.keyPair.changeCurrentOrigin(origin);
             }
 
             return value.first(model, client, origin);
@@ -94896,7 +94894,7 @@ function () {
     var accessToken = StringUtils_1.StringUtils.generateString();
     accessToken += this.keyPair.signMessage(accessToken);
     var expireDate = new Date(new Date().getTime() + Authenticator.EXPIRE_TOKEN_HOURS_MS);
-    var auth = new Auth_1.default(accessToken, passPhrase, 'http://localhost', expireDate);
+    var auth = new Auth_1.default(accessToken, passPhrase, new Set(['http://localhost']), expireDate);
     var encryptedAuth = this.keyPair.encryptMessage(this.signerPublicKey, JSON.stringify(auth));
     return new AuthData_1.AuthData(AuthData_1.TokenType.BASIC, JSON.stringify(encryptedAuth));
   };
@@ -95192,7 +95190,7 @@ function (_super) {
   BasicAccessTokenValidator.prototype.validate = function (data) {
     try {
       var auth = this.getAuth(data);
-      var simpleValidation = !StringUtils_1.StringUtils.isEmpty(auth.passPhrase) && !StringUtils_1.StringUtils.isEmpty(auth.origin) && auth.passPhrase.length >= 5 && auth.expireDate.getTime() > new Date().getTime();
+      var simpleValidation = !StringUtils_1.StringUtils.isEmpty(auth.passPhrase) && auth.origin.size > 0 && auth.passPhrase.length >= 5 && auth.expireDate.getTime() > new Date().getTime();
       var sigValidation = KeyPairSimple_1.default.checkSig(this.getClearAccessToken(auth), this.authenticatorAddress, this.getAccessTokenSig(auth));
       return simpleValidation && sigValidation;
     } catch (e) {
@@ -95204,8 +95202,7 @@ function (_super) {
 
   BasicAccessTokenValidator.prototype.getAuth = function (data) {
     var strJsonAuth = this.ownKeyPair.decryptMessage(this.authenticatorPublicKey, data.data);
-    var result = Object.assign(new Auth_1.default(), JSON.parse(strJsonAuth));
-    return new Auth_1.default(result.passPhrase, result.accessToken, result.origin, new Date(result.expireDate));
+    return Auth_1.default.valueOf(JSON.parse(strJsonAuth));
   };
 
   BasicAccessTokenValidator.prototype.getAccessTokenSig = function (auth) {
@@ -95289,7 +95286,7 @@ function (_super) {
   JwtAccessTokenValidator.prototype.validate = function (data) {
     try {
       var auth = this.getAuth(data);
-      return !StringUtils_1.StringUtils.isEmpty(auth.passPhrase) && !StringUtils_1.StringUtils.isEmpty(auth.origin) && auth.passPhrase.length >= 5 && auth.expireDate.getTime() > new Date().getTime();
+      return !StringUtils_1.StringUtils.isEmpty(auth.passPhrase) && auth.origin.size > 0 && auth.passPhrase.length >= 5 && auth.expireDate.getTime() > new Date().getTime();
     } catch (e) {
       console.warn(e);
     }
@@ -95300,9 +95297,9 @@ function (_super) {
   JwtAccessTokenValidator.prototype.getAuth = function (data) {
     var decrypted = jwt.verify(data.data, this.validCert, {
       ignoreExpiration: false
-    }); // fixme origin data!
-
-    return new Auth_1.default(decrypted.sub, data.data, 'http://localhost', new Date((Number(decrypted.exp) || 0) * 1000));
+    });
+    var origins = new Set(decrypted['allowed-origins']);
+    return new Auth_1.default(decrypted.sub, data.data, origins, new Date((Number(decrypted.exp) || 0) * 1000));
   };
 
   JwtAccessTokenValidator.prototype.convertCertificate = function (rawCert) {
@@ -95999,7 +95996,7 @@ function (_super) {
     _this.permissions = new Permissions_1.Permissions();
     _this.permissionsSource = permissionsSource;
     _this.siteDataSource = siteDataSource;
-    _this.origin = origin;
+    _this.currentOrigin = origin;
     return _this;
   }
 
@@ -96087,6 +96084,27 @@ function (_super) {
     return this.prepareData(fields, false, passwords || new Map());
   };
 
+  KeyPairClient.prototype.setAcceptedOrigins = function (origins) {
+    this.acceptedOrigins = new Set(origins);
+    this.permissions.fields.clear();
+    this.isConfidential = this.acceptedOrigins.has('*');
+  };
+
+  KeyPairClient.prototype.changeCurrentOrigin = function (origin) {
+    var clearOrigin = origin.toLowerCase().replace('http://', '').replace('https://', '').replace('www.', '');
+
+    if (!this.acceptedOrigins.has('*') && !this.acceptedOrigins.has(clearOrigin)) {
+      throw new Error('Unapproved origin');
+    }
+
+    if (this.currentOrigin !== clearOrigin && !this.acceptedOrigins.has('*')) {
+      this.permissions.fields.clear();
+      this.isConfidential = false;
+    }
+
+    this.currentOrigin = clearOrigin;
+  };
+
   KeyPairClient.prototype.prepareData = function (data, encrypt, passwords) {
     var e_3, _a;
 
@@ -96140,7 +96158,7 @@ function (_super) {
     var _this = this;
 
     if (!this.isConfidential && this.permissions.fields.size === 0) {
-      var site = this.siteDataSource.getSiteData(this.origin);
+      var site = this.siteDataSource.getSiteData(this.currentOrigin);
       this.isConfidential = site.confidential;
 
       if (!site.confidential) {
@@ -96345,6 +96363,14 @@ function () {
     throw new Error('not implemented');
   };
 
+  KeyPairSimple.prototype.setAcceptedOrigins = function (origins) {
+    throw new Error('not implemented');
+  };
+
+  KeyPairSimple.prototype.changeCurrentOrigin = function (origin) {
+    throw new Error('not implemented');
+  };
+
   return KeyPairSimple;
 }();
 
@@ -96524,7 +96550,7 @@ function (_super) {
     }
 
     if (origin === void 0) {
-      origin = '';
+      origin = new Set();
     }
 
     if (expireDate === void 0) {
@@ -96536,6 +96562,10 @@ function (_super) {
     _this.passPhrase = passPhrase;
     return _this;
   }
+
+  Auth.valueOf = function (json) {
+    return new Auth(json.passPhrase, json.accessToken, new Set(json.origin), new Date(json.expireDate));
+  };
 
   return Auth;
 }(AccessData_1.default);
@@ -96703,6 +96733,14 @@ function (_super) {
     _this.type = type;
     return _this;
   }
+
+  Client.prototype.checkOrigin = function (origin) {
+    return this.origin.has('*') || this.origin.has(origin.toLowerCase());
+  };
+
+  Client.prototype.tokenExpired = function () {
+    return this.expireDate.getTime() <= new Date().getTime();
+  };
 
   return Client;
 }(AccessData_1.default);
@@ -97280,7 +97318,7 @@ function () {
   ClientService.prototype.getPublicMethods = function () {
     var map = new Map();
     map.set('authenticatorRegisterClient', new Pair_1.default(this.authenticatorRegisterClient.bind(this), AuthData_1.AuthData));
-    map.set('checkAccessToken', new Pair_1.default(this.checkAccessToken.bind(this), AccessToken_1.default));
+    map.set('getClientData', new Pair_1.default(this.getClientData.bind(this), AccessToken_1.default));
     map.set('getPublicKey', new Pair_1.default(this.getPublicKey.bind(this), null));
     return map;
   };
@@ -97288,7 +97326,8 @@ function () {
   ClientService.prototype.authenticatorRegisterClient = function (authData) {
     if (this.tokenValidator.validate(authData)) {
       var auth = this.tokenValidator.getAuth(authData);
-      var keyPair = this.keyPairHelper.createClientKeyPair(auth.passPhrase, auth.origin);
+      var keyPair = this.keyPairHelper.createClientKeyPair(auth.passPhrase, '');
+      keyPair.setAcceptedOrigins(auth.origin);
       var client = new Client_1.default(auth.accessToken, auth.origin, auth.expireDate, keyPair, authData.type);
       this.clients.set(auth.accessToken, client);
       return auth.accessToken;
@@ -97302,12 +97341,16 @@ function () {
     return this.ownKeyPair.getPublicKey();
   };
 
-  ClientService.prototype.getClient = function (accessToken) {
-    return this.clients.get(accessToken);
+  ClientService.prototype.getClientData = function (accessToken, client) {
+    return client ? ClientData_1.default.valueOf(client) : undefined;
   };
 
-  ClientService.prototype.checkAccessToken = function (accessToken, client) {
-    return client ? ClientData_1.default.valueOf(client) : undefined;
+  ClientService.prototype.checkAccessToken = function (accessToken, origin) {
+    var client = this.clients.get(accessToken.accessToken);
+    var clearOrigin = origin.toLowerCase().replace('http://', '').replace('https://', '').replace('www.', '');
+    var isValidOrigin = client ? client.checkOrigin(clearOrigin) : false;
+    var tokenExpired = client ? client.tokenExpired() : true;
+    return isValidOrigin && !tokenExpired ? client : undefined;
   };
 
   return ClientService;
