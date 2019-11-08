@@ -33,7 +33,7 @@ export default class AuthenticatorHelper {
         const signerPK: string = (await this.rpcTransport.request('getPublicKey')) as string;
 
         const expireDate = new Date(new Date().getTime() + AuthenticatorHelper.EXPIRE_TOKEN_HOURS_MS);
-        const auth: RpcAuth = new RpcAuth(accessToken, passPhrase, 'http://localhost', expireDate);
+        const auth: RpcAuth = new RpcAuth(accessToken, passPhrase, ['*'], expireDate);
         const encryptedAuth: string = await this.keyHelper.encryptMessage(signerPK, JSON.stringify(auth));
         const authData = new RpcAuthData(JSON.stringify(encryptedAuth), TokenType.BASIC);
 
