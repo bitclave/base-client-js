@@ -83,7 +83,7 @@ export class AccountManagerImpl implements AccountManager {
 
             return this.keyPairCreator.createKeyPair('')
                 .then(this.generateAccount)
-                .then(account => this.accountRepository.checkAccount(account))
+                .then(account => this.accountRepository.lazyRegistration(account))
                 .then(account => this.onGetAccount(account, message));
         }
 
