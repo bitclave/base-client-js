@@ -12,29 +12,21 @@ import { AccountManager } from './AccountManager';
 
 export class AccountManagerImpl implements AccountManager {
 
-    private accountRepository: AccountRepository;
-    private keyPairCreator: KeyPairHelper;
-    private messageSigner: MessageSigner;
-    private authAccountBehavior: BehaviorSubject<Account>;
-    private logger: Logger;
+    private readonly logger: Logger;
 
     constructor(
-        auth: AccountRepository,
-        keyPairCreator: KeyPairHelper,
-        messageSigner: MessageSigner,
-        authAccountBehavior: BehaviorSubject<Account>,
+        private readonly accountRepository: AccountRepository,
+        private readonly keyPairCreator: KeyPairHelper,
+        private readonly  messageSigner: MessageSigner,
+        private readonly  authAccountBehavior: BehaviorSubject<Account>,
         loggerService?: Logger
     ) {
-        this.accountRepository = auth;
         this.keyPairCreator = keyPairCreator;
         this.messageSigner = messageSigner;
         this.authAccountBehavior = authAccountBehavior;
 
-        if (!loggerService) {
-            loggerService = new BasicLogger();
-        }
-
-        this.logger = loggerService;
+        this.logger = new BasicLogger();
+        this.logger = loggerService ? loggerService : new BasicLogger();
     }
 
     /**
@@ -75,16 +67,17 @@ export class AccountManagerImpl implements AccountManager {
      *
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
-    public authenticationByAccessToken(accessToken: string, message: string): Promise<Account> {
+    public async authenticationByAccessToken(accessToken: string, message: string): Promise<Account> {
         this.checkSigMessage(message);
 
         if (this.keyPairCreator instanceof RpcKeyPair) {
             (this.keyPairCreator as RemoteSigner).setAccessToken(accessToken);
 
-            return this.keyPairCreator.createKeyPair('')
-                .then(this.generateAccount)
-                .then(account => this.accountRepository.lazyRegistration(account))
-                .then(account => this.onGetAccount(account, message));
+            const keyPair = await this.keyPairCreator.createKeyPair('');
+            const preparedAccount = await this.generateAccount(keyPair);
+            const account = await this.accountRepository.lazyRegistration(preparedAccount);
+
+            return this.onGetAccount(account, message);
         }
 
         throw new Error('key pair helper does not support token authentication');

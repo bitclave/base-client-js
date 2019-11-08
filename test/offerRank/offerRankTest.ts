@@ -15,16 +15,8 @@ const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(r
 const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
 async function createUser(user: Base, pass: string): Promise<Account> {
-    let accessToken: string = '';
-    try {
-        accessToken = await authenticatorHelper.generateAccessToken(pass);
-        await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
-        await user.accountManager.unsubscribe();
-    } catch (e) {
-        // ignore
-    }
-
-    return await user.accountManager.registration(pass, someSigMessage); // this method private.
+    const accessToken = await authenticatorHelper.generateAccessToken(pass);
+    return await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
 }
 
 function randomOfferId() {

@@ -18,4 +18,7 @@ export default class AccountRepositoryImplMock implements AccountRepository {
         console.log('user unsubsribed');
     }
 
+    public lazyRegistration(account: Account): Promise<Account> {
+        return new Promise<Account>(resolve => resolve(account));
+    }
 }
