@@ -20,17 +20,11 @@ const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTran
 // });
 
 async function createUser(user: Base, pass: string): Promise<Account> {
-    let accessToken: string = '';
-    try {
-        accessToken = await authenticatorHelper.generateAccessToken(pass);
-        await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
-        await user.accountManager.unsubscribe();
-    } catch (e) {
-        // console.log('check createUser', e);
-        // ignore error if user not exist
-    }
+    const accessToken = await authenticatorHelper.generateAccessToken(pass);
+    await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
+    await user.accountManager.unsubscribe();
 
-    return await user.accountManager.registration(pass, someSigMessage); // this method private.
+    return await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
 }
 
 describe('Offer, local price matching', async () => {

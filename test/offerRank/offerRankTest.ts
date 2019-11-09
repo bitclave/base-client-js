@@ -16,6 +16,9 @@ const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTran
 
 async function createUser(user: Base, pass: string): Promise<Account> {
     const accessToken = await authenticatorHelper.generateAccessToken(pass);
+    await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
+    await user.accountManager.unsubscribe();
+
     return await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
 }
 
