@@ -7,3 +7,5 @@ declare interface XMLHttpRequestInitializer extends XMLHttpRequest {
 declare interface WindowXMLHttpRequest extends Window {
     XMLHttpRequest: XMLHttpRequestInitializer;
 }
+
+declare module '*.json';

@@ -210,6 +210,7 @@ export {
     SearchRequestRepository,
     VerifyRepository
 };
+export { version }  from '../package.json';
 
 export default class Base {
 
