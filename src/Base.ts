@@ -210,7 +210,9 @@ export {
     SearchRequestRepository,
     VerifyRepository
 };
-export { version }  from '../package.json';
+
+import { version } from '../package.json';
+export const LibVersion = version;
 
 export default class Base {
 
