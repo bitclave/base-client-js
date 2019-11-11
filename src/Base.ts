@@ -211,6 +211,9 @@ export {
     VerifyRepository
 };
 
+import { version } from '../package.json';
+export const LibVersion = version;
+
 export default class Base {
 
     private readonly _walletManager: WalletManager;
