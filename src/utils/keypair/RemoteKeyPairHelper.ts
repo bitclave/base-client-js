@@ -1,4 +1,4 @@
+import { AccessTokenAccepter } from './AccessTokenAccepter';
 import { KeyPairHelper } from './KeyPairHelper';
-import { RemoteSigner } from './RemoteSigner';
 
-export interface RemoteKeyPairHelper extends KeyPairHelper, RemoteSigner {}
+export interface RemoteKeyPairHelper extends KeyPairHelper, AccessTokenAccepter {}

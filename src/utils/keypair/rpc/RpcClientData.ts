@@ -7,13 +7,11 @@ export default class ClientData extends AccessData {
 
     constructor(
         publicKey: string = '',
-        accessToken: string = '',
         origin: string = '',
         expireDate: string = '',
         permissions: Permissions = new Permissions()
     ) {
-        super(accessToken, origin, expireDate, permissions);
+        super(origin, expireDate, permissions);
         this.publicKey = publicKey;
     }
-
 }

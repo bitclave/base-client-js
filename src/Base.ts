@@ -74,6 +74,10 @@ import { HttpTransportImpl } from './repository/source/http/HttpTransportImpl';
 import NonceInterceptor from './repository/source/http/NonceInterceptor';
 import { RepositoryStrategyInterceptor } from './repository/source/http/RepositoryStrategyInterceptor';
 import SignInterceptor from './repository/source/http/SignInterceptor';
+import { AccessTokenInterceptor } from './repository/source/rpc/AccessTokenInterceptor';
+import { JsonRpc } from './repository/source/rpc/JsonRpc';
+import { JsonRpcHttpInterceptorAdapter } from './repository/source/rpc/JsonRpcHttpInterceptorAdapter';
+import { RpcInterceptor } from './repository/source/rpc/RpcInterceptor';
 import { TransportFactory } from './repository/source/TransportFactory';
 import { VerifyRepository } from './repository/verify/VerifyRepository';
 import { VerifyRepositoryImpl } from './repository/verify/VerifyRepositoryImpl';
@@ -84,6 +88,7 @@ import { KeyPairHelper } from './utils/keypair/KeyPairHelper';
 import { MessageDecrypt } from './utils/keypair/MessageDecrypt';
 import { MessageEncrypt } from './utils/keypair/MessageEncrypt';
 import { MessageSigner } from './utils/keypair/MessageSigner';
+import { TokenType } from './utils/keypair/rpc/RpcToken';
 import { AbstractWalletValidator } from './utils/types/validators/AbstractWalletValidator';
 import { IsBasePublicKey } from './utils/types/validators/annotations/IsBasePublicKey';
 import { IsBtcAddress } from './utils/types/validators/annotations/IsBtcAddress';
@@ -105,7 +110,7 @@ export { HttpTransport } from './repository/source/http/HttpTransport';
 export { HttpInterceptor } from './repository/source/http/HttpInterceptor';
 export { TransportFactory } from './repository/source/TransportFactory';
 export { KeyPairFactory } from './utils/keypair/KeyPairFactory';
-export { RemoteSigner } from './utils/keypair/RemoteSigner';
+export { AccessTokenAccepter } from './utils/keypair/AccessTokenAccepter';
 export { CryptoUtils } from './utils/CryptoUtils';
 export { WalletUtils } from './utils/WalletUtils';
 export { BitcoinUtils } from './utils/BitcoinUtils';
@@ -116,7 +121,7 @@ export { KeyPairHelper } from './utils/keypair/KeyPairHelper';
 export { Permissions, AccessRight } from './utils/keypair/Permissions';
 export { AcceptedField } from './utils/keypair/AcceptedField';
 export { RpcToken } from './utils/keypair/rpc/RpcToken';
-export { RpcAuth } from './utils/keypair/rpc/RpcAuth';
+export { RpcAccessToken } from './utils/keypair/rpc/RpcAccessToken';
 
 export {
     CryptoWallets,
@@ -140,6 +145,7 @@ export {
     AbstractWalletValidator,
     Account,
     AccountManager,
+    AccessTokenInterceptor,
     AppWalletValidator,
     BitKeyPair,
     BtcWalletValidator,
@@ -161,6 +167,8 @@ export {
     IsBtcAddress,
     IsEthAddress,
     IsTypedArray,
+    JsonRpc,
+    JsonRpcHttpInterceptorAdapter,
     JsonObject,
     JsonTransform,
     LinkType,
@@ -189,6 +197,7 @@ export {
     PermissionsSource,
     Profile,
     ProfileManager,
+    RpcInterceptor,
     SearchManager,
     SearchRequest,
     ServiceCall,
@@ -198,6 +207,7 @@ export {
     Site,
     SiteDataSource,
     SortOfferSearch,
+    TokenType,
     ValidationResult,
     VerifyManager,
     WalletManager,
@@ -372,8 +382,15 @@ export default class Base {
         siteDataSource: SiteDataSource,
         siteOrigin: string
     ): KeyPairHelper {
-        return (signerHost.length === 0)
-               ? KeyPairFactory.createDefaultKeyPair(permissionSource, siteDataSource, siteOrigin)
-               : KeyPairFactory.createRpcKeyPair(TransportFactory.createJsonRpcHttpTransport(signerHost));
+        if (signerHost && signerHost.length > 0) {
+            const tokenAccepter = new AccessTokenInterceptor('', TokenType.BASIC);
+            const httpTransport = TransportFactory.createJsonRpcHttpTransport(signerHost)
+                .addInterceptor(tokenAccepter);
+
+            return KeyPairFactory.createRpcKeyPair(httpTransport, tokenAccepter);
+
+        } else {
+            return KeyPairFactory.createDefaultKeyPair(permissionSource, siteDataSource, siteOrigin);
+        }
     }
 }

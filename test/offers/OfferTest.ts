@@ -6,6 +6,7 @@ import { OfferPriceRules } from '../../src/repository/models/OfferPriceRules';
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
+import { TokenType } from '../../src/utils/keypair/rpc/RpcToken';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 
 require('chai').use(require('chai-as-promised')).should();
@@ -17,10 +18,10 @@ const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTran
 
 async function createUser(user: Base, pass: string): Promise<Account> {
     const accessToken = await authenticatorHelper.generateAccessToken(pass);
-    await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
+    await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
     await user.accountManager.unsubscribe();
 
-    return await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
+    return await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
 }
 
 describe('Offer CRUD', async () => {

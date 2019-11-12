@@ -5,8 +5,8 @@ export default class RpcEncryptMessage extends RpcToken {
     public readonly recipientPk: string;
     public readonly message: string;
 
-    constructor(accessToken: string, recipientPk: string, message: string) {
-        super(accessToken);
+    constructor(recipientPk: string, message: string) {
+        super();
         this.recipientPk = recipientPk;
         this.message = message;
     }

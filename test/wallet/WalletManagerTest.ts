@@ -9,6 +9,7 @@ import { WalletManager } from '../../src/manager/WalletManager';
 import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
 import Account from '../../src/repository/models/Account';
 import { DataRequest } from '../../src/repository/models/DataRequest';
+import { AccessTokenInterceptor } from '../../src/repository/source/rpc/AccessTokenInterceptor';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import { CryptoUtils } from '../../src/utils/CryptoUtils';
@@ -18,6 +19,7 @@ import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
 import { MessageSigner } from '../../src/utils/keypair/MessageSigner';
 import { AccessRight } from '../../src/utils/keypair/Permissions';
 import { RemoteKeyPairHelper } from '../../src/utils/keypair/RemoteKeyPairHelper';
+import { TokenType } from '../../src/utils/keypair/rpc/RpcToken';
 import {
     AppWalletData,
     BtcWalletData,
@@ -42,6 +44,14 @@ require('chai')
 const Message = require('bitcore-message');
 const Bitcore = require('bitcore-lib');
 
+function createRemoteKeyPair(): RemoteKeyPairHelper {
+    const tokenAccepter = new AccessTokenInterceptor('', TokenType.BASIC);
+    const httpTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost)
+        .addInterceptor(tokenAccepter);
+
+    return KeyPairFactory.createRpcKeyPair(httpTransport, tokenAccepter);
+}
+
 describe('Wallet manager test', async () => {
 
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
@@ -50,8 +60,8 @@ describe('Wallet manager test', async () => {
     const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
     const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
-    const keyPairHelperAlisa: RemoteKeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
-    const keyPairHelperBob: RemoteKeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
+    const keyPairHelperAlisa: RemoteKeyPairHelper = createRemoteKeyPair();
+    const keyPairHelperBob: RemoteKeyPairHelper = createRemoteKeyPair();
 
     const clientRepository: ClientDataRepositoryImplMock = new ClientDataRepositoryImplMock();
     const dataRepository: DataRequestRepositoryImplMock = new DataRequestRepositoryImplMock();
@@ -72,8 +82,8 @@ describe('Wallet manager test', async () => {
         const alisaAccessToken = await authenticatorHelper.generateAccessToken(passPhraseAlisa);
         const bobAccessToken = await authenticatorHelper.generateAccessToken(passPhraseBob);
 
-        keyPairHelperAlisa.setAccessToken(alisaAccessToken);
-        keyPairHelperBob.setAccessToken(bobAccessToken);
+        keyPairHelperAlisa.setAccessData(alisaAccessToken, TokenType.BASIC);
+        keyPairHelperBob.setAccessData(bobAccessToken, TokenType.BASIC);
 
         await keyPairHelperAlisa.createKeyPair('');
         await keyPairHelperBob.createKeyPair('');

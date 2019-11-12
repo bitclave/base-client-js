@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import 'reflect-metadata';
 import { BehaviorSubject } from 'rxjs/Rx';
-import Base, { RepositoryStrategyType } from '../../src/Base';
+import Base, { RepositoryStrategyType, TransportFactory } from '../../src/Base';
 import { DataRequestManager } from '../../src/manager/DataRequestManager';
 import { DataRequestManagerImpl } from '../../src/manager/DataRequestManagerImpl';
 import { ProfileManager } from '../../src/manager/ProfileManager';
@@ -10,12 +10,14 @@ import Account from '../../src/repository/models/Account';
 import { FieldData } from '../../src/repository/models/FieldData';
 import { InputGraphData } from '../../src/repository/models/InputGraphData';
 import { HttpTransportImpl } from '../../src/repository/source/http/HttpTransportImpl';
+import { AccessTokenInterceptor } from '../../src/repository/source/rpc/AccessTokenInterceptor';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { RpcTransportImpl } from '../../src/repository/source/rpc/RpcTransportImpl';
 import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
 import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
 import { AccessRight } from '../../src/utils/keypair/Permissions';
 import { RemoteKeyPairHelper } from '../../src/utils/keypair/RemoteKeyPairHelper';
+import { TokenType } from '../../src/utils/keypair/rpc/RpcToken';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 import ClientDataRepositoryImplMock from '../profile/ClientDataRepositoryImplMock';
 import DataRequestRepositoryImplMock from './DataRequestRepositoryImplMock';
@@ -55,17 +57,25 @@ function createBase(): Base {
 
 async function createUser(user: Base, pass: string): Promise<Account> {
     const accessToken = await authenticatorHelper.generateAccessToken(pass);
-    await user.accountManager.authenticationByAccessToken(accessToken, pass);
+    await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, pass);
     await user.accountManager.unsubscribe();
 
-    return await user.accountManager.authenticationByAccessToken(accessToken, pass);
+    return await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, pass);
+}
+
+function createRemoteKeyPair(): RemoteKeyPairHelper {
+    const tokenAccepter = new AccessTokenInterceptor('', TokenType.BASIC);
+    const httpTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost)
+        .addInterceptor(tokenAccepter);
+
+    return KeyPairFactory.createRpcKeyPair(httpTransport, tokenAccepter);
 }
 
 async function createDataRequestManager(passPhrase: string): Promise<SimpleUser> {
-    const keyPairHelper: RemoteKeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
+    const keyPairHelper: RemoteKeyPairHelper = createRemoteKeyPair();
     const accessToken = await authenticatorHelper.generateAccessToken(passPhrase);
 
-    keyPairHelper.setAccessToken(accessToken);
+    keyPairHelper.setAccessData(accessToken, TokenType.BASIC);
     await keyPairHelper.createKeyPair(passPhrase);
     const account: Account = new Account(keyPairHelper.getPublicKey());
     const authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(account);

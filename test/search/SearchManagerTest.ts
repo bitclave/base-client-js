@@ -16,6 +16,7 @@ import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyT
 import { HttpMethod } from '../../src/repository/source/http/HttpMethod';
 import { Response } from '../../src/repository/source/http/Response';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
+import { TokenType } from '../../src/utils/keypair/rpc/RpcToken';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 
 require('chai').use(require('chai-as-promised')).should();
@@ -29,10 +30,10 @@ const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTran
 
 async function createUser(user: Base, pass: string): Promise<Account> {
     const accessToken = await authenticatorHelper.generateAccessToken(pass);
-    await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
+    await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
     await user.accountManager.unsubscribe();
 
-    return await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
+    return await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
 }
 
 describe('Search Manager', async () => {

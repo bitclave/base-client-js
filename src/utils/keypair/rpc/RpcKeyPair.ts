@@ -1,5 +1,6 @@
 import { RpcTransport } from '../../../repository/source/rpc/RpcTransport';
 import { JsonUtils } from '../../JsonUtils';
+import { AccessTokenAccepter } from '../AccessTokenAccepter';
 import { KeyPair } from '../KeyPair';
 import { AccessRight } from '../Permissions';
 import { RemoteKeyPairHelper } from '../RemoteKeyPairHelper';
@@ -10,22 +11,20 @@ import RpcDecryptMessage from './RpcDecryptMessage';
 import RpcEncryptMessage from './RpcEncryptMessage';
 import RpcPermissionsFields from './RpcPermissionsFields';
 import RpcSignMessage from './RpcSignMessage';
-import { RpcToken } from './RpcToken';
+import { RpcToken, TokenType } from './RpcToken';
 
 const Mnemonic = require('bitcore-mnemonic');
 
 export class RpcKeyPair implements RemoteKeyPairHelper {
 
-    private rpcTransport: RpcTransport;
     private clientData: RpcClientData;
-    private accessToken: string = '';
 
-    constructor(rpcTransport: RpcTransport) {
+    constructor(private readonly rpcTransport: RpcTransport, private readonly tokenAccepter: AccessTokenAccepter) {
         this.rpcTransport = rpcTransport;
     }
 
     public createKeyPair(passPhrase: string): Promise<KeyPair> {
-        return this.rpcTransport.request('getClientData', new RpcToken(this.accessToken))
+        return this.rpcTransport.request('getClientData', new RpcToken())
             .then((response) => this.clientData = Object.assign(new RpcClientData(), response))
             .then((response: RpcClientData) => new KeyPair('', response.publicKey));
     }
@@ -39,11 +38,11 @@ export class RpcKeyPair implements RemoteKeyPairHelper {
     }
 
     public signMessage(data: string): Promise<string> {
-        return this.rpcTransport.request('signMessage', new RpcSignMessage(data, this.clientData.accessToken));
+        return this.rpcTransport.request('signMessage', new RpcSignMessage(data));
     }
 
     public checkSig(data: string, sig: string): Promise<boolean> {
-        return this.rpcTransport.request('checkSig', new RpcCheckSignature(data, sig, this.clientData.accessToken));
+        return this.rpcTransport.request('checkSig', new RpcCheckSignature(data, sig));
     }
 
     public getPublicKey(): string {
@@ -53,21 +52,21 @@ export class RpcKeyPair implements RemoteKeyPairHelper {
     public encryptMessage(recipientPk: string, message: string): Promise<string> {
         return this.rpcTransport.request(
             'encryptMessage',
-            new RpcEncryptMessage(this.clientData.accessToken, recipientPk, message)
+            new RpcEncryptMessage(recipientPk, message)
         );
     }
 
     public encryptFields(fields: Map<string, string>): Promise<Map<string, string>> {
         return this.rpcTransport.request<object>(
             'encryptFields',
-            new RpcDecryptEncryptFields(this.clientData.accessToken, JsonUtils.mapToJson(fields), new Map())
+            new RpcDecryptEncryptFields(JsonUtils.mapToJson(fields), new Map())
         ).then((response) => JsonUtils.jsonToMap<string, string>(response));
     }
 
     public encryptPermissionsFields(recipient: string, data: Map<string, AccessRight>): Promise<string> {
         return this.rpcTransport.request(
             'encryptPermissionsFields',
-            new RpcPermissionsFields(this.clientData.accessToken, recipient, JsonUtils.mapToJson(data))
+            new RpcPermissionsFields(recipient, JsonUtils.mapToJson(data))
         );
     }
 
@@ -78,7 +77,7 @@ export class RpcKeyPair implements RemoteKeyPairHelper {
 
         const resultJson = await this.rpcTransport.request<object>(
             'encryptFieldsWithPermissions',
-            new RpcPermissionsFields(this.clientData.accessToken, recipient, JsonUtils.mapToJson(data))
+            new RpcPermissionsFields(recipient, JsonUtils.mapToJson(data))
         );
 
         return JsonUtils.jsonToMap<string, string>(resultJson);
@@ -87,7 +86,7 @@ export class RpcKeyPair implements RemoteKeyPairHelper {
     public decryptMessage(senderPk: string, encrypted: string): Promise<string> {
         return this.rpcTransport.request(
             'decryptMessage',
-            new RpcDecryptMessage(this.clientData.accessToken, senderPk, encrypted)
+            new RpcDecryptMessage(senderPk, encrypted)
         );
     }
 
@@ -95,7 +94,6 @@ export class RpcKeyPair implements RemoteKeyPairHelper {
         return this.rpcTransport.request<object>(
             'decryptFields',
             new RpcDecryptEncryptFields(
-                this.clientData.accessToken,
                 JsonUtils.mapToJson(fields),
                 passwords ? JsonUtils.mapToJson(passwords) : new Map()
             )
@@ -117,11 +115,7 @@ export class RpcKeyPair implements RemoteKeyPairHelper {
         return result.get(fieldName) || '';
     }
 
-    public setAccessToken(accessToken: string) {
-        this.accessToken = accessToken;
-    }
-
-    public getAccessToken(): string {
-        return this.accessToken;
+    public setAccessData(accessToken: string, tokenType: TokenType) {
+        this.tokenAccepter.setAccessData(accessToken, tokenType);
     }
 }

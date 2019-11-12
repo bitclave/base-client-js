@@ -5,6 +5,7 @@ import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyT
 import { HttpMethod } from '../../src/repository/source/http/HttpMethod';
 import SignedRequest from '../../src/repository/source/http/SignedRequest';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
+import { TokenType } from '../../src/utils/keypair/rpc/RpcToken';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 import { AssistantPermissions } from '../requests/AssistantPermissions';
 import DataRequestRepositoryImplMock from '../requests/DataRequestRepositoryImplMock';
@@ -24,10 +25,10 @@ const keyPairHelper: KeyPairHelper = KeyPairFactory.createDefaultKeyPair(assista
 
 async function createUser(user: Base, pass: string): Promise<Account> {
     const accessToken = await authenticatorHelper.generateAccessToken(pass);
-    await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
+    await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
     await user.accountManager.unsubscribe();
 
-    return await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
+    return await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
 }
 
 describe('External Services Manager', async () => {

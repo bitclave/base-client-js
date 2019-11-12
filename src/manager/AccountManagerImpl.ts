@@ -2,12 +2,13 @@ import { BehaviorSubject, Observable } from 'rxjs/Rx';
 import { AccountRepository } from '../repository/account/AccountRepository';
 import Account from '../repository/models/Account';
 import { BasicLogger, Logger } from '../utils/BasicLogger';
+import { AccessTokenAccepter } from '../utils/keypair/AccessTokenAccepter';
 import { BitKeyPair } from '../utils/keypair/BitKeyPair';
 import { KeyPair } from '../utils/keypair/KeyPair';
 import { KeyPairHelper } from '../utils/keypair/KeyPairHelper';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
-import { RemoteSigner } from '../utils/keypair/RemoteSigner';
 import { RpcKeyPair } from '../utils/keypair/rpc/RpcKeyPair';
+import { TokenType } from '../utils/keypair/rpc/RpcToken';
 import { AccountManager } from './AccountManager';
 
 export class AccountManagerImpl implements AccountManager {
@@ -61,17 +62,23 @@ export class AccountManagerImpl implements AccountManager {
     /**
      * Checks if user with provided access token is already registered in the system.
      * @param {string} accessToken token for authenticate on remote signer
-     * (if {@link KeyPairHelper} support {@link RemoteSigner})
+     * (if {@link KeyPairHelper} support {@link AccessTokenAccepter})
      *
      * @param {string} message on the basis of which a signature will be created to verify the public key
      *
+     * @param {TokenType} tokenType type of token
+     *
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
-    public async authenticationByAccessToken(accessToken: string, message: string): Promise<Account> {
+    public async authenticationByAccessToken(
+        accessToken: string,
+        tokenType: TokenType,
+        message: string
+    ): Promise<Account> {
         this.checkSigMessage(message);
 
         if (this.keyPairCreator instanceof RpcKeyPair) {
-            (this.keyPairCreator as RemoteSigner).setAccessToken(accessToken);
+            (this.keyPairCreator as AccessTokenAccepter).setAccessData(accessToken, tokenType);
 
             const keyPair = await this.keyPairCreator.createKeyPair('');
             const preparedAccount = await this.generateAccount(keyPair);

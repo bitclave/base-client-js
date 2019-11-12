@@ -9,6 +9,7 @@ import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyT
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import { AccessRight } from '../../src/utils/keypair/Permissions';
+import { TokenType } from '../../src/utils/keypair/rpc/RpcToken';
 import { WalletUtils } from '../../src/utils/WalletUtils';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 
@@ -66,10 +67,10 @@ function getWealthEntryKey(uid: string, bid: string): string {
 
 async function createUser(user: Base, pass: string): Promise<Account> {
     const accessToken = await authenticatorHelper.generateAccessToken(pass);
-    await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
+    await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
     await user.accountManager.unsubscribe();
 
-    return await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
+    return await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
 }
 
 describe('BASE API test: Protocol Flow', async () => {

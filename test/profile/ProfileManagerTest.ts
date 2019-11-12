@@ -2,11 +2,13 @@ import { BehaviorSubject } from 'rxjs/Rx';
 import { ProfileManager } from '../../src/manager/ProfileManager';
 import { ProfileManagerImpl } from '../../src/manager/ProfileManagerImpl';
 import Account from '../../src/repository/models/Account';
+import { AccessTokenInterceptor } from '../../src/repository/source/rpc/AccessTokenInterceptor';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
+import { AccessTokenAccepter } from '../../src/utils/keypair/AccessTokenAccepter';
 import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
 import { RemoteKeyPairHelper } from '../../src/utils/keypair/RemoteKeyPairHelper';
-import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
+import { TokenType } from '../../src/utils/keypair/rpc/RpcToken';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 import ClientDataRepositoryImplMock from './ClientDataRepositoryImplMock';
 
@@ -14,17 +16,25 @@ require('chai')
     .use(require('chai-as-promised'))
     .should();
 
+const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
+
+function createRemoteKeyPair(): RemoteKeyPairHelper {
+    const tokenAccepter = new AccessTokenInterceptor('', TokenType.BASIC);
+    const httpTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost)
+        .addInterceptor(tokenAccepter);
+
+    return KeyPairFactory.createRpcKeyPair(httpTransport, tokenAccepter);
+}
+
 describe('Profile Manager', async () => {
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
 
-    const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
-
     const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
     const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
-    const keyPairHelperAlisa: RemoteKeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
-    const keyPairHelperBob: RemoteKeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
+    const keyPairHelperAlisa: RemoteKeyPairHelper = createRemoteKeyPair();
+    const keyPairHelperBob: RemoteKeyPairHelper = createRemoteKeyPair();
 
     const clientRepository: ClientDataRepositoryImplMock = new ClientDataRepositoryImplMock();
 
@@ -37,8 +47,8 @@ describe('Profile Manager', async () => {
         const alisaAccessToken = await authenticatorHelper.generateAccessToken(passPhraseAlisa);
         const bobAccessToken = await authenticatorHelper.generateAccessToken(passPhraseBob);
 
-        (keyPairHelperAlisa as RemoteSigner).setAccessToken(alisaAccessToken);
-        (keyPairHelperBob as RemoteSigner).setAccessToken(bobAccessToken);
+        (keyPairHelperAlisa as AccessTokenAccepter).setAccessData(alisaAccessToken, TokenType.BASIC);
+        (keyPairHelperBob as AccessTokenAccepter).setAccessData(bobAccessToken, TokenType.BASIC);
 
         await keyPairHelperAlisa.createKeyPair('');
         await keyPairHelperBob.createKeyPair('');
