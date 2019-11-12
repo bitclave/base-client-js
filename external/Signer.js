@@ -95272,7 +95272,7 @@ function (_super) {
   };
 
   JwtAccessTokenValidator.prototype.getAuth = function (token) {
-    var decrypted = jwt.verify(token, this.validCert, {
+    var decrypted = jwt.verify(token.accessToken, this.validCert, {
       ignoreExpiration: false
     });
     var origins = new Set(decrypted['allowed-origins']);
