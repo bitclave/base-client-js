@@ -94667,9 +94667,7 @@ var Configurator_1 = __webpack_require__(/*! ./helpers/console/Configurator */ "
 
 var KeyPairHelperImpl_1 = __webpack_require__(/*! ./helpers/keypair/KeyPairHelperImpl */ "./src/helpers/keypair/KeyPairHelperImpl.ts");
 
-var AccessToken_1 = __webpack_require__(/*! ./models/AccessToken */ "./src/models/AccessToken.ts");
-
-var AuthData_1 = __webpack_require__(/*! ./models/AuthData */ "./src/models/AuthData.ts");
+var RpcToken_1 = __webpack_require__(/*! ./models/RpcToken */ "./src/models/RpcToken.ts");
 
 var ClientService_1 = __webpack_require__(/*! ./services/ClientService */ "./src/services/ClientService.ts");
 
@@ -94746,8 +94744,8 @@ function () {
     var ownKeyPair = keyPairHelper.createSimpleKeyPair(signerPassPhrase);
     authenticatorPublicKey = StringUtils_1.StringUtils.isEmpty(authenticatorPublicKey) ? '' : authenticatorPublicKey;
     var tokenValidatorStrategy = new AccessTokenValidatorStrategy_1.AccessTokenValidatorStrategy();
-    tokenValidatorStrategy.setStrategy(AuthData_1.TokenType.BASIC, new BasicAccessTokenValidator_1.BasicAccessTokenValidator(authenticatorPublicKey, ownKeyPair));
-    tokenValidatorStrategy.setStrategy(AuthData_1.TokenType.KEYCLOACK_JWT, new JwtAccessTokenValidator_1.JwtAccessTokenValidator(jwtRsaCert || ''));
+    tokenValidatorStrategy.setStrategy(RpcToken_1.TokenType.BASIC, new BasicAccessTokenValidator_1.BasicAccessTokenValidator(authenticatorPublicKey, ownKeyPair));
+    tokenValidatorStrategy.setStrategy(RpcToken_1.TokenType.KEYCLOACK_JWT, new JwtAccessTokenValidator_1.JwtAccessTokenValidator(jwtRsaCert || ''));
     this.clientService = new ClientService_1.default(keyPairHelper, ownKeyPair, tokenValidatorStrategy);
     this.signerService = new SignerService_1.default();
     this.encryptionService = new EncryptionService_1.default();
@@ -94825,7 +94823,7 @@ function () {
             var arg = args.length > 0 ? args[0] : {};
             var model = typeof arg !== null && typeof value.second !== 'string' ? Object.assign(new value.second(), arg) : arg;
 
-            if (model instanceof AccessToken_1.default) {
+            if (model instanceof RpcToken_1.default) {
               client = _this.clientService.checkAccessToken(model, origin);
 
               if (!client) {
@@ -94878,9 +94876,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var Auth_1 = __webpack_require__(/*! ../models/Auth */ "./src/models/Auth.ts");
 
-var AuthData_1 = __webpack_require__(/*! ../models/AuthData */ "./src/models/AuthData.ts");
-
-var StringUtils_1 = __webpack_require__(/*! ../utils/StringUtils */ "./src/utils/StringUtils.ts");
+var RpcToken_1 = __webpack_require__(/*! ../models/RpcToken */ "./src/models/RpcToken.ts");
 
 var Authenticator =
 /** @class */
@@ -94891,12 +94887,9 @@ function () {
   }
 
   Authenticator.prototype.prepareLocalAuth = function (passPhrase) {
-    var accessToken = StringUtils_1.StringUtils.generateString();
-    accessToken += this.keyPair.signMessage(accessToken);
     var expireDate = new Date(new Date().getTime() + Authenticator.EXPIRE_TOKEN_HOURS_MS);
-    var auth = new Auth_1.default(accessToken, passPhrase, new Set(['http://localhost']), expireDate);
-    var encryptedAuth = this.keyPair.encryptMessage(this.signerPublicKey, JSON.stringify(auth));
-    return new AuthData_1.AuthData(AuthData_1.TokenType.BASIC, JSON.stringify(encryptedAuth));
+    var auth = new Auth_1.default(passPhrase, new Set(['http://localhost']), expireDate);
+    return new RpcToken_1.default(this.keyPair.encryptMessage(this.signerPublicKey, JSON.stringify(auth)), RpcToken_1.TokenType.BASIC);
   };
 
   Authenticator.EXPIRE_TOKEN_HOURS_MS = 5 * 60 * 60 * 1000;
@@ -95094,12 +95087,12 @@ function (_super) {
     this.validators.set(type, validator);
   };
 
-  AccessTokenValidatorStrategy.prototype.validate = function (data) {
-    return this.getValidator(data.type).validate(data);
+  AccessTokenValidatorStrategy.prototype.validate = function (token) {
+    return this.getValidator(token.tokenType).validate(token);
   };
 
-  AccessTokenValidatorStrategy.prototype.getAuth = function (data) {
-    return this.getValidator(data.type).getAuth(data);
+  AccessTokenValidatorStrategy.prototype.getAuth = function (token) {
+    return this.getValidator(token.tokenType).getAuth(token);
   };
 
   AccessTokenValidatorStrategy.prototype.getValidator = function (type) {
@@ -95161,11 +95154,7 @@ var Auth_1 = __webpack_require__(/*! ../../../models/Auth */ "./src/models/Auth.
 
 var StringUtils_1 = __webpack_require__(/*! ../../../utils/StringUtils */ "./src/utils/StringUtils.ts");
 
-var KeyPairSimple_1 = __webpack_require__(/*! ../../keypair/KeyPairSimple */ "./src/helpers/keypair/KeyPairSimple.ts");
-
 var AccessTokenValidator_1 = __webpack_require__(/*! ./AccessTokenValidator */ "./src/helpers/access/tokens/AccessTokenValidator.ts");
-
-var bitcore = __webpack_require__(/*! bitcore-lib */ "./node_modules/bitcore-lib/index.js");
 
 var BasicAccessTokenValidator =
 /** @class */
@@ -95178,21 +95167,17 @@ function (_super) {
     _this.authenticatorPublicKey = authenticatorPublicKey;
     _this.ownKeyPair = ownKeyPair;
 
-    try {
-      _this.authenticatorAddress = bitcore.PublicKey.fromString(authenticatorPublicKey).toAddress().toString(16);
-    } catch (e) {
+    if (StringUtils_1.StringUtils.isEmpty(authenticatorPublicKey)) {
       console.warn('Cannot create authenticator address for BASIC authorization!\n' + 'Maybe you forgot setup authenticator public key or something went wrong!\n' + 'For setup use "environment": "AUTHENTICATOR_PK" or "command arguments": "--authPK"');
     }
 
     return _this;
   }
 
-  BasicAccessTokenValidator.prototype.validate = function (data) {
+  BasicAccessTokenValidator.prototype.validate = function (token) {
     try {
-      var auth = this.getAuth(data);
-      var simpleValidation = !StringUtils_1.StringUtils.isEmpty(auth.passPhrase) && auth.origin.size > 0 && auth.passPhrase.length >= 5 && auth.expireDate.getTime() > new Date().getTime();
-      var sigValidation = KeyPairSimple_1.default.checkSig(this.getClearAccessToken(auth), this.authenticatorAddress, this.getAccessTokenSig(auth));
-      return simpleValidation && sigValidation;
+      var auth = this.getAuth(token);
+      return !StringUtils_1.StringUtils.isEmpty(auth.passPhrase) && auth.origin.size > 0 && auth.passPhrase.length >= 5 && auth.expireDate.getTime() > new Date().getTime();
     } catch (e) {
       console.warn(e);
     }
@@ -95200,17 +95185,9 @@ function (_super) {
     return false;
   };
 
-  BasicAccessTokenValidator.prototype.getAuth = function (data) {
-    var strJsonAuth = this.ownKeyPair.decryptMessage(this.authenticatorPublicKey, data.data);
+  BasicAccessTokenValidator.prototype.getAuth = function (token) {
+    var strJsonAuth = this.ownKeyPair.decryptMessage(this.authenticatorPublicKey, token.accessToken);
     return Auth_1.default.valueOf(JSON.parse(strJsonAuth));
-  };
-
-  BasicAccessTokenValidator.prototype.getAccessTokenSig = function (auth) {
-    return auth.accessToken.substring(32);
-  };
-
-  BasicAccessTokenValidator.prototype.getClearAccessToken = function (auth) {
-    return auth.accessToken.substring(0, 32);
   };
 
   return BasicAccessTokenValidator;
@@ -95283,9 +95260,9 @@ function (_super) {
     return _this;
   }
 
-  JwtAccessTokenValidator.prototype.validate = function (data) {
+  JwtAccessTokenValidator.prototype.validate = function (token) {
     try {
-      var auth = this.getAuth(data);
+      var auth = this.getAuth(token);
       return !StringUtils_1.StringUtils.isEmpty(auth.passPhrase) && auth.origin.size > 0 && auth.passPhrase.length >= 5 && auth.expireDate.getTime() > new Date().getTime();
     } catch (e) {
       console.warn(e);
@@ -95294,12 +95271,12 @@ function (_super) {
     return false;
   };
 
-  JwtAccessTokenValidator.prototype.getAuth = function (data) {
-    var decrypted = jwt.verify(data.data, this.validCert, {
+  JwtAccessTokenValidator.prototype.getAuth = function (token) {
+    var decrypted = jwt.verify(token, this.validCert, {
       ignoreExpiration: false
     });
     var origins = new Set(decrypted['allowed-origins']);
-    return new Auth_1.default(decrypted.sub, data.data, origins, new Date((Number(decrypted.exp) || 0) * 1000));
+    return new Auth_1.default(decrypted.sub, origins, new Date((Number(decrypted.exp) || 0) * 1000));
   };
 
   JwtAccessTokenValidator.prototype.convertCertificate = function (rawCert) {
@@ -96417,81 +96394,22 @@ exports.AcceptedField = AcceptedField;
 "use strict";
 
 
-var __extends = this && this.__extends || function () {
-  var extendStatics = function (d, b) {
-    extendStatics = Object.setPrototypeOf || {
-      __proto__: []
-    } instanceof Array && function (d, b) {
-      d.__proto__ = b;
-    } || function (d, b) {
-      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    };
-
-    return extendStatics(d, b);
-  };
-
-  return function (d, b) {
-    extendStatics(d, b);
-
-    function __() {
-      this.constructor = d;
-    }
-
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-  };
-}();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var AccessToken_1 = __webpack_require__(/*! ./AccessToken */ "./src/models/AccessToken.ts");
 
 var AccessData =
 /** @class */
-function (_super) {
-  __extends(AccessData, _super);
-
-  function AccessData(accessToken, origin, expireDate) {
-    var _this = _super.call(this, accessToken) || this;
-
-    _this.origin = origin;
-    _this.expireDate = expireDate;
-    return _this;
+function () {
+  function AccessData(origin, expireDate) {
+    this.origin = origin;
+    this.expireDate = expireDate;
   }
 
   return AccessData;
-}(AccessToken_1.default);
-
-exports.default = AccessData;
-
-/***/ }),
-
-/***/ "./src/models/AccessToken.ts":
-/*!***********************************!*\
-  !*** ./src/models/AccessToken.ts ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var AccessToken =
-/** @class */
-function () {
-  function AccessToken(accessToken) {
-    this.accessToken = accessToken;
-  }
-
-  return AccessToken;
 }();
 
-exports.default = AccessToken;
+exports.default = AccessData;
 
 /***/ }),
 
@@ -96540,13 +96458,9 @@ var Auth =
 function (_super) {
   __extends(Auth, _super);
 
-  function Auth(passPhrase, accessToken, origin, expireDate) {
+  function Auth(passPhrase, origin, expireDate) {
     if (passPhrase === void 0) {
       passPhrase = '';
-    }
-
-    if (accessToken === void 0) {
-      accessToken = '';
     }
 
     if (origin === void 0) {
@@ -96557,55 +96471,20 @@ function (_super) {
       expireDate = new Date();
     }
 
-    var _this = _super.call(this, accessToken, origin, expireDate) || this;
+    var _this = _super.call(this, origin, expireDate) || this;
 
     _this.passPhrase = passPhrase;
     return _this;
   }
 
   Auth.valueOf = function (json) {
-    return new Auth(json.passPhrase, json.accessToken, new Set(json.origin), new Date(json.expireDate));
+    return new Auth(json.passPhrase, new Set(json.origin), new Date(json.expireDate));
   };
 
   return Auth;
 }(AccessData_1.default);
 
 exports.default = Auth;
-
-/***/ }),
-
-/***/ "./src/models/AuthData.ts":
-/*!********************************!*\
-  !*** ./src/models/AuthData.ts ***!
-  \********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var TokenType;
-
-(function (TokenType) {
-  TokenType["BASIC"] = "BASIC";
-  TokenType["KEYCLOACK_JWT"] = "KEYCLOACK_JWT";
-})(TokenType = exports.TokenType || (exports.TokenType = {}));
-
-var AuthData =
-/** @class */
-function () {
-  function AuthData(type, data) {
-    this.type = type;
-    this.data = data;
-  }
-
-  return AuthData;
-}();
-
-exports.AuthData = AuthData;
 
 /***/ }),
 
@@ -96647,7 +96526,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var AccessToken_1 = __webpack_require__(/*! ./AccessToken */ "./src/models/AccessToken.ts");
+var RpcToken_1 = __webpack_require__(/*! ./RpcToken */ "./src/models/RpcToken.ts");
 
 var CheckSignature =
 /** @class */
@@ -96675,7 +96554,7 @@ function (_super) {
   }
 
   return CheckSignature;
-}(AccessToken_1.default);
+}(RpcToken_1.default);
 
 exports.default = CheckSignature;
 
@@ -96726,8 +96605,8 @@ var Client =
 function (_super) {
   __extends(Client, _super);
 
-  function Client(accessToken, origin, expireDate, keyPair, type) {
-    var _this = _super.call(this, accessToken, origin, expireDate) || this;
+  function Client(origin, expireDate, keyPair, type) {
+    var _this = _super.call(this, origin, expireDate) || this;
 
     _this.keyPair = keyPair;
     _this.type = type;
@@ -96794,15 +96673,15 @@ var ClientData =
 function (_super) {
   __extends(ClientData, _super);
 
-  function ClientData(publicKey, accessToken, origin, expireDate) {
-    var _this = _super.call(this, accessToken, origin, expireDate) || this;
+  function ClientData(publicKey, origin, expireDate) {
+    var _this = _super.call(this, origin, expireDate) || this;
 
     _this.publicKey = publicKey;
     return _this;
   }
 
   ClientData.valueOf = function (client) {
-    return new ClientData(client.keyPair.getPublicKey(), client.accessToken, client.origin, client.expireDate);
+    return new ClientData(client.keyPair.getPublicKey(), client.origin, client.expireDate);
   };
 
   return ClientData;
@@ -96850,7 +96729,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var AccessToken_1 = __webpack_require__(/*! ./AccessToken */ "./src/models/AccessToken.ts");
+var RpcToken_1 = __webpack_require__(/*! ./RpcToken */ "./src/models/RpcToken.ts");
 
 var DecryptEncryptFields =
 /** @class */
@@ -96878,7 +96757,7 @@ function (_super) {
   }
 
   return DecryptEncryptFields;
-}(AccessToken_1.default);
+}(RpcToken_1.default);
 
 exports.default = DecryptEncryptFields;
 
@@ -96922,7 +96801,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var AccessToken_1 = __webpack_require__(/*! ./AccessToken */ "./src/models/AccessToken.ts");
+var RpcToken_1 = __webpack_require__(/*! ./RpcToken */ "./src/models/RpcToken.ts");
 
 var DecryptMessage =
 /** @class */
@@ -96950,7 +96829,7 @@ function (_super) {
   }
 
   return DecryptMessage;
-}(AccessToken_1.default);
+}(RpcToken_1.default);
 
 exports.default = DecryptMessage;
 
@@ -96994,7 +96873,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var AccessToken_1 = __webpack_require__(/*! ./AccessToken */ "./src/models/AccessToken.ts");
+var RpcToken_1 = __webpack_require__(/*! ./RpcToken */ "./src/models/RpcToken.ts");
 
 var EncryptMessage =
 /** @class */
@@ -97022,7 +96901,7 @@ function (_super) {
   }
 
   return EncryptMessage;
-}(AccessToken_1.default);
+}(RpcToken_1.default);
 
 exports.default = EncryptMessage;
 
@@ -97133,7 +97012,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var AccessToken_1 = __webpack_require__(/*! ./AccessToken */ "./src/models/AccessToken.ts");
+var RpcToken_1 = __webpack_require__(/*! ./RpcToken */ "./src/models/RpcToken.ts");
 
 var PermissionsFields =
 /** @class */
@@ -97161,9 +97040,52 @@ function (_super) {
   }
 
   return PermissionsFields;
-}(AccessToken_1.default);
+}(RpcToken_1.default);
 
 exports.default = PermissionsFields;
+
+/***/ }),
+
+/***/ "./src/models/RpcToken.ts":
+/*!********************************!*\
+  !*** ./src/models/RpcToken.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var TokenType;
+
+(function (TokenType) {
+  TokenType[TokenType["BASIC"] = 0] = "BASIC";
+  TokenType[TokenType["KEYCLOACK_JWT"] = 1] = "KEYCLOACK_JWT";
+})(TokenType = exports.TokenType || (exports.TokenType = {}));
+
+var RpcToken =
+/** @class */
+function () {
+  function RpcToken(accessToken, tokenType) {
+    if (accessToken === void 0) {
+      accessToken = '';
+    }
+
+    if (tokenType === void 0) {
+      tokenType = TokenType.BASIC;
+    }
+
+    this.accessToken = accessToken;
+    this.tokenType = tokenType;
+  }
+
+  return RpcToken;
+}();
+
+exports.default = RpcToken;
 
 /***/ }),
 
@@ -97205,7 +97127,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var AccessToken_1 = __webpack_require__(/*! ./AccessToken */ "./src/models/AccessToken.ts");
+var RpcToken_1 = __webpack_require__(/*! ./RpcToken */ "./src/models/RpcToken.ts");
 
 var SignMessage =
 /** @class */
@@ -97228,7 +97150,7 @@ function (_super) {
   }
 
   return SignMessage;
-}(AccessToken_1.default);
+}(RpcToken_1.default);
 
 exports.default = SignMessage;
 
@@ -97295,15 +97217,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var AccessToken_1 = __webpack_require__(/*! ../models/AccessToken */ "./src/models/AccessToken.ts");
-
-var AuthData_1 = __webpack_require__(/*! ../models/AuthData */ "./src/models/AuthData.ts");
-
 var Client_1 = __webpack_require__(/*! ../models/Client */ "./src/models/Client.ts");
 
 var ClientData_1 = __webpack_require__(/*! ../models/ClientData */ "./src/models/ClientData.ts");
 
 var Pair_1 = __webpack_require__(/*! ../models/Pair */ "./src/models/Pair.ts");
+
+var RpcToken_1 = __webpack_require__(/*! ../models/RpcToken */ "./src/models/RpcToken.ts");
 
 var ClientService =
 /** @class */
@@ -97317,24 +97237,9 @@ function () {
 
   ClientService.prototype.getPublicMethods = function () {
     var map = new Map();
-    map.set('authenticatorRegisterClient', new Pair_1.default(this.authenticatorRegisterClient.bind(this), AuthData_1.AuthData));
-    map.set('getClientData', new Pair_1.default(this.getClientData.bind(this), AccessToken_1.default));
+    map.set('getClientData', new Pair_1.default(this.getClientData.bind(this), RpcToken_1.default));
     map.set('getPublicKey', new Pair_1.default(this.getPublicKey.bind(this), null));
     return map;
-  };
-
-  ClientService.prototype.authenticatorRegisterClient = function (authData) {
-    if (this.tokenValidator.validate(authData)) {
-      var auth = this.tokenValidator.getAuth(authData);
-      var keyPair = this.keyPairHelper.createClientKeyPair(auth.passPhrase, '');
-      keyPair.setAcceptedOrigins(auth.origin);
-      var client = new Client_1.default(auth.accessToken, auth.origin, auth.expireDate, keyPair, authData.type);
-      this.clients.set(auth.accessToken, client);
-      return auth.accessToken;
-    }
-
-    console.warn('token validation fail');
-    throw new Error('Wrong auth token!');
   };
 
   ClientService.prototype.getPublicKey = function () {
@@ -97346,11 +97251,25 @@ function () {
   };
 
   ClientService.prototype.checkAccessToken = function (accessToken, origin) {
-    var client = this.clients.get(accessToken.accessToken);
+    var client = this.clients.get(accessToken.accessToken) || this.authenticatorRegisterClient(accessToken);
     var clearOrigin = origin.toLowerCase().replace('http://', '').replace('https://', '').replace('www.', '');
     var isValidOrigin = client ? client.checkOrigin(clearOrigin) : false;
     var tokenExpired = client ? client.tokenExpired() : true;
     return isValidOrigin && !tokenExpired ? client : undefined;
+  };
+
+  ClientService.prototype.authenticatorRegisterClient = function (token) {
+    if (this.tokenValidator.validate(token)) {
+      var auth = this.tokenValidator.getAuth(token);
+      var keyPair = this.keyPairHelper.createClientKeyPair(auth.passPhrase, '');
+      keyPair.setAcceptedOrigins(auth.origin);
+      var client = new Client_1.default(auth.origin, auth.expireDate, keyPair, token.tokenType);
+      this.clients.set(token.accessToken, client);
+      return client;
+    }
+
+    console.warn('token validation fail');
+    throw new Error('Wrong auth token!');
   };
 
   return ClientService;
