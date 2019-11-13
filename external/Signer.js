@@ -94634,6 +94634,147 @@ exports.XMLHttpRequest = function() {
 "use strict";
 
 
+var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
+
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+
+var __generator = this && this.__generator || function (thisArg, body) {
+  var _ = {
+    label: 0,
+    sent: function () {
+      if (t[0] & 1) throw t[1];
+      return t[1];
+    },
+    trys: [],
+    ops: []
+  },
+      f,
+      y,
+      t,
+      g;
+  return g = {
+    next: verb(0),
+    "throw": verb(1),
+    "return": verb(2)
+  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+    return this;
+  }), g;
+
+  function verb(n) {
+    return function (v) {
+      return step([n, v]);
+    };
+  }
+
+  function step(op) {
+    if (f) throw new TypeError("Generator is already executing.");
+
+    while (_) try {
+      if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+      if (y = 0, t) op = [op[0] & 2, t.value];
+
+      switch (op[0]) {
+        case 0:
+        case 1:
+          t = op;
+          break;
+
+        case 4:
+          _.label++;
+          return {
+            value: op[1],
+            done: false
+          };
+
+        case 5:
+          _.label++;
+          y = op[1];
+          op = [0];
+          continue;
+
+        case 7:
+          op = _.ops.pop();
+
+          _.trys.pop();
+
+          continue;
+
+        default:
+          if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+            _ = 0;
+            continue;
+          }
+
+          if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+            _.label = op[1];
+            break;
+          }
+
+          if (op[0] === 6 && _.label < t[1]) {
+            _.label = t[1];
+            t = op;
+            break;
+          }
+
+          if (t && _.label < t[2]) {
+            _.label = t[2];
+
+            _.ops.push(op);
+
+            break;
+          }
+
+          if (t[2]) _.ops.pop();
+
+          _.trys.pop();
+
+          continue;
+      }
+
+      op = body.call(thisArg, _);
+    } catch (e) {
+      op = [6, e];
+      y = 0;
+    } finally {
+      f = t = 0;
+    }
+
+    if (op[0] & 5) throw op[1];
+    return {
+      value: op[0] ? op[1] : void 0,
+      done: true
+    };
+  }
+};
+
 var __values = this && this.__values || function (o) {
   var s = typeof Symbol === "function" && Symbol.iterator,
       m = s && o[s],
@@ -94654,6 +94795,8 @@ var __values = this && this.__values || function (o) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var Express = __webpack_require__(/*! express */ "./node_modules/express/index.js");
 
 var AccessTokenValidatorStrategy_1 = __webpack_require__(/*! ./helpers/access/tokens/AccessTokenValidatorStrategy */ "./src/helpers/access/tokens/AccessTokenValidatorStrategy.ts");
 
@@ -94685,9 +94828,7 @@ var bodyParser = __webpack_require__(/*! body-parser */ "./node_modules/body-par
 
 var cors = __webpack_require__(/*! cors */ "./node_modules/cors/lib/index.js");
 
-var express = __webpack_require__(/*! express */ "./node_modules/express/index.js");
-
-var app = express();
+var app = Express();
 
 var Signer =
 /** @class */
@@ -94760,6 +94901,8 @@ function () {
   };
 
   Signer.prototype.initService = function (methods, port) {
+    var _this = this;
+
     app.use(cors());
     app.use(bodyParser.urlencoded({
       extended: false
@@ -94768,31 +94911,48 @@ function () {
       type: '*/*',
       limit: '50MB'
     }));
-    app.post('/', function (request, response, next) {
-      var json = JSON.parse(request.body);
-      var method = json.method;
-
-      if (methods.hasOwnProperty(method)) {
-        new Promise(function (resolve) {
-          var origin = request.headers.origin === undefined ? 'http://localhost' : request.headers.origin;
-          var executedResult = methods[method](json.params, origin);
-          var data = {
-            jsonrpc: '2.0',
-            result: executedResult,
-            id: json.id
-          };
-          resolve(data);
-        }).then(function (result) {
-          return response.send(result);
-        }).catch(function (reason) {
-          return next(reason);
-        });
-      } else {
-        next();
-      }
+    app.post('/', function (req, res, next) {
+      return _this.executeMethod(methods, req, res, next);
     });
     app.listen(port, function () {
       return console.log('Signer running on port', port);
+    });
+  };
+
+  Signer.prototype.executeMethod = function (methods, req, res, next) {
+    return __awaiter(this, void 0, void 0, function () {
+      var data, json, method, origin_1;
+      return __generator(this, function (_a) {
+        data = {
+          jsonrpc: '2.0',
+          result: undefined,
+          id: -1,
+          error: undefined
+        };
+
+        try {
+          json = JSON.parse(req.body);
+          method = json.method;
+          data.id = json.id || -1;
+
+          if (!methods.has(method)) {
+            throw new Error("Unknown method: " + method);
+          }
+
+          origin_1 = req.headers.origin === undefined ? 'http://localhost' : req.headers.origin.toString();
+          data.result = methods.get(method)(json.params, origin_1);
+          delete data.error;
+          res.send(data);
+        } catch (e) {
+          data.error = e.message;
+          data.result = (e.stack || '').toString().replace('    ', '').split('\n');
+          res.status(500).send(data);
+        }
+
+        return [2
+        /*return*/
+        ];
+      });
     });
   };
 
@@ -94807,14 +94967,14 @@ function () {
       rpcMethods[_i] = arguments[_i];
     }
 
-    var result = {};
+    var result = new Map();
 
     try {
       for (var rpcMethods_1 = __values(rpcMethods), rpcMethods_1_1 = rpcMethods_1.next(); !rpcMethods_1_1.done; rpcMethods_1_1 = rpcMethods_1.next()) {
         var service = rpcMethods_1_1.value;
         var map = service.getPublicMethods();
         map.forEach(function (value, key) {
-          result[key] = function (args, origin) {
+          result.set(key, function (args, origin) {
             if (value.second === null || value.second === undefined) {
               return value.first(origin);
             }
@@ -94834,7 +94994,7 @@ function () {
             }
 
             return value.first(model, client, origin);
-          };
+          });
         });
       }
     } catch (e_1_1) {
@@ -97225,6 +97385,8 @@ var Pair_1 = __webpack_require__(/*! ../models/Pair */ "./src/models/Pair.ts");
 
 var RpcToken_1 = __webpack_require__(/*! ../models/RpcToken */ "./src/models/RpcToken.ts");
 
+var LruMap_1 = __webpack_require__(/*! ../utils/LruMap */ "./src/utils/LruMap.ts");
+
 var ClientService =
 /** @class */
 function () {
@@ -97232,7 +97394,7 @@ function () {
     this.keyPairHelper = keyPairHelper;
     this.ownKeyPair = ownKeyPair;
     this.tokenValidator = tokenValidator;
-    this.clients = new Map();
+    this.clients = new LruMap_1.LruMap(5000);
   }
 
   ClientService.prototype.getPublicMethods = function () {
@@ -97251,11 +97413,20 @@ function () {
   };
 
   ClientService.prototype.checkAccessToken = function (accessToken, origin) {
-    var client = this.clients.get(accessToken.accessToken) || this.authenticatorRegisterClient(accessToken);
-    var clearOrigin = origin.toLowerCase().replace('http://', '').replace('https://', '').replace('www.', '');
-    var isValidOrigin = client ? client.checkOrigin(clearOrigin) : false;
-    var tokenExpired = client ? client.tokenExpired() : true;
-    return isValidOrigin && !tokenExpired ? client : undefined;
+    var client;
+
+    try {
+      client = this.clients.get(accessToken.accessToken) || this.authenticatorRegisterClient(accessToken);
+      var clearOrigin = origin.toLowerCase().replace('http://', '').replace('https://', '').replace('www.', '');
+      var isValidOrigin = client ? client.checkOrigin(clearOrigin) : false;
+      var tokenExpired = client ? client.tokenExpired() : true;
+      client = isValidOrigin && !tokenExpired ? client : undefined;
+    } catch (e) {
+      console.log(e);
+      client = undefined;
+    }
+
+    return client;
   };
 
   ClientService.prototype.authenticatorRegisterClient = function (token) {
@@ -97264,11 +97435,10 @@ function () {
       var keyPair = this.keyPairHelper.createClientKeyPair(auth.passPhrase, '');
       keyPair.setAcceptedOrigins(auth.origin);
       var client = new Client_1.default(auth.origin, auth.expireDate, keyPair, token.tokenType);
-      this.clients.set(token.accessToken, client);
+      this.clients.set(token.accessToken, client, auth.expireDate.getTime());
       return client;
     }
 
-    console.warn('token validation fail');
     throw new Error('Wrong auth token!');
   };
 
@@ -97512,6 +97682,151 @@ function () {
 }();
 
 exports.default = ArgumentUtils;
+
+/***/ }),
+
+/***/ "./src/utils/LruMap.ts":
+/*!*****************************!*\
+  !*** ./src/utils/LruMap.ts ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __values = this && this.__values || function (o) {
+  var s = typeof Symbol === "function" && Symbol.iterator,
+      m = s && o[s],
+      i = 0;
+  if (m) return m.call(o);
+  if (o && typeof o.length === "number") return {
+    next: function () {
+      if (o && i >= o.length) o = void 0;
+      return {
+        value: o && o[i++],
+        done: !o
+      };
+    }
+  };
+  throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var LruEntity =
+/** @class */
+function () {
+  function LruEntity(key, data, expireTimeStamp, expirationCallback) {
+    var _this = this;
+
+    this.key = key;
+    this.value = data;
+    this.expireTimeStamp = expireTimeStamp;
+    this.expirationCallback = expirationCallback;
+    this.createdAt = new Date().getTime();
+    var disposeTime = this.expireTimeStamp - this.createdAt;
+
+    if (disposeTime <= 0) {
+      throw new Error('expire time should be great then current time');
+    }
+
+    this.timer = setTimeout(function () {
+      return _this.dispose();
+    }, disposeTime);
+  }
+
+  LruEntity.prototype.dispose = function () {
+    clearTimeout(this.timer);
+    this.expirationCallback(this);
+  };
+
+  return LruEntity;
+}();
+
+var LruMap =
+/** @class */
+function () {
+  function LruMap(maxItems) {
+    this.maxItems = maxItems;
+    this.lruEntities = new Map();
+  }
+
+  LruMap.prototype.get = function (key) {
+    var entity = this.lruEntities.get(key);
+    return entity ? entity.value : undefined;
+  };
+
+  LruMap.prototype.set = function (key, value, expireTimeStamp) {
+    var _this = this;
+
+    var newEntity = new LruEntity(key, value, expireTimeStamp, function (entity) {
+      return _this.onDisposeEntity(entity);
+    });
+    var oldEntity = this.lruEntities.get(key);
+
+    if (oldEntity) {
+      oldEntity.dispose();
+    }
+
+    this.lruEntities.set(key, newEntity);
+
+    if (this.maxItems && this.maxItems > 0 && this.lruEntities.size > this.maxItems) {
+      this.removeOldest();
+    }
+  };
+
+  LruMap.prototype.delete = function (key) {
+    var entity = this.lruEntities.get(key);
+
+    if (entity) {
+      entity.dispose();
+    }
+
+    return !!entity;
+  };
+
+  LruMap.prototype.onDisposeEntity = function (entity) {
+    this.lruEntities.delete(entity.key);
+  };
+
+  LruMap.prototype.removeOldest = function () {
+    var e_1, _a;
+
+    var selected;
+
+    try {
+      for (var _b = __values(this.lruEntities.values()), _c = _b.next(); !_c.done; _c = _b.next()) {
+        var item = _c.value;
+        var createdAt = selected ? selected.createdAt : new Date().getTime();
+
+        if (item.createdAt < createdAt) {
+          selected = item;
+        }
+      }
+    } catch (e_1_1) {
+      e_1 = {
+        error: e_1_1
+      };
+    } finally {
+      try {
+        if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+      } finally {
+        if (e_1) throw e_1.error;
+      }
+    }
+
+    if (selected) {
+      selected.dispose();
+    }
+  };
+
+  return LruMap;
+}();
+
+exports.LruMap = LruMap;
 
 /***/ }),
 

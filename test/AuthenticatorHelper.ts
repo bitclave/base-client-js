@@ -22,14 +22,17 @@ export default class AuthenticatorHelper {
         this.keyHelper = KeyPairFactory.createDefaultKeyPair(assistant, assistant, '');
     }
 
-    public async generateAccessToken(passPhrase: string): Promise<string> {
+    public async generateAccessToken(
+        passPhrase: string,
+        expireTimeMs: number = AuthenticatorHelper.EXPIRE_TOKEN_HOURS_MS
+    ): Promise<string> {
         if (this.keyPair === undefined) {
             await this.initKeyPair();
         }
 
         const signerPK: string = (await this.rpcTransport.request('getPublicKey')) as string;
 
-        const expireDate = new Date(new Date().getTime() + AuthenticatorHelper.EXPIRE_TOKEN_HOURS_MS);
+        const expireDate = new Date(new Date().getTime() + expireTimeMs);
         const auth: RpcAccessToken = new RpcAccessToken(passPhrase, ['*'], expireDate);
 
         return await this.keyHelper.encryptMessage(signerPK, JSON.stringify(auth));

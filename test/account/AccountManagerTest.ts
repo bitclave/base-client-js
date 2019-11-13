@@ -1,9 +1,12 @@
+// tslint:disable:no-unused-expression
+import * as chai from 'chai';
 import { BehaviorSubject } from 'rxjs/Rx';
-import Base, { RepositoryStrategyType } from '../../src/Base';
+import Base from '../../src/Base';
 import { AccountManager } from '../../src/manager/AccountManager';
 import { AccountManagerImpl } from '../../src/manager/AccountManagerImpl';
 import { AccountRepository } from '../../src/repository/account/AccountRepository';
 import Account from '../../src/repository/models/Account';
+import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
 import { AccessTokenInterceptor } from '../../src/repository/source/rpc/AccessTokenInterceptor';
 import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
 import { TransportFactory } from '../../src/repository/source/TransportFactory';
@@ -14,13 +17,10 @@ import { TokenType } from '../../src/utils/keypair/rpc/RpcToken';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 import AccountRepositoryImplMock from './AccountRepositoryImplMock';
 
-require('chai').use(require('chai-as-promised')).should();
-
-const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 
 const expect = chai.expect;
-chai.use(chaiAsPromised);
+chai.use(chaiAsPromised).should();
 
 const authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
 const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
@@ -33,6 +33,22 @@ function createRemoteKeyPair(): RemoteKeyPairHelper {
 
     return KeyPairFactory.createRpcKeyPair(httpTransport, tokenAccepter);
 }
+
+function sleep(ms: number): Promise<void> {
+    return new Promise<void>(resolve => setTimeout(() => resolve(), ms));
+}
+
+const shouldBeThrowed = async <T>(promise: Promise<T>): Promise<boolean> => {
+    try {
+        await promise;
+
+        return false;
+    } catch (e) {
+        // ignore
+    }
+
+    return true;
+};
 
 describe('Account Manager', async () => {
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
@@ -80,6 +96,29 @@ describe('Account Manager', async () => {
 
     after(async () => {
         rpcTransport.disconnect();
+    });
+
+    it('should throw when token expired', async () => {
+        const pass = 'some user pass phrase';
+        const msg = 'some user message';
+        const someUserToken = await authenticatorHelper.generateAccessToken(pass, 2000);
+        const someUser = new Base(
+            baseNodeUrl,
+            'localhost',
+            RepositoryStrategyType.Postgres,
+            rpcSignerHost
+        );
+
+        const result = await someUser.accountManager.authenticationByAccessToken(someUserToken, TokenType.BASIC, msg);
+        result.should.exist;
+
+        await sleep(3000);
+
+        (await shouldBeThrowed(someUser.accountManager.authenticationByAccessToken(
+            someUserToken,
+            TokenType.BASIC,
+            msg
+        ))).should.be.eq(true);
     });
 
     it('should lazy create user value of created account', async () => {
