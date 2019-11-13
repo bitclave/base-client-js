@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import { BehaviorSubject } from 'rxjs/Rx';
+import { version } from '../package.json';
 import { AccountManager } from './manager/AccountManager';
 import { AccountManagerImpl } from './manager/AccountManagerImpl';
 import { DataRequestManager } from './manager/DataRequestManager';
@@ -53,6 +54,8 @@ import { ServiceResponse } from './repository/models/services/ServiceResponse';
 import { SharedData } from './repository/models/SharedData';
 import SimpleAccount from './repository/models/SimpleAccount';
 import { Site } from './repository/models/Site';
+import { NodeInfoRepository } from './repository/node/NodeInfoRepository';
+import { NodeInfoRepositoryImpl } from './repository/node/NodeInfoRepositoryImpl';
 import { OfferRepository } from './repository/offer/OfferRepository';
 import OfferRepositoryImpl from './repository/offer/OfferRepositoryImpl';
 import { OfferShareDataRepository } from './repository/offer/OfferShareDataRepository';
@@ -211,7 +214,7 @@ export {
     VerifyRepository
 };
 
-import { version } from '../package.json';
+// @deprecated see {version}
 export const LibVersion = version;
 
 export default class Base {
@@ -228,6 +231,7 @@ export default class Base {
     private readonly _repositoryStrategyInterceptor: RepositoryStrategyInterceptor;
     private readonly _offerRankManager: OfferRankManager;
     private readonly transport: HttpTransport;
+    private readonly nodeAssistant: AssistantNodeRepository;
 
     constructor(
         nodeHost: string,
@@ -246,10 +250,10 @@ export default class Base {
         const assistantHttpTransport: HttpTransport = new HttpTransportImpl(nodeHost)
             .addInterceptor(this._repositoryStrategyInterceptor);
 
-        const nodeAssistant: AssistantNodeRepository = this.createNodeAssistant(assistantHttpTransport);
+        this.nodeAssistant = this.createNodeAssistant(assistantHttpTransport);
 
         const keyPairHelper: KeyPairHelper =
-            this.createKeyPairHelper(signerHost, nodeAssistant, nodeAssistant, siteOrigin);
+            this.createKeyPairHelper(signerHost, this.nodeAssistant, this.nodeAssistant, siteOrigin);
 
         const messageSigner: MessageSigner = keyPairHelper;
         const encryptMessage: MessageEncrypt = keyPairHelper;
@@ -257,7 +261,7 @@ export default class Base {
 
         this.transport = TransportFactory.createHttpTransport(nodeHost, loggerService)
             .addInterceptor(new SignInterceptor(messageSigner))
-            .addInterceptor(new NonceInterceptor(messageSigner, nodeAssistant))
+            .addInterceptor(new NonceInterceptor(messageSigner, this.nodeAssistant))
             .addInterceptor(this._repositoryStrategyInterceptor);
 
         const accountRepository = new AccountRepositoryImpl(this.transport);
@@ -317,12 +321,20 @@ export default class Base {
         this._offerRankManager = new OfferRankManagerImpl(offerRankRepository);
     }
 
+    public get version(): string {
+        return version;
+    }
+
     public changeStrategy(strategy: RepositoryStrategyType) {
         this._repositoryStrategyInterceptor.changeStrategy(strategy);
     }
 
     public get defaultTransport(): HttpTransport {
         return this.transport;
+    }
+
+    public getNodeVersion(): Promise<string> {
+        return this.nodeAssistant.getNodeVersion();
     }
 
     get walletManager(): WalletManager {
@@ -365,8 +377,9 @@ export default class Base {
         const accountRepository: AccountRepository = new AccountRepositoryImpl(httpTransport);
         const dataRequestRepository: DataRequestRepository = new DataRequestRepositoryImpl(httpTransport);
         const siteRepository: SiteRepository = new SiteRepositoryImpl(httpTransport);
+        const nodeInfo: NodeInfoRepository = new NodeInfoRepositoryImpl(httpTransport);
 
-        return new AssistantNodeRepository(accountRepository, dataRequestRepository, siteRepository);
+        return new AssistantNodeRepository(accountRepository, dataRequestRepository, siteRepository, nodeInfo);
     }
 
     private createKeyPairHelper(
