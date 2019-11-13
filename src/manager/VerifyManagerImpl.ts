@@ -47,6 +47,10 @@ export class VerifyManagerImpl implements VerifyManager {
 
     public getOfferInteractionsByOfferIdsAndOwners(offerIds: Array<number>, 
                                                    owners: Array<string>): Promise<Array<OfferInteraction>> {
-    return this.verifyRepository.getOfferInteractionsByOfferIdsAndOwners(offerIds, owners);
+        return this.verifyRepository.getOfferInteractionsByOfferIdsAndOwners(offerIds, owners);
+    }
+
+    public deleteUser(publicKey: string): Promise<void> {
+        return this.verifyRepository.deleteUser(publicKey);
     }
 }

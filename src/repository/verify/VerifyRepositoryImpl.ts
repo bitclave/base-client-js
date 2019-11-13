@@ -21,6 +21,8 @@ export class VerifyRepositoryImpl implements VerifyRepository {
 
     private readonly VERIFY_GET_OFFER_INTERACTIONS_API = '/dev/verify/offerinteraction/list';
 
+    private readonly DELETE_USER: string = '/dev/verify/delete/user';
+
     private transport: HttpTransport;
 
     constructor(transport: HttpTransport) {
@@ -94,6 +96,10 @@ export class VerifyRepositoryImpl implements VerifyRepository {
         HttpMethod.Post,
         data
         ).then((response) => this.jsonToOfferInteractionList(response.json));
+    }
+
+    public async deleteUser(publicKey: string): Promise<void> {
+        await this.transport.sendRequest(this.DELETE_USER, HttpMethod.Delete, publicKey);
     }
 
     private async jsonToOfferInteractionList(json: object): Promise<Array<OfferInteraction>> {
