@@ -63,10 +63,6 @@
   "dependencies": {
     "@types/eth-sig-util": "^2.1.0",
     "@types/ethereumjs-util": "^5.2.0",
-    "bitcore-ecies": "^1.0.3",
-    "bitcore-lib": "^8.11.0",
-    "bitcore-message": "^1.0.4",
-    "bitcore-mnemonic": "^8.11.0",
     "class-validator": "^0.9.1",
     "crypto-js": "^3.1.9-1",
     "eth-sig-util": "^1.4.2",
