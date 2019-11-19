@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import Account from '../repository/models/Account';
 import { DataRequest } from '../repository/models/DataRequest';
 import { FieldData } from '../repository/models/FieldData';

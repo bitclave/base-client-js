@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import Account from '../repository/models/Account';
 import Offer from '../repository/models/Offer';
 import { Page } from '../repository/models/Page';

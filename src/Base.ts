@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { BehaviorSubject } from 'rxjs/Rx';
+import { BehaviorSubject } from 'rxjs';
 import { AccountManager } from './manager/AccountManager';
 import { AccountManagerImpl } from './manager/AccountManagerImpl';
 import { DataRequestManager } from './manager/DataRequestManager';

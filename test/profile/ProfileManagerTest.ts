@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs/Rx';
+import { BehaviorSubject } from 'rxjs';
 import { ProfileManager } from '../../src/manager/ProfileManager';
 import { ProfileManagerImpl } from '../../src/manager/ProfileManagerImpl';
 import Account from '../../src/repository/models/Account';

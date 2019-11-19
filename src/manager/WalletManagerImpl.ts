@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import Account from '../repository/models/Account';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
 import { AccessRight } from '../utils/keypair/Permissions';

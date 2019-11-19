@@ -1,6 +1,6 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
-import { BehaviorSubject } from 'rxjs/Rx';
+import { BehaviorSubject } from 'rxjs';
 import Base from '../../src/Base';
 import { AccountManager } from '../../src/manager/AccountManager';
 import { AccountManagerImpl } from '../../src/manager/AccountManagerImpl';

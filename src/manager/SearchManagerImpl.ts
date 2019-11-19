@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import Account from '../repository/models/Account';
 import { OfferInteraction, OfferResultAction } from '../repository/models/OfferInteraction';
 import { OfferSearch } from '../repository/models/OfferSearch';

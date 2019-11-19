@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable } from 'rxjs/Rx';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { AccountRepository } from '../repository/account/AccountRepository';
 import Account from '../repository/models/Account';
 import { BasicLogger, Logger } from '../utils/BasicLogger';

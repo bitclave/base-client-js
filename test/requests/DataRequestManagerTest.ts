@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import 'reflect-metadata';
-import { BehaviorSubject } from 'rxjs/Rx';
+import { BehaviorSubject } from 'rxjs';
 import Base, { RepositoryStrategyType, TransportFactory } from '../../src/Base';
 import { DataRequestManager } from '../../src/manager/DataRequestManager';
 import { DataRequestManagerImpl } from '../../src/manager/DataRequestManagerImpl';

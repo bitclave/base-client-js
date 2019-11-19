@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs/Rx';
+import { BehaviorSubject } from 'rxjs';
 import { DataRequestManager } from '../../src/manager/DataRequestManager';
 import { DataRequestManagerImpl } from '../../src/manager/DataRequestManagerImpl';
 import { ProfileManager } from '../../src/manager/ProfileManager';
