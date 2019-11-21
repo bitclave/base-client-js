@@ -12,6 +12,8 @@ import { AcceptedField } from '../utils/keypair/AcceptedField';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { AccessRight } from '../utils/keypair/Permissions';
+import { InputGraphDataDeserializer, ParamDeserializer } from '../utils/types/json-transform';
+import { AccessRightMapDeserializer } from '../utils/types/json-transform/deserializers/AccessRightMapDeserializer';
 import { DataRequestManager } from './DataRequestManager';
 import { WalletManagerImpl } from './WalletManagerImpl';
 
@@ -36,7 +38,9 @@ export class DataRequestManagerImpl implements DataRequestManager {
             .subscribe(this.onChangeAccount.bind(this));
     }
 
-    public getRequestsGraph(data: InputGraphData): Promise<OutputGraphData> {
+    public getRequestsGraph(
+        @ParamDeserializer(new InputGraphDataDeserializer()) data: InputGraphData
+    ): Promise<OutputGraphData> {
         return this.dataRequestRepository.getRequestsGraph(data);
     }
 
@@ -77,7 +81,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
      */
     public async grantAccessForClient(
         clientPk: string,
-        acceptedFields: Map<string, AccessRight>,
+        @ParamDeserializer(new AccessRightMapDeserializer()) acceptedFields: Map<string, AccessRight>,
         rootPk?: string,
     ): Promise<void> {
         let encrypted: Map<string, string> = new Map();

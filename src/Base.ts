@@ -123,6 +123,8 @@ export { AcceptedField } from './utils/keypair/AcceptedField';
 export { RpcToken } from './utils/keypair/rpc/RpcToken';
 export { RpcAccessToken } from './utils/keypair/rpc/RpcAccessToken';
 
+export * from './utils/types/json-transform';
+
 export {
     CryptoWallets,
     EthWalletData,
