@@ -204,5 +204,4 @@ export class AccountManagerImpl implements AccountManager {
                 throw err;
             });
     }
-
 }
