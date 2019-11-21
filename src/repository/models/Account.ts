@@ -8,8 +8,8 @@ export default class Account extends SimpleAccount {
     public sig: string = '';
 
     public static fromJson(json: JsonObject<Account>): Account {
-        json.createdAt = new Date((json.createdAt as string) || new Date().getTime());
-        json.updatedAt = new Date((json.updatedAt as string) || new Date().getTime());
+        json.createdAt = new Date((json.createdAt.toString()) || new Date().getTime());
+        json.updatedAt = new Date((json.updatedAt.toString()) || new Date().getTime());
 
         return Object.assign(new Account(), json);
     }

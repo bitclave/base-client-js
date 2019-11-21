@@ -8,8 +8,8 @@ export class OfferRank extends DeepCopy<OfferRank> {
     public static fromJson(jsonObj: object) {
         const json = jsonObj as JsonObject<OfferRank>;
 
-        json.createdAt = new Date((json.createdAt as string) || new Date());
-        json.updatedAt = new Date((json.updatedAt as string) || new Date());
+        json.createdAt = new Date((json.createdAt.toString()) || new Date());
+        json.updatedAt = new Date((json.updatedAt.toString()) || new Date());
         json.id = Number(json.id);
         json.rank = Number(json.rank);
         json.offerId = Number(json.offerId);

@@ -3,6 +3,7 @@ import Account from '../repository/models/Account';
 import { DataRequest } from '../repository/models/DataRequest';
 import { FieldData } from '../repository/models/FieldData';
 import { InputGraphData } from '../repository/models/InputGraphData';
+import { JsonObject } from '../repository/models/JsonObject';
 import { OutputGraphData } from '../repository/models/OutputGraphData';
 import { SharedData } from '../repository/models/SharedData';
 import { DataRequestRepository } from '../repository/requests/DataRequestRepository';
@@ -249,7 +250,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
                 jsonDecrypt
             );
 
-            const accepted = acceptedByRoot.copy({access: AccessRight.R});
+            const accepted = acceptedByRoot.copy({access: AccessRight.R} as JsonObject<AcceptedField>);
             const value = await this.encrypt.encryptMessage(recipientPk, JSON.stringify(accepted));
             result.set(data.requestData, value);
         }

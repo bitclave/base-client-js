@@ -4,6 +4,7 @@ import Account from '../repository/models/Account';
 import { DataRequest } from '../repository/models/DataRequest';
 import { FieldData } from '../repository/models/FieldData';
 import { FileMeta } from '../repository/models/FileMeta';
+import { JsonObject } from '../repository/models/JsonObject';
 import { SharedData } from '../repository/models/SharedData';
 import { BasicLogger, Logger } from '../utils/BasicLogger';
 import { JsonUtils } from '../utils/JsonUtils';
@@ -219,7 +220,7 @@ export class ProfileManagerImpl implements ProfileManager {
         const encrypted: string = await this.encrypt.encryptFile(file.content || '', key);
         const existedMeta = await this.getFileMetaWithGivenKey(key);
         const fileId: number = existedMeta ? existedMeta.id : 0;
-        const fileForUpload = file.copy({content: encrypted});
+        const fileForUpload = file.copy({content: encrypted} as JsonObject<FileMeta>);
         const updatedMeta = await this.clientDataRepository
             .uploadFile(this.account.publicKey, fileForUpload, fileId);
 

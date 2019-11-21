@@ -14,8 +14,8 @@ export class OfferInteraction extends DeepCopy<OfferInteraction> {
 
     public static fromJson(json: object): OfferInteraction {
         const jsonObj = json as JsonObject<OfferInteraction>;
-        jsonObj.createdAt = new Date((jsonObj.createdAt as string) || new Date().getTime());
-        jsonObj.updatedAt = new Date((jsonObj.updatedAt as string) || new Date().getTime());
+        jsonObj.createdAt = new Date((jsonObj.createdAt.toString()) || new Date().getTime());
+        jsonObj.updatedAt = new Date((jsonObj.updatedAt.toString()) || new Date().getTime());
 
         return Object.assign(new OfferInteraction(), jsonObj);
     }

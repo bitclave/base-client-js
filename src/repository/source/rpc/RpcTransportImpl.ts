@@ -16,10 +16,10 @@ export class RpcTransportImpl implements RpcTransport {
 
     public request<T>(method: string, arg: object): Promise<T> {
         this.id++;
-        const data = new JsonRpc(method, [arg], this.id);
+        const data = JsonRpc.request(this.id, method, arg as Array<object>);
 
-        return this.transport.sendRequest('/', HttpMethod.Post, data)
-            .then(response => response.json.result as T);
+        return this.transport.sendRequest<T>('/', HttpMethod.Post, data)
+            .then(response => response.json);
     }
 
     public disconnect(): void {

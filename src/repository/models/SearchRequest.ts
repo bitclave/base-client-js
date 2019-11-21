@@ -14,8 +14,8 @@ export default class SearchRequest extends DeepCopy<SearchRequest> {
         const rawData = json as JsonObject<SearchRequest>;
         const searchRequest: SearchRequest = Object.assign(new SearchRequest(), rawData);
         searchRequest.tags = JsonUtils.jsonToMap(rawData.tags as object);
-        searchRequest.createdAt = new Date(rawData.createdAt as string);
-        searchRequest.updatedAt = new Date(rawData.updatedAt as string);
+        searchRequest.createdAt = new Date(rawData.createdAt.toString());
+        searchRequest.updatedAt = new Date(rawData.updatedAt.toString());
 
         return searchRequest;
     }

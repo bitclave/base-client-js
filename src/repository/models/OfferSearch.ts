@@ -11,7 +11,7 @@ export class OfferSearch extends DeepCopy<OfferSearch> {
 
     public static fromJson(json: object): OfferSearch {
         const jsonObj = json as JsonObject<OfferSearch>;
-        jsonObj.createdAt = new Date((jsonObj.createdAt as string) || new Date().getTime());
+        jsonObj.createdAt = new Date((jsonObj.createdAt.toString()) || new Date().getTime());
 
         return Object.assign(new OfferSearch(), jsonObj);
     }

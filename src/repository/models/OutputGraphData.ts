@@ -33,7 +33,7 @@ export class OutputGraphData {
         const links = (json.links as Array<JsonObject<GraphLink>>)
             .map(item => GraphLink.fromJson(item));
 
-        const clients = new Set(json.clients as Array<string>);
+        const clients = new Set(json.clients);
 
         return new OutputGraphData(clients, links);
     }
