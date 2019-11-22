@@ -21,6 +21,8 @@ export interface VerifyManager {
 
     getSearchRequestWithoutOwner(): Promise<Array<SearchRequest>>;
 
-    getOfferInteractionsByOfferIdsAndOwners(offerIds: Array<number>, 
-                                            owners: Array<string>): Promise<Array<OfferInteraction>>;
+    getOfferInteractionsByOfferIdsAndOwners(
+        offerIds: Array<number>,
+        owners: Array<string>
+    ): Promise<Array<OfferInteraction>>;
 }

@@ -1,8 +1,10 @@
 import { Observable } from 'rxjs';
 import Account from '../repository/models/Account';
+import { ExportMethod } from '../utils/ExportMethod';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
 import { AccessRight } from '../utils/keypair/Permissions';
 import { CryptoWallet, CryptoWallets, CryptoWalletsData, SupportSignedMessageData } from '../utils/types/BaseTypes';
+import { ParamDeserializer } from '../utils/types/json-transform';
 import { WalletValidator } from '../utils/types/validators/WalletValidator';
 import { DataRequestManager } from './DataRequestManager';
 import { ProfileManager } from './ProfileManager';
@@ -27,7 +29,10 @@ export class WalletManagerImpl implements WalletManager {
             .subscribe(this.onChangeAccount.bind(this));
     }
 
-    public async createCryptoWalletsData(cryptoWallets: CryptoWallets): Promise<CryptoWalletsData> {
+    @ExportMethod()
+    public async createCryptoWalletsData(
+        @ParamDeserializer(CryptoWallets) cryptoWallets: CryptoWallets
+    ): Promise<CryptoWalletsData> {
         const allWallets = cryptoWallets.eth.concat(cryptoWallets.app, cryptoWallets.btc, cryptoWallets.usd);
 
         allWallets.forEach(wallet => {
@@ -48,10 +53,12 @@ export class WalletManagerImpl implements WalletManager {
         return new CryptoWalletsData(cryptoWallets, sig);
     }
 
+    @ExportMethod()
     public getWalletValidator(): WalletValidator<CryptoWallet, SupportSignedMessageData<CryptoWallet>> {
         return this.walletValidator;
     }
 
+    @ExportMethod()
     public async addWealthValidator(validatorPbKey: string): Promise<void> {
         // Alice adds wealth record pointing to Validator's
         const myData: Map<string, string> = await this.profileManager.getData();

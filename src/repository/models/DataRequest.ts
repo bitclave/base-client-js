@@ -1,4 +1,5 @@
 import { ClassCreator, DeepCopy } from './DeepCopy';
+import { JsonObject } from './JsonObject';
 
 export class DataRequest extends DeepCopy<DataRequest> {
 
@@ -9,6 +10,10 @@ export class DataRequest extends DeepCopy<DataRequest> {
     public requestData: string = '';
     public responseData: string = '';
 
+    public static fromJson(json: JsonObject<DataRequest>): DataRequest {
+        return Object.assign(new DataRequest(), json);
+    }
+    
     constructor(
         fromPk: string = '',
         toPk: string = '',

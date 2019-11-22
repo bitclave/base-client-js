@@ -3,6 +3,9 @@ import Account from '../repository/models/Account';
 import Offer from '../repository/models/Offer';
 import { Page } from '../repository/models/Page';
 import { OfferRepository } from '../repository/offer/OfferRepository';
+import { ExportMethod } from '../utils/ExportMethod';
+import { ParamDeserializer } from '../utils/types/json-transform';
+import { ArrayOfferDeserializer } from '../utils/types/json-transform/deserializers/ArrayOfferDeserializer';
 import { OfferManager } from './OfferManager';
 
 export class OfferManagerImpl implements OfferManager {
@@ -14,7 +17,8 @@ export class OfferManagerImpl implements OfferManager {
             .subscribe(this.onChangeAccount.bind(this));
     }
 
-    public saveOffer(offer: Offer): Promise<Offer> {
+    @ExportMethod()
+    public saveOffer(@ParamDeserializer(Offer) offer: Offer): Promise<Offer> {
         const offerId: number = offer.id;
 
         if (offerId <= 0) {
@@ -24,15 +28,21 @@ export class OfferManagerImpl implements OfferManager {
             return this.offerRepository.update(this.account.publicKey, offerId, offer);
         }
     }
-    public updateBulkOffers(offers: Array<Offer>): Promise<Array<number>> {
+
+    @ExportMethod()
+    public updateBulkOffers(
+        @ParamDeserializer(new ArrayOfferDeserializer()) offers: Array<Offer>
+    ): Promise<Array<number>> {
         return this.offerRepository.updateBulk(this.account.publicKey, offers);
     }
 
-    public shallowSaveOffer(offer: Offer): Promise<Offer> {
+    @ExportMethod()
+    public shallowSaveOffer(@ParamDeserializer(Offer) offer: Offer): Promise<Offer> {
         const offerId: number = offer.id;
         return this.offerRepository.shallowUpdate(this.account.publicKey, offerId, offer);
     }
 
+    @ExportMethod()
     public getMyOffers(id: number = 0): Promise<Array<Offer>> {
         if (id > 0) {
             return this.offerRepository.getOfferByOwnerAndId(this.account.publicKey, id);
@@ -42,6 +52,7 @@ export class OfferManagerImpl implements OfferManager {
         }
     }
 
+    @ExportMethod()
     public getMyOffersAndPage(page?: number, size?: number): Promise<Page<Offer>> {
         return this.offerRepository.getOfferByOwnerAndPage(this.account.publicKey, page, size);
     }
@@ -54,18 +65,22 @@ export class OfferManagerImpl implements OfferManager {
         return this.offerRepository.getAllOffer();
     }
 
+    @ExportMethod()
     public getOffersByPage(page?: number, size?: number): Promise<Page<Offer>> {
         return this.offerRepository.getOffersByPage(page, size);
     }
 
+    @ExportMethod()
     public deleteOffer(id: number): Promise<number> {
         return this.offerRepository.deleteById(this.account.publicKey, id);
     }
 
+    @ExportMethod()
     public getOffersByOwnerAndTag(owner: string, tag: string): Promise<Array<Offer>> {
         return this.offerRepository.getOffersByOwnerAndTag(owner, tag);
     }
 
+    @ExportMethod()
     public getMyOffersByTag(tag: string): Promise<Array<Offer>> {
         return this.offerRepository.getOffersByOwnerAndTag(this.account.publicKey, tag);
     }

@@ -2,6 +2,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { AccountRepository } from '../repository/account/AccountRepository';
 import Account from '../repository/models/Account';
 import { BasicLogger, Logger } from '../utils/BasicLogger';
+import { ExportMethod } from '../utils/ExportMethod';
 import { AccessTokenAccepter } from '../utils/keypair/AccessTokenAccepter';
 import { BitKeyPair } from '../utils/keypair/BitKeyPair';
 import { KeyPair } from '../utils/keypair/KeyPair';
@@ -45,6 +46,7 @@ export class AccountManagerImpl implements AccountManager {
      *
      * @returns {Promise<Account>} {Account} if client exist or create new user.
      */
+    @ExportMethod()
     public async authenticationByPassPhrase(passPhrase: string, message: string): Promise<Account> {
         this.checkSigMessage(message);
 
@@ -70,6 +72,7 @@ export class AccountManagerImpl implements AccountManager {
      *
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
+    @ExportMethod()
     public async authenticationByAccessToken(
         accessToken: string,
         tokenType: TokenType,
@@ -98,6 +101,7 @@ export class AccountManagerImpl implements AccountManager {
      *
      * @returns {Promise<Account>} {Account} after successful registration or http exception if fail.
      */
+    @ExportMethod()
     public registration(mnemonicPhrase: string, message: string): Promise<Account> {
         this.checkSigMessage(message);
 
@@ -115,6 +119,7 @@ export class AccountManagerImpl implements AccountManager {
      *
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
+    @ExportMethod()
     public checkAccount(mnemonicPhrase: string, message: string): Promise<Account> {
         this.checkSigMessage(message);
 
@@ -135,14 +140,17 @@ export class AccountManagerImpl implements AccountManager {
         return this.accountRepository.unsubscribe(this.authAccountBehavior.getValue());
     }
 
+    @ExportMethod()
     public getNewMnemonic(): Promise<string> {
         return this.keyPairCreator.generateMnemonicPhrase();
     }
 
+    @ExportMethod()
     public getAccount(): Account {
         return this.authAccountBehavior.getValue();
     }
 
+    @ExportMethod()
     public getPublicKeyFromMnemonic(mnemonicPhrase: string): Promise<string> {
         // return this.keyPairCreator.createKeyPair(mnemonicPhrase)
         //     .then(res => res.publicKey);

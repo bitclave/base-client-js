@@ -8,32 +8,33 @@ import { Pair } from '../repository/models/Pair';
 import SearchRequest from '../repository/models/SearchRequest';
 import { OfferSearchRepository, OfferSearchRequestInterestMode } from '../repository/search/OfferSearchRepository';
 import { SearchRequestRepository } from '../repository/search/SearchRequestRepository';
+import { ExportMethod } from '../utils/ExportMethod';
+import { ParamDeserializer } from '../utils/types/json-transform';
+import { SearchRequestDeserializer } from '../utils/types/json-transform/deserializers/SearchRequestDeserializer';
+import { SimpleMapDeserializer } from '../utils/types/json-transform/deserializers/SimpleMapDeserializer';
 import { SearchManager, SortOfferSearch } from './SearchManager';
 
 export class SearchManagerImpl implements SearchManager {
 
     private account: Account = new Account();
-    private requestRepository: SearchRequestRepository;
-    private offerSearchRepository: OfferSearchRepository;
 
     constructor(
-        requestRepository: SearchRequestRepository,
-        offerSearchRepository: OfferSearchRepository,
+        private readonly requestRepository: SearchRequestRepository,
+        private readonly offerSearchRepository: OfferSearchRepository,
         authAccountBehavior: Observable<Account>
     ) {
-        this.requestRepository = requestRepository;
-        this.offerSearchRepository = offerSearchRepository;
-
         authAccountBehavior
             .subscribe(this.onChangeAccount.bind(this));
     }
 
-    public createRequest(searchRequest: SearchRequest): Promise<SearchRequest> {
+    @ExportMethod()
+    public createRequest(@ParamDeserializer(SearchRequest) searchRequest: SearchRequest): Promise<SearchRequest> {
         return this.requestRepository.create(this.account.publicKey, searchRequest);
     }
 
+    @ExportMethod()
     public updateRequest(
-        searchRequest: SearchRequest | Array<SearchRequest>
+        @ParamDeserializer(new SearchRequestDeserializer()) searchRequest: SearchRequest | Array<SearchRequest>
     ): Promise<SearchRequest | Array<SearchRequest>> {
         if (searchRequest instanceof Array) {
             return this.requestRepository.updateBatch(this.account.publicKey, searchRequest);
@@ -42,14 +43,17 @@ export class SearchManagerImpl implements SearchManager {
         }
     }
 
+    @ExportMethod()
     public cloneRequest(searchRequestIds: Array<number>): Promise<Array<SearchRequest>> {
         return this.requestRepository.clone(this.account.publicKey, searchRequestIds);
     }
 
+    @ExportMethod()
     public cloneOfferSearch(originToCopySearchRequestIds: Array<Pair<number, number>>): Promise<Array<OfferSearch>> {
         return this.offerSearchRepository.clone(this.account.publicKey, originToCopySearchRequestIds);
     }
 
+    @ExportMethod()
     public getMyRequests(id?: number): Promise<Array<SearchRequest>> {
         if (id && id > 0) {
             return this.requestRepository.getSearchRequestByOwnerAndId(this.account.publicKey, id);
@@ -59,6 +63,7 @@ export class SearchManagerImpl implements SearchManager {
         }
     }
 
+    @ExportMethod()
     public getRequestsByOwnerAndId(owner: string, id?: number): Promise<Array<SearchRequest>> {
         if (id && id > 0) {
             return this.requestRepository.getSearchRequestByOwnerAndId(owner, id);
@@ -68,18 +73,22 @@ export class SearchManagerImpl implements SearchManager {
         }
     }
 
+    @ExportMethod()
     public getRequestsByPage(page?: number, size?: number): Promise<Page<SearchRequest>> {
         return this.requestRepository.getSearchRequestByPage(page, size);
     }
 
+    @ExportMethod()
     public deleteRequest(id: number): Promise<number> {
         return this.requestRepository.deleteById(this.account.publicKey, id);
     }
 
+    @ExportMethod()
     public getSuggestionByQuery(query: string, size?: number): Promise<Array<string>> {
         return this.offerSearchRepository.getSuggestionByQuery(query, size);
     }
 
+    @ExportMethod()
     public createSearchResultByQuery(
         query: string,
         searchRequestId: number,
@@ -87,7 +96,7 @@ export class SearchManagerImpl implements SearchManager {
         size?: number,
         interests?: Array<string>,
         mode?: OfferSearchRequestInterestMode,
-        filters?: Map<string, Array<string>>
+        @ParamDeserializer(new SimpleMapDeserializer()) filters?: Map<string, Array<string>>
     ): Promise<Page<OfferSearchResultItem>> {
         return this.offerSearchRepository.createByQuery(
             this.account.publicKey,
@@ -101,10 +110,12 @@ export class SearchManagerImpl implements SearchManager {
         );
     }
 
+    @ExportMethod()
     public getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>> {
         return this.offerSearchRepository.getCountBySearchRequestIds(searchRequestIds);
     }
 
+    @ExportMethod()
     public getSearchResult(
         searchRequestId: number,
         page?: number,
@@ -113,6 +124,7 @@ export class SearchManagerImpl implements SearchManager {
         return this.offerSearchRepository.getSearchResult(this.account.publicKey, searchRequestId, page, size);
     }
 
+    @ExportMethod()
     public getUserOfferSearches(
         page: number = 0,
         size: number = 20,
@@ -126,6 +138,7 @@ export class SearchManagerImpl implements SearchManager {
             .getUserOfferSearches(this.account.publicKey, page, size, unique, searchIds, state, sort, interaction);
     }
 
+    @ExportMethod()
     public getInteractions(
         offerIds?: Array<number> | undefined,
         states?: Array<OfferResultAction> | undefined,
@@ -134,6 +147,7 @@ export class SearchManagerImpl implements SearchManager {
         return this.offerSearchRepository.getInteractions(owner ? owner : this.account.publicKey, offerIds, states);
     }
 
+    @ExportMethod()
     public getSearchResultByOfferSearchId(
         offerSearchId: number,
         page?: number,
@@ -147,38 +161,47 @@ export class SearchManagerImpl implements SearchManager {
         );
     }
 
+    @ExportMethod()
     public complainToSearchItem(searchResultId: number): Promise<void> {
         return this.offerSearchRepository.complainToSearchItem(this.account.publicKey, searchResultId);
     }
 
+    @ExportMethod()
     public rejectSearchItem(searchResultId: number): Promise<void> {
         return this.offerSearchRepository.rejectSearchItem(this.account.publicKey, searchResultId);
     }
 
+    @ExportMethod()
     public evaluateSearchItem(searchResultId: number): Promise<void> {
         return this.offerSearchRepository.evaluateSearchItem(this.account.publicKey, searchResultId);
     }
 
+    @ExportMethod()
     public confirmSearchItem(searchResultId: number): Promise<void> {
         return this.offerSearchRepository.confirmSearchItem(this.account.publicKey, searchResultId);
     }
 
+    @ExportMethod()
     public claimPurchaseForSearchItem(searchResultId: number): Promise<void> {
         return this.offerSearchRepository.claimPurchaseForSearchItem(this.account.publicKey, searchResultId);
     }
 
-    public addResultItem(offerSearch: OfferSearch): Promise<void> {
+    @ExportMethod()
+    public addResultItem(@ParamDeserializer(OfferSearch) offerSearch: OfferSearch): Promise<void> {
         return this.offerSearchRepository.addResultItem(this.account.publicKey, offerSearch);
     }
 
+    @ExportMethod()
     public addEventToOfferSearch(event: string, offerSearchId: number): Promise<void> {
         return this.offerSearchRepository.addEventToOfferSearch(event, offerSearchId);
     }
 
+    @ExportMethod()
     public getSearchRequestsByOwnerAndTag(owner: string, tag: string): Promise<Array<SearchRequest>> {
         return this.requestRepository.getSearchRequestsByOwnerAndTag(owner, tag);
     }
 
+    @ExportMethod()
     public getMySearchRequestsByTag(tag: string): Promise<Array<SearchRequest>> {
         return this.requestRepository.getSearchRequestsByOwnerAndTag(this.account.publicKey, tag);
     }

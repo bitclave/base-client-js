@@ -64,5 +64,4 @@ export interface AccountManager {
     getAccount(): Account;
 
     getPublicKeyFromMnemonic(mnemonicPhrase: string): Promise<string>;
-
 }

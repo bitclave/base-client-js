@@ -108,5 +108,4 @@ export interface DataRequestManager {
      * @returns {object | null} object with data or null if was error.
      */
     decryptMessage(senderPk: string, encrypted: string): Promise<object | string>;
-
 }
