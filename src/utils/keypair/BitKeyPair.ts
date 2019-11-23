@@ -109,17 +109,12 @@ export class BitKeyPair implements KeyPairHelper {
         return this.addr.toString(16);
     }
 
-    public encryptMessage(recipientPk: string, message: string): Promise<string> {
-        return new Promise<string>(resolve => {
-            const ecies = new ECIES({noKey: true})
-                .privateKey(this.privateKey)
-                .publicKey(bitcore.PublicKey.fromString(recipientPk));
-
-            resolve(
-                ecies.encrypt(message)
-                    .toString('base64')
-            );
-        });
+    public async encryptMessage(recipientPk: string, message: string): Promise<string> {
+        return new ECIES({noKey: true})
+            .privateKey(this.privateKey)
+            .publicKey(bitcore.PublicKey.fromString(recipientPk))
+            .encrypt(message)
+            .toString('base64');
     }
 
     public async encryptFields(fields: Map<string, string>): Promise<Map<string, string>> {
