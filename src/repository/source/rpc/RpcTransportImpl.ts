@@ -1,3 +1,4 @@
+import { Primitive } from '../../../utils/types/Primitive';
 import { HttpMethod } from '../http/HttpMethod';
 import { HttpTransport } from '../http/HttpTransport';
 import { JsonRpc } from './JsonRpc';
@@ -14,12 +15,13 @@ export class RpcTransportImpl implements RpcTransport {
         this.transport = httpTransport;
     }
 
-    public request<T>(method: string, arg: object): Promise<T> {
+    public request<T>(method: string, arg: Array<object | Primitive>): Promise<T> {
         this.id++;
-        const data = JsonRpc.request(this.id, method, arg as Array<object>);
 
-        return this.transport.sendRequest<T>('/', HttpMethod.Post, data)
-            .then(response => response.json);
+        const data = JsonRpc.request(this.id, method, arg);
+
+        return this.transport.sendRequest<JsonRpc>('/', HttpMethod.Post, data)
+            .then(response => response.json.result as T);
     }
 
     public disconnect(): void {

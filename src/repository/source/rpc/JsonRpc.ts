@@ -1,13 +1,16 @@
+import { Primitive } from '../../../utils/types/Primitive';
+
 export class JsonRpc {
 
     public readonly jsonrpc: string = '2.0';
     public readonly method: string;
     public readonly id: number;
-    public readonly params: Array<object>;
-    public readonly result?: object | Array<object>;
+    public readonly params: Array<object | Primitive>;
+    // tslint:disable-next-line:no-any
+    public readonly result?: any;
     public readonly error?: object | Array<object>;
 
-    public static request(id: number, method: string, params: Array<object>): JsonRpc {
+    public static request(id: number, method: string, params: Array<object | Primitive>): JsonRpc {
         return new JsonRpc(id, method, params);
     }
 
@@ -23,7 +26,7 @@ export class JsonRpc {
     private constructor(
         id: number,
         method: string,
-        params: Array<object> = [],
+        params: Array<object | Primitive> = [],
         result?: object | Array<object>,
         error?: object | Array<object>
     ) {
