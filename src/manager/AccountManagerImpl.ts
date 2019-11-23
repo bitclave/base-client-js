@@ -191,10 +191,8 @@ export class AccountManagerImpl implements AccountManager {
             });
     }
 
-    private generateAccount(keyPair: KeyPair): Promise<Account> {
-        return new Promise<Account>((resolve) => {
-            resolve(new Account(keyPair.publicKey));
-        });
+    private async generateAccount(keyPair: KeyPair): Promise<Account> {
+        return new Account(keyPair.publicKey);
     }
 
     private onGetAccount(account: Account, message: string): Promise<Account> {
