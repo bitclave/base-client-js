@@ -5,12 +5,12 @@ export class JsonRpc {
     public readonly jsonrpc: string = '2.0';
     public readonly method: string;
     public readonly id: number;
-    public readonly params: Array<object | Primitive>;
+    public readonly params: Array<object | Primitive | undefined | null>;
     // tslint:disable-next-line:no-any
     public readonly result?: any;
     public readonly error?: object | Array<object>;
 
-    public static request(id: number, method: string, params: Array<object | Primitive>): JsonRpc {
+    public static request(id: number, method: string, params: Array<object | Primitive | undefined | null>): JsonRpc {
         return new JsonRpc(id, method, params);
     }
 
@@ -26,7 +26,7 @@ export class JsonRpc {
     private constructor(
         id: number,
         method: string,
-        params: Array<object | Primitive> = [],
+        params: Array<object | Primitive | undefined | null> = [],
         result?: object | Array<object>,
         error?: object | Array<object>
     ) {

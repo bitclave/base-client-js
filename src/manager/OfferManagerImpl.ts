@@ -5,7 +5,7 @@ import { Page } from '../repository/models/Page';
 import { OfferRepository } from '../repository/offer/OfferRepository';
 import { ExportMethod } from '../utils/ExportMethod';
 import { ParamDeserializer } from '../utils/types/json-transform';
-import { ArrayOfferDeserializer } from '../utils/types/json-transform/deserializers/ArrayOfferDeserializer';
+import { ArrayDeserializer } from '../utils/types/json-transform/deserializers/ArrayDeserializer';
 import { OfferManager } from './OfferManager';
 
 export class OfferManagerImpl implements OfferManager {
@@ -31,7 +31,7 @@ export class OfferManagerImpl implements OfferManager {
 
     @ExportMethod()
     public updateBulkOffers(
-        @ParamDeserializer(new ArrayOfferDeserializer()) offers: Array<Offer>
+        @ParamDeserializer(new ArrayDeserializer(Offer)) offers: Array<Offer>
     ): Promise<Array<number>> {
         return this.offerRepository.updateBulk(this.account.publicKey, offers);
     }

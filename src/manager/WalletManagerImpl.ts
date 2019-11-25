@@ -53,7 +53,6 @@ export class WalletManagerImpl implements WalletManager {
         return new CryptoWalletsData(cryptoWallets, sig);
     }
 
-    @ExportMethod()
     public getWalletValidator(): WalletValidator<CryptoWallet, SupportSignedMessageData<CryptoWallet>> {
         return this.walletValidator;
     }

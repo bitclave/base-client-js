@@ -1,6 +1,7 @@
 import { IsEmail, IsJSON, IsString, ValidateNested } from 'class-validator';
 import { MessageData, SignedMessageData } from 'eth-sig-util';
 import { JsonObject } from '../../repository/models/JsonObject';
+import { JsonTransform } from '../../repository/models/JsonTransform';
 import { IsBasePublicKey } from './validators/annotations/IsBasePublicKey';
 import { IsBtcAddress } from './validators/annotations/IsBtcAddress';
 import { IsEthAddress } from './validators/annotations/IsEthAddress';
@@ -52,7 +53,7 @@ export class StringSignedMessage extends StringMessage implements SignedMessageD
     }
 }
 
-export class SupportSignedMessageData<T> {
+export class SupportSignedMessageData<T> implements JsonTransform {
     @ValidateNested()
     public data: T;
 
@@ -70,6 +71,10 @@ export class SupportSignedMessageData<T> {
 
     public getMessage(): MessageData<string> {
         return this.getSignedMessage();
+    }
+
+    public toJson(): object {
+        return this;
     }
 }
 
@@ -126,7 +131,7 @@ export class UsdCryptoWallet extends CryptoWallet {
     }
 }
 
-export class CryptoWallets {
+export class CryptoWallets implements JsonTransform {
     @IsTypedArray(() => EthWalletData, true)
     public readonly eth: Array<EthWalletData>;
 
@@ -165,6 +170,15 @@ export class CryptoWallets {
         this.btc = btc || [];
         this.app = app || [];
         this.usd = usd || [];
+    }
+
+    public toJson(): object {
+        const eth = this.eth.map(item => item.toJson());
+        const btc = this.btc.map(item => item.toJson());
+        const app = this.app.map(item => item.toJson());
+        const usd = this.usd.map(item => item.toJson());
+
+        return {eth, btc, app, usd};
     }
 }
 

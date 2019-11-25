@@ -15,7 +15,7 @@ import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
 import { AccessRight } from '../utils/keypair/Permissions';
 import { ParamDeserializer } from '../utils/types/json-transform';
-import { ArrayDataRequestDeserializer } from '../utils/types/json-transform/deserializers/ArrayDataRequestDeserializer';
+import { ArrayDeserializer } from '../utils/types/json-transform/deserializers/ArrayDeserializer';
 import { SimpleMapDeserializer } from '../utils/types/json-transform/deserializers/SimpleMapDeserializer';
 import { ProfileManager } from './ProfileManager';
 
@@ -109,7 +109,7 @@ export class ProfileManagerImpl implements ProfileManager {
      */
     @ExportMethod()
     public async getAuthorizedData(
-        @ParamDeserializer(new ArrayDataRequestDeserializer()) acceptedRequests: Array<DataRequest>
+        @ParamDeserializer(new ArrayDeserializer(DataRequest)) acceptedRequests: Array<DataRequest>
     ): Promise<SharedData> {
         if (acceptedRequests.length <= 0) {
             return new SharedData();
@@ -149,7 +149,7 @@ export class ProfileManagerImpl implements ProfileManager {
      */
     @ExportMethod()
     public async getAuthorizedEncryptionKeys(
-        @ParamDeserializer(new ArrayDataRequestDeserializer()) acceptedRequests: Array<DataRequest>
+        @ParamDeserializer(new ArrayDeserializer(DataRequest)) acceptedRequests: Array<DataRequest>
     ): Promise<SharedData> {
         const result = new SharedData();
 

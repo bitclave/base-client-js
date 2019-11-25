@@ -15,7 +15,7 @@ export class RpcTransportImpl implements RpcTransport {
         this.transport = httpTransport;
     }
 
-    public request<T>(method: string, arg: Array<object | Primitive>): Promise<T> {
+    public request<T>(method: string, arg: Array<object | Primitive | undefined | null>): Promise<T> {
         this.id++;
 
         const data = JsonRpc.request(this.id, method, arg);

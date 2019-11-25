@@ -2,9 +2,10 @@ import { JsonObject } from '../../../../repository/models/JsonObject';
 import { JsonUtils } from '../../../JsonUtils';
 import { JsonDeserializer } from '../JsonDeserializer';
 
-export class SimpleMapDeserializer implements JsonDeserializer<Map<string, string>> {
+export class SimpleMapDeserializer<T> implements JsonDeserializer<T> {
 
-    public fromJson(json: JsonObject<Map<string, string>>): Map<string, string> {
-        return JsonUtils.jsonToMap(json);
+    public fromJson(json: JsonObject<T>): T {
+        /* tslint:disable-next-line:no-any */
+        return JsonUtils.jsonToMap(json) as any;
     }
 }

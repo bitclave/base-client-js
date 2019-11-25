@@ -11,6 +11,7 @@ export interface VerifyManager {
 
     getAllAccounts(fromDate: Date): Promise<Array<Account>>;
 
+    // fixme use Enum instead number!
     getDanglingOfferSearches(type: number): Promise<Array<OfferSearch>>;
 
     getDanglingOfferInteractions(): Promise<Array<OfferInteraction>>;

@@ -1,7 +1,22 @@
+import { JsonUtils } from '../../utils/JsonUtils';
 import { FieldData } from './FieldData';
+import { JsonObject } from './JsonObject';
 
 export class SharedData {
     public readonly data: Map<string, Array<FieldData>> = new Map();
+
+    public static fromJson(json: JsonObject<object>): SharedData {
+        const rawMap = JsonUtils.jsonToMap<string, Array<JsonObject<FieldData>>>(json);
+        const result = new SharedData();
+
+        rawMap.forEach((value, key) => {
+            const list = value.map(item => FieldData.fromJson(item));
+
+            result.data.set(key, list);
+        });
+
+        return result;
+    }
 
     public get size(): number {
         return this.data.size;
