@@ -14,9 +14,11 @@ import {
     VerifyManager,
     WalletManager
 } from './Base';
+import { NodeManager } from './manager/NodeManager';
 import { RemoteAccountManagerImpl } from './manager/remote/RemoteAccountManagerImpl';
 import { RemoteDataRequestManagerImpl } from './manager/remote/RemoteDataRequestManagerImpl';
 import { RemoteExternalServicesManagerImpl } from './manager/remote/RemoteExternalServicesManagerImpl';
+import { RemoteNodeManagerImpl } from './manager/remote/RemoteNodeManagerImpl';
 import { RemoteOfferManagerImpl } from './manager/remote/RemoteOfferManagerImpl';
 import { RemoteOfferRankManagerImpl } from './manager/remote/RemoteOfferRankManagerImpl';
 import { RemoteProfileManagerImpl } from './manager/remote/RemoteProfileManagerImpl';
@@ -39,6 +41,7 @@ export class RemoteManagerModule extends ManagersModule {
     private readonly _externalServicesManager: ExternalServicesManager;
     private readonly _authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
     private readonly _offerRankManager: OfferRankManager;
+    private readonly _nodeManager: NodeManager;
     private readonly transport: RpcTransport;
 
     public constructor(remoteManagersEndPoint: string, logger: Logger = new BasicLogger()) {
@@ -57,6 +60,7 @@ export class RemoteManagerModule extends ManagersModule {
         this._verifyManager = new RemoteVerifyManagerImpl(this.transport);
         this._externalServicesManager = new RemoteExternalServicesManagerImpl(this.transport);
         this._offerRankManager = new RemoteOfferRankManagerImpl(this.transport);
+        this._nodeManager = new RemoteNodeManagerImpl(this.transport);
     }
 
     public getAccountManager(): AccountManager {
@@ -97,5 +101,9 @@ export class RemoteManagerModule extends ManagersModule {
 
     public getWalletManager(): WalletManager {
         return this._walletManager;
+    }
+
+    public getNodeManager(): NodeManager {
+        return this._nodeManager;
     }
 }

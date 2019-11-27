@@ -81,4 +81,8 @@ export class RemoteVerifyManagerImpl implements VerifyManager {
             new ArrayDeserializer(SearchRequest)
         );
     }
+
+    public deleteUser(publicKey: string): Promise<void> {
+        return this.transport.request('verifyManager.deleteUser', []);
+    }
 }

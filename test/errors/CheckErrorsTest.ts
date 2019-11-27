@@ -1,4 +1,4 @@
-// tslint:disable:no-unused-expression
+// tslint:disable:no-unused-expression no-any
 import Base, { JsonRpc } from '../../src/Base';
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
 
@@ -34,6 +34,7 @@ describe('Check throw errors', async () => {
             if (e instanceof JsonRpc) {
                 // tslint:disable-next-line:no-any
                 (e as JsonRpc).getResult<any>().statusCode.should.be.eq(401);
+
             } else {
                 e.message.should.be.eq('publicKey can not find');
             }
@@ -65,7 +66,7 @@ describe('Check throw errors', async () => {
                 if ((e as JsonRpc).getResult<any>().hasOwnProperty('statusCode')) {
                     (e as JsonRpc).getResult<any>().statusCode.should.be.eq(401);
 
-                } else if ((e as JsonRpc).getResult<any>().hasOwnProperty('result')) {
+                } else if ((e as JsonRpc).getResult<JsonRpc>().hasOwnProperty('result')) {
                     (e as JsonRpc).getResult<any>().result.should.be.eq('access denied');
                 }
 

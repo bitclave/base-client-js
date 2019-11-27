@@ -7,6 +7,8 @@ import { DataRequestManager } from './manager/DataRequestManager';
 import { DataRequestManagerImpl } from './manager/DataRequestManagerImpl';
 import { ExternalServicesManager } from './manager/ExternalServicesManager';
 import { ExternalServicesManagerImpl } from './manager/ExternalServicesManagerImpl';
+import { NodeManager } from './manager/NodeManager';
+import { NodeManagerImpl } from './manager/NodeManagerImpl';
 import { OfferManager } from './manager/OfferManager';
 import { OfferManagerImpl } from './manager/OfferManagerImpl';
 import { OfferRankManager } from './manager/OfferRankManager';
@@ -21,6 +23,7 @@ import { WalletManager } from './manager/WalletManager';
 import { WalletManagerImpl } from './manager/WalletManagerImpl';
 import { ManagersModule } from './ManagersModule';
 import AccountRepositoryImpl from './repository/account/AccountRepositoryImpl';
+import { AssistantNodeFactory } from './repository/assistant/AssistantNodeFactory';
 import ClientDataRepositoryImpl from './repository/client/ClientDataRepositoryImpl';
 import Account from './repository/models/Account';
 import OfferRepositoryImpl from './repository/offer/OfferRepositoryImpl';
@@ -51,6 +54,7 @@ export class InternalManagerModule extends ManagersModule {
     private readonly _authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
     private readonly _offerRankManager: OfferRankManager;
     private readonly transport: HttpTransport;
+    private readonly _nodeManager: NodeManager;
 
     public static Builder(nodeEndPoint: string, siteOrigin: string) {
         return new BuilderManagersModule(nodeEndPoint, siteOrigin);
@@ -73,6 +77,7 @@ export class InternalManagerModule extends ManagersModule {
         const verifyRepository = new VerifyRepositoryImpl(this.transport);
         const externalServicesRepository = new ExternalServicesRepositoryImpl(this.transport);
         const offerRankRepository = new OfferRankRepositoryImpl(this.transport);
+        const assistantRepository = AssistantNodeFactory.defaultNodeAssistant(this.transport);
 
         this._accountManager = new AccountManagerImpl(
             accountRepository,
@@ -119,6 +124,7 @@ export class InternalManagerModule extends ManagersModule {
 
         this._externalServicesManager = new ExternalServicesManagerImpl(externalServicesRepository);
         this._offerRankManager = new OfferRankManagerImpl(offerRankRepository);
+        this._nodeManager = new NodeManagerImpl(assistantRepository);
     }
 
     public getAccountManager(): AccountManager {
@@ -159,5 +165,9 @@ export class InternalManagerModule extends ManagersModule {
 
     public getWalletManager(): WalletManager {
         return this._walletManager;
+    }
+
+    public getNodeManager(): NodeManager {
+        return this._nodeManager;
     }
 }

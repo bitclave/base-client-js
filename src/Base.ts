@@ -5,6 +5,7 @@ import { InternalManagerModule } from './InternalManagerModule';
 import { AccountManager } from './manager/AccountManager';
 import { DataRequestManager } from './manager/DataRequestManager';
 import { ExternalServicesManager } from './manager/ExternalServicesManager';
+import { NodeManager } from './manager/NodeManager';
 import { OfferManager } from './manager/OfferManager';
 import { OfferRankManager } from './manager/OfferRankManager';
 import { OfferRankManagerImpl } from './manager/OfferRankManagerImpl';
@@ -48,8 +49,6 @@ import { ServiceResponse } from './repository/models/services/ServiceResponse';
 import { SharedData } from './repository/models/SharedData';
 import SimpleAccount from './repository/models/SimpleAccount';
 import { Site } from './repository/models/Site';
-import { NodeInfoRepository } from './repository/node/NodeInfoRepository';
-import { NodeInfoRepositoryImpl } from './repository/node/NodeInfoRepositoryImpl';
 import { OfferRepository } from './repository/offer/OfferRepository';
 import { OfferShareDataRepository } from './repository/offer/OfferShareDataRepository';
 import OfferShareDataRepositoryImpl from './repository/offer/OfferShareDataRepositoryImpl';
@@ -256,12 +255,16 @@ export default class Base {
         }
     }
 
+    public get version(): string {
+        return version;
+    }
+
     public get defaultTransport(): TransportInterceptor<object> {
         return this.managersModule.getDefaultTransport();
     }
 
     public getNodeVersion(): Promise<string> {
-        return this.managersModule.getNodeVersion();
+        return this.managersModule.getNodeManager().getNodeVersion();
     }
 
     get walletManager(): WalletManager {
@@ -298,5 +301,9 @@ export default class Base {
 
     get offerRankManager(): OfferRankManager {
         return this.managersModule.getOfferRankManager();
+    }
+
+    get nodeManager(): NodeManager {
+        return this.managersModule.getNodeManager();
     }
 }
