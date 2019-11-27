@@ -94844,12 +94844,13 @@ function () {
   }
 
   Signer.prototype.initRemote = function () {
-    var port = ArgumentUtils_1.default.getValue('LISTEN_PORT', '--port', '3545');
-    var nodeHost = ArgumentUtils_1.default.getValue('HOST_NODE', '--host', '');
+    var port = ArgumentUtils_1.default.getValue('PORT', '--port', '3545');
+    var host = ArgumentUtils_1.default.getValue('HOST', '--host', '127.0.0.1');
+    var nodeHost = ArgumentUtils_1.default.getValue('HOST_NODE', '--node', '');
     var signerPassPhrase = ArgumentUtils_1.default.getValue('PASS_PHRASE', '--signerPass', 'signer default pass');
     var authenticatorPublicKey = ArgumentUtils_1.default.getValue('AUTHENTICATOR_PK', '--authPK');
     var jwtRsaCert = ArgumentUtils_1.default.getValue('JWT_RSA_CERT', '--jwtRsaCert');
-    this.init(false, parseInt(port, 10), nodeHost, signerPassPhrase, authenticatorPublicKey, undefined, jwtRsaCert);
+    this.init(false, parseInt(port, 10), host, nodeHost, signerPassPhrase, authenticatorPublicKey, undefined, jwtRsaCert);
   };
 
   Signer.prototype.initLocal = function () {
@@ -94864,13 +94865,13 @@ function () {
     });
   };
 
-  Signer.prototype.init = function (useLocal, port, nodeHost, signerPassPhrase, authenticatorPublicKey, clientPassPhrase, jwtRsaCert) {
+  Signer.prototype.init = function (useLocal, port, host, nodeHost, signerPassPhrase, authenticatorPublicKey, clientPassPhrase, jwtRsaCert) {
     if (port <= 0) {
       throw new Error("invalid port number: " + port);
     }
 
     if (!nodeHost || nodeHost.length === 0 || nodeHost.indexOf('http') === -1) {
-      throw new Error('For run Signer need setup node host! For setup use' + ' "environment": "HOST_NODE" or "command arguments": "--host" ');
+      throw new Error('For run Signer need setup node host! For setup use' + ' "environment": "HOST_NODE" or "command arguments": "--node" ');
     }
 
     var keyPairHelper = new KeyPairHelperImpl_1.default(nodeHost);
@@ -94892,7 +94893,7 @@ function () {
     this.encryptionService = new EncryptionService_1.default();
     this.decryptionService = new DecryptionService_1.default();
     var methods = this.mergeRpcMethods(this.clientService, this.signerService, this.encryptionService, this.decryptionService);
-    this.initService(methods, port);
+    this.initService(methods, port, host);
 
     if (clientPassPhrase && authenticatorKeyPair) {
       var authenticator = new Authenticator_1.default(authenticatorKeyPair, ownKeyPair.getPublicKey());
@@ -94900,7 +94901,7 @@ function () {
     }
   };
 
-  Signer.prototype.initService = function (methods, port) {
+  Signer.prototype.initService = function (methods, port, host) {
     var _this = this;
 
     app.use(cors());
@@ -94914,8 +94915,8 @@ function () {
     app.post('/', function (req, res, next) {
       return _this.executeMethod(methods, req, res, next);
     });
-    app.listen(port, function () {
-      return console.log('Signer running on port', port);
+    app.listen(port, host, function () {
+      return console.log('Signer running on port and host', port, host);
     });
   };
 
@@ -94944,8 +94945,8 @@ function () {
           delete data.error;
           res.send(data);
         } catch (e) {
-          data.error = e.message;
-          data.result = (e.stack || '').toString().replace('    ', '').split('\n');
+          data.error = (e.stack || '').toString().replace('    ', '').split('\n');
+          data.result = e.message;
           res.status(500).send(data);
         }
 
