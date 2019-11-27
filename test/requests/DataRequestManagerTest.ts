@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import 'reflect-metadata';
 import { BehaviorSubject } from 'rxjs';
-import Base, { RepositoryStrategyType, TransportFactory } from '../../src/Base';
+import Base, { GraphLink, LinkType, RepositoryStrategyType, TransportFactory } from '../../src/Base';
 import { DataRequestManager } from '../../src/manager/DataRequestManager';
 import { DataRequestManagerImpl } from '../../src/manager/DataRequestManagerImpl';
 import { ProfileManager } from '../../src/manager/ProfileManager';
@@ -541,30 +541,30 @@ describe('Data Request Manager', async () => {
         assert(clients[2] === kyc.accountManager.getAccount().publicKey);
 
         const expectedResult = [
-            {
-                from: 0,
-                to: 1,
-                key: 'some_data',
-                type: 'SHARE'
-            },
-            {
-                from: 0,
-                to: 2,
-                key: 'kyc_doc',
-                type: 'SHARE'
-            },
-            {
-                from: 0,
-                to: 1,
-                key: 'kyc_data',
-                type: 'RESHARE'
-            },
-            {
-                from: 2,
-                to: 0,
-                key: 'kyc_data',
-                type: 'SHARE'
-            },
+            new GraphLink(
+                0,
+                1,
+                'some_data',
+                LinkType.SHARE
+            ),
+            new GraphLink(
+                0,
+                2,
+                'kyc_doc',
+                LinkType.SHARE
+            ),
+            new GraphLink(
+                0,
+                1,
+                'kyc_data',
+                LinkType.RESHARE
+            ),
+            new GraphLink(
+                2,
+                0,
+                'kyc_data',
+                LinkType.SHARE
+            ),
         ];
 
         assert(graph.links.length === 4);

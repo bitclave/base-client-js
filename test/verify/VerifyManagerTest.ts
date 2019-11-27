@@ -93,7 +93,7 @@ describe('Verify Manager', async () => {
             const searchRequest = requestFactory();
             const insertedSearchRequest = await baseAlice.searchManager.createRequest(searchRequest);
 
-            const offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
+            const offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id);
             await baseAlice.searchManager.addResultItem(offerSearch);
 
             const searchRequests = (await baseAlice.searchManager.getSearchResult(insertedSearchRequest.id)).content;

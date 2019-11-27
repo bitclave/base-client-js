@@ -162,7 +162,6 @@ describe('Account Manager', async () => {
     it('should valid public key from sig (with empty message) in registration and check account', async () => {
         try {
             await accountManager.authenticationByAccessToken(alisaAccessToken, TokenType.BASIC, '');
-            throw new Error('message for signature should be have min 10 symbols');
         } catch (e) {
             e.message.should.be.equal('message for signature should be have min 10 symbols');
         }

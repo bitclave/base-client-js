@@ -1,5 +1,5 @@
 // tslint:disable:no-unused-expression
-import Base from '../../src/Base';
+import Base, { JsonRpc } from '../../src/Base';
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
 
 require('chai').use(require('chai-as-promised')).should();
@@ -24,10 +24,18 @@ describe('Check throw errors', async () => {
         await expect(base.profileManager.getData()).should.throw;
 
         try {
-           await base.profileManager.getData();
+            await base.profileManager.getData();
         } catch (e) {
+            console.log(e);
             e.should.be.exist;
-            e.message.should.be.eq('publicKey can not find');
+
+            if (e instanceof JsonRpc) {
+                // tslint:disable-next-line:no-any
+                (e as JsonRpc).getResult<any>().statusCode.should.be.eq(401);
+            } else {
+                e.message.should.be.eq('publicKey can not find');
+            }
+
             return;
         }
 
@@ -46,8 +54,16 @@ describe('Check throw errors', async () => {
         try {
             await base.profileManager.updateData(new Map());
         } catch (e) {
+            console.log(e);
             e.should.be.exist;
-            e.message.should.be.eq('Invalid Argument: First argument should be an instance of PrivateKey');
+
+            if (e instanceof JsonRpc) {
+                // tslint:disable-next-line:no-any
+                (e as JsonRpc).getResult<any>().statusCode.should.be.eq(401);
+            } else {
+                e.message.should.be.eq('Invalid Argument: First argument should be an instance of PrivateKey');
+            }
+
             return;
         }
 
