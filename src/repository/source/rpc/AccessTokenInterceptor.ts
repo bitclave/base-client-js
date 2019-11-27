@@ -14,6 +14,9 @@ export class AccessTokenInterceptor implements RpcInterceptor, AccessTokenAccept
 
             rpcToken.accessToken = this.accessToken;
             rpcToken.tokenType = this.tokenType;
+
+        } else {
+            request.params.splice(0, 0, [this.accessToken, this.tokenType]);
         }
 
         return request;
