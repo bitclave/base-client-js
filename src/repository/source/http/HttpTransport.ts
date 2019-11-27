@@ -1,10 +1,11 @@
 import { FileMeta } from '../../models/FileMeta';
 import { JsonTransform } from '../../models/JsonTransform';
+import { TransportInterceptor } from '../TransportInterceptor';
 import { HttpInterceptor } from './HttpInterceptor';
 import { HttpMethod } from './HttpMethod';
 import { Response } from './Response';
 
-export interface HttpTransport {
+export interface HttpTransport extends TransportInterceptor<HttpInterceptor> {
 
     getHost(): string;
 
@@ -14,6 +15,4 @@ export interface HttpTransport {
         data?: object | string | number | JsonTransform,
         file?: FileMeta
     ): Promise<Response<T>>;
-
-    addInterceptor(interceptor: HttpInterceptor): HttpTransport;
 }

@@ -28,7 +28,7 @@ export class HttpTransportImpl implements HttpTransport {
         this.logger = loggerService ? loggerService : new BasicLogger();
     }
 
-    public addInterceptor(interceptor: HttpInterceptor): HttpTransport {
+    public addInterceptor(interceptor: HttpInterceptor): this {
         if (this.interceptors.indexOf(interceptor) === -1) {
             this.interceptors.push(interceptor);
         }
