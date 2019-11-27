@@ -2,6 +2,7 @@ const Path = require('path');
 const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
 const DeepMerge = require('deep-merge');
 const TSLintPlugin = require('tslint-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const DeepCopy = DeepMerge((target, source, key) => {
     if (target instanceof Array) {
@@ -53,6 +54,7 @@ const nodeConfig = {
         umdNamedDefine: true
     },
     plugins: [
+        // new BundleAnalyzerPlugin(),
         new TSLintPlugin({
             waitForLinting: true,
             warningsAsError: true,
