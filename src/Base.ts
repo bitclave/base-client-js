@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { version } from '../package.json';
 import { BuilderManagersModule } from './BuilderManagersModule';
 import { InternalManagerModule } from './InternalManagerModule';
 import { AccountManager } from './manager/AccountManager';
@@ -47,6 +48,8 @@ import { ServiceResponse } from './repository/models/services/ServiceResponse';
 import { SharedData } from './repository/models/SharedData';
 import SimpleAccount from './repository/models/SimpleAccount';
 import { Site } from './repository/models/Site';
+import { NodeInfoRepository } from './repository/node/NodeInfoRepository';
+import { NodeInfoRepositoryImpl } from './repository/node/NodeInfoRepositoryImpl';
 import { OfferRepository } from './repository/offer/OfferRepository';
 import { OfferShareDataRepository } from './repository/offer/OfferShareDataRepository';
 import OfferShareDataRepositoryImpl from './repository/offer/OfferShareDataRepositoryImpl';
@@ -255,6 +258,10 @@ export default class Base {
 
     public get defaultTransport(): TransportInterceptor<object> {
         return this.managersModule.getDefaultTransport();
+    }
+
+    public getNodeVersion(): Promise<string> {
+        return this.managersModule.getNodeVersion();
     }
 
     get walletManager(): WalletManager {

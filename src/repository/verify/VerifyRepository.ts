@@ -22,4 +22,6 @@ export interface VerifyRepository {
 
     getOfferInteractionsByOfferIdsAndOwners(offerIds: Array<number>, 
                                             owners: Array<string>): Promise<Array<OfferInteraction>>;
+
+    deleteUser(publicKey: string): Promise<void>;
 }
