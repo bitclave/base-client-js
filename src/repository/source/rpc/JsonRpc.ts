@@ -6,8 +6,7 @@ export class JsonRpc {
     public readonly method: string;
     public readonly id: number;
     public readonly params: Array<object | Primitive | undefined | null>;
-    // tslint:disable-next-line:no-any
-    public readonly result?: any;
+    public readonly result?: object | Primitive;
     public readonly error?: object | Array<object>;
 
     public static request(id: number, method: string, params: Array<object | Primitive | undefined | null>): JsonRpc {
@@ -17,7 +16,7 @@ export class JsonRpc {
     public static response(
         id: number,
         method: string,
-        result?: object | Array<object>,
+        result?: object | Primitive,
         error?: object | Array<object>
     ): JsonRpc {
         return new JsonRpc(id, method, undefined, result, error);
@@ -27,7 +26,7 @@ export class JsonRpc {
         id: number,
         method: string,
         params: Array<object | Primitive | undefined | null> = [],
-        result?: object | Array<object>,
+        result?: object | Primitive,
         error?: object | Array<object>
     ) {
         this.id = id;
@@ -35,5 +34,10 @@ export class JsonRpc {
         this.params = params || [];
         this.result = result;
         this.error = error;
+    }
+
+    public getResult<T>(): T {
+        // tslint:disable-next-line:no-any
+        return this.result as any;
     }
 }
