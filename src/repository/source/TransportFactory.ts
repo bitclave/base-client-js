@@ -1,4 +1,4 @@
-import { Logger } from '../../utils/BasicLogger';
+import { BasicLogger, Logger } from '../../utils/BasicLogger';
 import { HttpTransport } from './http/HttpTransport';
 import { HttpTransportImpl } from './http/HttpTransportImpl';
 import { HttpTransportSyncedImpl } from './http/HttpTransportSyncedImpl';
@@ -11,8 +11,7 @@ export class TransportFactory {
         return new HttpTransportSyncedImpl(host, loggerService);
     }
 
-    public static createJsonRpcHttpTransport(host: string): RpcTransport {
-        return new RpcTransportImpl(new HttpTransportImpl(host));
+    public static createJsonRpcHttpTransport(host: string, loggerService: Logger = new BasicLogger()): RpcTransport {
+        return new RpcTransportImpl(new HttpTransportImpl(host, loggerService));
     }
-
 }
