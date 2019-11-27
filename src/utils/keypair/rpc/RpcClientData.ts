@@ -1,7 +1,7 @@
 import { Permissions } from '../Permissions';
-import AccessData from './RpcAccessData';
+import { RpcAccessData } from './RpcAccessData';
 
-export default class ClientData extends AccessData {
+export default class ClientData extends RpcAccessData {
 
     public readonly publicKey: string;
 

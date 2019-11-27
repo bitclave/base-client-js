@@ -1,6 +1,6 @@
 import { Permissions } from '../Permissions';
 
-export default class AccessData {
+export class RpcAccessData {
 
     public readonly origin: string;
     public readonly expireDate: string;
