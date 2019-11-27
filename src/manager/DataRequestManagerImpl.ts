@@ -200,7 +200,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
     public grantAccessForOffer(
         offerSearchId: number,
         offerOwner: string,
-        acceptedFields: Map<string, AccessRight>,
+        @ParamDeserializer(new AccessRightMapDeserializer()) acceptedFields: Map<string, AccessRight>,
         priceId: number
     ): Promise<void> {
 

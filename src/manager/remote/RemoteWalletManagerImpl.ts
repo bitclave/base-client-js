@@ -9,11 +9,11 @@ export class RemoteWalletManagerImpl implements WalletManager {
     }
 
     public addWealthValidator(validatorPbKey: string): Promise<void> {
-        return this.transport.request('addWealthValidator', [validatorPbKey]);
+        return this.transport.request('walletManager.addWealthValidator', [validatorPbKey]);
     }
 
     public createCryptoWalletsData(wallets: CryptoWallets): Promise<CryptoWalletsData> {
-        return this.transport.request('createCryptoWalletsData', [wallets.toJson()], CryptoWalletsData);
+        return this.transport.request('walletManager.createCryptoWalletsData', [wallets.toJson()], CryptoWalletsData);
     }
 
     public getWalletValidator(): WalletValidator<CryptoWallet, SupportSignedMessageData<CryptoWallet>> {

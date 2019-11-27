@@ -14,35 +14,39 @@ export class RemoteDataRequestManagerImpl implements DataRequestManager {
     }
 
     public decryptMessage(senderPk: string, encrypted: string): Promise<object | string> {
-        return this.transport.request('decryptMessage', [senderPk, encrypted]);
+        return this.transport.request('dataRequestManager.dataRequestManager.decryptMessage', [senderPk, encrypted]);
     }
 
     public getGrantedPermissions(clientPk: string): Promise<Array<string>> {
-        return this.transport.request('getGrantedPermissions', [clientPk]);
+        return this.transport.request('dataRequestManager.getGrantedPermissions', [clientPk]);
     }
 
     public getGrantedPermissionsToMe(clientPk: string): Promise<Array<string>> {
-        return this.transport.request('getGrantedPermissionsToMe', [clientPk]);
+        return this.transport.request('dataRequestManager.getGrantedPermissionsToMe', [clientPk]);
     }
 
     public getRequestedPermissions(requestedFromPk?: string | undefined): Promise<Array<FieldData>> {
-        return this.transport.request('getGrantedPermissionsToMe', [requestedFromPk]);
+        return this.transport.request('dataRequestManager.getGrantedPermissionsToMe', [requestedFromPk]);
     }
 
     public getRequestedPermissionsToMe(whoRequestedPk?: string | undefined): Promise<Array<FieldData>> {
         return this.transport.request(
-            'getRequestedPermissionsToMe',
+            'dataRequestManager.getRequestedPermissionsToMe',
             [whoRequestedPk],
             new ArrayDeserializer(FieldData)
         );
     }
 
     public getRequests(fromPk: string | null, toPk: string | null): Promise<Array<DataRequest>> {
-        return this.transport.request('getRequests', [fromPk, toPk], new ArrayDeserializer(DataRequest));
+        return this.transport.request(
+            'dataRequestManager.getRequests',
+            [fromPk, toPk],
+            new ArrayDeserializer(DataRequest)
+        );
     }
 
     public getRequestsGraph(data: InputGraphData): Promise<OutputGraphData> {
-        return this.transport.request('getRequestsGraph', [data.toJson()], OutputGraphData);
+        return this.transport.request('dataRequestManager.getRequestsGraph', [data.toJson()], OutputGraphData);
     }
 
     public grantAccessForClient(
@@ -50,7 +54,10 @@ export class RemoteDataRequestManagerImpl implements DataRequestManager {
         acceptedFields: Map<string, AccessRight>,
         rootPk?: string
     ): Promise<void> {
-        return this.transport.request('grantAccessForClient', [clientPk, JsonUtils.mapToJson(acceptedFields), rootPk]);
+        return this.transport.request(
+            'dataRequestManager.grantAccessForClient',
+            [clientPk, JsonUtils.mapToJson(acceptedFields), rootPk]
+        );
     }
 
     public grantAccessForOffer(
@@ -60,16 +67,16 @@ export class RemoteDataRequestManagerImpl implements DataRequestManager {
         priceId: number
     ): Promise<void> {
         return this.transport.request(
-            'grantAccessForOffer',
+            'dataRequestManager.grantAccessForOffer',
             [offerSearchId, offerOwner, JsonUtils.mapToJson(acceptedFields), priceId]
         );
     }
 
     public requestPermissions(recipientPk: string, fields: Array<string>): Promise<void> {
-        return this.transport.request('requestPermissions', [recipientPk, fields]);
+        return this.transport.request('dataRequestManager.requestPermissions', [recipientPk, fields]);
     }
 
     public revokeAccessForClient(clientPk: string, revokeFields: Array<string>): Promise<void> {
-        return this.transport.request('revokeAccessForClient', [clientPk, revokeFields]);
+        return this.transport.request('dataRequestManager.revokeAccessForClient', [clientPk, revokeFields]);
     }
 }

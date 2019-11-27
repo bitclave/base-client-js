@@ -11,10 +11,18 @@ export class RemoteExternalServicesManagerImpl implements ExternalServicesManage
     }
 
     public callExternalService(serviceCall: ServiceCall): Promise<ServiceResponse> {
-        return this.transport.request('callExternalService', [serviceCall.toJson()], ServiceResponse);
+        return this.transport.request(
+            'externalServicesManager.callExternalService',
+            [serviceCall.toJson()],
+            ServiceResponse
+        );
     }
 
     public getExternalServices(): Promise<Array<ExternalService>> {
-        return this.transport.request('getExternalServices', [], new ArrayDeserializer(ExternalService));
+        return this.transport.request(
+            'externalServicesManager.getExternalServices',
+            [],
+            new ArrayDeserializer(ExternalService)
+        );
     }
 }

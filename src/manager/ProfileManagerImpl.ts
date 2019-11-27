@@ -111,7 +111,7 @@ export class ProfileManagerImpl implements ProfileManager {
     public async getAuthorizedData(
         @ParamDeserializer(new ArrayDeserializer(DataRequest)) acceptedRequests: Array<DataRequest>
     ): Promise<SharedData> {
-        if (acceptedRequests.length <= 0) {
+        if (!acceptedRequests || acceptedRequests.length <= 0) {
             return new SharedData();
         }
 

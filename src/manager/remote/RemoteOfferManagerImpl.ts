@@ -11,7 +11,7 @@ export class RemoteOfferManagerImpl implements OfferManager {
     }
 
     public deleteOffer(id: number): Promise<number> {
-        return this.transport.request('deleteOffer', [id]);
+        return this.transport.request('offerManager.deleteOffer', [id]);
     }
 
     /**
@@ -23,36 +23,40 @@ export class RemoteOfferManagerImpl implements OfferManager {
     }
 
     public getMyOffers(id: number): Promise<Array<Offer>> {
-        return this.transport.request('getMyOffers', [id], new ArrayDeserializer(Offer));
+        return this.transport.request('offerManager.getMyOffers', [id], new ArrayDeserializer(Offer));
     }
 
     public getMyOffersAndPage(page?: number, size?: number): Promise<Page<Offer>> {
-        return this.transport.request('getMyOffersAndPage', [page, size], new PageDeserializer(Offer));
+        return this.transport.request('offerManager.getMyOffersAndPage', [page, size], new PageDeserializer(Offer));
     }
 
     public getMyOffersByTag(tag: string): Promise<Array<Offer>> {
-        return this.transport.request('getMyOffersByTag', [tag], new ArrayDeserializer(Offer));
+        return this.transport.request('offerManager.getMyOffersByTag', [tag], new ArrayDeserializer(Offer));
     }
 
     public getOffersByOwnerAndTag(owner: string, tag: string): Promise<Array<Offer>> {
-        return this.transport.request('getOffersByOwnerAndTag', [owner, tag], new ArrayDeserializer(Offer));
+        return this.transport.request(
+            'offerManager.getOffersByOwnerAndTag',
+            [owner, tag],
+            new ArrayDeserializer(Offer)
+        );
     }
 
     public getOffersByPage(page?: number, size?: number): Promise<Page<Offer>> {
-        return this.transport.request('getOffersByPage', [page, size], new PageDeserializer(Offer));
+        return this.transport.request('offerManager.getOffersByPage', [page, size], new PageDeserializer(Offer));
     }
 
     public saveOffer(offer: Offer): Promise<Offer> {
-        return this.transport.request('saveOffer', [offer.toJson()], Offer);
+        return this.transport.request('offerManager.saveOffer', [offer.toJson()], Offer);
     }
 
     public shallowSaveOffer(offer: Offer): Promise<Offer> {
-        return this.transport.request('saveOffer', [offer.toJson()], Offer);
+        return this.transport.request('offerManager.saveOffer', [offer.toJson()], Offer);
     }
 
     public updateBulkOffers(offers: Array<Offer>): Promise<Array<number>> {
         const jsonOffers = offers.map(item => item.toJson());
 
-        return this.transport.request('saveOffer', [jsonOffers]);
+        return this.transport.request('offerManager.saveOffer', [jsonOffers]);
     }
 }

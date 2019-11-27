@@ -21,8 +21,8 @@ export class RemoteAccountManagerImpl implements AccountManager {
     ): Promise<Account> {
         this.tokenInterceptor.setAccessData(accessToken, tokenType);
         const account = await this.transport.request<Account>(
-            'authenticationByAccessToken',
-            [tokenType, message],
+            'accountManager.authenticationByAccessToken',
+            [accessToken, tokenType, message],
             Account
         );
         this.authAccountBehavior.next(account);
@@ -35,7 +35,7 @@ export class RemoteAccountManagerImpl implements AccountManager {
     }
 
     public checkAccount(mnemonicPhrase: string, message: string): Promise<Account> {
-        return this.transport.request('checkAccount', [mnemonicPhrase, message], Account);
+        return this.transport.request('accountManager.checkAccount', [mnemonicPhrase, message], Account);
     }
 
     public getAccount(): Account {
@@ -43,11 +43,11 @@ export class RemoteAccountManagerImpl implements AccountManager {
     }
 
     public getNewMnemonic(): Promise<string> {
-        return this.transport.request('getNewMnemonic', []);
+        return this.transport.request('accountManager.getNewMnemonic', []);
     }
 
     public getPublicKeyFromMnemonic(mnemonicPhrase: string): Promise<string> {
-        return this.transport.request('getPublicKeyFromMnemonic', [mnemonicPhrase]);
+        return this.transport.request('accountManager.getPublicKeyFromMnemonic', [mnemonicPhrase]);
     }
 
     public registration(mnemonicPhrase: string, message: string): Promise<Account> {
@@ -59,6 +59,6 @@ export class RemoteAccountManagerImpl implements AccountManager {
     }
 
     public unsubscribe(): Promise<void> {
-        return this.transport.request('unsubscribe', [this.authAccountBehavior.getValue()]);
+        return this.transport.request('accountManager.unsubscribe', [this.authAccountBehavior.getValue()]);
     }
 }

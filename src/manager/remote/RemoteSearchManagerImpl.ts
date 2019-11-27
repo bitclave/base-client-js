@@ -19,39 +19,43 @@ export class RemoteSearchManagerImpl implements SearchManager {
     }
 
     public addEventToOfferSearch(event: string, offerSearchId: number): Promise<void> {
-        return this.transport.request('addEventToOfferSearch', [event, offerSearchId]);
+        return this.transport.request('searchManager.addEventToOfferSearch', [event, offerSearchId]);
     }
 
     public addResultItem(offerSearch: OfferSearch): Promise<void> {
-        return this.transport.request('addResultItem', [offerSearch.toJson()]);
+        return this.transport.request('searchManager.addResultItem', [offerSearch.toJson()]);
     }
 
     public claimPurchaseForSearchItem(searchResultId: number): Promise<void> {
-        return this.transport.request('claimPurchaseForSearchItem', [searchResultId]);
+        return this.transport.request('searchManager.claimPurchaseForSearchItem', [searchResultId]);
     }
 
     public cloneOfferSearch(originToCopySearchRequestIds: Array<Pair<number, number>>): Promise<Array<OfferSearch>> {
         return this.transport.request(
-            'cloneOfferSearch',
+            'searchManager.cloneOfferSearch',
             [originToCopySearchRequestIds],
             new ArrayDeserializer(OfferSearch)
         );
     }
 
     public cloneRequest(searchRequestIds: Array<number>): Promise<Array<SearchRequest>> {
-        return this.transport.request('cloneRequest', [searchRequestIds], new ArrayDeserializer(SearchRequest));
+        return this.transport.request(
+            'searchManager.cloneRequest',
+            [searchRequestIds],
+            new ArrayDeserializer(SearchRequest)
+        );
     }
 
     public complainToSearchItem(searchResultId: number): Promise<void> {
-        return this.transport.request('complainToSearchItem', [searchResultId]);
+        return this.transport.request('searchManager.complainToSearchItem', [searchResultId]);
     }
 
     public confirmSearchItem(searchResultId: number): Promise<void> {
-        return this.transport.request('confirmSearchItem', [searchResultId]);
+        return this.transport.request('searchManager.confirmSearchItem', [searchResultId]);
     }
 
     public createRequest(searchRequest: SearchRequest): Promise<SearchRequest> {
-        return this.transport.request('createRequest', [searchRequest.toJson()], SearchRequest);
+        return this.transport.request('searchManager.createRequest', [searchRequest.toJson()], SearchRequest);
     }
 
     public createSearchResultByQuery(
@@ -66,23 +70,23 @@ export class RemoteSearchManagerImpl implements SearchManager {
         const filtersJson: object | undefined = filters ? JsonUtils.mapToJson(filters) : undefined;
 
         return this.transport.request(
-            'createSearchResultByQuery',
-            [query, searchRequestId, page, interests, mode, filtersJson],
+            'searchManager.createSearchResultByQuery',
+            [query, searchRequestId, page, size, interests, mode, filtersJson],
             new PageDeserializer(OfferSearchResultItem)
         );
     }
 
     public deleteRequest(id: number): Promise<number> {
-        return this.transport.request('deleteRequest', [id]);
+        return this.transport.request('searchManager.deleteRequest', [id]);
     }
 
     public evaluateSearchItem(searchResultId: number): Promise<void> {
-        return this.transport.request('evaluateSearchItem', [searchResultId]);
+        return this.transport.request('searchManager.evaluateSearchItem', [searchResultId]);
     }
 
     public getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>> {
         return this.transport.request<Map<number, number>>(
-            'getCountBySearchRequestIds',
+            'searchManager.getCountBySearchRequestIds',
             [searchRequestIds],
             new SimpleMapDeserializer()
         );
@@ -94,31 +98,43 @@ export class RemoteSearchManagerImpl implements SearchManager {
         owner?: string | undefined
     ): Promise<Array<OfferInteraction>> {
         return this.transport.request(
-            'getInteractions',
+            'searchManager.getInteractions',
             [offerIds, states, owner],
             new ArrayDeserializer(OfferInteraction)
         );
     }
 
     public getMyRequests(id?: number): Promise<Array<SearchRequest>> {
-        return this.transport.request('getMyRequests', [id], new ArrayDeserializer(SearchRequest));
+        return this.transport.request('searchManager.getMyRequests', [id], new ArrayDeserializer(SearchRequest));
     }
 
     public getMySearchRequestsByTag(tag: string): Promise<Array<SearchRequest>> {
-        return this.transport.request('getMySearchRequestsByTag', [tag], new ArrayDeserializer(SearchRequest));
+        return this.transport.request(
+            'searchManager.getMySearchRequestsByTag',
+            [tag],
+            new ArrayDeserializer(SearchRequest)
+        );
     }
 
     public getRequestsByOwnerAndId(owner: string, id?: number): Promise<Array<SearchRequest>> {
-        return this.transport.request('getRequestsByOwnerAndId', [owner, id], new ArrayDeserializer(SearchRequest));
+        return this.transport.request(
+            'searchManager.getRequestsByOwnerAndId',
+            [owner, id],
+            new ArrayDeserializer(SearchRequest)
+        );
     }
 
     public getRequestsByPage(page?: number, size?: number): Promise<Page<SearchRequest>> {
-        return this.transport.request('getRequestsByPage', [page, size], new PageDeserializer(SearchRequest));
+        return this.transport.request(
+            'searchManager.getRequestsByPage',
+            [page, size],
+            new PageDeserializer(SearchRequest)
+        );
     }
 
     public getSearchRequestsByOwnerAndTag(owner: string, tag: string): Promise<Array<SearchRequest>> {
         return this.transport.request(
-            'getSearchRequestsByOwnerAndTag',
+            'searchManager.getSearchRequestsByOwnerAndTag',
             [owner, tag],
             new ArrayDeserializer(SearchRequest)
         );
@@ -130,7 +146,7 @@ export class RemoteSearchManagerImpl implements SearchManager {
         size?: number
     ): Promise<Page<OfferSearchResultItem>> {
         return this.transport.request(
-            'getSearchResult',
+            'searchManager.getSearchResult',
             [searchRequestId, page, size],
             new PageDeserializer(OfferSearchResultItem)
         );
@@ -142,14 +158,14 @@ export class RemoteSearchManagerImpl implements SearchManager {
         size?: number
     ): Promise<Page<OfferSearchResultItem>> {
         return this.transport.request(
-            'getSearchResultByOfferSearchId',
+            'searchManager.getSearchResultByOfferSearchId',
             [offerSearchId, page, size],
             new PageDeserializer(OfferSearchResultItem)
         );
     }
 
     public getSuggestionByQuery(query: string, size?: number): Promise<Array<string>> {
-        return this.transport.request('getSuggestionByQuery', [query, size]);
+        return this.transport.request('searchManager.getSuggestionByQuery', [query, size]);
     }
 
     public getUserOfferSearches(
@@ -162,14 +178,14 @@ export class RemoteSearchManagerImpl implements SearchManager {
         interaction?: boolean
     ): Promise<Page<OfferSearchResultItem>> {
         return this.transport.request(
-            'getUserOfferSearches',
+            'searchManager.getUserOfferSearches',
             [page, size, unique, searchIds, state, sort, interaction],
             new PageDeserializer(OfferSearchResultItem)
         );
     }
 
     public rejectSearchItem(searchResultId: number): Promise<void> {
-        return this.transport.request('rejectSearchItem', [searchResultId]);
+        return this.transport.request('searchManager.rejectSearchItem', [searchResultId]);
     }
 
     public updateRequest(
@@ -179,6 +195,6 @@ export class RemoteSearchManagerImpl implements SearchManager {
                         ? searchRequest.map(item => item.toJson())
                         : searchRequest.toJson();
 
-        return this.transport.request('rejectSearchItem', [request], new SearchRequestDeserializer());
+        return this.transport.request('searchManager.updateRequest', [request], new SearchRequestDeserializer());
     }
 }

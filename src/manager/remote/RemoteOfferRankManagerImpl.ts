@@ -9,26 +9,26 @@ export class RemoteOfferRankManagerImpl implements OfferRankManager {
     }
 
     public create(rank: number, rankerId: string, offerId: number): Promise<OfferRank> {
-        return this.transport.request('create', [rank, rankerId, offerId], OfferRank);
+        return this.transport.request('offerRankManager.create', [rank, rankerId, offerId], OfferRank);
     }
 
     public delete(offerRankId: number): Promise<number> {
-        return this.transport.request('delete', [offerRankId]);
+        return this.transport.request('offerRankManager.delete', [offerRankId]);
     }
 
     public getById(offerRankId: number): Promise<OfferRank> {
-        return this.transport.request('getById', [offerRankId], OfferRank);
+        return this.transport.request('offerRankManager.getById', [offerRankId], OfferRank);
     }
 
     public getByOfferId(offerId: number): Promise<Array<OfferRank>> {
-        return this.transport.request('getByOfferId', [offerId], new ArrayDeserializer(OfferRank));
+        return this.transport.request('offerRankManager.getByOfferId', [offerId], new ArrayDeserializer(OfferRank));
     }
 
     public getByOfferIdAndRankId(offerId: number, rankerId: string): Promise<OfferRank> {
-        return this.transport.request('getByOfferIdAndRankId', [offerId, rankerId], OfferRank);
+        return this.transport.request('offerRankManager.getByOfferIdAndRankId', [offerId, rankerId], OfferRank);
     }
 
     public update(offerRank: OfferRank): Promise<OfferRank> {
-        return this.transport.request('update', [offerRank.toJson()], OfferRank);
+        return this.transport.request('offerRankManager.update', [offerRank.toJson()], OfferRank);
     }
 }
