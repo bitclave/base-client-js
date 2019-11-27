@@ -1,7 +1,7 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
 import { BehaviorSubject } from 'rxjs';
-import Base from '../../src/Base';
+import Base, { TokenType } from '../../src/Base';
 import { AccountManager } from '../../src/manager/AccountManager';
 import { AccountManagerImpl } from '../../src/manager/AccountManagerImpl';
 import { AccountRepository } from '../../src/repository/account/AccountRepository';
@@ -13,7 +13,6 @@ import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import { AccessTokenAccepter } from '../../src/utils/keypair/AccessTokenAccepter';
 import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
 import { RemoteKeyPairHelper } from '../../src/utils/keypair/RemoteKeyPairHelper';
-import { TokenType } from '../../src/utils/keypair/rpc/RpcToken';
 import AuthenticatorHelper from '../AuthenticatorHelper';
 import AccountRepositoryImplMock from './AccountRepositoryImplMock';
 
@@ -193,13 +192,15 @@ describe('Account Manager', async () => {
         const user = new Base(
             baseNodeUrl,
             'localhost',
-            RepositoryStrategyType.Postgres
+            RepositoryStrategyType.Postgres,
+            rpcSignerHost
         );
 
         const pass = 'is alice pass';
         const sigMessage = 'someSigMessage';
+        const token = await authenticatorHelper.generateAccessToken(pass);
 
-        const account = await user.accountManager.authenticationByPassPhrase(pass, sigMessage);
+        const account = await user.accountManager.authenticationByAccessToken(token, TokenType.BASIC, sigMessage);
 
         await user.accountManager.unsubscribe();
         account.createdAt.getTime().should.be.gt(0);

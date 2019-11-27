@@ -11,6 +11,7 @@ const expect = chai.expect;
 chai.use(chaiAsPromised);
 
 const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
+const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
 
 describe('Check throw errors', async () => {
 
@@ -18,7 +19,8 @@ describe('Check throw errors', async () => {
         const base = new Base(
             baseNodeUrl,
             'localhost',
-            RepositoryStrategyType.Postgres
+            RepositoryStrategyType.Postgres,
+            rpcSignerHost
         );
 
         await expect(base.profileManager.getData()).should.throw;
@@ -46,7 +48,8 @@ describe('Check throw errors', async () => {
         const base = new Base(
             baseNodeUrl,
             'localhost',
-            RepositoryStrategyType.Postgres
+            RepositoryStrategyType.Postgres,
+            rpcSignerHost
         );
 
         await expect(base.profileManager.updateData(new Map())).should.throw;
@@ -59,7 +62,13 @@ describe('Check throw errors', async () => {
 
             if (e instanceof JsonRpc) {
                 // tslint:disable-next-line:no-any
-                (e as JsonRpc).getResult<any>().statusCode.should.be.eq(401);
+                if ((e as JsonRpc).getResult<any>().hasOwnProperty('statusCode')) {
+                    (e as JsonRpc).getResult<any>().statusCode.should.be.eq(401);
+
+                } else if ((e as JsonRpc).getResult<any>().hasOwnProperty('result')) {
+                    (e as JsonRpc).getResult<any>().result.should.be.eq('access denied');
+                }
+
             } else {
                 e.message.should.be.eq('Invalid Argument: First argument should be an instance of PrivateKey');
             }

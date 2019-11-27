@@ -1,8 +1,9 @@
 // tslint:disable:no-unused-expression
-import Base, { AccessRight } from '../../src/Base';
+import Base, { AccessRight, RpcTransport, TokenType, TransportFactory } from '../../src/Base';
 import Account from '../../src/repository/models/Account';
 import { FileMeta } from '../../src/repository/models/FileMeta';
 import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
+import AuthenticatorHelper from '../AuthenticatorHelper';
 
 require('chai')
     .use(require('chai-as-promised'))
@@ -12,17 +13,23 @@ const Path = require('path');
 
 const someSigMessage = 'some unique message for signature';
 const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
+const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
+
+const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
+const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
 async function createUser(user: Base, pass: string): Promise<Account> {
+    const accessToken = await authenticatorHelper.generateAccessToken(pass);
+
     try {
-        await user.accountManager.authenticationByPassPhrase(pass, someSigMessage);
+        await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
         await user.accountManager.unsubscribe();
     } catch (e) {
         console.log('check createUser', e);
         // ignore error if user not exist
     }
 
-    return await user.accountManager.registration(pass, someSigMessage); // this method private.
+    return await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
 }
 
 describe('File CRUD', async () => {
@@ -42,7 +49,8 @@ describe('File CRUD', async () => {
         return new Base(
             baseNodeUrl,
             'localhost',
-            RepositoryStrategyType.Postgres
+            RepositoryStrategyType.Postgres,
+            rpcSignerHost
         );
     }
 
