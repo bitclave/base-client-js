@@ -1,11 +1,12 @@
 import { JsonObject } from './JsonObject';
+import { JsonTransform } from './JsonTransform';
 
 export enum LinkType {
     SHARE = 'SHARE',
     RESHARE = 'RESHARE'
 }
 
-export class GraphLink {
+export class GraphLink extends JsonTransform {
 
     public readonly from: number;
     public readonly to: number;
@@ -17,14 +18,20 @@ export class GraphLink {
     }
 
     constructor(from: number, to: number, key: string, type: LinkType) {
+        super();
+
         this.from = from || 0;
         this.to = to || 0;
         this.key = key || '';
         this.type = type || LinkType.SHARE;
     }
+
+    public toJson(): object {
+        return this;
+    }
 }
 
-export class OutputGraphData {
+export class OutputGraphData extends JsonTransform {
 
     public readonly clients: Set<string>;
     public readonly links: Array<GraphLink>;
@@ -39,7 +46,16 @@ export class OutputGraphData {
     }
 
     constructor(clients: Set<string>, links: Array<GraphLink>) {
+        super();
+
         this.clients = clients || new Set<string>();
         this.links = links || [];
+    }
+
+    public toJson(): object {
+        const clients = Array.from(this.clients.keys());
+        const links = this.links.map(item => item.toJson());
+
+        return {clients, links};
     }
 }

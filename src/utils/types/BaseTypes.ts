@@ -53,7 +53,7 @@ export class StringSignedMessage extends StringMessage implements SignedMessageD
     }
 }
 
-export class SupportSignedMessageData<T> implements JsonTransform {
+export class SupportSignedMessageData<T> extends JsonTransform {
     @ValidateNested()
     public data: T;
 
@@ -61,6 +61,8 @@ export class SupportSignedMessageData<T> implements JsonTransform {
     public sig: string;
 
     constructor(data: T, sig?: string) {
+        super();
+
         this.data = data;
         this.sig = sig || '';
     }
@@ -131,7 +133,7 @@ export class UsdCryptoWallet extends CryptoWallet {
     }
 }
 
-export class CryptoWallets implements JsonTransform {
+export class CryptoWallets extends JsonTransform {
     @IsTypedArray(() => EthWalletData, true)
     public readonly eth: Array<EthWalletData>;
 
@@ -166,6 +168,8 @@ export class CryptoWallets implements JsonTransform {
         app?: Array<AppWalletData>,
         usd?: Array<UsdWalletData>
     ) {
+        super();
+
         this.eth = eth || [];
         this.btc = btc || [];
         this.app = app || [];

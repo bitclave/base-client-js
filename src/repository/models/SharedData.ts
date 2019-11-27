@@ -1,8 +1,9 @@
 import { JsonUtils } from '../../utils/JsonUtils';
 import { FieldData } from './FieldData';
 import { JsonObject } from './JsonObject';
+import { JsonTransform } from './JsonTransform';
 
-export class SharedData {
+export class SharedData extends JsonTransform {
     public readonly data: Map<string, Array<FieldData>> = new Map();
 
     public static fromJson(json: JsonObject<object>): SharedData {
@@ -16,6 +17,13 @@ export class SharedData {
         });
 
         return result;
+    }
+
+    public toJson(): object {
+        const map = new Map<string, Array<object>>();
+        this.data.forEach((value, key) => map.set(key, value.map(item => item.toJson())));
+
+        return JsonUtils.mapToJson(map);
     }
 
     public get size(): number {
