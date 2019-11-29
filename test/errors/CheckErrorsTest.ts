@@ -1,6 +1,6 @@
 // tslint:disable:no-unused-expression no-any
-import Base, { JsonRpc } from '../../src/Base';
-import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
+import { JsonRpc } from '../../src/Base';
+import { BaseClientHelper } from '../BaseClientHelper';
 
 require('chai').use(require('chai-as-promised')).should();
 
@@ -10,18 +10,10 @@ const chaiAsPromised = require('chai-as-promised');
 const expect = chai.expect;
 chai.use(chaiAsPromised);
 
-const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
-const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
-
 describe('Check throw errors', async () => {
 
     it('should throw error on getData without authorization', async () => {
-        const base = new Base(
-            baseNodeUrl,
-            'localhost',
-            RepositoryStrategyType.Postgres,
-            rpcSignerHost
-        );
+        const base = BaseClientHelper.createUnRegistered();
 
         await expect(base.profileManager.getData()).should.throw;
 
@@ -46,12 +38,7 @@ describe('Check throw errors', async () => {
     });
 
     it('should throw error on updateData without authorization', async () => {
-        const base = new Base(
-            baseNodeUrl,
-            'localhost',
-            RepositoryStrategyType.Postgres,
-            rpcSignerHost
-        );
+        const base = BaseClientHelper.createUnRegistered();
 
         await expect(base.profileManager.updateData(new Map())).should.throw;
 

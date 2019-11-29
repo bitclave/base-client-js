@@ -51,6 +51,10 @@ export class BitKeyPair implements KeyPairHelper {
         return publicKey.toString(16);
     }
 
+    public static generateMnemonicPhrase(): string {
+        return new Mnemonic(Mnemonic.Words.ENGLISH).toString();
+    }
+
     constructor(permissionsSource: PermissionsSource, siteDataSource: SiteDataSource, origin: string) {
         this.permissions = new Permissions();
         this.permissionsSource = permissionsSource;
@@ -58,20 +62,18 @@ export class BitKeyPair implements KeyPairHelper {
         this.origin = origin;
     }
 
-    public createKeyPair(passPhrase: string): Promise<KeyPair> {
-        return new Promise<KeyPair>(resolve => {
-            const pbkdf2: string = CryptoUtils.PBKDF2(passPhrase, 256);
-            const hash = bitcore.crypto.Hash.sha256(new bitcore.deps.Buffer(pbkdf2));
-            const bn = bitcore.crypto.BN.fromBuffer(hash);
-            this.privateKey = new bitcore.PrivateKey(bn);
-            this.publicKey = this.privateKey.toPublicKey();
-            this.addr = this.privateKey.toAddress();
+    public async createKeyPair(passPhrase: string): Promise<KeyPair> {
+        const pbkdf2: string = CryptoUtils.PBKDF2(passPhrase, 256);
+        const hash = bitcore.crypto.Hash.sha256(new bitcore.deps.Buffer(pbkdf2));
+        const bn = bitcore.crypto.BN.fromBuffer(hash);
+        this.privateKey = new bitcore.PrivateKey(bn);
+        this.publicKey = this.privateKey.toPublicKey();
+        this.addr = this.privateKey.toAddress();
 
-            const privateKeyHex: string = this.privateKey.toString(16);
-            const publicKeyHex = this.publicKey.toString();
+        const privateKeyHex: string = this.privateKey.toString(16);
+        const publicKeyHex = this.publicKey.toString();
 
-            resolve(new KeyPair(privateKeyHex, publicKeyHex));
-        });
+        return new KeyPair(privateKeyHex, publicKeyHex);
     }
 
     public generateMnemonicPhrase(): Promise<string> {

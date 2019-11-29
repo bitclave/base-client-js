@@ -1,103 +1,22 @@
 import * as assert from 'assert';
 import 'reflect-metadata';
-import { BehaviorSubject } from 'rxjs';
-import Base, { GraphLink, LinkType, RepositoryStrategyType, TransportFactory } from '../../src/Base';
-import { DataRequestManager } from '../../src/manager/DataRequestManager';
-import { DataRequestManagerImpl } from '../../src/manager/DataRequestManagerImpl';
-import { ProfileManager } from '../../src/manager/ProfileManager';
-import { ProfileManagerImpl } from '../../src/manager/ProfileManagerImpl';
-import Account from '../../src/repository/models/Account';
+import Base, {
+    CompareAction,
+    GraphLink,
+    LinkType,
+    Offer,
+    OfferPrice,
+    OfferSearch,
+    SearchRequest
+} from '../../src/Base';
 import { FieldData } from '../../src/repository/models/FieldData';
 import { InputGraphData } from '../../src/repository/models/InputGraphData';
-import { HttpTransportImpl } from '../../src/repository/source/http/HttpTransportImpl';
-import { AccessTokenInterceptor } from '../../src/repository/source/rpc/AccessTokenInterceptor';
-import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
-import { RpcTransportImpl } from '../../src/repository/source/rpc/RpcTransportImpl';
-import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
-import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
 import { AccessRight } from '../../src/utils/keypair/Permissions';
-import { RemoteKeyPairHelper } from '../../src/utils/keypair/RemoteKeyPairHelper';
-import { TokenType } from '../../src/utils/keypair/rpc/RpcToken';
-import AuthenticatorHelper from '../AuthenticatorHelper';
-import ClientDataRepositoryImplMock from '../profile/ClientDataRepositoryImplMock';
-import DataRequestRepositoryImplMock from './DataRequestRepositoryImplMock';
-
-const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
-const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
+import { BaseClientHelper } from '../BaseClientHelper';
 
 require('chai')
     .use(require('chai-as-promised'))
     .should();
-
-const dataRepository: DataRequestRepositoryImplMock = new DataRequestRepositoryImplMock();
-const clientRepository = new ClientDataRepositoryImplMock();
-const rpcTransport: RpcTransport = new RpcTransportImpl(new HttpTransportImpl(rpcSignerHost));
-const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
-
-class SimpleUser {
-    public readonly requestManager: DataRequestManager;
-    public readonly profileManager: ProfileManager;
-    public readonly keyPair: KeyPairHelper;
-
-    constructor(requestManager: DataRequestManager, profileManager: ProfileManager, keyPair: KeyPairHelper) {
-        this.requestManager = requestManager;
-        this.profileManager = profileManager;
-        this.keyPair = keyPair;
-    }
-}
-
-function createBase(): Base {
-    return new Base(
-        baseNodeUrl,
-        'localhost',
-        RepositoryStrategyType.Postgres,
-        rpcSignerHost
-    );
-}
-
-async function createUser(user: Base, pass: string): Promise<Account> {
-    const accessToken = await authenticatorHelper.generateAccessToken(pass);
-    await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, pass);
-    await user.accountManager.unsubscribe();
-
-    return await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, pass);
-}
-
-function createRemoteKeyPair(): RemoteKeyPairHelper {
-    const tokenAccepter = new AccessTokenInterceptor('', TokenType.BASIC);
-    const httpTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost)
-        .addInterceptor(tokenAccepter);
-
-    return KeyPairFactory.createRpcKeyPair(httpTransport, tokenAccepter);
-}
-
-async function createDataRequestManager(passPhrase: string): Promise<SimpleUser> {
-    const keyPairHelper: RemoteKeyPairHelper = createRemoteKeyPair();
-    const accessToken = await authenticatorHelper.generateAccessToken(passPhrase);
-
-    keyPairHelper.setAccessData(accessToken, TokenType.BASIC);
-    await keyPairHelper.createKeyPair(passPhrase);
-    const account: Account = new Account(keyPairHelper.getPublicKey());
-    const authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(account);
-
-    return new SimpleUser(
-        new DataRequestManagerImpl(
-            dataRepository,
-            authAccountBehavior,
-            keyPairHelper,
-            keyPairHelper
-        ),
-        new ProfileManagerImpl(
-            clientRepository,
-            authAccountBehavior,
-            keyPairHelper,
-            keyPairHelper,
-            keyPairHelper
-        ),
-
-        keyPairHelper
-    );
-}
 
 describe('Data Request Manager', async () => {
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
@@ -107,102 +26,109 @@ describe('Data Request Manager', async () => {
 
     const bobsFields = ['name', 'email'];
 
-    let dataAlisa: SimpleUser;
-    let dataBob: SimpleUser;
-    let dataCabe: SimpleUser;
-    let dataDaniel: SimpleUser;
+    let baseAlisa: Base;
+    let baseBob: Base;
+    let baseCabe: Base;
+    let baseDaniel: Base;
 
-    before(async () => {
-        dataAlisa = await createDataRequestManager(passPhraseAlisa);
-        dataBob = await createDataRequestManager(passPhraseBob);
-        dataCabe = await createDataRequestManager(passPhraseCabe);
-        dataDaniel = await createDataRequestManager(passPhraseDaniel);
-
-        dataRepository.setPK(dataAlisa.keyPair.getPublicKey());
-    });
-
-    beforeEach((done) => {
-        dataRepository.clearData();
-        done();
-    });
-
-    after(async () => {
-        rpcTransport.disconnect();
+    beforeEach(async () => {
+        baseAlisa = await BaseClientHelper.createRegistered(passPhraseAlisa);
+        baseBob = await BaseClientHelper.createRegistered(passPhraseBob);
+        baseCabe = await BaseClientHelper.createRegistered(passPhraseCabe);
+        baseDaniel = await BaseClientHelper.createRegistered(passPhraseDaniel);
     });
 
     it('request for permissions data', async () => {
-        await dataAlisa.requestManager.requestPermissions(dataBob.keyPair.getPublicKey(), bobsFields);
+        await baseAlisa.dataRequestManager.requestPermissions(
+            baseBob.accountManager.getAccount().publicKey,
+            bobsFields
+        );
 
-        const requestsByFrom = await dataAlisa.requestManager.getRequests(dataAlisa.keyPair.getPublicKey(), null);
-        const requestsByTo = await dataAlisa.requestManager.getRequests(null, dataBob.keyPair.getPublicKey());
+        const requestsByFrom = await baseAlisa.dataRequestManager.getRequests(
+            baseAlisa.accountManager.getAccount().publicKey,
+            null
+        );
+        const requestsByTo = await baseAlisa.dataRequestManager.getRequests(
+            null,
+            baseBob.accountManager.getAccount().publicKey
+        );
 
         requestsByFrom.should.be.deep.equal(requestsByTo);
 
         requestsByFrom[0].requestData.should.be.not.equal(bobsFields);
 
-        const requestedBobFromAlisa: Array<FieldData> = await dataBob.requestManager.getRequestedPermissions(
-            dataAlisa.keyPair.getPublicKey()
+        const requestedBobFromAlisa: Array<FieldData> = await baseBob.dataRequestManager.getRequestedPermissions(
+            baseAlisa.accountManager.getAccount().publicKey
         );
 
         requestedBobFromAlisa.length.should.be.equal(0);
 
-        const requestedAlisaFromBob: Array<FieldData> = await dataBob.requestManager
-            .getRequestedPermissionsToMe(dataAlisa.keyPair.getPublicKey());
+        const requestedAlisaFromBob: Array<FieldData> = await baseBob.dataRequestManager
+            .getRequestedPermissionsToMe(baseAlisa.accountManager.getAccount().publicKey);
 
         requestedAlisaFromBob.length.should.be.equal(bobsFields.length);
 
-        const requestedFromBob: Array<string> = (await dataAlisa.requestManager
-            .getRequestedPermissions(dataBob.keyPair.getPublicKey()))
+        const requestedFromBob: Array<string> = (await baseAlisa.dataRequestManager
+            .getRequestedPermissions(baseBob.accountManager.getAccount().publicKey))
             .map(item => item.key);
 
         requestedFromBob.should.be.deep.equal(bobsFields);
     });
 
     it('create response data', async () => {
-        await dataAlisa.requestManager.requestPermissions(dataBob.keyPair.getPublicKey(), bobsFields);
+        await baseAlisa.dataRequestManager.requestPermissions(
+            baseBob.accountManager.getAccount().publicKey,
+            bobsFields
+        );
 
         const grantFields: Map<string, AccessRight> = new Map();
         for (const item of bobsFields) {
             grantFields.set(item, AccessRight.R);
         }
 
-        await dataBob.requestManager.grantAccessForClient(dataAlisa.keyPair.getPublicKey(), grantFields);
+        await baseBob.dataRequestManager.grantAccessForClient(
+            baseAlisa.accountManager.getAccount().publicKey,
+            grantFields
+        );
 
-        const requestedFromAlisa = (await dataAlisa.requestManager
-            .getRequestedPermissions(dataBob.keyPair.getPublicKey()))
+        const requestedFromAlisa = (await baseAlisa.dataRequestManager
+            .getRequestedPermissions(baseBob.accountManager.getAccount().publicKey))
             .map(item => item.key);
 
         requestedFromAlisa.should.be.deep.eq(bobsFields);
 
-        const requestedToBob = (await dataBob.requestManager
-            .getRequestedPermissionsToMe(dataAlisa.keyPair.getPublicKey()))
+        const requestedToBob = (await baseBob.dataRequestManager
+            .getRequestedPermissionsToMe(baseAlisa.accountManager.getAccount().publicKey))
             .map(item => item.key);
 
         requestedToBob.should.be.deep.eq(bobsFields);
 
-        const requestedFromAll = (await dataAlisa.requestManager
+        const requestedFromAll = (await baseAlisa.dataRequestManager
             .getRequestedPermissions())
             .map(item => item.key);
 
         requestedFromAll.should.be.deep.eq(bobsFields);
 
-        const requestedToBobFromAll = (await dataBob.requestManager
+        const requestedToBobFromAll = (await baseBob.dataRequestManager
             .getRequestedPermissionsToMe())
             .map(item => item.key);
 
         requestedToBobFromAll.should.be.deep.eq(bobsFields);
 
-        const grantFromAlisaToBob: Array<string> = await dataBob.requestManager
-            .getGrantedPermissions(dataAlisa.keyPair.getPublicKey());
+        const grantFromAlisaToBob: Array<string> = await baseBob.dataRequestManager
+            .getGrantedPermissions(baseAlisa.accountManager.getAccount().publicKey);
 
         grantFromAlisaToBob.length.should.be.equal(0);
 
-        const requests = await dataAlisa.requestManager
-            .getRequests(dataAlisa.keyPair.getPublicKey(), dataBob.keyPair.getPublicKey());
+        const requests = await baseAlisa.dataRequestManager
+            .getRequests(
+                baseAlisa.accountManager.getAccount().publicKey,
+                baseBob.accountManager.getAccount().publicKey
+            );
 
-        const grantFromBobToAlisa: Map<string, string | undefined> = (await dataAlisa.profileManager
+        const grantFromBobToAlisa: Map<string, string | undefined> = (await baseAlisa.profileManager
             .getAuthorizedData(requests))
-            .getKeyValue(dataBob.keyPair.getPublicKey());
+            .getKeyValue(baseBob.accountManager.getAccount().publicKey);
 
         const granted: Array<string> = [];
 
@@ -221,19 +147,25 @@ describe('Data Request Manager', async () => {
             grantFields.set(item, AccessRight.R);
         }
 
-        await dataBob.requestManager.grantAccessForClient(dataAlisa.keyPair.getPublicKey(), grantFields);
+        await baseBob.dataRequestManager.grantAccessForClient(
+            baseAlisa.accountManager.getAccount().publicKey,
+            grantFields
+        );
 
-        const grantFromAlisaToBob: Array<string> = await dataBob.requestManager
-            .getGrantedPermissions(dataAlisa.keyPair.getPublicKey());
+        const grantFromAlisaToBob: Array<string> = await baseBob.dataRequestManager
+            .getGrantedPermissions(baseAlisa.accountManager.getAccount().publicKey);
 
         grantFromAlisaToBob.length.should.be.equal(0);
 
-        const requests = await dataAlisa.requestManager
-            .getRequests(dataAlisa.keyPair.getPublicKey(), dataBob.keyPair.getPublicKey());
+        const requests = await baseAlisa.dataRequestManager
+            .getRequests(
+                baseAlisa.accountManager.getAccount().publicKey,
+                baseBob.accountManager.getAccount().publicKey
+            );
 
-        const grantFromBobToAlisa: Map<string, string | undefined> = (await dataAlisa.profileManager
+        const grantFromBobToAlisa: Map<string, string | undefined> = (await baseAlisa.profileManager
             .getAuthorizedData(requests))
-            .getKeyValue(dataBob.keyPair.getPublicKey());
+            .getKeyValue(baseBob.accountManager.getAccount().publicKey);
 
         const granted: Array<string> = [];
 
@@ -248,12 +180,15 @@ describe('Data Request Manager', async () => {
 
     it('grand access for client and re-share data', async () => {
         // A - save own data
-        await dataBob.profileManager.updateData(
+        await baseBob.profileManager.updateData(
             new Map([[bobsFields[0], 'zero index field'], [bobsFields[1], 'one index field']])
         );
 
         // B make request for A of data
-        await dataAlisa.requestManager.requestPermissions(dataBob.keyPair.getPublicKey(), bobsFields);
+        await baseAlisa.dataRequestManager.requestPermissions(
+            baseBob.accountManager.getAccount().publicKey,
+            bobsFields
+        );
 
         const grantFields: Map<string, AccessRight> = new Map();
         for (const item of bobsFields) {
@@ -261,15 +196,18 @@ describe('Data Request Manager', async () => {
         }
 
         // A grant access for B
-        await dataBob.requestManager
-            .grantAccessForClient(dataAlisa.keyPair.getPublicKey(), grantFields);
+        await baseBob.dataRequestManager
+            .grantAccessForClient(baseAlisa.accountManager.getAccount().publicKey, grantFields);
 
-        const requests = await dataAlisa.requestManager
-            .getRequests(dataAlisa.keyPair.getPublicKey(), dataBob.keyPair.getPublicKey());
+        const requests = await baseAlisa.dataRequestManager
+            .getRequests(
+                baseAlisa.accountManager.getAccount().publicKey,
+                baseBob.accountManager.getAccount().publicKey
+            );
 
-        const grantFromBobToAlisa: Map<string, string | undefined> = (await dataAlisa.profileManager
+        const grantFromBobToAlisa: Map<string, string | undefined> = (await baseAlisa.profileManager
             .getAuthorizedData(requests))
-            .getKeyValue(dataBob.keyPair.getPublicKey());
+            .getKeyValue(baseBob.accountManager.getAccount().publicKey);
 
         const granted: Array<string> = [];
 
@@ -285,55 +223,58 @@ describe('Data Request Manager', async () => {
 
         // B re-share data from A to C
         // Bob [name, email] -> Alisa-Bob[name]
-        await dataAlisa.requestManager.grantAccessForClient(
-            dataCabe.keyPair.getPublicKey(),
+        await baseAlisa.dataRequestManager.grantAccessForClient(
+            baseCabe.accountManager.getAccount().publicKey,
             reshareFiled,
-            dataBob.keyPair.getPublicKey()
+            baseBob.accountManager.getAccount().publicKey
         );
 
-        const grantFromAlisaToCabe: Array<string> = await dataCabe.requestManager
-            .getGrantedPermissions(dataAlisa.keyPair.getPublicKey());
+        const grantFromAlisaToCabe: Array<string> = await baseCabe.dataRequestManager
+            .getGrantedPermissions(baseAlisa.accountManager.getAccount().publicKey);
 
         grantFromAlisaToCabe.should.be.deep.equal([bobsFields[0]]);
 
         // C re-share data to D from B (where root A)
         // Bob [name, email] -> Alisa-Bob[name] -> Cabe-Alisa-Bob[name] -> Daniel
-        await dataCabe.requestManager.grantAccessForClient(
-            dataDaniel.keyPair.getPublicKey(),
+        await baseCabe.dataRequestManager.grantAccessForClient(
+            baseDaniel.accountManager.getAccount().publicKey,
             reshareFiled,
-            dataBob.keyPair.getPublicKey()
+            baseBob.accountManager.getAccount().publicKey
         );
 
-        const grantFromCabeToDaniel: Array<string> = await dataDaniel.requestManager
-            .getGrantedPermissions(dataCabe.keyPair.getPublicKey());
+        const grantFromCabeToDaniel: Array<string> = await baseDaniel.dataRequestManager
+            .getGrantedPermissions(baseCabe.accountManager.getAccount().publicKey);
 
         grantFromCabeToDaniel.should.be.deep.equal([bobsFields[0]]);
 
-        let reShareRequests = await dataCabe.requestManager.getRequests(
-            dataCabe.keyPair.getPublicKey(),
-            dataAlisa.keyPair.getPublicKey()
+        let reShareRequests = await baseCabe.dataRequestManager.getRequests(
+            baseCabe.accountManager.getAccount().publicKey,
+            baseAlisa.accountManager.getAccount().publicKey
         );
 
         let reSharedFields =
-            (await dataCabe.profileManager.getAuthorizedData(reShareRequests))
-                .getKeyValue(dataAlisa.keyPair.getPublicKey(), dataBob.keyPair.getPublicKey());
+            (await baseCabe.profileManager.getAuthorizedData(reShareRequests))
+                .getKeyValue(
+                    baseAlisa.accountManager.getAccount().publicKey,
+                    baseBob.accountManager.getAccount().publicKey
+                );
 
         (reSharedFields.get(bobsFields[0]) as string).should.be.eq('zero index field');
 
-        reShareRequests = await dataDaniel.requestManager.getRequests(
-            dataDaniel.keyPair.getPublicKey(),
-            dataCabe.keyPair.getPublicKey()
+        reShareRequests = await baseDaniel.dataRequestManager.getRequests(
+            baseDaniel.accountManager.getAccount().publicKey,
+            baseCabe.accountManager.getAccount().publicKey
         );
 
-        reSharedFields = (await dataDaniel.profileManager.getAuthorizedData(reShareRequests))
-            .getKeyValue(dataCabe.keyPair.getPublicKey(), dataBob.keyPair.getPublicKey());
+        reSharedFields = (await baseDaniel.profileManager.getAuthorizedData(reShareRequests))
+            .getKeyValue(baseCabe.accountManager.getAccount().publicKey, baseBob.accountManager.getAccount().publicKey);
 
         (reSharedFields.get(bobsFields[0]) as string).should.be.eq('zero index field');
     });
 
     it('grand access for client and re-share data and revoke', async () => {
         // A - save own data
-        await dataBob.profileManager.updateData(
+        await baseBob.profileManager.updateData(
             new Map([[bobsFields[0], 'zero index field'], [bobsFields[1], 'one index field']])
         );
 
@@ -343,57 +284,63 @@ describe('Data Request Manager', async () => {
         }
 
         // A grant all fileds access for B
-        await dataBob.requestManager
-            .grantAccessForClient(dataAlisa.keyPair.getPublicKey(), grantFields);
+        await baseBob.dataRequestManager
+            .grantAccessForClient(baseAlisa.accountManager.getAccount().publicKey, grantFields);
 
         // A grant field by index 1 access for D
-        await dataBob.requestManager
-            .grantAccessForClient(dataDaniel.keyPair.getPublicKey(), new Map([[bobsFields[1], AccessRight.R]]));
+        await baseBob.dataRequestManager
+            .grantAccessForClient(
+                baseDaniel.accountManager.getAccount().publicKey,
+                new Map([[bobsFields[1], AccessRight.R]])
+            );
 
         const reshareFiled = new Map<string, AccessRight>([[bobsFields[0], AccessRight.R]]);
 
         // B re-share data from A to C
         // Bob [name, email] -> Alisa-Bob[name]
-        await dataAlisa.requestManager.grantAccessForClient(
-            dataCabe.keyPair.getPublicKey(),
+        await baseAlisa.dataRequestManager.grantAccessForClient(
+            baseCabe.accountManager.getAccount().publicKey,
             reshareFiled,
-            dataBob.keyPair.getPublicKey()
+            baseBob.accountManager.getAccount().publicKey
         );
 
         // C re-share data to D from B (where root A)
         // Bob [name, email] -> Alisa-Bob[name] -> Cabe-Alisa-Bob[name] -> Daniel
-        await dataCabe.requestManager.grantAccessForClient(
-            dataDaniel.keyPair.getPublicKey(),
+        await baseCabe.dataRequestManager.grantAccessForClient(
+            baseDaniel.accountManager.getAccount().publicKey,
             reshareFiled,
-            dataBob.keyPair.getPublicKey()
+            baseBob.accountManager.getAccount().publicKey
         );
 
-        (await dataAlisa.requestManager
-            .getGrantedPermissions(dataBob.keyPair.getPublicKey())).should.be.deep.equal(bobsFields);
+        (await baseAlisa.dataRequestManager
+            .getGrantedPermissions(baseBob.accountManager.getAccount().publicKey)).should.be.deep.equal(bobsFields);
 
-        (await dataCabe.requestManager
-            .getGrantedPermissions(dataAlisa.keyPair.getPublicKey())).should.be.deep.equal([bobsFields[0]]);
+        (await baseCabe.dataRequestManager
+            .getGrantedPermissions(baseAlisa.accountManager.getAccount().publicKey)).should.be.deep.equal([bobsFields[0]]);
 
-        (await dataDaniel.requestManager
-            .getGrantedPermissions(dataCabe.keyPair.getPublicKey())).should.be.deep.equal([bobsFields[0]]);
+        (await baseDaniel.dataRequestManager
+            .getGrantedPermissions(baseCabe.accountManager.getAccount().publicKey)).should.be.deep.equal([bobsFields[0]]);
 
-        (await dataDaniel.requestManager
-            .getGrantedPermissions(dataBob.keyPair.getPublicKey())).should.be.deep.equal([bobsFields[1]]);
+        (await baseDaniel.dataRequestManager
+            .getGrantedPermissions(baseBob.accountManager.getAccount().publicKey)).should.be.deep.equal([bobsFields[1]]);
 
         // revoke
-        await dataBob.requestManager.revokeAccessForClient(dataAlisa.keyPair.getPublicKey(), bobsFields);
+        await baseBob.dataRequestManager.revokeAccessForClient(
+            baseAlisa.accountManager.getAccount().publicKey,
+            bobsFields
+        );
 
-        (await dataAlisa.requestManager
-            .getGrantedPermissions(dataBob.keyPair.getPublicKey())).should.be.deep.equal([]);
+        (await baseAlisa.dataRequestManager
+            .getGrantedPermissions(baseBob.accountManager.getAccount().publicKey)).should.be.deep.equal([]);
 
-        (await dataCabe.requestManager
-            .getGrantedPermissions(dataAlisa.keyPair.getPublicKey())).should.be.deep.equal([]);
+        (await baseCabe.dataRequestManager
+            .getGrantedPermissions(baseAlisa.accountManager.getAccount().publicKey)).should.be.deep.equal([]);
 
-        (await dataDaniel.requestManager
-            .getGrantedPermissions(dataCabe.keyPair.getPublicKey())).should.be.deep.equal([]);
+        (await baseDaniel.dataRequestManager
+            .getGrantedPermissions(baseCabe.accountManager.getAccount().publicKey)).should.be.deep.equal([]);
 
-        (await dataDaniel.requestManager
-            .getGrantedPermissions(dataBob.keyPair.getPublicKey())).should.be.deep.equal([bobsFields[1]]);
+        (await baseDaniel.dataRequestManager
+            .getGrantedPermissions(baseBob.accountManager.getAccount().publicKey)).should.be.deep.equal([bobsFields[1]]);
     });
 
     it('grand access to field without requested permissions and revoke access', async () => {
@@ -402,19 +349,25 @@ describe('Data Request Manager', async () => {
             grantFields.set(item, AccessRight.R);
         }
 
-        await dataBob.requestManager.grantAccessForClient(dataAlisa.keyPair.getPublicKey(), grantFields);
+        await baseBob.dataRequestManager.grantAccessForClient(
+            baseAlisa.accountManager.getAccount().publicKey,
+            grantFields
+        );
 
-        const grantFromAlisaToBob: Array<string> = await dataBob.requestManager
-            .getGrantedPermissions(dataAlisa.keyPair.getPublicKey());
+        const grantFromAlisaToBob: Array<string> = await baseBob.dataRequestManager
+            .getGrantedPermissions(baseAlisa.accountManager.getAccount().publicKey);
 
         grantFromAlisaToBob.length.should.be.equal(0);
 
-        let requests = await dataAlisa.requestManager
-            .getRequests(dataAlisa.keyPair.getPublicKey(), dataBob.keyPair.getPublicKey());
+        let requests = await baseAlisa.dataRequestManager
+            .getRequests(
+                baseAlisa.accountManager.getAccount().publicKey,
+                baseBob.accountManager.getAccount().publicKey
+            );
 
-        let grantFromBobToAlisa: Map<string, string | undefined> = (await dataAlisa.profileManager
+        let grantFromBobToAlisa: Map<string, string | undefined> = (await baseAlisa.profileManager
             .getAuthorizedData(requests))
-            .getKeyValue(dataBob.keyPair.getPublicKey());
+            .getKeyValue(baseBob.accountManager.getAccount().publicKey);
 
         const granted: Array<string> = [];
 
@@ -426,14 +379,20 @@ describe('Data Request Manager', async () => {
 
         granted.should.be.deep.equal(bobsFields);
 
-        await dataBob.requestManager.revokeAccessForClient(dataAlisa.keyPair.getPublicKey(), bobsFields);
+        await baseBob.dataRequestManager.revokeAccessForClient(
+            baseAlisa.accountManager.getAccount().publicKey,
+            bobsFields
+        );
 
-        requests = await dataAlisa.requestManager
-            .getRequests(dataAlisa.keyPair.getPublicKey(), dataBob.keyPair.getPublicKey());
+        requests = await baseAlisa.dataRequestManager
+            .getRequests(
+                baseAlisa.accountManager.getAccount().publicKey,
+                baseBob.accountManager.getAccount().publicKey
+            );
 
-        grantFromBobToAlisa = (await dataAlisa.profileManager
+        grantFromBobToAlisa = (await baseAlisa.profileManager
             .getAuthorizedData(requests))
-            .getKeyValue(dataBob.keyPair.getPublicKey());
+            .getKeyValue(baseBob.accountManager.getAccount().publicKey);
 
         grantFromBobToAlisa.size.should.be.equal(0);
     });
@@ -445,54 +404,109 @@ describe('Data Request Manager', async () => {
         for (const item of bobsFields) {
             grantFields.set(item, AccessRight.R);
         }
-        await dataBob.requestManager.grantAccessForClient(somePK, grantFields);
+        await baseBob.dataRequestManager.grantAccessForClient(somePK, grantFields);
 
-        let grant: Array<string> = await dataAlisa.requestManager
-            .getGrantedPermissionsToMe(dataBob.keyPair.getPublicKey());
-
-        grant.length.should.be.eq(0);
-
-        grant = await dataAlisa.requestManager
-            .getGrantedPermissions(dataBob.keyPair.getPublicKey());
+        let grant: Array<string> = await baseAlisa.dataRequestManager
+            .getGrantedPermissionsToMe(baseBob.accountManager.getAccount().publicKey);
 
         grant.length.should.be.eq(0);
 
-        let requests: Array<FieldData> = await dataAlisa.requestManager
-            .getRequestedPermissions(dataBob.keyPair.getPublicKey());
+        grant = await baseAlisa.dataRequestManager
+            .getGrantedPermissions(baseBob.accountManager.getAccount().publicKey);
+
+        grant.length.should.be.eq(0);
+
+        let requests: Array<FieldData> = await baseAlisa.dataRequestManager
+            .getRequestedPermissions(baseBob.accountManager.getAccount().publicKey);
 
         requests.length.should.be.eq(0);
 
-        requests = await dataAlisa.requestManager
-            .getRequestedPermissionsToMe(dataBob.keyPair.getPublicKey());
+        requests = await baseAlisa.dataRequestManager
+            .getRequestedPermissionsToMe(baseBob.accountManager.getAccount().publicKey);
 
         requests.length.should.be.eq(0);
     });
 
+    function offerFactory(): Offer {
+        const offerTags = new Map<string, string>(
+            [
+                ['product', 'car'],
+                ['color', 'red'],
+                ['producer', 'mazda'],
+                ['models', 'RX8']
+            ]
+        );
+        const compareUserTag = new Map<string, string>(
+            [
+                ['age', '10']
+            ]
+        );
+
+        const rules = new Map<string, CompareAction>(
+            [
+                ['age', CompareAction.MORE]
+            ]
+        );
+
+        return new Offer(
+            'it is offer description',
+            'it is title of offer',
+            '', '1', offerTags, compareUserTag, rules
+        );
+    }
+
+    function requestFactory(): SearchRequest {
+        return new SearchRequest(new Map(
+            [
+                ['product', 'car'],
+                ['color', 'red'],
+                ['producer', 'mazda'],
+                ['models', 'RX8']
+            ]
+        ));
+
+    }
+
     it('share data for offer', async () => {
         const grantFields: Map<string, AccessRight> = new Map();
+
         for (const item of bobsFields) {
             grantFields.set(item, AccessRight.R);
         }
-        await dataAlisa.requestManager.grantAccessForOffer(1, dataAlisa.keyPair.getPublicKey(), grantFields, 0);
+        const offer = offerFactory();
+
+        offer.title = '1';
+        offer.offerPrices = [new OfferPrice(0, 'description 100', '100')];
+        const createdOffer = await baseAlisa.offerManager.saveOffer(offer);
+
+        const searchRequest = requestFactory();
+        const createdSearchRequest = await baseAlisa.searchManager.createRequest(searchRequest);
+
+        const offerSearch1 = new OfferSearch(createdSearchRequest.id, createdOffer.id);
+        await baseAlisa.searchManager.addResultItem(offerSearch1);
+
+        const result = await baseAlisa.searchManager.getUserOfferSearches(0, 100);
+
+        await baseAlisa.dataRequestManager.grantAccessForOffer(
+            result.content[0].offerSearch.id,
+            baseAlisa.accountManager.getAccount().publicKey,
+            grantFields,
+            createdOffer.offerPrices[0].id
+        );
     });
 
     it('decrypt invalid message', async () => {
         const message: string = 'invalid string';
-        const result = await dataAlisa.requestManager
-            .decryptMessage(dataAlisa.keyPair.getPublicKey(), message);
+        const result = await baseAlisa.dataRequestManager
+            .decryptMessage(baseAlisa.accountManager.getAccount().publicKey, message);
 
         assert.ok(result === message, 'WTF?');
     });
 
     it('check reshare-graph (user, kyc, shepherd)', async () => {
-        const alisa = await createBase();
-        await createUser(alisa, 'alisa pass alisa pass alisa pass');
-
-        const shepherd = await createBase();
-        await createUser(shepherd, 'shepherd pass shepherd pass shepherd pass');
-
-        const kyc = await createBase();
-        await createUser(kyc, 'kyc pass kyc pass kyc pass');
+        const alisa = await BaseClientHelper.createRegistered('alisa pass alisa pass alisa pass');
+        const shepherd = await BaseClientHelper.createRegistered('shepherd pass shepherd pass shepherd pass');
+        const kyc = await BaseClientHelper.createRegistered('kyc pass kyc pass kyc pass');
 
         // Alisa - save own data
         await alisa.profileManager.updateData(

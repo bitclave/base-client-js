@@ -1,5 +1,6 @@
 import { DataRequest } from '../../src/repository/models/DataRequest';
 import { InputGraphData } from '../../src/repository/models/InputGraphData';
+import { JsonObject } from '../../src/repository/models/JsonObject';
 import OfferShareData from '../../src/repository/models/OfferShareData';
 import { OutputGraphData } from '../../src/repository/models/OutputGraphData';
 import { DataRequestRepository } from '../../src/repository/requests/DataRequestRepository';
@@ -39,7 +40,12 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
         const existed: Array<DataRequest> = await this.findRequest(this.clientId, toPk, false);
         const result: Array<DataRequest> = dataRequests
             .filter(item => !existed.find(existedItem => existedItem.requestData === item.requestData))
-            .map(item => item.copy({fromPk: this.clientId, toPk: `${toPk}`, rootPk: toPk, responseData: ''}));
+            .map(item => item.copy({
+                fromPk: this.clientId,
+                toPk: `${toPk}`,
+                rootPk: toPk,
+                responseData: ''
+            } as JsonObject<DataRequest>));
 
         this.saveAll(result);
     }
@@ -60,7 +66,7 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
                 const foundItem = existed.find(it => item.requestData === it.requestData);
 
                 if (foundItem) {
-                    return foundItem.copy({responseData: item.responseData});
+                    return foundItem.copy({responseData: item.responseData} as JsonObject<DataRequest>);
 
                 } else {
                     return item.copy({
@@ -69,7 +75,7 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
                         rootPk: item.rootPk,
                         requestData: item.requestData,
                         responseData: item.responseData
-                    });
+                    } as JsonObject<DataRequest>);
                 }
             }
         );
@@ -152,7 +158,7 @@ export default class DataRequestRepositoryImplMock implements DataRequestReposit
                 existed.responseData = value.responseData;
 
             } else {
-                this.data.push(value.copy({id: this.data.length + 1}));
+                this.data.push(value.copy({id: this.data.length + 1} as JsonObject<DataRequest>));
             }
         }
     }

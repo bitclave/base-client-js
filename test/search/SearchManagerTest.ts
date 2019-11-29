@@ -12,48 +12,20 @@ import Base, {
 import { SortOfferSearch } from '../../src/manager/SearchManager';
 import Account from '../../src/repository/models/Account';
 import { Pair } from '../../src/repository/models/Pair';
-import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
 import { HttpMethod } from '../../src/repository/source/http/HttpMethod';
 import { Response } from '../../src/repository/source/http/Response';
-import { TransportFactory } from '../../src/repository/source/TransportFactory';
-import { TokenType } from '../../src/utils/keypair/rpc/RpcToken';
-import AuthenticatorHelper from '../AuthenticatorHelper';
+import { BaseClientHelper } from '../BaseClientHelper';
 
 require('chai').use(require('chai-as-promised')).should();
-const someSigMessage = 'some unique message for signature';
-
-const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
-const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
-
-const rpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
-const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
-
-async function createUser(user: Base, pass: string): Promise<Account> {
-    const accessToken = await authenticatorHelper.generateAccessToken(pass);
-    await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
-    await user.accountManager.unsubscribe();
-
-    return await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
-}
 
 describe('Search Manager', async () => {
 
     const passPhraseSeller: string = 'Seller user1 pass special for Search Manager tests';
     const passPhraseBusinessBuyer: string = 'Business user2 pass special for Search Manager tests';
 
-    const businessBase: Base = createBase();
-    const userBase: Base = createBase();
-
+    let businessBase: Base;
+    let userBase: Base;
     let userAccount: Account;
-
-    function createBase(): Base {
-        return new Base(
-            baseNodeUrl,
-            'localhost',
-            RepositoryStrategyType.Postgres,
-            rpcSignerHost
-        );
-    }
 
     function offerFactory(): Offer {
         const offerTags = new Map<string, string>(
@@ -96,12 +68,10 @@ describe('Search Manager', async () => {
     }
 
     beforeEach(async () => {
-        await createUser(businessBase, passPhraseSeller);
-        userAccount = await createUser(userBase, passPhraseBusinessBuyer);
-    });
+        businessBase = await BaseClientHelper.createRegistered(passPhraseSeller);
 
-    after(async () => {
-        // rpcClient.disconnect();
+        userBase = await BaseClientHelper.createRegistered(passPhraseBusinessBuyer);
+        userAccount = userBase.accountManager.getAccount();
     });
 
     it('should CRUD Search Request', async () => {
@@ -727,19 +697,10 @@ describe('Search Manager', async () => {
 
 describe('search manager with search by query', async () => {
     const passPhraseUser: string = 'User for search by query only';
-    const userBase: Base = createBase();
-
-    function createBase(): Base {
-        return new Base(
-            baseNodeUrl,
-            'localhost',
-            RepositoryStrategyType.Postgres,
-            rpcSignerHost
-        );
-    }
+    let userBase: Base;
 
     beforeEach(async () => {
-        await createUser(userBase, passPhraseUser);
+        userBase = await BaseClientHelper.createRegistered(passPhraseUser);
     });
 
     function requestFactory(): SearchRequest {
@@ -782,7 +743,7 @@ describe('search manager with search by query', async () => {
 
     it('should return 200 search results filtered by advanced filters with not authorized client', async () => {
         try {
-            const unAuthorizedClient = createBase();
+            const unAuthorizedClient = BaseClientHelper.createUnRegistered();
 
             const filters = new Map();
             filters.set('megaType', ['product', 'store']);
@@ -804,7 +765,7 @@ describe('search manager with search by query', async () => {
 
     it('should return 200 search results with not authorized client without body', async () => {
         try {
-            const unAuthorizedClient = createBase();
+            const unAuthorizedClient = BaseClientHelper.createUnRegistered();
             const result = await unAuthorizedClient.searchManager.createSearchResultByQuery(
                 '*', 0, 0, 10,
                 [],

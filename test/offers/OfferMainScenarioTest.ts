@@ -3,62 +3,31 @@ import Base, {
     Offer,
     OfferResultAction,
     OfferSearch,
+    OfferShareDataRepository,
     SearchRequest,
+    TransportFactory,
     WalletManagerImpl
 } from '../../src/Base';
 import Account from '../../src/repository/models/Account';
 import { OfferPrice } from '../../src/repository/models/OfferPrice';
 import { OfferPriceRules } from '../../src/repository/models/OfferPriceRules';
-import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
-import { TransportFactory } from '../../src/repository/source/TransportFactory';
+import OfferShareDataRepositoryImpl from '../../src/repository/offer/OfferShareDataRepositoryImpl';
 import { BasicLogger } from '../../src/utils/BasicLogger';
 import { AccessRight } from '../../src/utils/keypair/Permissions';
-import { TokenType } from '../../src/utils/keypair/rpc/RpcToken';
-import AuthenticatorHelper from '../AuthenticatorHelper';
-import OfferShareDataRepositoryImpl from './../../src/repository/offer/OfferShareDataRepositoryImpl';
+import { BaseClientHelper } from '../BaseClientHelper';
 
 require('chai').use(require('chai-as-promised')).should();
-const someSigMessage = 'some unique message for signature';
-
-const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
-const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
-
-const httpTransport = TransportFactory.createHttpTransport(baseNodeUrl, new BasicLogger());
-const rpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
-const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
-
-async function createUser(user: Base, pass: string): Promise<Account> {
-    const accessToken = await authenticatorHelper.generateAccessToken(pass);
-    await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
-    await user.accountManager.unsubscribe();
-
-    return await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
-}
 
 describe('Offer main scenario', async () => {
 
     const passPhraseSeller: string = 'Seller';
     const passPhraseBusinessBuyer: string = 'Business';  // need 5 symbols
 
-    const businessBase: Base = createBase();
-    const userBase: Base = createBase();
-
-    const offerShareDataRepository = new OfferShareDataRepositoryImpl(
-        httpTransport,
-        businessBase.accountManager,
-        businessBase.profileManager
-    );
+    let businessBase: Base;
+    let userBase: Base;
 
     let businessAccount: Account;
-
-    function createBase(): Base {
-        return new Base(
-            baseNodeUrl,
-            'localhost',
-            RepositoryStrategyType.Postgres,
-            rpcSignerHost
-        );
-    }
+    let offerShareDataRepository: OfferShareDataRepository;
 
     function offerFactory(isMultiPrices: boolean = false): Offer {
         const offerTags = new Map<string, string>(
@@ -121,9 +90,19 @@ describe('Offer main scenario', async () => {
     }
 
     beforeEach(async () => {
-        businessAccount = await createUser(businessBase, passPhraseSeller);
-        await createUser(userBase, passPhraseBusinessBuyer);
+        businessBase = await BaseClientHelper.createRegistered(passPhraseSeller);
+        businessAccount = businessBase.accountManager.getAccount();
+        const transport = TransportFactory.createHttpTransport(BaseClientHelper.getBaseNodeUrl(), new BasicLogger());
+
+        offerShareDataRepository = new OfferShareDataRepositoryImpl(
+            transport,
+            businessBase.accountManager,
+            businessBase.profileManager
+        );
+
+        userBase = await BaseClientHelper.createRegistered(passPhraseBusinessBuyer);
     });
+
     after(async () => {
         // rpcClient.disconnect();
     });

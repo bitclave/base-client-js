@@ -2,6 +2,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import Account from '../../repository/models/Account';
 import { AccessTokenInterceptor } from '../../repository/source/rpc/AccessTokenInterceptor';
 import { RpcTransport } from '../../repository/source/rpc/RpcTransport';
+import { BitKeyPair } from '../../utils/keypair/BitKeyPair';
 import { TokenType } from '../../utils/keypair/rpc/RpcToken';
 import { AccountManager } from '../AccountManager';
 
@@ -42,12 +43,12 @@ export class RemoteAccountManagerImpl implements AccountManager {
         return this.authAccountBehavior.getValue();
     }
 
-    public getNewMnemonic(): Promise<string> {
-        return this.transport.request('accountManager.getNewMnemonic', []);
+    public async getNewMnemonic(): Promise<string> {
+        return BitKeyPair.generateMnemonicPhrase();
     }
 
-    public getPublicKeyFromMnemonic(mnemonicPhrase: string): Promise<string> {
-        return this.transport.request('accountManager.getPublicKeyFromMnemonic', [mnemonicPhrase]);
+    public async getPublicKeyFromMnemonic(mnemonicPhrase: string): Promise<string> {
+        return BitKeyPair.getPublicKeyFromMnemonic(mnemonicPhrase);
     }
 
     public registration(mnemonicPhrase: string, message: string): Promise<Account> {

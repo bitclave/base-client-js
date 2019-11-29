@@ -1,47 +1,21 @@
 import Base, { CompareAction, Offer, OfferSearch, SearchRequest } from '../../src/Base';
 import Account from '../../src/repository/models/Account';
-import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
-import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
-import { TransportFactory } from '../../src/repository/source/TransportFactory';
-import { TokenType } from '../../src/utils/keypair/rpc/RpcToken';
-import AuthenticatorHelper from '../AuthenticatorHelper';
+import { BaseClientHelper } from '../BaseClientHelper';
 
 require('chai')
     .use(require('chai-as-promised'))
     .should();
-const someSigMessage = 'some unique message for signature';
-const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
-const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
-const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
-const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
-
-async function createUser(user: Base, pass: string): Promise<Account> {
-    const accessToken = await authenticatorHelper.generateAccessToken(pass);
-    await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
-    await user.accountManager.unsubscribe();
-
-    return await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
-}
 
 describe('Verify Manager', async () => {
     const passPhraseAlisa: string = 'Alice';
     const passPhraseSeller: string = 'Seller';
 
-    const businessBase: Base = createBase();
-    const baseAlice: Base = createBase();
+    let businessBase: Base;
+    let baseAlice: Base;
 
     let accAlice: Account;
 
     const fromDate: Date = new Date();
-
-    function createBase(): Base {
-        return new Base(
-            baseNodeUrl,
-            'localhost',
-            RepositoryStrategyType.Postgres,
-            rpcSignerHost
-        );
-    }
 
     function offerFactory(): Offer {
         const offerTags = new Map<string, string>([
@@ -75,12 +49,9 @@ describe('Verify Manager', async () => {
     }
 
     beforeEach(async () => {
-        await createUser(businessBase, passPhraseSeller);
-        accAlice = await createUser(baseAlice, passPhraseAlisa);
-    });
-
-    after(async () => {
-        // rpcClient.disconnect();
+        businessBase = await BaseClientHelper.createRegistered(passPhraseSeller);
+        baseAlice = await BaseClientHelper.createRegistered(passPhraseAlisa);
+        accAlice = baseAlice.accountManager.getAccount();
     });
 
     it('should get offer search list by ids', async () => {

@@ -5,13 +5,9 @@ import Base, { CryptoWallets, CryptoWalletsData } from '../../src/Base';
 import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
 import Account from '../../src/repository/models/Account';
 import { DataRequest } from '../../src/repository/models/DataRequest';
-import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
-import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
-import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import { AccessRight } from '../../src/utils/keypair/Permissions';
-import { TokenType } from '../../src/utils/keypair/rpc/RpcToken';
 import { WalletUtils } from '../../src/utils/WalletUtils';
-import AuthenticatorHelper from '../AuthenticatorHelper';
+import { BaseClientHelper } from '../BaseClientHelper';
 
 const HdKey = require('hdkey');
 
@@ -25,11 +21,6 @@ const BID: string = 'bid';
 
 const KEY_WEALTH_PTR: string = 'wealth_ptr';
 const WEALTH_KEY_SCHEME: string = UID + SEP + BID + SEP + 'wealth';
-
-const someSigMessage = 'some unique message for signature';
-const rpcSignerHost: string = 'http://localhost:3545';
-const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
-const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
 
 class Pointer {
     public spid: string;
@@ -65,36 +56,18 @@ function getWealthEntryKey(uid: string, bid: string): string {
     return uid + SEP + bid + SEP + 'wealth';
 }
 
-async function createUser(user: Base, pass: string): Promise<Account> {
-    const accessToken = await authenticatorHelper.generateAccessToken(pass);
-    await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
-    await user.accountManager.unsubscribe();
-
-    return await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
-}
-
 describe('BASE API test: Protocol Flow', async () => {
     const passPhraseUser: string = 'Alice';
     const passPhraseBusiness: string = 'Business';
     const passPhraseValidator: string = 'Validator';
 
-    const baseUser: Base = createBase();
-    const baseBusiness: Base = createBase();
-    const baseValidator: Base = createBase();
+    let baseUser: Base;
+    let baseBusiness: Base;
+    let baseValidator: Base;
 
     let accUser: Account;
     let accBusiness: Account;
     let accValidator: Account;
-
-    function createBase(): Base {
-        const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
-        return new Base(
-            baseNodeUrl,
-            'localhost',
-            RepositoryStrategyType.Postgres,
-            rpcSignerHost
-        );
-    }
 
     function getHash(message: string): string {
         const crypto = require('crypto');
@@ -138,9 +111,14 @@ describe('BASE API test: Protocol Flow', async () => {
     }
 
     beforeEach(async () => {
-        accUser = await createUser(baseUser, passPhraseUser);
-        accBusiness = await createUser(baseBusiness, passPhraseBusiness);
-        accValidator = await createUser(baseValidator, passPhraseValidator);
+        baseUser = await BaseClientHelper.createRegistered(passPhraseUser);
+        accUser = baseUser.accountManager.getAccount();
+
+        baseBusiness = await BaseClientHelper.createRegistered(passPhraseBusiness);
+        accBusiness = baseBusiness.accountManager.getAccount();
+
+        baseValidator = await BaseClientHelper.createRegistered(passPhraseValidator);
+        accValidator = baseValidator.accountManager.getAccount();
     });
 
     after(async () => {

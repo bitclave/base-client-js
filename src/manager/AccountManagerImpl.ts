@@ -141,9 +141,8 @@ export class AccountManagerImpl implements AccountManager {
         return this.accountRepository.unsubscribe(this.authAccountBehavior.getValue());
     }
 
-    @ExportMethod()
-    public getNewMnemonic(): Promise<string> {
-        return this.keyPairCreator.generateMnemonicPhrase();
+    public async getNewMnemonic(): Promise<string> {
+        return BitKeyPair.generateMnemonicPhrase();
     }
 
     @ExportMethod()
@@ -151,14 +150,8 @@ export class AccountManagerImpl implements AccountManager {
         return this.authAccountBehavior.getValue();
     }
 
-    @ExportMethod()
-    public getPublicKeyFromMnemonic(mnemonicPhrase: string): Promise<string> {
-        // return this.keyPairCreator.createKeyPair(mnemonicPhrase)
-        //     .then(res => res.publicKey);
-
-        return new Promise<string>(resolve => {
-            resolve(BitKeyPair.getPublicKeyFromMnemonic(mnemonicPhrase));
-        });
+    public async getPublicKeyFromMnemonic(mnemonicPhrase: string): Promise<string> {
+        return BitKeyPair.getPublicKeyFromMnemonic(mnemonicPhrase);
     }
 
     private lazyRegistration(mnemonicPhrase: string, message: string): Promise<Account> {

@@ -11,7 +11,7 @@ const assistant: AssistantPermissions = new AssistantPermissions(dataRepository)
 
 export default class AuthenticatorHelper {
 
-    private static EXPIRE_TOKEN_HOURS_MS = 5 * 60 * 60 * 1000;
+    public static EXPIRE_TOKEN_HOURS_MS = 5 * 60 * 60 * 1000;
 
     private keyHelper: KeyPairHelper;
     private keyPair: KeyPair | undefined;

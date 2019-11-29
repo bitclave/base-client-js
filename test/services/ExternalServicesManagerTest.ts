@@ -1,35 +1,11 @@
 // tslint:disable:no-unused-expression
-import Base, { ExternalService, HttpServiceCall, KeyPairFactory, KeyPairHelper, ServiceCallType } from '../../src/Base';
+import Base, { ExternalService, HttpServiceCall, ServiceCallType } from '../../src/Base';
 import Account from '../../src/repository/models/Account';
-import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
 import { HttpMethod } from '../../src/repository/source/http/HttpMethod';
 import SignedRequest from '../../src/repository/source/http/SignedRequest';
-import { TransportFactory } from '../../src/repository/source/TransportFactory';
-import { TokenType } from '../../src/utils/keypair/rpc/RpcToken';
-import AuthenticatorHelper from '../AuthenticatorHelper';
-import { AssistantPermissions } from '../requests/AssistantPermissions';
-import DataRequestRepositoryImplMock from '../requests/DataRequestRepositoryImplMock';
+import { BaseClientHelper } from '../BaseClientHelper';
 
 require('chai').use(require('chai-as-promised')).should();
-const someSigMessage = 'some unique message for signature';
-
-const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
-const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
-
-const rpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
-const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
-const dataRepository: DataRequestRepositoryImplMock = new DataRequestRepositoryImplMock();
-
-const assistant: AssistantPermissions = new AssistantPermissions(dataRepository);
-const keyPairHelper: KeyPairHelper = KeyPairFactory.createDefaultKeyPair(assistant, assistant, '');
-
-async function createUser(user: Base, pass: string): Promise<Account> {
-    const accessToken = await authenticatorHelper.generateAccessToken(pass);
-    await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
-    await user.accountManager.unsubscribe();
-
-    return await user.accountManager.authenticationByAccessToken(accessToken, TokenType.BASIC, someSigMessage);
-}
 
 describe('External Services Manager', async () => {
     const headers: Map<string, Array<string>> = new Map<string, Array<string>>(
@@ -40,32 +16,20 @@ describe('External Services Manager', async () => {
         ]
     );
 
-    const userBase: Base = createBase();
+    let userBase: Base;
     let userAccount: Account;
     let service: ExternalService;
 
-    function createBase(): Base {
-        return new Base(
-            baseNodeUrl,
-            'localhost',
-            RepositoryStrategyType.Postgres,
-            rpcSignerHost
-        );
-    }
-
     beforeEach(async () => {
-        if (baseNodeUrl.includes('http://localhost')) {
-            userAccount = await createUser(userBase, someSigMessage);
+        if (BaseClientHelper.getBaseNodeUrl().includes('http://localhost')) {
+            userBase = await BaseClientHelper.createRegistered('someSigMessage');
+            userAccount = userBase.accountManager.getAccount();
 
             const services = await userBase.externalServicesManager.getExternalServices();
             service = services.filter(item => item.endpoint.includes('http://localhost'))[0];
         } else {
             console.log('this test only use locally');
         }
-    });
-
-    after(async () => {
-        // rpcClient.disconnect();
     });
 
     it('should be call request GET Account', async () => {
@@ -114,13 +78,13 @@ describe('External Services Manager', async () => {
             return;
         }
 
-        const keypair = await keyPairHelper.createKeyPair('my super pass');
-        const account = new Account(keypair.publicKey, 0);
-        const sig = await keyPairHelper.signMessage(JSON.stringify(account.toSimpleAccount()));
+        const base = await BaseClientHelper.createRegistered('my super pass');
+        const account = base.accountManager.getAccount();
+        const sig = await base.profileManager.signMessage(JSON.stringify(account.toSimpleAccount()));
 
         const body = new SignedRequest(
             account.toSimpleAccount(),
-            keypair.publicKey,
+            account.publicKey,
             sig,
             0
         );
@@ -129,7 +93,7 @@ describe('External Services Manager', async () => {
             service.publicKey,
             ServiceCallType.HTTP,
             HttpMethod.Post,
-            '/v1/registration',
+            '/v1/lazy-registration',
             new Map(),
             headers,
             body
