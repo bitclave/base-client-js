@@ -34,7 +34,7 @@ export class RpcTransportImpl implements RpcTransport {
                    : jsonRpc.getResult();
 
         } catch (e) {
-            if (e.hasOwnProperty('json') && e.json.hasOwnProperty('result')) {
+            if (e.hasOwnProperty('_json') && e.json.hasOwnProperty('result')) {
                 throw Object.assign(JsonRpc.response(0, ''), e.json);
             } else {
                 throw e;
