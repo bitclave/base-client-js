@@ -1,3 +1,4 @@
+import { validateSync } from 'class-validator';
 import { Observable } from 'rxjs';
 import Account from '../repository/models/Account';
 import { ExportMethod } from '../utils/ExportMethod';
@@ -33,20 +34,21 @@ export class WalletManagerImpl implements WalletManager {
     public async createCryptoWalletsData(
         @ParamDeserializer(CryptoWallets) cryptoWallets: CryptoWallets
     ): Promise<CryptoWalletsData> {
+        const result = new CryptoWalletsData(cryptoWallets, '');
+        validateSync(result);
+
         const allWallets = cryptoWallets.eth.concat(cryptoWallets.app, cryptoWallets.btc, cryptoWallets.usd);
 
         allWallets.forEach(wallet => {
             const errors = this.walletValidator.validateCryptoWallet(wallet);
 
             if (errors.state.length > 0 || errors.message.length > 0) {
-                throw new Error(`invalid eth record:  ${JSON.stringify(errors)}`);
+                throw new Error(`invalid wallet record:  ${JSON.stringify(errors)}`);
             }
             if (wallet.data.baseId !== this.account.publicKey) {
                 throw new Error('baseId missmatch');
             }
         });
-
-        const result = new CryptoWalletsData(cryptoWallets, '');
 
         const sig: string = await this.messageSigner.signMessage(result.getMessage().data);
 

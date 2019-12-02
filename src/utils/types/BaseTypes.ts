@@ -1,9 +1,10 @@
-import { IsEmail, IsJSON, IsString, ValidateNested } from 'class-validator';
+import { IsJSON, IsString, ValidateNested } from 'class-validator';
 import { MessageData, SignedMessageData } from 'eth-sig-util';
 import { JsonObject } from '../../repository/models/JsonObject';
 import { JsonTransform } from '../../repository/models/JsonTransform';
 import { IsBasePublicKey } from './validators/annotations/IsBasePublicKey';
 import { IsBtcAddress } from './validators/annotations/IsBtcAddress';
+import { IsEmailAddress } from './validators/annotations/IsEmailAddress';
 import { IsEthAddress } from './validators/annotations/IsEthAddress';
 import { IsTypedArray } from './validators/annotations/IsTypedArray';
 
@@ -124,7 +125,7 @@ export class AppCryptoWallet extends CryptoWallet {
 }
 
 export class UsdCryptoWallet extends CryptoWallet {
-    @IsEmail()
+    @IsEmailAddress({message: 'must be valid Usd wallet. (wrong email address)'})
     public readonly address: string;
 
     constructor(baseId: string, address: string) {
