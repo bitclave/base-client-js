@@ -1,6 +1,6 @@
 import * as SigUtil from 'eth-sig-util';
 import * as EthUtil from 'ethereumjs-util';
-import Base, { PermissionsSource, SiteDataSource } from '../../src/Base';
+import Base, { JsonRpc, PermissionsSource, SiteDataSource } from '../../src/Base';
 import Account from '../../src/repository/models/Account';
 import { DataRequest } from '../../src/repository/models/DataRequest';
 import { CryptoUtils } from '../../src/utils/CryptoUtils';
@@ -27,6 +27,20 @@ require('chai')
 
 const Message = require('bitcore-message');
 const Bitcore = require('bitcore-lib');
+
+const shouldBeThrowed = async <T>(promise: Promise<T>, check: (e: object) => void): Promise<void> => {
+    let isThrowed = false;
+    try {
+        await promise;
+    } catch (e) {
+        isThrowed = true;
+        check(e);
+    }
+
+    if (!isThrowed) {
+        throw new Error('should be throw!');
+    }
+};
 
 describe('Wallet manager test', async () => {
 
@@ -387,37 +401,54 @@ describe('Wallet manager test', async () => {
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
         );
 
-        let walletsData = await baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets(
-            [eth, eth],
-            [btc],
-            [app],
-            [usd]
-        ));
-        let validation = WalletUtils.validateWalletsData(baseId, walletsData);
-        validation.length.should.be.eq(1);
-        validation[0].message[0].should.be.eq('eth should be have only unique items');
-        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+        await shouldBeThrowed(
+            baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets(
+                [eth, eth],
+                [btc],
+                [app],
+                [usd]
+            )),
+            (e) => {
+                if (e instanceof Error) {
+                    e.message.should.be.eq('eth should be have only unique items');
+                } else {
+                    (e as JsonRpc).result.should.be.eq('eth should be have only unique items');
+                }
+            }
+        );
 
-        walletsData = await baseAlice.walletManager
-            .createCryptoWalletsData(new CryptoWallets([eth], [btc, btc], [app], [usd]));
-        validation = WalletUtils.validateWalletsData(baseId, walletsData);
-        validation.length.should.be.eq(1);
-        validation[0].message[0].should.be.eq('btc should be have only unique items');
-        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+        await shouldBeThrowed(
+            baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc, btc], [app], [usd])),
+            (e) => {
+                if (e instanceof Error) {
+                    e.message.should.be.eq('btc should be have only unique items');
+                } else {
+                    (e as JsonRpc).result.should.be.eq('btc should be have only unique items');
+                }
+            }
+        );
 
-        walletsData = await baseAlice.walletManager
-            .createCryptoWalletsData(new CryptoWallets([eth], [btc], [app, app], [usd]));
-        validation = WalletUtils.validateWalletsData(baseId, walletsData);
-        validation.length.should.be.eq(1);
-        validation[0].message[0].should.be.eq('app should be have only unique items');
-        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+        await shouldBeThrowed(
+            baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app, app], [usd])),
+            (e) => {
+                if (e instanceof Error) {
+                    e.message.should.be.eq('app should be have only unique items');
+                } else {
+                    (e as JsonRpc).result.should.be.eq('app should be have only unique items');
+                }
+            }
+        );
 
-        walletsData = await baseAlice.walletManager
-            .createCryptoWalletsData(new CryptoWallets([eth], [btc], [app], [usd, usd]));
-        validation = WalletUtils.validateWalletsData(baseId, walletsData);
-        validation.length.should.be.eq(1);
-        validation[0].message[0].should.be.eq('usd should be have only unique items');
-        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+        await shouldBeThrowed(
+            baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app], [usd, usd])),
+            (e) => {
+                if (e instanceof Error) {
+                    e.message.should.be.eq('usd should be have only unique items');
+                } else {
+                    (e as JsonRpc).result.should.be.eq('usd should be have only unique items');
+                }
+            }
+        );
     });
 
     it('CryptoWallets should be have fixed types in array of wallets', async () => {
@@ -452,49 +483,69 @@ describe('Wallet manager test', async () => {
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
         );
 
-        let walletsData = await baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets(
-            [eth, btc, app, usd],
-            [btc],
-            [app],
-            [usd]
-        ));
-        let validation = WalletUtils.validateWalletsData(baseId, walletsData);
-        validation.length.should.be.eq(1);
-        validation[0].message[0].should.be.eq('eth should be type of EthWalletData');
-        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+        await shouldBeThrowed(
+            baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets(
+                [eth, btc, app, usd],
+                [btc],
+                [app],
+                [usd]
+            )),
+            (e) => {
+                if (e instanceof Error) {
+                    e.message.should.be.eq('eth should be type of EthWalletData');
+                } else {
+                    (e as JsonRpc).result!.should.be.eq('Ethereum address must be start with 0x');
+                }
+            }
+        );
 
-        walletsData = await baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets(
-            [eth],
-            [btc, eth, app, usd],
-            [app],
-            [usd]
-        ));
-        validation = WalletUtils.validateWalletsData(baseId, walletsData);
-        validation.length.should.be.eq(1);
-        validation[0].message[0].should.be.eq('btc should be type of BtcWalletData');
-        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+        await shouldBeThrowed(
+            baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets(
+                [eth],
+                [btc, eth, app, usd],
+                [app],
+                [usd]
+            )),
+            (e) => {
+                if (e instanceof Error) {
+                    e.message.should.be.eq('btc should be type of BtcWalletData');
+                } else {
+                    (e as JsonRpc).result!.should.be.eq('must be valid Bitcoin address');
+                }
+            }
+        );
 
-        walletsData = await baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets(
-            [eth],
-            [btc],
-            [app, eth, btc, usd],
-            [usd]
-        ));
-        validation = WalletUtils.validateWalletsData(baseId, walletsData);
-        validation.length.should.be.eq(1);
-        validation[0].message[0].should.be.eq('app should be type of AppWalletData');
-        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+        await shouldBeThrowed(
+            baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets(
+                [eth],
+                [btc],
+                [app, eth, btc, usd],
+                [usd]
+            )),
+            (e) => {
+                if (e instanceof Error) {
+                    e.message.should.be.eq('app should be type of AppWalletData');
+                } else {
+                    (e as JsonRpc).result!.should.be.eq('must be valid Bitclave App address');
+                }
+            }
+        );
 
-        walletsData = await baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets(
-            [eth],
-            [btc],
-            [app],
-            [app, eth, btc, usd]
-        ));
-        validation = WalletUtils.validateWalletsData(baseId, walletsData);
-        validation.length.should.be.eq(1);
-        validation[0].message[0].should.be.eq('usd should be type of UsdWalletData');
-        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+        await shouldBeThrowed(
+            baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets(
+                [eth],
+                [btc],
+                [app],
+                [app, eth, btc, usd]
+            )),
+            (e) => {
+                if (e instanceof Error) {
+                    e.message.should.be.eq('usd should be type of UsdWalletData');
+                } else {
+                    (e as JsonRpc).result!.should.be.eq('must be valid Usd wallet. (wrong email address)');
+                }
+            }
+        );
     });
 
     it('CryptoWallets should be have valid baseId', async () => {
@@ -515,7 +566,7 @@ describe('Wallet manager test', async () => {
 
         const usd: UsdWalletData = WalletUtils.createUsdWalletData(
             baseId,
-            'testtest.com',
+            'test@test.com',
             false
         );
 

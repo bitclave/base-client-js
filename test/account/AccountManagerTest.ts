@@ -1,6 +1,6 @@
 // tslint:disable:no-unused-expression
 import * as chai from 'chai';
-import { KeyPairFactory, PermissionsSource, SiteDataSource, TokenType } from '../../src/Base';
+import { JsonRpc, KeyPairFactory, PermissionsSource, SiteDataSource, TokenType } from '../../src/Base';
 import { BaseClientHelper, MANAGERS_TYPE } from '../BaseClientHelper';
 
 const chaiAsPromised = require('chai-as-promised');
@@ -98,7 +98,12 @@ describe('Account Manager', async () => {
         try {
             await BaseClientHelper.createRegistered(passPhraseAlisa, '');
         } catch (e) {
-            e.message.should.be.equal('message for signature should be have min 10 symbols');
+            if (e instanceof JsonRpc) {
+                e.result!.should.be.equal('message for signature should be have min 10 symbols');
+
+            } else {
+                e.message.should.be.equal('message for signature should be have min 10 symbols');
+            }
         }
     });
 

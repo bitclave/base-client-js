@@ -48,14 +48,13 @@ describe('Data Request Manager', async () => {
             baseAlisa.accountManager.getAccount().publicKey,
             null
         );
+
         const requestsByTo = await baseAlisa.dataRequestManager.getRequests(
             null,
             baseBob.accountManager.getAccount().publicKey
         );
 
         requestsByFrom.should.be.deep.equal(requestsByTo);
-
-        requestsByFrom[0].requestData.should.be.not.equal(bobsFields);
 
         const requestedBobFromAlisa: Array<FieldData> = await baseBob.dataRequestManager.getRequestedPermissions(
             baseAlisa.accountManager.getAccount().publicKey
@@ -316,13 +315,16 @@ describe('Data Request Manager', async () => {
             .getGrantedPermissions(baseBob.accountManager.getAccount().publicKey)).should.be.deep.equal(bobsFields);
 
         (await baseCabe.dataRequestManager
-            .getGrantedPermissions(baseAlisa.accountManager.getAccount().publicKey)).should.be.deep.equal([bobsFields[0]]);
+            .getGrantedPermissions(baseAlisa.accountManager.getAccount().publicKey))
+            .should.be.deep.equal([bobsFields[0]]);
 
         (await baseDaniel.dataRequestManager
-            .getGrantedPermissions(baseCabe.accountManager.getAccount().publicKey)).should.be.deep.equal([bobsFields[0]]);
+            .getGrantedPermissions(baseCabe.accountManager.getAccount().publicKey))
+            .should.be.deep.equal([bobsFields[0]]);
 
         (await baseDaniel.dataRequestManager
-            .getGrantedPermissions(baseBob.accountManager.getAccount().publicKey)).should.be.deep.equal([bobsFields[1]]);
+            .getGrantedPermissions(baseBob.accountManager.getAccount().publicKey))
+            .should.be.deep.equal([bobsFields[1]]);
 
         // revoke
         await baseBob.dataRequestManager.revokeAccessForClient(
@@ -340,7 +342,8 @@ describe('Data Request Manager', async () => {
             .getGrantedPermissions(baseCabe.accountManager.getAccount().publicKey)).should.be.deep.equal([]);
 
         (await baseDaniel.dataRequestManager
-            .getGrantedPermissions(baseBob.accountManager.getAccount().publicKey)).should.be.deep.equal([bobsFields[1]]);
+            .getGrantedPermissions(baseBob.accountManager.getAccount().publicKey))
+            .should.be.deep.equal([bobsFields[1]]);
     });
 
     it('grand access to field without requested permissions and revoke access', async () => {

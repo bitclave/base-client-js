@@ -14,7 +14,7 @@ import Account from '../../src/repository/models/Account';
 import { Pair } from '../../src/repository/models/Pair';
 import { HttpMethod } from '../../src/repository/source/http/HttpMethod';
 import { Response } from '../../src/repository/source/http/Response';
-import { BaseClientHelper } from '../BaseClientHelper';
+import { BaseClientHelper, MANAGERS_TYPE } from '../BaseClientHelper';
 
 require('chai').use(require('chai-as-promised')).should();
 
@@ -819,7 +819,11 @@ describe('search manager with search by query', async () => {
         }
     });
 
-    it('should return list of suggestion', async () => {
+    it('should return list of suggestion for local managers', async () => {
+        if (BaseClientHelper.managerType !== MANAGERS_TYPE.LOCAL) {
+            return;
+        }
+
         try {
             // @ts-ignore
             const originFnc = userBase.searchManager.offerSearchRepository.transport.sendRequest;
