@@ -9,7 +9,7 @@ const MODULE = process.env.BASE_MODULE || 'local'; // 'local/remote/remote-signe
 console.log(`Implement ${MODULE} ManagersModule`);
 console.log('BASE_NODE', BASE_NODE_URL);
 console.log('SIGNER', SIGNER_ULR);
-console.log('MANAGERS_TYPE', MANAGERS_URL);
+console.log('MANAGERS', MANAGERS_URL);
 
 export enum MANAGERS_TYPE {
     LOCAL = 'LOCAL',
