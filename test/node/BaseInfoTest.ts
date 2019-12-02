@@ -12,8 +12,7 @@ const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
 describe('Node Assistant and root Base methods', async () => {
-    const baseNodeUrl = process.env.BASE_NODE_URL || '';
-    const httpTransport = TransportFactory.createHttpTransport(baseNodeUrl, new BasicLogger());
+    const httpTransport = TransportFactory.createHttpTransport(BaseClientHelper.getBaseNodeUrl(), new BasicLogger());
     const assistant = AssistantNodeFactory.defaultNodeAssistant(httpTransport);
 
     it('should return base node version', async () => {
