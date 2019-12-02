@@ -1,7 +1,7 @@
 import Base, { ManagersModule, ManagersModuleFactory, TokenType, TransportFactory } from '../src/Base';
 import AuthenticatorHelper from './AuthenticatorHelper';
 
-const BASE_NODE_URL = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
+const BASE_NODE_URL = process.env.BASE_NODE_URL || 'https://base2-bitclva-com-user.herokuapp.com';
 const SIGNER_ULR = process.env.SIGNER || 'http://localhost:3545';
 const MANAGERS_URL = process.env.MANAGERS || 'http://localhost:3333';
 const MODULE = process.env.BASE_MODULE || 'local'; // 'local/remote/remote-signer'
