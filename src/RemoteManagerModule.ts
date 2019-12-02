@@ -1,20 +1,11 @@
 import { BehaviorSubject } from 'rxjs';
-import {
-    AccessTokenInterceptor,
-    AccountManager,
-    DataRequestManager,
-    ExternalServicesManager,
-    ManagersModule,
-    OfferManager,
-    OfferRankManager,
-    ProfileManager,
-    RpcTransport,
-    SearchManager,
-    TransportFactory,
-    VerifyManager,
-    WalletManager
-} from './Base';
+import { AccountManager } from './manager/AccountManager';
+import { DataRequestManager } from './manager/DataRequestManager';
+import { ExternalServicesManager } from './manager/ExternalServicesManager';
 import { NodeManager } from './manager/NodeManager';
+import { OfferManager } from './manager/OfferManager';
+import { OfferRankManager } from './manager/OfferRankManager';
+import { ProfileManager } from './manager/ProfileManager';
 import { RemoteAccountManagerImpl } from './manager/remote/RemoteAccountManagerImpl';
 import { RemoteDataRequestManagerImpl } from './manager/remote/RemoteDataRequestManagerImpl';
 import { RemoteExternalServicesManagerImpl } from './manager/remote/RemoteExternalServicesManagerImpl';
@@ -25,7 +16,14 @@ import { RemoteProfileManagerImpl } from './manager/remote/RemoteProfileManagerI
 import { RemoteSearchManagerImpl } from './manager/remote/RemoteSearchManagerImpl';
 import { RemoteVerifyManagerImpl } from './manager/remote/RemoteVerifyManagerImpl';
 import { RemoteWalletManagerImpl } from './manager/remote/RemoteWalletManagerImpl';
+import { SearchManager } from './manager/SearchManager';
+import { VerifyManager } from './manager/VerifyManager';
+import { WalletManager } from './manager/WalletManager';
+import { ManagersModule } from './ManagersModule';
 import Account from './repository/models/Account';
+import { AccessTokenInterceptor } from './repository/source/rpc/AccessTokenInterceptor';
+import { RpcTransport } from './repository/source/rpc/RpcTransport';
+import { TransportFactory } from './repository/source/TransportFactory';
 import { TransportInterceptor } from './repository/source/TransportInterceptor';
 import { BasicLogger, Logger } from './utils/BasicLogger';
 

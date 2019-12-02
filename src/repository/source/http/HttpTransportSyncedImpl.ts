@@ -7,12 +7,17 @@ import { Response } from './Response';
 import SignedRequest from './SignedRequest';
 import Transaction from './Transaction';
 
-let XMLHttpRequest: XMLHttpRequestInitializer;
+export interface XMLHttpRequestInitializer extends XMLHttpRequest {
+    new(): XMLHttpRequest;
+}
+
+let HttpRequest: XMLHttpRequestInitializer;
 
 if ((typeof window !== 'undefined' && window.hasOwnProperty('XMLHttpRequest'))) {
-    XMLHttpRequest = (window as WindowXMLHttpRequest).XMLHttpRequest;
+    // tslint:disable-next-line:no-any
+    HttpRequest = (window as any).XMLHttpRequest;
 } else {
-    XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+    HttpRequest = require('xmlhttprequest').XMLHttpRequest;
 }
 
 export class HttpTransportSyncedImpl extends HttpTransportImpl {
@@ -62,7 +67,7 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
                 const cortege: InterceptorCortege = transaction.cortege;
 
                 const url = cortege.path ? this.getHost() + cortege.path : this.getHost();
-                const request: XMLHttpRequest = new XMLHttpRequest();
+                const request = new HttpRequest();
 
                 request.open(cortege.method, url);
 

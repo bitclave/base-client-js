@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-import { version } from '../package.json';
 import { BuilderManagersModule } from './BuilderManagersModule';
 import { InternalManagerModule } from './InternalManagerModule';
 import { AccountManager } from './manager/AccountManager';
@@ -214,6 +213,8 @@ export {
     SearchRequestRepository,
     VerifyRepository
 };
+
+const {version} = require('../package.json');
 
 export default class Base {
 
