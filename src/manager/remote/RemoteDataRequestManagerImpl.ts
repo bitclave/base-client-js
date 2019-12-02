@@ -14,7 +14,7 @@ export class RemoteDataRequestManagerImpl implements DataRequestManager {
     }
 
     public decryptMessage(senderPk: string, encrypted: string): Promise<object | string> {
-        return this.transport.request('dataRequestManager.dataRequestManager.decryptMessage', [senderPk, encrypted]);
+        return this.transport.request('dataRequestManager.decryptMessage', [senderPk, encrypted]);
     }
 
     public getGrantedPermissions(clientPk: string): Promise<Array<string>> {
@@ -26,7 +26,7 @@ export class RemoteDataRequestManagerImpl implements DataRequestManager {
     }
 
     public getRequestedPermissions(requestedFromPk?: string | undefined): Promise<Array<FieldData>> {
-        return this.transport.request('dataRequestManager.getGrantedPermissionsToMe', [requestedFromPk]);
+        return this.transport.request('dataRequestManager.getRequestedPermissions', [requestedFromPk]);
     }
 
     public getRequestedPermissionsToMe(whoRequestedPk?: string | undefined): Promise<Array<FieldData>> {

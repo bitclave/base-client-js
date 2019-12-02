@@ -47,7 +47,11 @@ export class RemoteProfileManagerImpl implements ProfileManager {
     }
 
     public getRawData(anyPublicKey: string, fieldKey?: string | Array<string>): Promise<Map<string, string>> {
-        return this.transport.request('profileManager.getRawData', [anyPublicKey], new SimpleMapDeserializer());
+        return this.transport.request(
+            'profileManager.getRawData',
+            [anyPublicKey, fieldKey],
+            new SimpleMapDeserializer()
+        );
     }
 
     public signMessage(data: string): Promise<string> {
