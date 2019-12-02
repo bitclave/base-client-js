@@ -88,7 +88,7 @@ export class SearchManagerImpl implements SearchManager {
         return this.offerSearchRepository.getSuggestionByQuery(query, size);
     }
 
-    @ExportMethod()
+    @ExportMethod({public: true})
     public createSearchResultByQuery(
         query: string,
         searchRequestId: number,

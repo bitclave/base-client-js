@@ -105,7 +105,7 @@ export { RpcToken } from './utils/keypair/rpc/RpcToken';
 export { RpcAccessToken } from './utils/keypair/rpc/RpcAccessToken';
 
 export * from './utils/types/json-transform';
-export { EXPORTED_METHOD, ExportMethod } from './utils/ExportMethod';
+export { EXPORTED_METHOD, EXPORTED_METHOD_PROPS, ExportMethod } from './utils/ExportMethod';
 
 export {
     CryptoWallets,

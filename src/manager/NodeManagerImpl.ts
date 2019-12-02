@@ -9,22 +9,22 @@ export class NodeManagerImpl implements NodeManager {
     constructor(private readonly assistant: AssistantNodeRepository) {
     }
 
-    @ExportMethod()
+    @ExportMethod({public: true})
     public getGrandAccessRecords(publicKeyFrom: string, publicKeyTo: string): Promise<Array<DataRequest>> {
         return this.assistant.getGrandAccessRecords(publicKeyFrom, publicKeyTo);
     }
 
-    @ExportMethod()
+    @ExportMethod({public: true})
     public getNodeVersion(): Promise<string> {
         return this.assistant.getNodeVersion();
     }
 
-    @ExportMethod()
+    @ExportMethod({public: true})
     public getNonce(publicKey: string): Promise<number> {
         return this.assistant.getNonce(publicKey);
     }
 
-    @ExportMethod()
+    @ExportMethod({public: true})
     public getSiteData(origin: string): Promise<Site> {
         return this.assistant.getSiteData(origin);
     }
