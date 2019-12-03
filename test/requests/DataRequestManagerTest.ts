@@ -216,7 +216,8 @@ describe('Data Request Manager', async () => {
             }
         });
 
-        granted.should.be.deep.equal(bobsFields);
+        // sometimes we get the same array with a different order of elements. It doesn’t matter here.
+        granted.sort().should.be.deep.equal(bobsFields.sort());
 
         const reshareFiled = new Map<string, AccessRight>([[bobsFields[0], AccessRight.R]]);
 
