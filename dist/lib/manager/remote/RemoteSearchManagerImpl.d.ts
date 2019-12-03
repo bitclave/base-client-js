@@ -1,0 +1,37 @@
+import { OfferInteraction, OfferResultAction } from '../../repository/models/OfferInteraction';
+import { OfferSearch } from '../../repository/models/OfferSearch';
+import OfferSearchResultItem from '../../repository/models/OfferSearchResultItem';
+import { Page } from '../../repository/models/Page';
+import { Pair } from '../../repository/models/Pair';
+import SearchRequest from '../../repository/models/SearchRequest';
+import { OfferSearchRequestInterestMode } from '../../repository/search/OfferSearchRepository';
+import { RpcTransport } from '../../repository/source/rpc/RpcTransport';
+import { SearchManager, SortOfferSearch } from '../SearchManager';
+export declare class RemoteSearchManagerImpl implements SearchManager {
+    private readonly transport;
+    constructor(transport: RpcTransport);
+    addEventToOfferSearch(event: string, offerSearchId: number): Promise<void>;
+    addResultItem(offerSearch: OfferSearch): Promise<void>;
+    claimPurchaseForSearchItem(searchResultId: number): Promise<void>;
+    cloneOfferSearch(originToCopySearchRequestIds: Array<Pair<number, number>>): Promise<Array<OfferSearch>>;
+    cloneRequest(searchRequestIds: Array<number>): Promise<Array<SearchRequest>>;
+    complainToSearchItem(searchResultId: number): Promise<void>;
+    confirmSearchItem(searchResultId: number): Promise<void>;
+    createRequest(searchRequest: SearchRequest): Promise<SearchRequest>;
+    createSearchResultByQuery(query: string, searchRequestId: number, page?: number, size?: number, interests?: Array<string>, mode?: OfferSearchRequestInterestMode, filters?: Map<string, Array<string>>): Promise<Page<OfferSearchResultItem>>;
+    deleteRequest(id: number): Promise<number>;
+    evaluateSearchItem(searchResultId: number): Promise<void>;
+    getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>>;
+    getInteractions(offerIds?: Array<number> | undefined, states?: Array<OfferResultAction> | undefined, owner?: string | undefined): Promise<Array<OfferInteraction>>;
+    getMyRequests(id?: number): Promise<Array<SearchRequest>>;
+    getMySearchRequestsByTag(tag: string): Promise<Array<SearchRequest>>;
+    getRequestsByOwnerAndId(owner: string, id?: number): Promise<Array<SearchRequest>>;
+    getRequestsByPage(page?: number, size?: number): Promise<Page<SearchRequest>>;
+    getSearchRequestsByOwnerAndTag(owner: string, tag: string): Promise<Array<SearchRequest>>;
+    getSearchResult(searchRequestId: number, page?: number, size?: number): Promise<Page<OfferSearchResultItem>>;
+    getSearchResultByOfferSearchId(offerSearchId: number, page?: number, size?: number): Promise<Page<OfferSearchResultItem>>;
+    getSuggestionByQuery(query: string, size?: number): Promise<Array<string>>;
+    getUserOfferSearches(page?: number, size?: number, unique?: boolean, searchIds?: Array<number>, state?: Array<OfferResultAction>, sort?: SortOfferSearch, interaction?: boolean): Promise<Page<OfferSearchResultItem>>;
+    rejectSearchItem(searchResultId: number): Promise<void>;
+    updateRequest(searchRequest: SearchRequest | Array<SearchRequest>): Promise<SearchRequest | Array<SearchRequest>>;
+}

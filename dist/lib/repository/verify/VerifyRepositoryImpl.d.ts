@@ -1,0 +1,34 @@
+import Account from '../models/Account';
+import { OfferInteraction } from '../models/OfferInteraction';
+import { OfferSearch } from '../models/OfferSearch';
+import SearchRequest from '../models/SearchRequest';
+import { HttpTransport } from '../source/http/HttpTransport';
+import { VerifyRepository } from './VerifyRepository';
+export declare class VerifyRepositoryImpl implements VerifyRepository {
+    private readonly VERIFY_GET_OFFER_SEARCH_API;
+    private readonly VERIFY_GET_ACCOUNTS_API;
+    private readonly VERIFY_GET_ALL_ACCOUNTS_API;
+    private readonly VERIFY_GET_DANGLING_OFFER_SEARCH_API;
+    private readonly VERIFY_GET_DANGLING_OFFER_INTERACTION_API;
+    private readonly VERIFY_FIX_OFFER_SEARCH_API;
+    private readonly VERIFY_GET_SEARCH_REQUEST_SAME_TAG_API;
+    private readonly VERIFY_GET_SEARCH_REQUEST_WITHOUT_OWNER;
+    private readonly VERIFY_GET_OFFER_INTERACTIONS_API;
+    private readonly DELETE_USER;
+    private transport;
+    constructor(transport: HttpTransport);
+    getOfferSearchesByIds(ids: Array<number>): Promise<Array<OfferSearch>>;
+    getAccountsByPublicKeys(publicKeys: Array<string>): Promise<Array<Account>>;
+    getAllAccounts(fromDate: Date): Promise<Array<Account>>;
+    getDanglingOfferSearches(type: number): Promise<Array<OfferSearch>>;
+    getDanglingOfferInteractions(): Promise<Array<OfferInteraction>>;
+    fixDanglingOfferSearchesByCreatingInteractions(): Promise<Array<OfferInteraction>>;
+    getSearchRequestWithSameTags(): Promise<Array<SearchRequest>>;
+    getSearchRequestWithoutOwner(): Promise<Array<SearchRequest>>;
+    getOfferInteractionsByOfferIdsAndOwners(offerIds: Array<number>, owners: Array<string>): Promise<Array<OfferInteraction>>;
+    deleteUser(publicKey: string): Promise<void>;
+    private jsonToOfferInteractionList;
+    private jsonToOfferSearchList;
+    private jsonToAccountList;
+    private jsonToSearchRequestList;
+}

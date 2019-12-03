@@ -1,0 +1,36 @@
+import { PermissionsSource } from '../../repository/assistant/PermissionsSource';
+import { SiteDataSource } from '../../repository/assistant/SiteDataSource';
+import { KeyPair } from './KeyPair';
+import { KeyPairHelper } from './KeyPairHelper';
+import { AccessRight } from './Permissions';
+export declare class BitKeyPair implements KeyPairHelper {
+    private privateKey;
+    private publicKey;
+    private addr;
+    private readonly permissions;
+    private readonly permissionsSource;
+    private siteDataSource;
+    private readonly origin;
+    private isConfidential;
+    static getPublicKeyFromMnemonic(passPhrase: string): string;
+    static generateMnemonicPhrase(): string;
+    constructor(permissionsSource: PermissionsSource, siteDataSource: SiteDataSource, origin: string);
+    createKeyPair(passPhrase: string): Promise<KeyPair>;
+    generateMnemonicPhrase(): Promise<string>;
+    signMessage(data: string): Promise<string>;
+    checkSig(data: string, sig: string): Promise<boolean>;
+    getPublicKey(): string;
+    getAddr(): string;
+    encryptMessage(recipientPk: string, message: string): Promise<string>;
+    encryptFields(fields: Map<string, string>): Promise<Map<string, string>>;
+    encryptPermissionsFields(recipient: string, data: Map<string, AccessRight>): Promise<string>;
+    encryptFieldsWithPermissions(recipient: string, data: Map<string, AccessRight>): Promise<Map<string, string>>;
+    encryptFile(file: string, filedName: string): Promise<string>;
+    decryptFile(file: string, filedName: string, password?: string): Promise<string>;
+    decryptMessage(senderPk: string, encrypted: string): Promise<string>;
+    decryptFields(fields: Map<string, string>, passwords?: Map<string, string>): Promise<Map<string, string>>;
+    private prepareData;
+    private hasPermissions;
+    private syncPermissions;
+    private generatePasswordForField;
+}

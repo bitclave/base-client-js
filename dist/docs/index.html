@@ -1,0 +1,709 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@bitclave/base-client-js</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@bitclave/base-client-js</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> @bitclave/base-client-js</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#base-client-js" id="base-client-js" style="color: inherit; text-decoration: none;">
+					<h1>BASE-CLIENT-JS</h1>
+				</a>
+				<p>JS client side library for interaction with BASE platform.</p>
+				<p><a href="https://travis-ci.org/bitclave/base-client-js"><img src="https://travis-ci.org/bitclave/base-client-js.svg?branch=develop" alt="Build Status"></a>
+					<a href="https://coveralls.io/github/bitclave/base-client-js"><img src="https://coveralls.io/repos/github/bitclave/base-client-js/badge.svg" alt="Coverage Status"></a>
+				<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a></p>
+				<p>This repository contains code for BASE-CLIENT-JS library. This library can be integrated by our partners to interact with BASE platform from client side. The library does not store any keys.</p>
+				<p>The repository also includes an example application, demonstrating how to integrate the library in WEB application</p>
+				<a href="#overview" id="overview" style="color: inherit; text-decoration: none;">
+					<h1>Overview</h1>
+				</a>
+				<p><img src="https://github.com/bitclave/base-client-demo/blob/master/images/base_phase1_overview.png" alt="Alt text"></p>
+				<a href="#how-to-build" id="how-to-build" style="color: inherit; text-decoration: none;">
+					<h1>How to build</h1>
+				</a>
+				<ul>
+					<li>from root directory run<pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> build</span>
+</code></pre></li>
+				</ul>
+				<pre><code>
+<span class="hljs-comment"># How to run tests</span>
+- <span class="hljs-keyword">from</span> root directory <span class="hljs-keyword">run</span></code></pre><p>node ./external/Signer.js --authPK 02e2d9c04891bf7f9934041d7171ade343e540f5d18bd357cde4ef175da3de7e06 --node <a href="https://base2-bitclva-com.herokuapp.com">https://base2-bitclva-com.herokuapp.com</a> &amp;
+				npm test</p>
+				<pre><code>
+<span class="hljs-section"># Env variables for test</span>
+<span class="hljs-bullet">+ </span>SIGNER
+<span class="hljs-bullet">+ </span>BASE<span class="hljs-emphasis">_NODE_</span>URL
+</code></pre>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_base_.html">&quot;<wbr>Base&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_buildermanagersmodule_.html">&quot;<wbr>Builder<wbr>Managers<wbr>Module&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_internalmanagermodule_.html">&quot;<wbr>Internal<wbr>Manager<wbr>Module&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_managersmodule_.html">&quot;<wbr>Managers<wbr>Module&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_managersmodulefactory_.html">&quot;<wbr>Managers<wbr>Module<wbr>Factory&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_remotemanagermodule_.html">&quot;<wbr>Remote<wbr>Manager<wbr>Module&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_accountmanager_.html">&quot;manager/<wbr>Account<wbr>Manager&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_accountmanagerimpl_.html">&quot;manager/<wbr>Account<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_datarequestmanager_.html">&quot;manager/<wbr>Data<wbr>Request<wbr>Manager&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_datarequestmanagerimpl_.html">&quot;manager/<wbr>Data<wbr>Request<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_externalservicesmanager_.html">&quot;manager/<wbr>External<wbr>Services<wbr>Manager&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_externalservicesmanagerimpl_.html">&quot;manager/<wbr>External<wbr>Services<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_nodemanager_.html">&quot;manager/<wbr>Node<wbr>Manager&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_nodemanagerimpl_.html">&quot;manager/<wbr>Node<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_offermanager_.html">&quot;manager/<wbr>Offer<wbr>Manager&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_offermanagerimpl_.html">&quot;manager/<wbr>Offer<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_offerrankmanager_.html">&quot;manager/<wbr>Offer<wbr>Rank<wbr>Manager&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_offerrankmanagerimpl_.html">&quot;manager/<wbr>Offer<wbr>Rank<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_profilemanager_.html">&quot;manager/<wbr>Profile<wbr>Manager&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_profilemanagerimpl_.html">&quot;manager/<wbr>Profile<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_searchmanager_.html">&quot;manager/<wbr>Search<wbr>Manager&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_searchmanagerimpl_.html">&quot;manager/<wbr>Search<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_verifymanager_.html">&quot;manager/<wbr>Verify<wbr>Manager&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_verifymanagerimpl_.html">&quot;manager/<wbr>Verify<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_walletmanager_.html">&quot;manager/<wbr>Wallet<wbr>Manager&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_walletmanagerimpl_.html">&quot;manager/<wbr>Wallet<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_remote_remoteaccountmanagerimpl_.html">&quot;manager/remote/<wbr>Remote<wbr>Account<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_remote_remotedatarequestmanagerimpl_.html">&quot;manager/remote/<wbr>Remote<wbr>Data<wbr>Request<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_remote_remoteexternalservicesmanagerimpl_.html">&quot;manager/remote/<wbr>Remote<wbr>External<wbr>Services<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_remote_remotenodemanagerimpl_.html">&quot;manager/remote/<wbr>Remote<wbr>Node<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_remote_remoteoffermanagerimpl_.html">&quot;manager/remote/<wbr>Remote<wbr>Offer<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_remote_remoteofferrankmanagerimpl_.html">&quot;manager/remote/<wbr>Remote<wbr>Offer<wbr>Rank<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_remote_remoteprofilemanagerimpl_.html">&quot;manager/remote/<wbr>Remote<wbr>Profile<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_remote_remotesearchmanagerimpl_.html">&quot;manager/remote/<wbr>Remote<wbr>Search<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_remote_remoteverifymanagerimpl_.html">&quot;manager/remote/<wbr>Remote<wbr>Verify<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_manager_remote_remotewalletmanagerimpl_.html">&quot;manager/remote/<wbr>Remote<wbr>Wallet<wbr>Manager<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_repositorystrategytype_.html">&quot;repository/<wbr>Repository<wbr>Strategy<wbr>Type&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_account_accountrepository_.html">&quot;repository/account/<wbr>Account<wbr>Repository&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_account_accountrepositoryimpl_.html">&quot;repository/account/<wbr>Account<wbr>Repository<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_assistant_assistantnodefactory_.html">&quot;repository/assistant/<wbr>Assistant<wbr>Node<wbr>Factory&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_assistant_assistantnoderepository_.html">&quot;repository/assistant/<wbr>Assistant<wbr>Node<wbr>Repository&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_assistant_nodeinfo_.html">&quot;repository/assistant/<wbr>Node<wbr>Info&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_assistant_noncesource_.html">&quot;repository/assistant/<wbr>Nonce<wbr>Source&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_assistant_permissionssource_.html">&quot;repository/assistant/<wbr>Permissions<wbr>Source&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_assistant_sitedatasource_.html">&quot;repository/assistant/<wbr>Site<wbr>Data<wbr>Source&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_client_clientdatarepository_.html">&quot;repository/client/<wbr>Client<wbr>Data<wbr>Repository&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_client_clientdatarepositoryimpl_.html">&quot;repository/client/<wbr>Client<wbr>Data<wbr>Repository<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_account_.html">&quot;repository/models/<wbr>Account&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_compareaction_.html">&quot;repository/models/<wbr>Compare<wbr>Action&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_datarequest_.html">&quot;repository/models/<wbr>Data<wbr>Request&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_deepcopy_.html">&quot;repository/models/<wbr>Deep<wbr>Copy&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_fielddata_.html">&quot;repository/models/<wbr>Field<wbr>Data&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_filemeta_.html">&quot;repository/models/<wbr>File<wbr>Meta&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_inputgraphdata_.html">&quot;repository/models/<wbr>Input<wbr>Graph<wbr>Data&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_jsonobject_.html">&quot;repository/models/<wbr>Json<wbr>Object&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_jsontransform_.html">&quot;repository/models/<wbr>Json<wbr>Transform&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_offer_.html">&quot;repository/models/<wbr>Offer&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_offerinteraction_.html">&quot;repository/models/<wbr>Offer<wbr>Interaction&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_offerprice_.html">&quot;repository/models/<wbr>Offer<wbr>Price&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_offerpricerules_.html">&quot;repository/models/<wbr>Offer<wbr>Price<wbr>Rules&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_offerrank_.html">&quot;repository/models/<wbr>Offer<wbr>Rank&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_offersearch_.html">&quot;repository/models/<wbr>Offer<wbr>Search&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_offersearchresultitem_.html">&quot;repository/models/<wbr>Offer<wbr>Search<wbr>Result<wbr>Item&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_offersharedata_.html">&quot;repository/models/<wbr>Offer<wbr>Share<wbr>Data&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_outputgraphdata_.html">&quot;repository/models/<wbr>Output<wbr>Graph<wbr>Data&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_page_.html">&quot;repository/models/<wbr>Page&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_pair_.html">&quot;repository/models/<wbr>Pair&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_profile_.html">&quot;repository/models/<wbr>Profile&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_searchbyqueryparams_.html">&quot;repository/models/<wbr>Search<wbr>ByQuery<wbr>Params&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_searchrequest_.html">&quot;repository/models/<wbr>Search<wbr>Request&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_shareddata_.html">&quot;repository/models/<wbr>Shared<wbr>Data&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_signedsearchbyqueryparams_.html">&quot;repository/models/<wbr>Signed<wbr>Search<wbr>ByQuery<wbr>Params&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_simpleaccount_.html">&quot;repository/models/<wbr>Simple<wbr>Account&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_site_.html">&quot;repository/models/<wbr>Site&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_services_externalservice_.html">&quot;repository/models/services/<wbr>External<wbr>Service&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_services_httpservicecall_.html">&quot;repository/models/services/<wbr>Http<wbr>Service<wbr>Call&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_services_servicecall_.html">&quot;repository/models/services/<wbr>Service<wbr>Call&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_models_services_serviceresponse_.html">&quot;repository/models/services/<wbr>Service<wbr>Response&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_node_nodeinforepository_.html">&quot;repository/node/<wbr>Node<wbr>Info<wbr>Repository&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_node_nodeinforepositoryimpl_.html">&quot;repository/node/<wbr>Node<wbr>Info<wbr>Repository<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_offer_offerrepository_.html">&quot;repository/offer/<wbr>Offer<wbr>Repository&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_offer_offerrepositoryimpl_.html">&quot;repository/offer/<wbr>Offer<wbr>Repository<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_offer_offersharedatarepository_.html">&quot;repository/offer/<wbr>Offer<wbr>Share<wbr>Data<wbr>Repository&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_offer_offersharedatarepositoryimpl_.html">&quot;repository/offer/<wbr>Offer<wbr>Share<wbr>Data<wbr>Repository<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_offerrank_offerrankrepository_.html">&quot;repository/offer<wbr>Rank/<wbr>Offer<wbr>Rank<wbr>Repository&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_offerrank_offerrankrepositoryimpl_.html">&quot;repository/offer<wbr>Rank/<wbr>Offer<wbr>Rank<wbr>Repository<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_requests_datarequestrepository_.html">&quot;repository/requests/<wbr>Data<wbr>Request<wbr>Repository&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_requests_datarequestrepositoryimpl_.html">&quot;repository/requests/<wbr>Data<wbr>Request<wbr>Repository<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_search_offersearchrepository_.html">&quot;repository/search/<wbr>Offer<wbr>Search<wbr>Repository&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_search_offersearchrepositoryimpl_.html">&quot;repository/search/<wbr>Offer<wbr>Search<wbr>Repository<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_search_searchrequestrepository_.html">&quot;repository/search/<wbr>Search<wbr>Request<wbr>Repository&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_search_searchrequestrepositoryimpl_.html">&quot;repository/search/<wbr>Search<wbr>Request<wbr>Repository<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_services_externalservicesrepository_.html">&quot;repository/services/<wbr>External<wbr>Services<wbr>Repository&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_services_externalservicesrepositoryimpl_.html">&quot;repository/services/<wbr>External<wbr>Services<wbr>Repository<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_site_siterepository_.html">&quot;repository/site/<wbr>Site<wbr>Repository&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_site_siterepositoryimpl_.html">&quot;repository/site/<wbr>Site<wbr>Repository<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_transportfactory_.html">&quot;repository/source/<wbr>Transport<wbr>Factory&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_transportinterceptor_.html">&quot;repository/source/<wbr>Transport<wbr>Interceptor&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_http_httpinterceptor_.html">&quot;repository/source/http/<wbr>Http<wbr>Interceptor&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_http_httpmethod_.html">&quot;repository/source/http/<wbr>Http<wbr>Method&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_http_httptransport_.html">&quot;repository/source/http/<wbr>Http<wbr>Transport&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_http_httptransportimpl_.html">&quot;repository/source/http/<wbr>Http<wbr>Transport<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_http_httptransportsyncedimpl_.html">&quot;repository/source/http/<wbr>Http<wbr>Transport<wbr>Synced<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_http_interceptorcortege_.html">&quot;repository/source/http/<wbr>Interceptor<wbr>Cortege&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_http_nonceinterceptor_.html">&quot;repository/source/http/<wbr>Nonce<wbr>Interceptor&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_http_repositorystrategyinterceptor_.html">&quot;repository/source/http/<wbr>Repository<wbr>Strategy<wbr>Interceptor&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_http_response_.html">&quot;repository/source/http/<wbr>Response&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_http_signinterceptor_.html">&quot;repository/source/http/<wbr>Sign<wbr>Interceptor&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_http_signedrequest_.html">&quot;repository/source/http/<wbr>Signed<wbr>Request&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_http_transaction_.html">&quot;repository/source/http/<wbr>Transaction&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_rpc_accesstokeninterceptor_.html">&quot;repository/source/rpc/<wbr>Access<wbr>Token<wbr>Interceptor&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_rpc_jsonrpc_.html">&quot;repository/source/rpc/<wbr>Json<wbr>Rpc&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_rpc_jsonrpchttpinterceptoradapter_.html">&quot;repository/source/rpc/<wbr>Json<wbr>Rpc<wbr>Http<wbr>Interceptor<wbr>Adapter&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_rpc_rpcinterceptor_.html">&quot;repository/source/rpc/<wbr>Rpc<wbr>Interceptor&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_rpc_rpctransport_.html">&quot;repository/source/rpc/<wbr>Rpc<wbr>Transport&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_rpc_rpctransportimpl_.html">&quot;repository/source/rpc/<wbr>Rpc<wbr>Transport<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_storage_localstorageimpl_.html">&quot;repository/source/storage/<wbr>Local<wbr>Storage<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_source_storage_storage_.html">&quot;repository/source/storage/<wbr>Storage&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_verify_verifyrepository_.html">&quot;repository/verify/<wbr>Verify<wbr>Repository&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_repository_verify_verifyrepositoryimpl_.html">&quot;repository/verify/<wbr>Verify<wbr>Repository<wbr>Impl&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_basiclogger_.html">&quot;utils/<wbr>Basic<wbr>Logger&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_bitcoinutils_.html">&quot;utils/<wbr>Bitcoin<wbr>Utils&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_cryptoutils_.html">&quot;utils/<wbr>Crypto<wbr>Utils&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_ethereumutils_.html">&quot;utils/<wbr>Ethereum<wbr>Utils&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_exportmethod_.html">&quot;utils/<wbr>Export<wbr>Method&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_jsonutils_.html">&quot;utils/<wbr>Json<wbr>Utils&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_walletutils_.html">&quot;utils/<wbr>Wallet<wbr>Utils&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_acceptedfield_.html">&quot;utils/keypair/<wbr>Accepted<wbr>Field&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_accesstokenaccepter_.html">&quot;utils/keypair/<wbr>Access<wbr>Token<wbr>Accepter&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_bitkeypair_.html">&quot;utils/keypair/<wbr>Bit<wbr>Key<wbr>Pair&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_keypair_.html">&quot;utils/keypair/<wbr>Key<wbr>Pair&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_keypairfactory_.html">&quot;utils/keypair/<wbr>Key<wbr>Pair<wbr>Factory&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_keypairhelper_.html">&quot;utils/keypair/<wbr>Key<wbr>Pair<wbr>Helper&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_messagedecrypt_.html">&quot;utils/keypair/<wbr>Message<wbr>Decrypt&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_messageencrypt_.html">&quot;utils/keypair/<wbr>Message<wbr>Encrypt&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_messagesigner_.html">&quot;utils/keypair/<wbr>Message<wbr>Signer&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_permissions_.html">&quot;utils/keypair/<wbr>Permissions&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_remotekeypairhelper_.html">&quot;utils/keypair/<wbr>Remote<wbr>Key<wbr>Pair<wbr>Helper&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcaccessdata_.html">&quot;utils/keypair/rpc/<wbr>Rpc<wbr>Access<wbr>Data&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcaccesstoken_.html">&quot;utils/keypair/rpc/<wbr>Rpc<wbr>Access<wbr>Token&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcchecksignature_.html">&quot;utils/keypair/rpc/<wbr>Rpc<wbr>Check<wbr>Signature&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcclientdata_.html">&quot;utils/keypair/rpc/<wbr>Rpc<wbr>Client<wbr>Data&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcdecryptencryptfields_.html">&quot;utils/keypair/rpc/<wbr>Rpc<wbr>Decrypt<wbr>Encrypt<wbr>Fields&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcdecryptmessage_.html">&quot;utils/keypair/rpc/<wbr>Rpc<wbr>Decrypt<wbr>Message&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcencryptmessage_.html">&quot;utils/keypair/rpc/<wbr>Rpc<wbr>Encrypt<wbr>Message&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcfieldpassword_.html">&quot;utils/keypair/rpc/<wbr>Rpc<wbr>Field<wbr>Password&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpckeypair_.html">&quot;utils/keypair/rpc/<wbr>Rpc<wbr>Key<wbr>Pair&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcpassphrase_.html">&quot;utils/keypair/rpc/<wbr>Rpc<wbr>Pass<wbr>Phrase&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcpermissionsfields_.html">&quot;utils/keypair/rpc/<wbr>Rpc<wbr>Permissions<wbr>Fields&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpcsignmessage_.html">&quot;utils/keypair/rpc/<wbr>Rpc<wbr>Sign<wbr>Message&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_keypair_rpc_rpctoken_.html">&quot;utils/keypair/rpc/<wbr>Rpc<wbr>Token&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_basetypes_.html">&quot;utils/types/<wbr>Base<wbr>Types&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_primitive_.html">&quot;utils/types/<wbr>Primitive&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_json_transform_jsondeserializer_.html">&quot;utils/types/json-<wbr>transform/<wbr>Json<wbr>Deserializer&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_json_transform_paramdeserializer_.html">&quot;utils/types/json-<wbr>transform/<wbr>Param<wbr>Deserializer&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_json_transform_deserializers_accessrightmapdeserializer_.html">&quot;utils/types/json-<wbr>transform/deserializers/<wbr>Access<wbr>Right<wbr>Map<wbr>Deserializer&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_json_transform_deserializers_arraydeserializer_.html">&quot;utils/types/json-<wbr>transform/deserializers/<wbr>Array<wbr>Deserializer&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_json_transform_deserializers_arrayexternalservicedeserializer_.html">&quot;utils/types/json-<wbr>transform/deserializers/<wbr>Array<wbr>External<wbr>Service<wbr>Deserializer&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_json_transform_deserializers_datedeserializer_.html">&quot;utils/types/json-<wbr>transform/deserializers/<wbr>Date<wbr>Deserializer&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_json_transform_deserializers_pagedeserializer_.html">&quot;utils/types/json-<wbr>transform/deserializers/<wbr>Page<wbr>Deserializer&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_json_transform_deserializers_searchrequestdeserializer_.html">&quot;utils/types/json-<wbr>transform/deserializers/<wbr>Search<wbr>Request<wbr>Deserializer&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_json_transform_deserializers_simplemapdeserializer_.html">&quot;utils/types/json-<wbr>transform/deserializers/<wbr>Simple<wbr>Map<wbr>Deserializer&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_json_transform_index_.html">&quot;utils/types/json-<wbr>transform/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_validators_abstractwalletvalidator_.html">&quot;utils/types/validators/<wbr>Abstract<wbr>Wallet<wbr>Validator&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_validators_appwalletvalidator_.html">&quot;utils/types/validators/<wbr>App<wbr>Wallet<wbr>Validator&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_validators_btcwalletvalidator_.html">&quot;utils/types/validators/<wbr>Btc<wbr>Wallet<wbr>Validator&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_validators_ethwalletvalidator_.html">&quot;utils/types/validators/<wbr>Eth<wbr>Wallet<wbr>Validator&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_validators_usdwalletvalidator_.html">&quot;utils/types/validators/<wbr>Usd<wbr>Wallet<wbr>Validator&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_validators_validationresult_.html">&quot;utils/types/validators/<wbr>Validation<wbr>Result&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_validators_walletvalidator_.html">&quot;utils/types/validators/<wbr>Wallet<wbr>Validator&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_validators_walletvalidatorstrategy_.html">&quot;utils/types/validators/<wbr>Wallet<wbr>Validator<wbr>Strategy&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_validators_walletsvalidator_.html">&quot;utils/types/validators/<wbr>Wallets<wbr>Validator&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_validators_annotations_isbasepublickey_.html">&quot;utils/types/validators/annotations/<wbr>IsBase<wbr>Public<wbr>Key&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_validators_annotations_isbtcaddress_.html">&quot;utils/types/validators/annotations/<wbr>IsBtc<wbr>Address&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_validators_annotations_isemailaddress_.html">&quot;utils/types/validators/annotations/<wbr>IsEmail<wbr>Address&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_validators_annotations_isethaddress_.html">&quot;utils/types/validators/annotations/<wbr>IsEth<wbr>Address&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_types_validators_annotations_istypedarray_.html">&quot;utils/types/validators/annotations/<wbr>IsTyped<wbr>Array&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

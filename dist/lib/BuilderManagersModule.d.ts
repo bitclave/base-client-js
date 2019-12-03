@@ -1,0 +1,35 @@
+import { ManagersModule } from './ManagersModule';
+import { NonceSource } from './repository/assistant/NonceSource';
+import { RepositoryStrategyType } from './repository/RepositoryStrategyType';
+import { Logger } from './utils/BasicLogger';
+import { KeyPairHelper } from './utils/keypair/KeyPairHelper';
+import { MessageDecrypt } from './utils/keypair/MessageDecrypt';
+import { MessageEncrypt } from './utils/keypair/MessageEncrypt';
+import { MessageSigner } from './utils/keypair/MessageSigner';
+export declare class BuilderManagersModule {
+    readonly nodeEndPoint: string;
+    readonly siteOrigin: string;
+    private _keyPairHelper;
+    private _messageSigner;
+    private _encryptMessage;
+    private _decryptMessage;
+    private _nonceSource;
+    private _logger;
+    private _strategy;
+    constructor(nodeEndPoint: string, siteOrigin: string);
+    setKeyPairHelper(keyPair: KeyPairHelper): this;
+    setStrategyType(strategy: RepositoryStrategyType): this;
+    setLoggerService(logger: Logger): this;
+    setMessageSigner(messageSigner: MessageSigner): this;
+    setMessageEncrypt(messageEncrypt: MessageEncrypt): this;
+    setMessageDecrypt(messageDecrypt: MessageDecrypt): this;
+    setNonceSource(nonceSource: NonceSource): this;
+    readonly keyPairHelper: KeyPairHelper;
+    readonly messageSigner: MessageSigner;
+    readonly encryptMessage: MessageEncrypt;
+    readonly decryptMessage: MessageDecrypt;
+    readonly nonceSource: NonceSource;
+    readonly logger: Logger;
+    readonly strategy: RepositoryStrategyType;
+    build(): ManagersModule;
+}
