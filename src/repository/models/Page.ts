@@ -37,11 +37,7 @@ export class Page<T extends JsonTransform> extends DeepCopy<Page<T>> {
     public readonly totalElements: number;
     public readonly counters?: object;
 
-    // tslint:disable-next-line:callable-types
-    public static fromJson<T extends JsonTransform>(
-        json: object,
-        creator: JsonDeserializer<T>
-    ): Page<T> {
+    public static fromJson<T extends JsonTransform>(json: object, deserializer: JsonDeserializer<T>): Page<T> {
         const raw = json as JsonObject<Page<T>>;
         const rawPageable = raw.pageable as JsonObject<Pageable>;
         const pageable: Pageable = new Pageable(
@@ -50,7 +46,7 @@ export class Page<T extends JsonTransform> extends DeepCopy<Page<T>> {
             rawPageable.size as number
         );
         const content: Array<T> = (raw.content as Array<T>)
-            .map((item: T) => creator.fromJson(item));
+            .map((item: T) => deserializer.fromJson(item));
         const counters: object = raw.counters as object || {};
 
         return new Page<T>(

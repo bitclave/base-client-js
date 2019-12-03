@@ -5,10 +5,10 @@ import { JsonDeserializer } from '../JsonDeserializer';
 
 export class PageDeserializer<T extends JsonTransform> implements JsonDeserializer<Page<T>> {
 
-    constructor(private readonly creator: JsonDeserializer<T>) {
+    constructor(private readonly deserializer: JsonDeserializer<T>) {
     }
 
     public fromJson(json: JsonObject<Page<T>>): Page<T> {
-        return Page.fromJson(json, this.creator);
+        return Page.fromJson(json, this.deserializer);
     }
 }
