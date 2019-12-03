@@ -5,11 +5,10 @@ import { JsonDeserializer } from '../JsonDeserializer';
 
 export class PageDeserializer<T extends JsonTransform> implements JsonDeserializer<Page<T>> {
 
-    // tslint:disable-next-line:callable-types
-    constructor(private readonly Creator: { new(): T; }) {
+    constructor(private readonly creator: JsonDeserializer<T>) {
     }
 
     public fromJson(json: JsonObject<Page<T>>): Page<T> {
-        return Page.fromJson(json, this.Creator);
+        return Page.fromJson(json, this.creator);
     }
 }

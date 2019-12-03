@@ -62842,12 +62842,12 @@ var Page = /** @class */function (_super) {
         return _this;
     }
     // tslint:disable-next-line:callable-types
-    Page.fromJson = function (json, Creator) {
+    Page.fromJson = function (json, creator) {
         var raw = json;
         var rawPageable = raw.pageable;
         var pageable = new Pageable(rawPageable.sort, rawPageable.page, rawPageable.size);
         var content = raw.content.map(function (item) {
-            return Object.assign(new Creator(), item);
+            return creator.fromJson(item);
         });
         var counters = raw.counters || {};
         return new Page(raw.total, content, pageable, raw.numberOfElements, raw.first, raw.last, raw.number, raw.size, raw.totalPages, raw.totalElements, counters);
@@ -68609,12 +68609,11 @@ exports.DateDeserializer = DateDeserializer;
 Object.defineProperty(exports, "__esModule", { value: true });
 var Page_1 = __webpack_require__(/*! ../../../../repository/models/Page */ "./src/repository/models/Page.ts");
 var PageDeserializer = /** @class */function () {
-    // tslint:disable-next-line:callable-types
-    function PageDeserializer(Creator) {
-        this.Creator = Creator;
+    function PageDeserializer(creator) {
+        this.creator = creator;
     }
     PageDeserializer.prototype.fromJson = function (json) {
-        return Page_1.Page.fromJson(json, this.Creator);
+        return Page_1.Page.fromJson(json, this.creator);
     };
     return PageDeserializer;
 }();

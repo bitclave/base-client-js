@@ -1,3 +1,4 @@
+import { JsonDeserializer } from '../../utils/types/json-transform';
 import { ClassCreator, DeepCopy } from './DeepCopy';
 import { JsonTransform } from './JsonTransform';
 export declare class Pageable extends DeepCopy<Pageable> {
@@ -20,9 +21,7 @@ export declare class Page<T extends JsonTransform> extends DeepCopy<Page<T>> {
     readonly totalPages: number;
     readonly totalElements: number;
     readonly counters?: object;
-    static fromJson<T extends JsonTransform>(json: object, Creator: {
-        new (): T;
-    }): Page<T>;
+    static fromJson<T extends JsonTransform>(json: object, creator: JsonDeserializer<T>): Page<T>;
     constructor(total?: number, content?: Array<T>, pageable?: Pageable, numberOfElements?: number, first?: boolean, last?: boolean, number?: number, size?: number, totalPages?: number, totalElements?: number, counters?: object);
     toJson(): object;
     protected deepCopyFromJson(): Page<T>;
