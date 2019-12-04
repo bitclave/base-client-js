@@ -60227,7 +60227,7 @@ var SearchManagerImpl = /** @class */function () {
     __decorate([ExportMethod_1.ExportMethod(), __metadata("design:type", Function), __metadata("design:paramtypes", [String, Number]), __metadata("design:returntype", Promise)], SearchManagerImpl.prototype, "getRequestsByOwnerAndId", null);
     __decorate([ExportMethod_1.ExportMethod(), __metadata("design:type", Function), __metadata("design:paramtypes", [Number, Number]), __metadata("design:returntype", Promise)], SearchManagerImpl.prototype, "getRequestsByPage", null);
     __decorate([ExportMethod_1.ExportMethod(), __metadata("design:type", Function), __metadata("design:paramtypes", [Number]), __metadata("design:returntype", Promise)], SearchManagerImpl.prototype, "deleteRequest", null);
-    __decorate([ExportMethod_1.ExportMethod(), __metadata("design:type", Function), __metadata("design:paramtypes", [String, Number]), __metadata("design:returntype", Promise)], SearchManagerImpl.prototype, "getSuggestionByQuery", null);
+    __decorate([ExportMethod_1.ExportMethod({ public: true }), __metadata("design:type", Function), __metadata("design:paramtypes", [String, Number]), __metadata("design:returntype", Promise)], SearchManagerImpl.prototype, "getSuggestionByQuery", null);
     __decorate([ExportMethod_1.ExportMethod({ public: true }), __param(6, json_transform_1.ParamDeserializer(new SimpleMapDeserializer_1.SimpleMapDeserializer())), __metadata("design:type", Function), __metadata("design:paramtypes", [String, Number, Number, Number, Array, String, Map]), __metadata("design:returntype", Promise)], SearchManagerImpl.prototype, "createSearchResultByQuery", null);
     __decorate([ExportMethod_1.ExportMethod(), __metadata("design:type", Function), __metadata("design:paramtypes", [Array]), __metadata("design:returntype", Promise)], SearchManagerImpl.prototype, "getCountBySearchRequestIds", null);
     __decorate([ExportMethod_1.ExportMethod(), __metadata("design:type", Function), __metadata("design:paramtypes", [Number, Number, Number]), __metadata("design:returntype", Promise)], SearchManagerImpl.prototype, "getSearchResult", null);
@@ -60838,13 +60838,13 @@ var RemoteOfferManagerImpl = /** @class */function () {
         return this.transport.request('offerManager.saveOffer', [offer.toJson()], Offer_1.default);
     };
     RemoteOfferManagerImpl.prototype.shallowSaveOffer = function (offer) {
-        return this.transport.request('offerManager.saveOffer', [offer.toJson()], Offer_1.default);
+        return this.transport.request('offerManager.shallowSaveOffer', [offer.toJson()], Offer_1.default);
     };
     RemoteOfferManagerImpl.prototype.updateBulkOffers = function (offers) {
         var jsonOffers = offers.map(function (item) {
             return item.toJson();
         });
-        return this.transport.request('offerManager.saveOffer', [jsonOffers]);
+        return this.transport.request('offerManager.updateBulkOffers', [jsonOffers]);
     };
     return RemoteOfferManagerImpl;
 }();
