@@ -1,3 +1,4 @@
+import { JsonUtils } from '../../utils/JsonUtils';
 import { ClassCreator, DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
 
@@ -13,8 +14,8 @@ export class FileMeta extends DeepCopy<FileMeta> {
     public readonly updatedAt: Date = new Date();
 
     public static fromJson(json: JsonObject<FileMeta>): FileMeta {
-        json.createdAt = new Date((json.createdAt.toString()) || new Date());
-        json.updatedAt = new Date((json.updatedAt.toString()) || new Date());
+        json.createdAt = JsonUtils.jsonDateToDate(json.createdAt);
+        json.updatedAt = JsonUtils.jsonDateToDate(json.updatedAt);
 
         return Object.assign(new FileMeta(), json);
     }

@@ -18,4 +18,13 @@ export class JsonUtils {
 
         return result as T;
     }
+
+    // tslint:disable-next-line:no-any
+    public static jsonDateToDate(value: any): Date {
+        if (value instanceof Date) {
+            return value;
+        }
+
+        return value ? new Date(value.toString()) : new Date();
+    }
 }
