@@ -17,6 +17,5 @@ export default class SearchRequestRepositoryImpl implements SearchRequestReposit
     getSearchRequestByOwner(owner: string): Promise<Array<SearchRequest>>;
     getSearchRequestsByOwnerAndTag(owner: string, tag: string): Promise<Array<SearchRequest>>;
     getSearchRequestByPage(page?: number, size?: number): Promise<Page<SearchRequest>>;
-    private jsonToPageResultItem;
     private jsonToListSearchRequests;
 }

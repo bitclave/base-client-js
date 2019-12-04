@@ -51119,8 +51119,8 @@ var Offer = /** @class */function (_super) {
         offer.tags = JsonUtils_1.JsonUtils.jsonToMap(offer.tags);
         offer.compare = JsonUtils_1.JsonUtils.jsonToMap(offer.compare);
         offer.rules = JsonUtils_1.JsonUtils.jsonToMap(offer.rules);
-        offer.createdAt = new Date(offer.createdAt);
-        offer.updatedAt = new Date(offer.updatedAt);
+        offer.createdAt = JsonUtils_1.JsonUtils.jsonDateToDate(offer.createdAt);
+        offer.updatedAt = JsonUtils_1.JsonUtils.jsonDateToDate(offer.updatedAt);
         if (offer.offerPrices && offer.offerPrices.length) {
             offer.offerPrices = offer.offerPrices.map(function (e) {
                 var offerRules = e.rules && e.rules.length ? e.rules.map(function (r) {
@@ -53609,7 +53609,6 @@ var __generator = this && this.__generator || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var JsonUtils_1 = __webpack_require__(/*! ../../utils/JsonUtils */ "./src/utils/JsonUtils.ts");
-var Offer_1 = __webpack_require__(/*! ../models/Offer */ "./src/repository/models/Offer.ts");
 var OfferInteraction_1 = __webpack_require__(/*! ../models/OfferInteraction */ "./src/repository/models/OfferInteraction.ts");
 var OfferSearch_1 = __webpack_require__(/*! ../models/OfferSearch */ "./src/repository/models/OfferSearch.ts");
 var OfferSearchResultItem_1 = __webpack_require__(/*! ../models/OfferSearchResultItem */ "./src/repository/models/OfferSearchResultItem.ts");
@@ -53642,7 +53641,6 @@ var OfferSearchRepositoryImpl = /** @class */function () {
         });
     };
     OfferSearchRepositoryImpl.prototype.createByQuery = function (owner, query, searchRequestId, page, size, interests, mode, filters) {
-        var _this = this;
         if (page === void 0) {
             page = 0;
         }
@@ -53655,11 +53653,10 @@ var OfferSearchRepositoryImpl = /** @class */function () {
             data.setInterests(interests);
         }
         return this.transport.sendRequest(this.OFFER_SEARCH_CREATE_BY_QUERY_API.replace('{query}', encodeURIComponent(query)).replace('{page}', (page || 0).toString()).replace('{size}', (size || 20).toString()).replace('{mode}', (mode || '').toString()), HttpMethod_1.HttpMethod.Post, data).then(function (response) {
-            return _this.jsonToPageResultItem(response.json);
+            return Page_1.Page.fromJson(response.json, OfferSearchResultItem_1.default);
         });
     };
     OfferSearchRepositoryImpl.prototype.getUserOfferSearches = function (clientId, page, size, unique, searchIds, state, sort, interaction) {
-        var _this = this;
         if (page === void 0) {
             page = 0;
         }
@@ -53676,19 +53673,17 @@ var OfferSearchRepositoryImpl = /** @class */function () {
             state = [];
         }
         return this.transport.sendRequest(this.OFFER_SEARCH_BY_PARAMS_API.replace('{owner}', clientId).replace('{page}', (page || 0).toString()).replace('{size}', (size || 20).toString()).replace('{searchIds}', (searchIds || []).join(',')).replace('{state}', (state || []).join(',')).replace('{unique}', unique ? '1' : '0').replace('{sort}', sort && sort.toString()).replace('{interaction}', interaction === true ? '1' : '0'), HttpMethod_1.HttpMethod.Get).then(function (response) {
-            return _this.jsonToPageResultItem(response.json);
+            return Page_1.Page.fromJson(response.json, OfferSearchResultItem_1.default);
         });
     };
     OfferSearchRepositoryImpl.prototype.getSearchResult = function (clientId, searchRequestId, page, size) {
-        var _this = this;
         return this.transport.sendRequest(this.OFFER_SEARCH_GET_BY_REQUEST_OR_SEARCH_API.replace('{searchRequestId}', searchRequestId.toString()).replace('{offerSearchId}', '0').replace('{page}', (page || 0).toString()).replace('{size}', (size || 20).toString()), HttpMethod_1.HttpMethod.Get).then(function (response) {
-            return _this.jsonToPageResultItem(response.json);
+            return Page_1.Page.fromJson(response.json, OfferSearchResultItem_1.default);
         });
     };
     OfferSearchRepositoryImpl.prototype.getSearchResultByOfferSearchId = function (clientId, offerSearchId, page, size) {
-        var _this = this;
         return this.transport.sendRequest(this.OFFER_SEARCH_GET_BY_REQUEST_OR_SEARCH_API.replace('{searchRequestId}', '0').replace('{offerSearchId}', offerSearchId.toString()).replace('{page}', (page || 0).toString()).replace('{size}', (size || 20).toString()), HttpMethod_1.HttpMethod.Get).then(function (response) {
-            return _this.jsonToPageResultItem(response.json);
+            return Page_1.Page.fromJson(response.json, OfferSearchResultItem_1.default);
         });
     };
     OfferSearchRepositoryImpl.prototype.getCountBySearchRequestIds = function (searchRequestIds) {
@@ -53803,31 +53798,6 @@ var OfferSearchRepositoryImpl = /** @class */function () {
             return _this.jsonToOfferSearchList(response.json);
         });
     };
-    OfferSearchRepositoryImpl.prototype.jsonToPageResultItem = function (json) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _a = json;
-                        return [4 /*yield*/, this.jsonToListResult(json.content)];
-                    case 1:
-                        _a.content = _b.sent();
-                        return [2 /*return*/, Page_1.Page.fromJson(json, OfferSearchResultItem_1.default)];
-                }
-            });
-        });
-    };
-    OfferSearchRepositoryImpl.prototype.jsonToListResult = function (json) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, Object.keys(json).map(function (key) {
-                    var rawOfferSearch = json[key];
-                    return new OfferSearchResultItem_1.default(OfferSearch_1.OfferSearch.fromJson(rawOfferSearch.offerSearch), Offer_1.default.fromJson(rawOfferSearch.offer), rawOfferSearch.interaction ? OfferInteraction_1.OfferInteraction.fromJson(rawOfferSearch.interaction) : undefined);
-                })];
-            });
-        });
-    };
     OfferSearchRepositoryImpl.prototype.jsonToOfferSearchList = function (json) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -53862,85 +53832,6 @@ exports.OfferSearchRepositoryImpl = OfferSearchRepositoryImpl;
 "use strict";
 
 
-var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) {
-            try {
-                step(generator.next(value));
-            } catch (e) {
-                reject(e);
-            }
-        }
-        function rejected(value) {
-            try {
-                step(generator["throw"](value));
-            } catch (e) {
-                reject(e);
-            }
-        }
-        function step(result) {
-            result.done ? resolve(result.value) : new P(function (resolve) {
-                resolve(result.value);
-            }).then(fulfilled, rejected);
-        }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __generator = this && this.__generator || function (thisArg, body) {
-    var _ = { label: 0, sent: function () {
-            if (t[0] & 1) throw t[1];return t[1];
-        }, trys: [], ops: [] },
-        f,
-        y,
-        t,
-        g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
-        return this;
-    }), g;
-    function verb(n) {
-        return function (v) {
-            return step([n, v]);
-        };
-    }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0:case 1:
-                    t = op;break;
-                case 4:
-                    _.label++;return { value: op[1], done: false };
-                case 5:
-                    _.label++;y = op[1];op = [0];continue;
-                case 7:
-                    op = _.ops.pop();_.trys.pop();continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
-                        _ = 0;continue;
-                    }
-                    if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
-                        _.label = op[1];break;
-                    }
-                    if (op[0] === 6 && _.label < t[1]) {
-                        _.label = t[1];t = op;break;
-                    }
-                    if (t && _.label < t[2]) {
-                        _.label = t[2];_.ops.push(op);break;
-                    }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop();continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) {
-            op = [6, e];y = 0;
-        } finally {
-            f = t = 0;
-        }
-        if (op[0] & 5) throw op[1];return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var Page_1 = __webpack_require__(/*! ../models/Page */ "./src/repository/models/Page.ts");
 var SearchRequest_1 = __webpack_require__(/*! ../models/SearchRequest */ "./src/repository/models/SearchRequest.ts");
@@ -54001,24 +53892,8 @@ var SearchRequestRepositoryImpl = /** @class */function () {
         });
     };
     SearchRequestRepositoryImpl.prototype.getSearchRequestByPage = function (page, size) {
-        var _this = this;
         return this.transport.sendRequest(this.SEARCH_REQUEST_PAGEABLE_API.replace('{page}', (page || 0).toString()).replace('{size}', (size || 20).toString()), HttpMethod_1.HttpMethod.Get).then(function (response) {
-            return _this.jsonToPageResultItem(response.json);
-        });
-    };
-    SearchRequestRepositoryImpl.prototype.jsonToPageResultItem = function (json) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _a = json;
-                        return [4 /*yield*/, this.jsonToListSearchRequests(json.content)];
-                    case 1:
-                        _a.content = _b.sent();
-                        return [2 /*return*/, Page_1.Page.fromJson(json, SearchRequest_1.default)];
-                }
-            });
+            return Page_1.Page.fromJson(response.json, SearchRequest_1.default);
         });
     };
     SearchRequestRepositoryImpl.prototype.jsonToListSearchRequests = function (json) {
@@ -55966,11 +55841,14 @@ exports.ExportMethod = function (props) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var JsonUtils = /** @class */function () {
     function JsonUtils() {}
-    JsonUtils.jsonToMap = function (json) {
+    JsonUtils.jsonToMap = function (objMap) {
+        if (objMap instanceof Map) {
+            return objMap;
+        }
         var map = new Map();
         // tslint:disable-next-line:no-any
-        Object.keys(json).forEach(function (key) {
-            return map.set(key, json[key]);
+        Object.keys(objMap).forEach(function (key) {
+            return map.set(key, objMap[key]);
         });
         return map;
     };

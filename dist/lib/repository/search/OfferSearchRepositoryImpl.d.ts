@@ -38,8 +38,6 @@ export declare class OfferSearchRepositoryImpl implements OfferSearchRepository 
     addResultItem(clientId: string, offerSearch: OfferSearch): Promise<void>;
     addEventToOfferSearch(event: string, offerSearchId: number): Promise<void>;
     clone(owner: string, originToCopySearchRequestIds: Array<Pair<number, number>>): Promise<Array<OfferSearch>>;
-    private jsonToPageResultItem;
-    private jsonToListResult;
     private jsonToOfferSearchList;
     private jsonToOfferInteractionList;
 }
