@@ -51,12 +51,12 @@ export class RemoteOfferManagerImpl implements OfferManager {
     }
 
     public shallowSaveOffer(offer: Offer): Promise<Offer> {
-        return this.transport.request('offerManager.saveOffer', [offer.toJson()], Offer);
+        return this.transport.request('offerManager.shallowSaveOffer', [offer.toJson()], Offer);
     }
 
     public updateBulkOffers(offers: Array<Offer>): Promise<Array<number>> {
         const jsonOffers = offers.map(item => item.toJson());
 
-        return this.transport.request('offerManager.saveOffer', [jsonOffers]);
+        return this.transport.request('offerManager.updateBulkOffers', [jsonOffers]);
     }
 }
