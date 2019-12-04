@@ -1,9 +1,13 @@
 export class JsonUtils {
 
-    public static jsonToMap<K, V>(json: object): Map<K, V> {
+    public static jsonToMap<K, V>(objMap: object): Map<K, V> {
+        if (objMap instanceof Map) {
+            return objMap;
+        }
+
         const map: Map<K, V> = new Map<K, V>();
         // tslint:disable-next-line:no-any
-        Object.keys(json).forEach((key: any) => map.set(key, json[key]));
+        Object.keys(objMap).forEach((key: any) => map.set(key, objMap[key]));
 
         return map;
     }

@@ -1,7 +1,6 @@
 import { SortOfferSearch } from '../../manager/SearchManager';
 import { JsonUtils } from '../../utils/JsonUtils';
 import { JsonObject } from '../models/JsonObject';
-import Offer from '../models/Offer';
 import { OfferInteraction, OfferResultAction } from '../models/OfferInteraction';
 import { OfferSearch } from '../models/OfferSearch';
 import OfferSearchResultItem from '../models/OfferSearchResultItem';
@@ -81,7 +80,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
             ,
             HttpMethod.Post,
             data
-        ).then((response) => this.jsonToPageResultItem(response.json));
+        ).then((response) => Page.fromJson(response.json, OfferSearchResultItem));
     }
 
     public getUserOfferSearches(
@@ -106,7 +105,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
                 .replace('{interaction}', interaction === true ? '1' : '0')
             ,
             HttpMethod.Get
-        ).then((response) => this.jsonToPageResultItem(response.json));
+        ).then((response) => Page.fromJson(response.json, OfferSearchResultItem));
     }
 
     public getSearchResult(
@@ -122,7 +121,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
                 .replace('{page}', (page || 0).toString())
                 .replace('{size}', (size || 20).toString()),
             HttpMethod.Get
-        ).then((response) => this.jsonToPageResultItem(response.json));
+        ).then((response) => Page.fromJson(response.json, OfferSearchResultItem));
     }
 
     public getSearchResultByOfferSearchId(
@@ -138,7 +137,7 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
                 .replace('{page}', (page || 0).toString())
                 .replace('{size}', (size || 20).toString()),
             HttpMethod.Get
-        ).then((response) => this.jsonToPageResultItem(response.json));
+        ).then((response) => Page.fromJson(response.json, OfferSearchResultItem));
     }
 
     public getCountBySearchRequestIds(searchRequestIds: Array<number>): Promise<Map<number, number>> {
@@ -236,30 +235,6 @@ export class OfferSearchRepositoryImpl implements OfferSearchRepository {
             HttpMethod.Put,
             originToCopySearchRequestIds
         ).then((response) => this.jsonToOfferSearchList(response.json));
-    }
-
-    private async jsonToPageResultItem(
-        json: JsonObject<Page<OfferSearchResultItem>>
-    ): Promise<Page<OfferSearchResultItem>> {
-        json.content = await this.jsonToListResult(json.content as JsonObject<Array<OfferSearchResultItem>>);
-        return Page.fromJson(json, OfferSearchResultItem);
-    }
-
-    private async jsonToListResult(
-        json: JsonObject<Array<OfferSearchResultItem>>
-    ): Promise<Array<OfferSearchResultItem>> {
-        return Object.keys(json)
-            .map(key => {
-                    const rawOfferSearch = json[key] as JsonObject<OfferSearchResultItem>;
-                    return new OfferSearchResultItem(
-                        OfferSearch.fromJson(rawOfferSearch.offerSearch as object),
-                        Offer.fromJson(rawOfferSearch.offer as object),
-                        rawOfferSearch.interaction
-                        ? OfferInteraction.fromJson(rawOfferSearch.interaction as object)
-                        : undefined
-                    );
-                }
-            );
     }
 
     private async jsonToOfferSearchList(json: JsonObject<Array<OfferSearch>>): Promise<Array<OfferSearch>> {
