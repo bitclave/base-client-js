@@ -61474,6 +61474,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
+var JsonUtils_1 = __webpack_require__(/*! ../../utils/JsonUtils */ "./src/utils/JsonUtils.ts");
 var SimpleAccount_1 = __webpack_require__(/*! ./SimpleAccount */ "./src/repository/models/SimpleAccount.ts");
 var Account = /** @class */function (_super) {
     __extends(Account, _super);
@@ -61490,8 +61491,8 @@ var Account = /** @class */function (_super) {
         return _this;
     }
     Account.fromJson = function (json) {
-        json.createdAt = new Date(json.createdAt.toString() || new Date().getTime());
-        json.updatedAt = new Date(json.updatedAt.toString() || new Date().getTime());
+        json.createdAt = JsonUtils_1.JsonUtils.jsonDateToDate(json.createdAt);
+        json.updatedAt = JsonUtils_1.JsonUtils.jsonDateToDate(json.updatedAt);
         return Object.assign(new Account(), json);
     };
     Account.prototype.toSimpleAccount = function () {
@@ -61763,6 +61764,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
+var JsonUtils_1 = __webpack_require__(/*! ../../utils/JsonUtils */ "./src/utils/JsonUtils.ts");
 var DeepCopy_1 = __webpack_require__(/*! ./DeepCopy */ "./src/repository/models/DeepCopy.ts");
 var FileMeta = /** @class */function (_super) {
     __extends(FileMeta, _super);
@@ -61794,8 +61796,8 @@ var FileMeta = /** @class */function (_super) {
         return _this;
     }
     FileMeta.fromJson = function (json) {
-        json.createdAt = new Date(json.createdAt.toString() || new Date());
-        json.updatedAt = new Date(json.updatedAt.toString() || new Date());
+        json.createdAt = JsonUtils_1.JsonUtils.jsonDateToDate(json.createdAt);
+        json.updatedAt = JsonUtils_1.JsonUtils.jsonDateToDate(json.updatedAt);
         return Object.assign(new FileMeta(), json);
     };
     FileMeta.prototype.toJson = function () {
@@ -62081,6 +62083,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
+var JsonUtils_1 = __webpack_require__(/*! ../../utils/JsonUtils */ "./src/utils/JsonUtils.ts");
 var DeepCopy_1 = __webpack_require__(/*! ./DeepCopy */ "./src/repository/models/DeepCopy.ts");
 var OfferInteraction = /** @class */function (_super) {
     __extends(OfferInteraction, _super);
@@ -62107,8 +62110,8 @@ var OfferInteraction = /** @class */function (_super) {
     }
     OfferInteraction.fromJson = function (json) {
         var jsonObj = json;
-        jsonObj.createdAt = new Date(jsonObj.createdAt.toString() || new Date().getTime());
-        jsonObj.updatedAt = new Date(jsonObj.updatedAt.toString() || new Date().getTime());
+        jsonObj.createdAt = JsonUtils_1.JsonUtils.jsonDateToDate(jsonObj.createdAt);
+        jsonObj.updatedAt = JsonUtils_1.JsonUtils.jsonDateToDate(jsonObj.updatedAt);
         return Object.assign(new OfferInteraction(), jsonObj);
     };
     OfferInteraction.prototype.toJson = function () {
@@ -62385,6 +62388,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
+var JsonUtils_1 = __webpack_require__(/*! ../../utils/JsonUtils */ "./src/utils/JsonUtils.ts");
 var DeepCopy_1 = __webpack_require__(/*! ./DeepCopy */ "./src/repository/models/DeepCopy.ts");
 var OfferRank = /** @class */function (_super) {
     __extends(OfferRank, _super);
@@ -62420,8 +62424,8 @@ var OfferRank = /** @class */function (_super) {
     }
     OfferRank.fromJson = function (jsonObj) {
         var json = jsonObj;
-        json.createdAt = new Date(json.createdAt.toString() || new Date());
-        json.updatedAt = new Date(json.updatedAt.toString() || new Date());
+        json.createdAt = JsonUtils_1.JsonUtils.jsonDateToDate(json.createdAt);
+        json.updatedAt = JsonUtils_1.JsonUtils.jsonDateToDate(json.updatedAt);
         json.id = Number(json.id);
         json.rank = Number(json.rank);
         json.offerId = Number(json.offerId);
@@ -62473,6 +62477,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
+var JsonUtils_1 = __webpack_require__(/*! ../../utils/JsonUtils */ "./src/utils/JsonUtils.ts");
 var DeepCopy_1 = __webpack_require__(/*! ./DeepCopy */ "./src/repository/models/DeepCopy.ts");
 var OfferSearch = /** @class */function (_super) {
     __extends(OfferSearch, _super);
@@ -62496,7 +62501,7 @@ var OfferSearch = /** @class */function (_super) {
     }
     OfferSearch.fromJson = function (json) {
         var jsonObj = json;
-        jsonObj.createdAt = new Date(jsonObj.createdAt.toString() || new Date().getTime());
+        jsonObj.createdAt = JsonUtils_1.JsonUtils.jsonDateToDate(jsonObj.createdAt);
         return Object.assign(new OfferSearch(), jsonObj);
     };
     OfferSearch.prototype.toJson = function () {
@@ -63271,6 +63276,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
+var JsonUtils_1 = __webpack_require__(/*! ../../utils/JsonUtils */ "./src/utils/JsonUtils.ts");
 var DeepCopy_1 = __webpack_require__(/*! ./DeepCopy */ "./src/repository/models/DeepCopy.ts");
 var SimpleAccount = /** @class */function (_super) {
     __extends(SimpleAccount, _super);
@@ -63291,8 +63297,8 @@ var SimpleAccount = /** @class */function (_super) {
         return _this;
     }
     SimpleAccount.fromJson = function (json) {
-        json.createdAt = new Date(json.createdAt.toString() || new Date().getTime());
-        json.updatedAt = new Date(json.updatedAt.toString() || new Date().getTime());
+        json.createdAt = JsonUtils_1.JsonUtils.jsonDateToDate(json.createdAt);
+        json.updatedAt = JsonUtils_1.JsonUtils.jsonDateToDate(json.updatedAt);
         return Object.assign(new SimpleAccount(), json);
     };
     SimpleAccount.prototype.toJson = function () {
@@ -66848,6 +66854,13 @@ var JsonUtils = /** @class */function () {
             result[key] = value;
         });
         return result;
+    };
+    // tslint:disable-next-line:no-any
+    JsonUtils.jsonDateToDate = function (value) {
+        if (value instanceof Date) {
+            return value;
+        }
+        return value ? new Date(value.toString()) : new Date();
     };
     return JsonUtils;
 }();
