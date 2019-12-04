@@ -63032,8 +63032,8 @@ var SearchRequest = /** @class */function (_super) {
         var rawData = json;
         var searchRequest = Object.assign(new SearchRequest(), rawData);
         searchRequest.tags = JsonUtils_1.JsonUtils.jsonToMap(rawData.tags);
-        searchRequest.createdAt = new Date(rawData.createdAt.toString());
-        searchRequest.updatedAt = new Date(rawData.updatedAt.toString());
+        searchRequest.createdAt = JsonUtils_1.JsonUtils.jsonDateToDate(rawData.createdAt);
+        searchRequest.updatedAt = JsonUtils_1.JsonUtils.jsonDateToDate(rawData.updatedAt);
         return searchRequest;
     };
     SearchRequest.prototype.toJson = function () {
