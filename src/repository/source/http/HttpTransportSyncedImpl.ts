@@ -70,6 +70,7 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
                 const request = new HttpRequest();
 
                 request.open(cortege.method, url);
+                console.log(cortege.method, url);
 
                 request.onload = () => {
                     const result: Response<object> = new Response(request.responseText, request.status);
@@ -87,6 +88,8 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
                 };
 
                 request.onerror = () => {
+                    console.error('request.timeout', request.timeout);
+                    console.error('request.responseURL', request.responseURL);
                     const result: Response<object> = new Response(request.responseText, request.status);
                     this.logger.error('Error runTransaction onErrorRequest', result);
                     transaction.reject(result);
