@@ -48740,7 +48740,7 @@ var AccountManagerImpl = /** @class */function () {
         });
     };
     __decorate([ExportMethod_1.ExportMethod(), __metadata("design:type", Function), __metadata("design:paramtypes", [String, String]), __metadata("design:returntype", Promise)], AccountManagerImpl.prototype, "authenticationByPassPhrase", null);
-    __decorate([ExportMethod_1.ExportMethod({ public: true }), __metadata("design:type", Function), __metadata("design:paramtypes", [String, Number, String]), __metadata("design:returntype", Promise)], AccountManagerImpl.prototype, "authenticationByAccessToken", null);
+    __decorate([ExportMethod_1.ExportMethod(), __metadata("design:type", Function), __metadata("design:paramtypes", [String, Number, String]), __metadata("design:returntype", Promise)], AccountManagerImpl.prototype, "authenticationByAccessToken", null);
     __decorate([ExportMethod_1.ExportMethod(), __metadata("design:type", Function), __metadata("design:paramtypes", [String, String]), __metadata("design:returntype", Promise)], AccountManagerImpl.prototype, "registration", null);
     __decorate([ExportMethod_1.ExportMethod(), __metadata("design:type", Function), __metadata("design:paramtypes", [String, String]), __metadata("design:returntype", Promise)], AccountManagerImpl.prototype, "checkAccount", null);
     __decorate([ExportMethod_1.ExportMethod(), __metadata("design:type", Function), __metadata("design:paramtypes", []), __metadata("design:returntype", Promise)], AccountManagerImpl.prototype, "unsubscribe", null);

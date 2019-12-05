@@ -72,7 +72,7 @@ export class AccountManagerImpl implements AccountManager {
      *
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
-    @ExportMethod({public: true})
+    @ExportMethod()
     public async authenticationByAccessToken(
         accessToken: string,
         tokenType: TokenType,
