@@ -37,13 +37,12 @@ describe('Account Manager', async () => {
 
         const pass = 'some user pass phrase';
         const msg = 'some user message';
-        const someUserToken = await BaseClientHelper.AUTH_HELPER.generateAccessToken(pass, 2000);
+        const someUserToken = await BaseClientHelper.AUTH_HELPER.generateAccessToken(pass, 5000);
         const someUser = await BaseClientHelper.createUnRegistered();
 
         const result = await someUser.accountManager.authenticationByAccessToken(someUserToken, TokenType.BASIC, msg);
         result.should.exist;
-
-        await sleep(3000);
+        await sleep(5000);
 
         (await shouldBeThrowed(someUser.accountManager.authenticationByAccessToken(
             someUserToken,
