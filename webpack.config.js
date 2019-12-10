@@ -14,7 +14,7 @@ const DeepCopy = DeepMerge((target, source, key) => {
 const nodeConfig = {
     entry: './src/Base.ts',
     devtool: 'source-map',
-    mode: 'development',
+    mode: 'production',
     node: {
         crypto: true,
         Buffer: true,
@@ -22,12 +22,12 @@ const nodeConfig = {
         child_process: 'empty'
     },
     target: 'node',
-    externals: {
-        'bitcore-ecies': 'bitcore-ecies',
-        'bitcore-lib': 'bitcore-lib',
-        'bitcore-message': 'bitcore-message',
-        'bitcore-mnemonic': 'bitcore-mnemonic'
-    },
+    // externals: {
+    //     'bitcore-ecies': 'bitcore-ecies',
+    //     'bitcore-lib': 'bitcore-lib',
+    //     'bitcore-message': 'bitcore-message',
+    //     'bitcore-mnemonic': 'bitcore-mnemonic'
+    // },
     module: {
         rules: [
             {
@@ -43,6 +43,10 @@ const nodeConfig = {
     },
 
     resolve: {
+        // https://github.com/typestack/class-validator/pull/258
+        alias: {
+            'google-libphonenumber': Path.resolve(__dirname, './src/libphonenumber-stub.js'),
+        },
         modules: [Path.resolve('./node_modules'), Path.resolve('./src')],
         extensions: ['.tsx', '.ts', '.js']
     },
