@@ -1,7 +1,7 @@
 const Bitcore = require('bitcore-lib');
 const Message = require('bitcore-message');
-const Signature = Bitcore.crypto.Signature;
-const ECDSA = Bitcore.crypto.ECDSA;
+const Signature = Bitcore.crypto ? Bitcore.crypto.Signature : null;
+const ECDSA = Bitcore.crypto ? Bitcore.crypto.ECDSA : null;
 
 export class BitcoinUtils {
 

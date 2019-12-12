@@ -141,6 +141,7 @@ export class AccountManagerImpl implements AccountManager {
         return this.accountRepository.unsubscribe(this.authAccountBehavior.getValue());
     }
 
+    @ExportMethod({public: true})
     public async getNewMnemonic(): Promise<string> {
         return BitKeyPair.generateMnemonicPhrase();
     }
@@ -150,6 +151,7 @@ export class AccountManagerImpl implements AccountManager {
         return this.authAccountBehavior.getValue();
     }
 
+    @ExportMethod({public: true})
     public async getPublicKeyFromMnemonic(mnemonicPhrase: string): Promise<string> {
         return BitKeyPair.getPublicKeyFromMnemonic(mnemonicPhrase);
     }
