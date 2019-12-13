@@ -74,7 +74,7 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
                         this.callNextRequest();
 
                     } else {
-                        this.logger.error('Error runTransaction request', result);
+                        this.logger.error(`Error runTransaction request: ${JSON.stringify(result)}`);
                         transaction.reject(result);
                         // reject(result);
                         this.callNextRequest();
@@ -83,7 +83,7 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
 
                 request.onerror = () => {
                     const result: Response<object> = new Response(request.responseText, request.status);
-                    this.logger.error('Error runTransaction onErrorRequest', result);
+                    this.logger.error(`Error runTransaction onErrorRequest: ${JSON.stringify(result)}`);
                     transaction.reject(result);
                     reject(result);
                     this.callNextRequest();
