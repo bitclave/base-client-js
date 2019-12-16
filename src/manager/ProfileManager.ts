@@ -84,5 +84,4 @@ export interface ProfileManager {
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
     getFileMetaWithGivenKey(key: string): Promise<FileMeta | undefined>;
-
 }

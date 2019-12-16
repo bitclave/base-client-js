@@ -1,8 +1,10 @@
-import { IsEmail, IsJSON, IsString, ValidateNested } from 'class-validator';
+import { IsJSON, IsString, ValidateNested } from 'class-validator';
 import { MessageData, SignedMessageData } from 'eth-sig-util';
 import { JsonObject } from '../../repository/models/JsonObject';
+import { JsonTransform } from '../../repository/models/JsonTransform';
 import { IsBasePublicKey } from './validators/annotations/IsBasePublicKey';
 import { IsBtcAddress } from './validators/annotations/IsBtcAddress';
+import { IsEmailAddress } from './validators/annotations/IsEmailAddress';
 import { IsEthAddress } from './validators/annotations/IsEthAddress';
 import { IsTypedArray } from './validators/annotations/IsTypedArray';
 
@@ -52,7 +54,7 @@ export class StringSignedMessage extends StringMessage implements SignedMessageD
     }
 }
 
-export class SupportSignedMessageData<T> {
+export class SupportSignedMessageData<T> extends JsonTransform {
     @ValidateNested()
     public data: T;
 
@@ -60,6 +62,8 @@ export class SupportSignedMessageData<T> {
     public sig: string;
 
     constructor(data: T, sig?: string) {
+        super();
+
         this.data = data;
         this.sig = sig || '';
     }
@@ -70,6 +74,10 @@ export class SupportSignedMessageData<T> {
 
     public getMessage(): MessageData<string> {
         return this.getSignedMessage();
+    }
+
+    public toJson(): object {
+        return this;
     }
 }
 
@@ -117,7 +125,7 @@ export class AppCryptoWallet extends CryptoWallet {
 }
 
 export class UsdCryptoWallet extends CryptoWallet {
-    @IsEmail()
+    @IsEmailAddress({message: 'must be valid Usd wallet. (wrong email address)'})
     public readonly address: string;
 
     constructor(baseId: string, address: string) {
@@ -126,7 +134,7 @@ export class UsdCryptoWallet extends CryptoWallet {
     }
 }
 
-export class CryptoWallets {
+export class CryptoWallets extends JsonTransform {
     @IsTypedArray(() => EthWalletData, true)
     public readonly eth: Array<EthWalletData>;
 
@@ -161,10 +169,21 @@ export class CryptoWallets {
         app?: Array<AppWalletData>,
         usd?: Array<UsdWalletData>
     ) {
+        super();
+
         this.eth = eth || [];
         this.btc = btc || [];
         this.app = app || [];
         this.usd = usd || [];
+    }
+
+    public toJson(): object {
+        const eth = this.eth.map(item => item.toJson());
+        const btc = this.btc.map(item => item.toJson());
+        const app = this.app.map(item => item.toJson());
+        const usd = this.usd.map(item => item.toJson());
+
+        return {eth, btc, app, usd};
     }
 }
 

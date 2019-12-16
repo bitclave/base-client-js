@@ -1,53 +1,16 @@
 import Base, { CompareAction, Offer } from '../../src/Base';
-import Account from '../../src/repository/models/Account';
 import { OfferPrice } from '../../src/repository/models/OfferPrice';
 import { OfferPriceRules } from '../../src/repository/models/OfferPriceRules';
-import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
-import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
-import { TransportFactory } from '../../src/repository/source/TransportFactory';
-import AuthenticatorHelper from '../AuthenticatorHelper';
+import { BaseClientHelper } from '../BaseClientHelper';
 
 require('chai').use(require('chai-as-promised')).should();
-const someSigMessage = 'some unique message for signature';
-const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
-const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
-const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
-const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
-
-// process.on('unhandledRejection', err => {
-//     // Will print "unhandledRejection err is not defined"
-//     console.log('unhandledRejection', err);
-// });
-
-async function createUser(user: Base, pass: string): Promise<Account> {
-    let accessToken: string = '';
-    try {
-        accessToken = await authenticatorHelper.generateAccessToken(pass);
-        await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
-        await user.accountManager.unsubscribe();
-    } catch (e) {
-        // console.log('check createUser', e);
-        // ignore error if user not exist
-    }
-
-    return await user.accountManager.registration(pass, someSigMessage); // this method private.
-}
 
 describe('Offer, local price matching', async () => {
     const passPhraseSeller: string = 'Seller';
     const passPhraseBusinessBuyer: string = 'Business';  // need 5 symbols
 
-    const baseSeller: Base = createBase();
-    const baseBusinessBuyer: Base = createBase();
-
-    function createBase(): Base {
-        return new Base(
-            baseNodeUrl,
-            'localhost',
-            RepositoryStrategyType.Postgres,
-            rpcSignerHost
-        );
-    }
+    let baseSeller: Base;
+    let baseBusinessBuyer: Base;
 
     function offerFactory(isMultiPrices: boolean = false): Offer {
         const offerTags = new Map<string, string>([['product', 'car']]);
@@ -92,8 +55,8 @@ describe('Offer, local price matching', async () => {
     }
 
     beforeEach(async () => {
-        await createUser(baseSeller, passPhraseSeller);
-        await createUser(baseBusinessBuyer, passPhraseBusinessBuyer);
+        baseSeller = await BaseClientHelper.createRegistered(passPhraseSeller);
+        baseBusinessBuyer = await BaseClientHelper.createRegistered(passPhraseBusinessBuyer);
     });
 
     after(async () => {

@@ -2,28 +2,13 @@
 import Base, { AccessRight } from '../../src/Base';
 import Account from '../../src/repository/models/Account';
 import { FileMeta } from '../../src/repository/models/FileMeta';
-import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
+import { BaseClientHelper } from '../BaseClientHelper';
 
 require('chai')
     .use(require('chai-as-promised'))
     .should();
 const fs = require('fs');
 const Path = require('path');
-
-const someSigMessage = 'some unique message for signature';
-const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
-
-async function createUser(user: Base, pass: string): Promise<Account> {
-    try {
-        await user.accountManager.authenticationByPassPhrase(pass, someSigMessage);
-        await user.accountManager.unsubscribe();
-    } catch (e) {
-        console.log('check createUser', e);
-        // ignore error if user not exist
-    }
-
-    return await user.accountManager.registration(pass, someSigMessage); // this method private.
-}
 
 describe('File CRUD', async () => {
     const newKey: string = 'new_file';
@@ -32,23 +17,16 @@ describe('File CRUD', async () => {
     const passPhraseAlisa: string = 'Alice'; // need 5 symbols
     const passPhraseBob: string = 'BobBob'; // need 5 symbols
 
-    const baseAlice: Base = createBase();
-    const baseBob: Base = createBase();
-
+    let baseAlice: Base;
+    let baseBob: Base;
     let accAlice: Account;
     let accBob: Account;
 
-    function createBase(): Base {
-        return new Base(
-            baseNodeUrl,
-            'localhost',
-            RepositoryStrategyType.Postgres
-        );
-    }
-
     beforeEach(async () => {
-        accAlice = await createUser(baseAlice, passPhraseAlisa);
-        accBob = await createUser(baseBob, passPhraseBob);
+        baseAlice = await BaseClientHelper.createRegistered(passPhraseAlisa, 'passPhraseAlisa');
+        baseBob = await BaseClientHelper.createRegistered(passPhraseBob, 'passPhraseBob');
+        accAlice = baseAlice.accountManager.getAccount();
+        accBob = baseBob.accountManager.getAccount();
     });
 
     after(async () => {
@@ -181,5 +159,4 @@ describe('File CRUD', async () => {
             throw e;
         }
     });
-
 });

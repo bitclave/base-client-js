@@ -1,33 +1,12 @@
 import Base from '../../src/Base';
 import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
 import Account from '../../src/repository/models/Account';
-import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
-import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
-import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import { AccessRight } from '../../src/utils/keypair/Permissions';
-import AuthenticatorHelper from '../AuthenticatorHelper';
+import { BaseClientHelper } from '../BaseClientHelper';
 
 require('chai')
     .use(require('chai-as-promised'))
     .should();
-const someSigMessage = 'some unique message for signature';
-const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
-const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
-const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
-
-async function createUser(user: Base, pass: string): Promise<Account> {
-    let accessToken: string = '';
-    try {
-        accessToken = await authenticatorHelper.generateAccessToken(pass);
-        await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
-        await user.accountManager.unsubscribe();
-    } catch (e) {
-        console.log('check createUser', e);
-        // ignore error if user not exist
-    }
-
-    return await user.accountManager.registration(pass, someSigMessage); // this method private.
-}
 
 describe('BASE API test: External Validator', async () => {
     const passPhraseAlisa: string = 'Alice';
@@ -36,11 +15,11 @@ describe('BASE API test: External Validator', async () => {
     const passPhraseDesearch: string = 'Desearch';
     const passPhraseValidator: string = 'Validator';
 
-    const baseAlice: Base = createBase();
-    const baseBob: Base = createBase();
-    const baseCarol: Base = createBase();
-    const baseDesearch: Base = createBase();
-    const baseValidator: Base = createBase();
+    let baseAlice: Base;
+    let baseBob: Base;
+    let baseCarol: Base;
+    let baseDesearch: Base;
+    let baseValidator: Base;
 
     let accAlice: Account;
     let accBob: Account;
@@ -48,26 +27,18 @@ describe('BASE API test: External Validator', async () => {
     let accDesearch: Account;
     let accValidator: Account;
 
-    function createBase(): Base {
-        const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
-        return new Base(
-            baseNodeUrl,
-            'localhost',
-            RepositoryStrategyType.Postgres,
-            rpcSignerHost
-        );
-    }
-
     beforeEach(async () => {
-        accAlice = await createUser(baseAlice, passPhraseAlisa);
-        accBob = await createUser(baseBob, passPhraseBob);
-        accCarol = await createUser(baseCarol, passPhraseCarol);
-        accDesearch = await createUser(baseDesearch, passPhraseDesearch);
-        accValidator = await createUser(baseValidator, passPhraseValidator);
-    });
+        baseAlice = await BaseClientHelper.createRegistered(passPhraseAlisa);
+        baseBob = await BaseClientHelper.createRegistered(passPhraseBob);
+        baseCarol = await BaseClientHelper.createRegistered(passPhraseCarol);
+        baseDesearch = await BaseClientHelper.createRegistered(passPhraseDesearch);
+        baseValidator = await BaseClientHelper.createRegistered(passPhraseValidator);
 
-    after(async () => {
-        // rpcClient.disconnect();
+        accAlice = baseAlice.accountManager.getAccount();
+        accBob = baseBob.accountManager.getAccount();
+        accCarol = baseCarol.accountManager.getAccount();
+        accDesearch = baseDesearch.accountManager.getAccount();
+        accValidator = baseValidator.accountManager.getAccount();
     });
 
     it('get public ID', async () => {

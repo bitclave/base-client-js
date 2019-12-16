@@ -25,8 +25,8 @@ export default class Offer extends DeepCopy<Offer> {
         offer.tags = JsonUtils.jsonToMap(offer.tags);
         offer.compare = JsonUtils.jsonToMap(offer.compare);
         offer.rules = JsonUtils.jsonToMap(offer.rules);
-        offer.createdAt = new Date(offer.createdAt);
-        offer.updatedAt = new Date(offer.updatedAt);
+        offer.createdAt = JsonUtils.jsonDateToDate(offer.createdAt);
+        offer.updatedAt = JsonUtils.jsonDateToDate(offer.updatedAt);
 
         if (offer.offerPrices && offer.offerPrices.length) {
             offer.offerPrices = offer.offerPrices.map((e: OfferPrice) => {

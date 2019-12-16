@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
 import Account from '../repository/models/Account';
+import { TokenType } from '../utils/keypair/rpc/RpcToken';
 
 export interface AccountManager {
 
@@ -21,13 +22,15 @@ export interface AccountManager {
     /**
      * Checks if user with provided access token is already registered in the system.
      * @param {string} accessToken token for authenticate on remote signer
-     * (if {@link KeyPairHelper} support {@link RemoteSigner})
+     * (if {@link KeyPairHelper} support {@link AccessTokenAccepter})
      *
      * @param {string} message on the basis of which a signature will be created to verify the public key
      *
+     * @param {TokenType} tokenType type of token
+     *
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
-    authenticationByAccessToken(accessToken: string, message: string): Promise<Account>;
+    authenticationByAccessToken(accessToken: string, tokenType: TokenType, message: string): Promise<Account>;
 
     /**
      * Registers a new user in the system.
@@ -61,5 +64,4 @@ export interface AccountManager {
     getAccount(): Account;
 
     getPublicKeyFromMnemonic(mnemonicPhrase: string): Promise<string>;
-
 }

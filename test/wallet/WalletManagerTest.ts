@@ -1,23 +1,14 @@
 import * as SigUtil from 'eth-sig-util';
 import * as EthUtil from 'ethereumjs-util';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { DataRequestManager } from '../../src/manager/DataRequestManager';
-import { DataRequestManagerImpl } from '../../src/manager/DataRequestManagerImpl';
-import { ProfileManager } from '../../src/manager/ProfileManager';
-import { ProfileManagerImpl } from '../../src/manager/ProfileManagerImpl';
-import { WalletManager } from '../../src/manager/WalletManager';
-import { WalletManagerImpl } from '../../src/manager/WalletManagerImpl';
+import Base, { JsonRpc, PermissionsSource, SiteDataSource } from '../../src/Base';
 import Account from '../../src/repository/models/Account';
 import { DataRequest } from '../../src/repository/models/DataRequest';
-import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
-import { TransportFactory } from '../../src/repository/source/TransportFactory';
 import { CryptoUtils } from '../../src/utils/CryptoUtils';
 import { AcceptedField } from '../../src/utils/keypair/AcceptedField';
 import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
 import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
 import { MessageSigner } from '../../src/utils/keypair/MessageSigner';
 import { AccessRight } from '../../src/utils/keypair/Permissions';
-import { RemoteKeyPairHelper } from '../../src/utils/keypair/RemoteKeyPairHelper';
 import {
     AppWalletData,
     BtcWalletData,
@@ -28,12 +19,7 @@ import {
 } from '../../src/utils/types/BaseTypes';
 import { WalletVerificationCodes } from '../../src/utils/types/validators/ValidationResult';
 import { WalletUtils } from '../../src/utils/WalletUtils';
-import AuthenticatorHelper from '../AuthenticatorHelper';
-import ClientDataRepositoryImplMock from '../profile/ClientDataRepositoryImplMock';
-import { AssistantPermissions } from '../requests/AssistantPermissions';
-import DataRequestRepositoryImplMock from '../requests/DataRequestRepositoryImplMock';
-
-const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
+import { BaseClientHelper } from '../BaseClientHelper';
 
 require('chai')
     .use(require('chai-as-promised'))
@@ -42,116 +28,83 @@ require('chai')
 const Message = require('bitcore-message');
 const Bitcore = require('bitcore-lib');
 
+const shouldBeThrowed = async <T>(promise: Promise<T>, check: (e: object) => void): Promise<void> => {
+    let isThrowed = false;
+    try {
+        await promise;
+    } catch (e) {
+        isThrowed = true;
+        check(e);
+    }
+
+    if (!isThrowed) {
+        throw new Error('should be throw!');
+    }
+};
+
 describe('Wallet manager test', async () => {
 
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
 
-    const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
-    const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
+    let keyPairHelperBob: KeyPairHelper;
+    let keyPairHelperAlisa: KeyPairHelper;
 
-    const keyPairHelperAlisa: RemoteKeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
-    const keyPairHelperBob: RemoteKeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
-
-    const clientRepository: ClientDataRepositoryImplMock = new ClientDataRepositoryImplMock();
-    const dataRepository: DataRequestRepositoryImplMock = new DataRequestRepositoryImplMock();
-
-    const assistant: AssistantPermissions = new AssistantPermissions(dataRepository);
-
-    let accountAlisa: Account;
-    let authAccountBehaviorAlisa: BehaviorSubject<Account>;
+    let baseAlice: Base;
+    let baseBob: Base;
+    let accountAlice: Account;
     let accountBob: Account;
-    let authAccountBehaviorBob: BehaviorSubject<Account>;
-
-    let profileManager: ProfileManager;
-    let profileManagerBob: ProfileManager;
-    let walletManager: WalletManager;
-    let requestManager: DataRequestManager;
-
-    before(async () => {
-        const alisaAccessToken = await authenticatorHelper.generateAccessToken(passPhraseAlisa);
-        const bobAccessToken = await authenticatorHelper.generateAccessToken(passPhraseBob);
-
-        keyPairHelperAlisa.setAccessToken(alisaAccessToken);
-        keyPairHelperBob.setAccessToken(bobAccessToken);
-
-        await keyPairHelperAlisa.createKeyPair('');
-        await keyPairHelperBob.createKeyPair('');
-
-        accountAlisa = new Account((await keyPairHelperAlisa.createKeyPair('')).publicKey);
-        authAccountBehaviorAlisa = new BehaviorSubject<Account>(accountAlisa);
-
-        accountBob = new Account((await keyPairHelperBob.createKeyPair('')).publicKey);
-        authAccountBehaviorBob = new BehaviorSubject<Account>(accountBob);
-
-        profileManager = new ProfileManagerImpl(
-            clientRepository,
-            authAccountBehaviorAlisa,
-            keyPairHelperAlisa,
-            keyPairHelperAlisa,
-            keyPairHelperAlisa
-        );
-
-        profileManagerBob = new ProfileManagerImpl(
-            clientRepository,
-            authAccountBehaviorBob,
-            keyPairHelperBob,
-            keyPairHelperBob,
-            keyPairHelperBob
-        );
-
-        dataRepository.setPK(keyPairHelperAlisa.getPublicKey());
-
-        requestManager = new DataRequestManagerImpl(
-            dataRepository,
-            authAccountBehaviorAlisa,
-            keyPairHelperAlisa,
-            keyPairHelperAlisa
-        );
-
-        walletManager = new WalletManagerImpl(
-            profileManager,
-            requestManager,
-            WalletUtils.WALLET_VALIDATOR,
-            keyPairHelperAlisa,
-            authAccountBehaviorAlisa
-        );
-    });
 
     beforeEach(async () => {
-        clientRepository.clearData();
-    });
+        baseAlice = await BaseClientHelper.createRegistered(passPhraseAlisa);
+        accountAlice = baseAlice.accountManager.getAccount();
 
-    after(async () => {
-        rpcTransport.disconnect();
+        baseBob = await BaseClientHelper.createRegistered(passPhraseBob);
+        accountBob = baseBob.accountManager.getAccount();
+
+        keyPairHelperBob = KeyPairFactory.createDefaultKeyPair(
+            baseBob.nodeManager,
+            baseBob.nodeManager,
+            'localhost'
+        );
+
+        keyPairHelperAlisa = KeyPairFactory.createDefaultKeyPair(
+            baseAlice.nodeManager,
+            baseAlice.nodeManager,
+            'localhost'
+        );
+
+        await keyPairHelperBob.createKeyPair(passPhraseBob);
+        await keyPairHelperAlisa.createKeyPair(passPhraseAlisa);
     });
 
     it('should decrypt foreign data', async () => {
         const origMockData: Map<string, string> = new Map();
 
         origMockData.set('name', 'Bob');
-        await profileManagerBob.updateData(origMockData);
+        await baseBob.profileManager.updateData(origMockData);
 
         const grantFields: Map<string, AccessRight> = new Map();
         grantFields.set('name', AccessRight.R);
 
         const encryptedFields = await keyPairHelperBob.encryptFieldsWithPermissions(
-            keyPairHelperAlisa.getPublicKey(), grantFields
+            accountAlice.publicKey, grantFields
         );
 
         const acceptedDataRequest: Array<DataRequest> = [];
+
         for (const [key, value] of encryptedFields.entries()) {
             acceptedDataRequest.push(new DataRequest(
-                keyPairHelperAlisa.getPublicKey(),
-                keyPairHelperBob.getPublicKey(),
-                keyPairHelperBob.getPublicKey(),
+                accountAlice.publicKey,
+                accountBob.publicKey,
+                accountBob.publicKey,
                 key,
                 value
             ));
         }
 
-        const data = (await profileManager.getAuthorizedData(acceptedDataRequest))
-            .getKeyValue(keyPairHelperBob.getPublicKey());
+        const data = (await baseAlice.profileManager.getAuthorizedData(acceptedDataRequest))
+            .getKeyValue(accountBob.publicKey);
 
         data.should.be.deep.equal(origMockData);
     });
@@ -161,31 +114,31 @@ describe('Wallet manager test', async () => {
 
         origMockData.set('name', 'Bob');
 
-        await profileManagerBob.updateData(origMockData);
+        await baseBob.profileManager.updateData(origMockData);
 
         const grantFields: Map<string, AccessRight> = new Map();
         grantFields.set('name', AccessRight.R);
 
         const encryptedFields = await keyPairHelperBob.encryptFieldsWithPermissions(
-            keyPairHelperAlisa.getPublicKey(), grantFields
+            accountAlice.publicKey, grantFields
         );
 
         const map: Map<string, AcceptedField> = new Map();
         const acceptedDataRequest: Array<DataRequest> = [];
         for (const [key, value] of encryptedFields.entries()) {
-            const json = JSON.parse(await keyPairHelperAlisa.decryptMessage(keyPairHelperBob.getPublicKey(), value));
+            const json = JSON.parse(await baseAlice.profileManager.decryptMessage(accountBob.publicKey, value));
             map.set(key, Object.assign(new AcceptedField('', AccessRight.R), json));
             acceptedDataRequest.push(new DataRequest(
-                keyPairHelperAlisa.getPublicKey(),
-                keyPairHelperBob.getPublicKey(),
-                keyPairHelperBob.getPublicKey(),
+                accountAlice.publicKey,
+                accountBob.publicKey,
+                accountBob.publicKey,
                 key,
                 value
             ));
         }
 
-        const data: string = (await profileManager.getAuthorizedEncryptionKeys(acceptedDataRequest))
-            .getKeyValue(keyPairHelperBob.getPublicKey())
+        const data: string = (await baseAlice.profileManager.getAuthorizedEncryptionKeys(acceptedDataRequest))
+            .getKeyValue(accountBob.publicKey)
             .get('name') || '';
 
         const acceptedField: AcceptedField | undefined = map.get('name');
@@ -196,7 +149,12 @@ describe('Wallet manager test', async () => {
 
     it('verify ETH address low level', async () => {
         // BASE (BitCoin-like) signature verification
-        const keyPairHelper: KeyPairHelper = KeyPairFactory.createDefaultKeyPair(assistant, assistant, '');
+        const keyPairHelper: KeyPairHelper = KeyPairFactory.createDefaultKeyPair(
+            {} as PermissionsSource,
+            {} as SiteDataSource,
+            ''
+        );
+
         const messageSigner: MessageSigner = keyPairHelper;
 
         // create BASE user for tesing
@@ -325,7 +283,7 @@ describe('Wallet manager test', async () => {
 
         const privateKeyHex: string = privateKey.toString(16);
 
-        const baseId = authAccountBehaviorAlisa.getValue().publicKey;
+        const baseId = accountAlice.publicKey;
 
         const app: AppWalletData = WalletUtils.createAppWalletData(
             baseId,
@@ -348,7 +306,8 @@ describe('Wallet manager test', async () => {
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
         );
 
-        const walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app], [usd]));
+        const walletsData = await baseAlice.walletManager
+            .createCryptoWalletsData(new CryptoWallets([eth], [btc], [app], [usd]));
 
         const validation = WalletUtils.validateWalletsData(baseId, walletsData);
 
@@ -364,7 +323,7 @@ describe('Wallet manager test', async () => {
 
         const privateKeyHex: string = privateKey.toString(16);
 
-        const baseId = authAccountBehaviorAlisa.getValue().publicKey;
+        const baseId = accountAlice.publicKey;
 
         const app: AppWalletData = WalletUtils.createAppWalletData(
             baseId,
@@ -387,7 +346,8 @@ describe('Wallet manager test', async () => {
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
         );
 
-        const walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app], [usd]));
+        const walletsData = await baseAlice.walletManager
+            .createCryptoWalletsData(new CryptoWallets([eth], [btc], [app], [usd]));
 
         let validation = WalletUtils.validateWalletsData(baseId, walletsData);
         validation.length.should.be.eq(0);
@@ -403,7 +363,7 @@ describe('Wallet manager test', async () => {
         validation = WalletUtils.validateWalletsData(baseId, restoredWalletsData);
         validation[0].state[0].should.be.eq(WalletVerificationCodes.WRONG_SIGNATURE);
 
-        const walletsDataRestored = await walletManager.createCryptoWalletsData(restoredWalletsData.data);
+        const walletsDataRestored = await baseAlice.walletManager.createCryptoWalletsData(restoredWalletsData.data);
 
         validation = WalletUtils.validateWalletsData(baseId, walletsDataRestored);
         validation.length.should.be.eq(0);
@@ -418,7 +378,7 @@ describe('Wallet manager test', async () => {
 
         const privateKeyHex: string = privateKey.toString(16);
 
-        const baseId = authAccountBehaviorAlisa.getValue().publicKey;
+        const baseId = accountAlice.publicKey;
 
         const app: AppWalletData = WalletUtils.createAppWalletData(
             baseId,
@@ -441,34 +401,54 @@ describe('Wallet manager test', async () => {
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
         );
 
-        let walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets(
-            [eth, eth],
-            [btc],
-            [app],
-            [usd]
-        ));
-        let validation = WalletUtils.validateWalletsData(baseId, walletsData);
-        validation.length.should.be.eq(1);
-        validation[0].message[0].should.be.eq('eth should be have only unique items');
-        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+        await shouldBeThrowed(
+            baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets(
+                [eth, eth],
+                [btc],
+                [app],
+                [usd]
+            )),
+            (e) => {
+                if (e instanceof Error) {
+                    e.message.should.be.eq('eth should be have only unique items');
+                } else {
+                    (e as JsonRpc).result.should.be.eq('eth should be have only unique items');
+                }
+            }
+        );
 
-        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc, btc], [app], [usd]));
-        validation = WalletUtils.validateWalletsData(baseId, walletsData);
-        validation.length.should.be.eq(1);
-        validation[0].message[0].should.be.eq('btc should be have only unique items');
-        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+        await shouldBeThrowed(
+            baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc, btc], [app], [usd])),
+            (e) => {
+                if (e instanceof Error) {
+                    e.message.should.be.eq('btc should be have only unique items');
+                } else {
+                    (e as JsonRpc).result.should.be.eq('btc should be have only unique items');
+                }
+            }
+        );
 
-        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app, app], [usd]));
-        validation = WalletUtils.validateWalletsData(baseId, walletsData);
-        validation.length.should.be.eq(1);
-        validation[0].message[0].should.be.eq('app should be have only unique items');
-        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+        await shouldBeThrowed(
+            baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app, app], [usd])),
+            (e) => {
+                if (e instanceof Error) {
+                    e.message.should.be.eq('app should be have only unique items');
+                } else {
+                    (e as JsonRpc).result.should.be.eq('app should be have only unique items');
+                }
+            }
+        );
 
-        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app], [usd, usd]));
-        validation = WalletUtils.validateWalletsData(baseId, walletsData);
-        validation.length.should.be.eq(1);
-        validation[0].message[0].should.be.eq('usd should be have only unique items');
-        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+        await shouldBeThrowed(
+            baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets([eth], [btc], [app], [usd, usd])),
+            (e) => {
+                if (e instanceof Error) {
+                    e.message.should.be.eq('usd should be have only unique items');
+                } else {
+                    (e as JsonRpc).result.should.be.eq('usd should be have only unique items');
+                }
+            }
+        );
     });
 
     it('CryptoWallets should be have fixed types in array of wallets', async () => {
@@ -480,7 +460,7 @@ describe('Wallet manager test', async () => {
 
         const privateKeyHex: string = privateKey.toString(16);
 
-        const baseId = authAccountBehaviorAlisa.getValue().publicKey;
+        const baseId = accountAlice.publicKey;
 
         const app: AppWalletData = WalletUtils.createAppWalletData(
             baseId,
@@ -503,49 +483,69 @@ describe('Wallet manager test', async () => {
             '52435b1ff11b894da15d87399011841d5edec2de4552fdc29c82995744369001'
         );
 
-        let walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets(
-            [eth, btc, app, usd],
-            [btc],
-            [app],
-            [usd]
-        ));
-        let validation = WalletUtils.validateWalletsData(baseId, walletsData);
-        validation.length.should.be.eq(1);
-        validation[0].message[0].should.be.eq('eth should be type of EthWalletData');
-        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+        await shouldBeThrowed(
+            baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets(
+                [eth, btc, app, usd],
+                [btc],
+                [app],
+                [usd]
+            )),
+            (e) => {
+                if (e instanceof Error) {
+                    e.message.should.be.eq('eth should be type of EthWalletData');
+                } else {
+                    (e as JsonRpc).result!.should.be.eq('Ethereum address must be start with 0x');
+                }
+            }
+        );
 
-        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets(
-            [eth],
-            [btc, eth, app, usd],
-            [app],
-            [usd]
-        ));
-        validation = WalletUtils.validateWalletsData(baseId, walletsData);
-        validation.length.should.be.eq(1);
-        validation[0].message[0].should.be.eq('btc should be type of BtcWalletData');
-        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+        await shouldBeThrowed(
+            baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets(
+                [eth],
+                [btc, eth, app, usd],
+                [app],
+                [usd]
+            )),
+            (e) => {
+                if (e instanceof Error) {
+                    e.message.should.be.eq('btc should be type of BtcWalletData');
+                } else {
+                    (e as JsonRpc).result!.should.be.eq('must be valid Bitcoin address');
+                }
+            }
+        );
 
-        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets(
-            [eth],
-            [btc],
-            [app, eth, btc, usd],
-            [usd]
-        ));
-        validation = WalletUtils.validateWalletsData(baseId, walletsData);
-        validation.length.should.be.eq(1);
-        validation[0].message[0].should.be.eq('app should be type of AppWalletData');
-        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+        await shouldBeThrowed(
+            baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets(
+                [eth],
+                [btc],
+                [app, eth, btc, usd],
+                [usd]
+            )),
+            (e) => {
+                if (e instanceof Error) {
+                    e.message.should.be.eq('app should be type of AppWalletData');
+                } else {
+                    (e as JsonRpc).result!.should.be.eq('must be valid Bitclave App address');
+                }
+            }
+        );
 
-        walletsData = await walletManager.createCryptoWalletsData(new CryptoWallets(
-            [eth],
-            [btc],
-            [app],
-            [app, eth, btc, usd]
-        ));
-        validation = WalletUtils.validateWalletsData(baseId, walletsData);
-        validation.length.should.be.eq(1);
-        validation[0].message[0].should.be.eq('usd should be type of UsdWalletData');
-        validation[0].state[0].should.be.eq(WalletVerificationCodes.SCHEMA_MISSMATCH);
+        await shouldBeThrowed(
+            baseAlice.walletManager.createCryptoWalletsData(new CryptoWallets(
+                [eth],
+                [btc],
+                [app],
+                [app, eth, btc, usd]
+            )),
+            (e) => {
+                if (e instanceof Error) {
+                    e.message.should.be.eq('usd should be type of UsdWalletData');
+                } else {
+                    (e as JsonRpc).result!.should.be.eq('must be valid Usd wallet. (wrong email address)');
+                }
+            }
+        );
     });
 
     it('CryptoWallets should be have valid baseId', async () => {
@@ -566,7 +566,7 @@ describe('Wallet manager test', async () => {
 
         const usd: UsdWalletData = WalletUtils.createUsdWalletData(
             baseId,
-            'testtest.com',
+            'test@test.com',
             false
         );
 
@@ -609,7 +609,7 @@ describe('Wallet manager test', async () => {
 
         const privateKeyHex: string = privateKey.toString(16);
 
-        const baseId = authAccountBehaviorAlisa.getValue().publicKey;
+        const baseId = accountAlice.publicKey;
 
         const app: AppWalletData = WalletUtils.createAppWalletData(
             'some wrong address',

@@ -1,87 +1,65 @@
-import { BehaviorSubject } from 'rxjs/Rx';
-import Base, { RepositoryStrategyType } from '../../src/Base';
-import { AccountManager } from '../../src/manager/AccountManager';
-import { AccountManagerImpl } from '../../src/manager/AccountManagerImpl';
-import { AccountRepository } from '../../src/repository/account/AccountRepository';
-import Account from '../../src/repository/models/Account';
-import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
-import { TransportFactory } from '../../src/repository/source/TransportFactory';
-import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
-import { RemoteKeyPairHelper } from '../../src/utils/keypair/RemoteKeyPairHelper';
-import { RemoteSigner } from '../../src/utils/keypair/RemoteSigner';
-import AuthenticatorHelper from '../AuthenticatorHelper';
-import AccountRepositoryImplMock from './AccountRepositoryImplMock';
+// tslint:disable:no-unused-expression
+import * as chai from 'chai';
+import { JsonRpc, KeyPairFactory, PermissionsSource, SiteDataSource, TokenType } from '../../src/Base';
+import { BaseClientHelper, MANAGERS_TYPE } from '../BaseClientHelper';
 
-require('chai').use(require('chai-as-promised')).should();
-
-const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 
 const expect = chai.expect;
-chai.use(chaiAsPromised);
+chai.use(chaiAsPromised).should();
+
+function sleep(ms: number): Promise<void> {
+    return new Promise<void>(resolve => setTimeout(() => resolve(), ms));
+}
+
+const shouldBeThrowed = async <T>(promise: Promise<T>): Promise<boolean> => {
+    try {
+        await promise;
+
+        return false;
+    } catch (e) {
+        // ignore
+    }
+
+    return true;
+};
 
 describe('Account Manager', async () => {
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
     const passPhraseBob: string = 'I\'m Bob. This is my secret password';
-
-    const authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
-    const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
-    const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
-
-    console.log('Signer: ' + rpcSignerHost);
-
-    const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
-    const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
-
-    const keyPairHelperAlisa: RemoteKeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
-    const keyPairHelperBob: RemoteKeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
-    const keyPairHelper: RemoteKeyPairHelper = KeyPairFactory.createRpcKeyPair(rpcTransport);
-    const accountRepository: AccountRepository = new AccountRepositoryImplMock();
-
-    let accountAlisa: Account;
-    let accountBob: Account;
-    let accountManager: AccountManager;
-
     const messageForSigAlisa = 'some random message for Alisa';
     const messageForSigBob = 'some random message for Bob';
 
-    let alisaAccessToken: string;
-    let bobAccessToken: string;
+    it('should throw when token expired', async () => {
+        if (BaseClientHelper.managerType !== MANAGERS_TYPE.REMOTE) {
+            return;
+        }
 
-    before(async () => {
-        alisaAccessToken = await authenticatorHelper.generateAccessToken(passPhraseAlisa);
-        bobAccessToken = await authenticatorHelper.generateAccessToken(passPhraseBob);
+        const pass = 'some user pass phrase';
+        const msg = 'some user message';
+        const someUserToken = await BaseClientHelper.AUTH_HELPER.generateAccessToken(pass, 5000);
+        const someUser = await BaseClientHelper.createUnRegistered();
 
-        // KeyPairFactory.createRpcKeyPair creates instance of class RpcKeyPair
-        // which implements both RemoteSigner and KeyPairHelper interfaces
-        // it's not ok but better way stay it
-        (keyPairHelperAlisa as RemoteSigner).setAccessToken(alisaAccessToken);
-        (keyPairHelperBob as RemoteSigner).setAccessToken(bobAccessToken);
+        const result = await someUser.accountManager.authenticationByAccessToken(someUserToken, TokenType.BASIC, msg);
+        result.should.exist;
+        await sleep(5000);
 
-        accountAlisa = new Account((await keyPairHelperAlisa.createKeyPair('')).publicKey);
-        accountBob = new Account((await keyPairHelperBob.createKeyPair('')).publicKey);
-        accountManager = new AccountManagerImpl(
-            accountRepository,
-            keyPairHelper,
-            keyPairHelper,
-            authAccountBehavior
-        );
-    });
-
-    after(async () => {
-        rpcTransport.disconnect();
+        (await shouldBeThrowed(someUser.accountManager.authenticationByAccessToken(
+            someUserToken,
+            TokenType.BASIC,
+            msg
+        ))).should.be.eq(true);
     });
 
     it('should lazy create user value of created account', async () => {
-        const user = new Base(
-            baseNodeUrl,
-            'localhost',
-            RepositoryStrategyType.Postgres
-        );
+        if (BaseClientHelper.managerType !== MANAGERS_TYPE.LOCAL) {
+            return;
+        }
 
         const pass = 'some pass for test user';
         const message = 'someSigMessage';
 
+        const user = await BaseClientHelper.createUnRegistered();
         await expect(user.accountManager.checkAccount(pass, message)).should.throw;
 
         await expect(user.accountManager.authenticationByPassPhrase(pass, message)).should.be.exist;
@@ -94,64 +72,64 @@ describe('Account Manager', async () => {
     });
 
     it('should register same account and change it', async () => {
-        await accountManager.authenticationByAccessToken(alisaAccessToken, messageForSigAlisa);
-        authAccountBehavior.getValue().publicKey.should.be.equal(accountAlisa.publicKey);
+        const user = await BaseClientHelper.createRegistered(passPhraseAlisa, messageForSigAlisa);
 
-        (await accountManager.getPublicKeyFromMnemonic(passPhraseAlisa)).should.be.equal(accountAlisa.publicKey);
+        (await user.accountManager.getPublicKeyFromMnemonic(passPhraseAlisa))
+            .should.be.equal(user.accountManager.getAccount().publicKey);
     });
 
     it('should valid public key from sig in registration and check account', async () => {
-        await accountManager.authenticationByAccessToken(alisaAccessToken, messageForSigAlisa);
-        const account = authAccountBehavior.getValue();
-        account.publicKey.should.be.equal(accountAlisa.publicKey);
+        const user = await BaseClientHelper.createRegistered(passPhraseAlisa, messageForSigAlisa);
+        const account = user.accountManager.getAccount();
+
+        const keyPairHelper = KeyPairFactory.createDefaultKeyPair({} as PermissionsSource, {} as SiteDataSource, '');
+        const keyPair = await keyPairHelper.createKeyPair(passPhraseAlisa);
+
+        account.publicKey.should.be.equal(keyPair.publicKey);
         account.message.should.be.equal(messageForSigAlisa);
-        (await keyPairHelperAlisa.checkSig(messageForSigAlisa, account.sig)).should.be.equal(true);
-        (await keyPairHelperAlisa.checkSig(messageForSigAlisa, 'some fake sig')).should.be.equal(false);
-        (await keyPairHelperAlisa.checkSig(messageForSigBob, account.sig)).should.be.equal(false);
+
+        (await keyPairHelper.checkSig(messageForSigAlisa, account.sig)).should.be.equal(true);
+        (await keyPairHelper.checkSig(messageForSigAlisa, 'some fake sig')).should.be.equal(false);
+        (await keyPairHelper.checkSig(messageForSigBob, account.sig)).should.be.equal(false);
     });
 
     it('should valid public key from sig (with empty message) in registration and check account', async () => {
         try {
-            await accountManager.authenticationByAccessToken(alisaAccessToken, '');
-            throw new Error('message for signature should be have min 10 symbols');
+            await BaseClientHelper.createRegistered(passPhraseAlisa, '');
         } catch (e) {
-            e.message.should.be.equal('message for signature should be have min 10 symbols');
+            if (e instanceof JsonRpc) {
+                e.result!.should.be.equal('message for signature should be have min 10 symbols');
+
+            } else {
+                e.message.should.be.equal('message for signature should be have min 10 symbols');
+            }
         }
     });
 
     it('should register different account and change it', async () => {
-        await accountManager.authenticationByAccessToken(bobAccessToken, messageForSigBob);
-        authAccountBehavior.getValue()
+        const userBob = await BaseClientHelper.createRegistered(passPhraseBob);
+        const userAlisa = await BaseClientHelper.createRegistered(passPhraseAlisa);
+
+        userBob.accountManager.getAccount()
             .publicKey
             .should
             .be
             .not
-            .equal(accountAlisa.publicKey);
-
-        authAccountBehavior.getValue()
-            .publicKey
-            .should
-            .be
-            .equal(accountBob.publicKey);
+            .equal(userAlisa.accountManager.getAccount().publicKey);
     });
 
-    it('should check mnemonic phrase', () => {
-        const m1 = accountManager.getNewMnemonic();
-        const m2 = accountManager.getNewMnemonic();
+    it('should check mnemonic phrase', async () => {
+        const user = await BaseClientHelper.createUnRegistered();
+
+        const m1 = await user.accountManager.getNewMnemonic();
+        const m2 = await user.accountManager.getNewMnemonic();
+
         m1.should.be.not.equal(m2);
     });
 
     it('should be return account with createdAt/updateAt fields', async () => {
-        const user = new Base(
-            baseNodeUrl,
-            'localhost',
-            RepositoryStrategyType.Postgres
-        );
-
-        const pass = 'is alice pass';
-        const sigMessage = 'someSigMessage';
-
-        const account = await user.accountManager.authenticationByPassPhrase(pass, sigMessage);
+        const user = await BaseClientHelper.createRegistered('is alice pass');
+        const account = user.accountManager.getAccount();
 
         await user.accountManager.unsubscribe();
         account.createdAt.getTime().should.be.gt(0);

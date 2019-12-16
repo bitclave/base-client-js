@@ -1,6 +1,7 @@
 import { PermissionsSource } from '../../repository/assistant/PermissionsSource';
 import { SiteDataSource } from '../../repository/assistant/SiteDataSource';
 import { RpcTransport } from '../../repository/source/rpc/RpcTransport';
+import { AccessTokenAccepter } from './AccessTokenAccepter';
 import { BitKeyPair } from './BitKeyPair';
 import { KeyPairHelper } from './KeyPairHelper';
 import { RemoteKeyPairHelper } from './RemoteKeyPairHelper';
@@ -16,8 +17,10 @@ export class KeyPairFactory {
         return new BitKeyPair(permissionsSource, siteDataSource, origin);
     }
 
-    public static createRpcKeyPair(rpcTransport: RpcTransport): RemoteKeyPairHelper {
-        return new RpcKeyPair(rpcTransport);
+    public static createRpcKeyPair(
+        rpcTransport: RpcTransport,
+        tokenAccepter: AccessTokenAccepter
+    ): RemoteKeyPairHelper {
+        return new RpcKeyPair(rpcTransport, tokenAccepter);
     }
-
 }

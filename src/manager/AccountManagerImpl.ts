@@ -1,40 +1,34 @@
-import { BehaviorSubject, Observable } from 'rxjs/Rx';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { AccountRepository } from '../repository/account/AccountRepository';
 import Account from '../repository/models/Account';
 import { BasicLogger, Logger } from '../utils/BasicLogger';
+import { ExportMethod } from '../utils/ExportMethod';
+import { AccessTokenAccepter } from '../utils/keypair/AccessTokenAccepter';
 import { BitKeyPair } from '../utils/keypair/BitKeyPair';
 import { KeyPair } from '../utils/keypair/KeyPair';
 import { KeyPairHelper } from '../utils/keypair/KeyPairHelper';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
-import { RemoteSigner } from '../utils/keypair/RemoteSigner';
 import { RpcKeyPair } from '../utils/keypair/rpc/RpcKeyPair';
+import { TokenType } from '../utils/keypair/rpc/RpcToken';
 import { AccountManager } from './AccountManager';
 
 export class AccountManagerImpl implements AccountManager {
 
-    private accountRepository: AccountRepository;
-    private keyPairCreator: KeyPairHelper;
-    private messageSigner: MessageSigner;
-    private authAccountBehavior: BehaviorSubject<Account>;
-    private logger: Logger;
+    private readonly logger: Logger;
 
     constructor(
-        auth: AccountRepository,
-        keyPairCreator: KeyPairHelper,
-        messageSigner: MessageSigner,
-        authAccountBehavior: BehaviorSubject<Account>,
+        private readonly accountRepository: AccountRepository,
+        private readonly keyPairCreator: KeyPairHelper,
+        private readonly  messageSigner: MessageSigner,
+        private readonly  authAccountBehavior: BehaviorSubject<Account>,
         loggerService?: Logger
     ) {
-        this.accountRepository = auth;
         this.keyPairCreator = keyPairCreator;
         this.messageSigner = messageSigner;
         this.authAccountBehavior = authAccountBehavior;
 
-        if (!loggerService) {
-            loggerService = new BasicLogger();
-        }
-
-        this.logger = loggerService;
+        this.logger = new BasicLogger();
+        this.logger = loggerService ? loggerService : new BasicLogger();
     }
 
     /**
@@ -52,6 +46,7 @@ export class AccountManagerImpl implements AccountManager {
      *
      * @returns {Promise<Account>} {Account} if client exist or create new user.
      */
+    @ExportMethod()
     public async authenticationByPassPhrase(passPhrase: string, message: string): Promise<Account> {
         this.checkSigMessage(message);
 
@@ -69,22 +64,30 @@ export class AccountManagerImpl implements AccountManager {
     /**
      * Checks if user with provided access token is already registered in the system.
      * @param {string} accessToken token for authenticate on remote signer
-     * (if {@link KeyPairHelper} support {@link RemoteSigner})
+     * (if {@link KeyPairHelper} support {@link AccessTokenAccepter})
      *
      * @param {string} message on the basis of which a signature will be created to verify the public key
      *
+     * @param {TokenType} tokenType type of token
+     *
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
-    public authenticationByAccessToken(accessToken: string, message: string): Promise<Account> {
+    @ExportMethod()
+    public async authenticationByAccessToken(
+        accessToken: string,
+        tokenType: TokenType,
+        message: string
+    ): Promise<Account> {
         this.checkSigMessage(message);
 
         if (this.keyPairCreator instanceof RpcKeyPair) {
-            (this.keyPairCreator as RemoteSigner).setAccessToken(accessToken);
+            (this.keyPairCreator as AccessTokenAccepter).setAccessData(accessToken, tokenType);
 
-            return this.keyPairCreator.createKeyPair('')
-                .then(this.generateAccount)
-                .then(account => this.accountRepository.checkAccount(account))
-                .then(account => this.onGetAccount(account, message));
+            const keyPair = await this.keyPairCreator.createKeyPair('');
+            const preparedAccount = await this.generateAccount(keyPair);
+            const account = await this.accountRepository.lazyRegistration(preparedAccount);
+
+            return this.onGetAccount(account, message);
         }
 
         throw new Error('key pair helper does not support token authentication');
@@ -98,6 +101,7 @@ export class AccountManagerImpl implements AccountManager {
      *
      * @returns {Promise<Account>} {Account} after successful registration or http exception if fail.
      */
+    @ExportMethod()
     public registration(mnemonicPhrase: string, message: string): Promise<Account> {
         this.checkSigMessage(message);
 
@@ -115,6 +119,7 @@ export class AccountManagerImpl implements AccountManager {
      *
      * @returns {Promise<Account>} {Account} if client exist or http exception if fail.
      */
+    @ExportMethod()
     public checkAccount(mnemonicPhrase: string, message: string): Promise<Account> {
         this.checkSigMessage(message);
 
@@ -131,25 +136,24 @@ export class AccountManagerImpl implements AccountManager {
      *
      * @returns {Promise<event>} void if client exist or http exception if fail.
      */
+    @ExportMethod()
     public unsubscribe(): Promise<void> {
         return this.accountRepository.unsubscribe(this.authAccountBehavior.getValue());
     }
 
-    public getNewMnemonic(): Promise<string> {
-        return this.keyPairCreator.generateMnemonicPhrase();
+    @ExportMethod({public: true})
+    public async getNewMnemonic(): Promise<string> {
+        return BitKeyPair.generateMnemonicPhrase();
     }
 
+    @ExportMethod()
     public getAccount(): Account {
         return this.authAccountBehavior.getValue();
     }
 
-    public getPublicKeyFromMnemonic(mnemonicPhrase: string): Promise<string> {
-        // return this.keyPairCreator.createKeyPair(mnemonicPhrase)
-        //     .then(res => res.publicKey);
-
-        return new Promise<string>(resolve => {
-            resolve(BitKeyPair.getPublicKeyFromMnemonic(mnemonicPhrase));
-        });
+    @ExportMethod({public: true})
+    public async getPublicKeyFromMnemonic(mnemonicPhrase: string): Promise<string> {
+        return BitKeyPair.getPublicKeyFromMnemonic(mnemonicPhrase);
     }
 
     private lazyRegistration(mnemonicPhrase: string, message: string): Promise<Account> {
@@ -176,17 +180,15 @@ export class AccountManagerImpl implements AccountManager {
                 return this.onGetAccount(checkedAccount, message);
             })
             .catch(err => {
-                // tslint:disable-next-line:max-line-length
-                this.logger.error(`base-client-js:syncAccount failure: ${account.publicKey} err: ${err}, ${JSON.stringify(
-                    err)}`);
+                this.logger.error(
+                    `base-client-js:syncAccount failure: ${account.publicKey} err: ${err}, ${JSON.stringify(err)}`
+                );
                 throw err;
             });
     }
 
-    private generateAccount(keyPair: KeyPair): Promise<Account> {
-        return new Promise<Account>((resolve) => {
-            resolve(new Account(keyPair.publicKey));
-        });
+    private async generateAccount(keyPair: KeyPair): Promise<Account> {
+        return new Account(keyPair.publicKey);
     }
 
     private onGetAccount(account: Account, message: string): Promise<Account> {
@@ -204,5 +206,4 @@ export class AccountManagerImpl implements AccountManager {
                 throw err;
             });
     }
-
 }

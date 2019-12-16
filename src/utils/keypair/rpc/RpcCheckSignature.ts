@@ -10,5 +10,4 @@ export default class RpcCheckSignature extends RpcToken {
         this.msg = msg;
         this.sig = sig;
     }
-
 }

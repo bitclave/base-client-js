@@ -1,12 +1,18 @@
 import { ClassCreator, DeepCopy } from './DeepCopy';
+import { JsonObject } from './JsonObject';
 
 export class FieldData extends DeepCopy<FieldData> {
+    
     public from: string;
     public to: string;
     public root: string;
     public key: string;
     public value: string | undefined;
 
+    public static fromJson(json: JsonObject<FieldData>): FieldData {
+        return Object.assign(new FieldData(), json);
+    }
+    
     constructor(from: string = '', to: string = '', root: string = '', key: string = '', value?: string | undefined) {
         super();
 

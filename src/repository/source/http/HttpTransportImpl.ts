@@ -4,16 +4,18 @@ import { JsonTransform } from '../../models/JsonTransform';
 import { HttpInterceptor } from './HttpInterceptor';
 import { HttpMethod } from './HttpMethod';
 import { HttpTransport } from './HttpTransport';
+import { XMLHttpRequestInitializer } from './HttpTransportSyncedImpl';
 import { InterceptorCortege } from './InterceptorCortege';
 import { Response } from './Response';
 import SignedRequest from './SignedRequest';
 
-let XMLHttpRequest: XMLHttpRequestInitializer;
+let HttpRequest: XMLHttpRequestInitializer;
 
 if ((typeof window !== 'undefined' && window.hasOwnProperty('XMLHttpRequest'))) {
-    XMLHttpRequest = (window as WindowXMLHttpRequest).XMLHttpRequest;
+    // tslint:disable-next-line:no-any
+    HttpRequest = (window as any).XMLHttpRequest;
 } else {
-    XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+    HttpRequest = require('xmlhttprequest').XMLHttpRequest;
 }
 
 export class HttpTransportImpl implements HttpTransport {
@@ -28,7 +30,7 @@ export class HttpTransportImpl implements HttpTransport {
         this.logger = loggerService ? loggerService : new BasicLogger();
     }
 
-    public addInterceptor(interceptor: HttpInterceptor): HttpTransport {
+    public addInterceptor(interceptor: HttpInterceptor): this {
         if (this.interceptors.indexOf(interceptor) === -1) {
             this.interceptors.push(interceptor);
         }
@@ -61,7 +63,7 @@ export class HttpTransportImpl implements HttpTransport {
                 ));
 
                 const url = cortege.path ? this.getHost() + cortege.path : this.getHost();
-                const request: XMLHttpRequest = new XMLHttpRequest();
+                const request: XMLHttpRequest = new HttpRequest();
                 request.open(method, url);
 
                 request.onload = () => {

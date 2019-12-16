@@ -1,7 +1,15 @@
-export declare interface RpcTransport {
+import { JsonDeserializer } from '../../../utils/types/json-transform';
+import { Primitive } from '../../../utils/types/Primitive';
+import { TransportInterceptor } from '../TransportInterceptor';
+import { RpcInterceptor } from './RpcInterceptor';
 
-    request<T>(method: string, arg?: object | string | number): Promise<T>;
+export declare interface RpcTransport extends TransportInterceptor<RpcInterceptor> {
+
+    request<T>(
+        method: string,
+        arg?: Array<object | Primitive | undefined | null>,
+        deserializer?: JsonDeserializer<T>
+    ): Promise<T>;
 
     disconnect(): void;
-
 }

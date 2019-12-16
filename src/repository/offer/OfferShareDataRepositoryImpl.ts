@@ -10,15 +10,12 @@ export default class OfferShareDataRepositoryImpl implements OfferShareDataRepos
 
     private readonly SHARE_DATA_API: string = '/v1/data/offer/';
     private readonly NONCE_DATA_API: string = '/v1/nonce/';
-    private transport: HttpTransport;
 
-    private accountManager: AccountManager;
-    private profileManager: ProfileManager;
-
-    constructor(transport: HttpTransport, accountManager: AccountManager, profileManager: ProfileManager) {
-        this.transport = transport;
-        this.accountManager = accountManager;
-        this.profileManager = profileManager;
+    constructor(
+        private readonly transport: HttpTransport,
+        private readonly accountManager: AccountManager,
+        private readonly profileManager: ProfileManager
+    ) {
     }
 
     public async getShareData(owner: string, accepted: boolean): Promise<Array<OfferShareData>> {
@@ -47,15 +44,5 @@ export default class OfferShareDataRepositoryImpl implements OfferShareDataRepos
             nonce: ++nonce
         };
         await this.transport.sendRequest(acceptUrl, HttpMethod.Patch, data);
-
-        // await fetch(
-        //     acceptUrl,
-        //     {
-        //         headers: {'Content-Type': 'application/json'},
-        //         method: 'PATCH',
-        //         body: JSON.stringify(data)
-        //     }
-        // );
     }
-
 }

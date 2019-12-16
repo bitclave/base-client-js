@@ -83,15 +83,7 @@ export default class SearchRequestRepositoryImpl implements SearchRequestReposit
                 .replace('{page}', (page || 0).toString())
                 .replace('{size}', (size || 20).toString()),
             HttpMethod.Get
-        ).then((response) => this.jsonToPageResultItem(response.json));
-    }
-
-    private async jsonToPageResultItem(
-        json: JsonObject<Page<SearchRequest>>
-    ): Promise<Page<SearchRequest>> {
-        json.content = await this.jsonToListSearchRequests(json.content as JsonObject<Array<SearchRequest>>);
-
-        return Page.fromJson(json, SearchRequest);
+        ).then((response) => Page.fromJson(response.json, SearchRequest));
     }
 
     private jsonToListSearchRequests(json: JsonObject<Array<SearchRequest>>): Array<SearchRequest> {

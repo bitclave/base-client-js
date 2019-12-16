@@ -1,3 +1,4 @@
+import { JsonUtils } from '../../utils/JsonUtils';
 import { ClassCreator, DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
 
@@ -14,8 +15,8 @@ export class OfferInteraction extends DeepCopy<OfferInteraction> {
 
     public static fromJson(json: object): OfferInteraction {
         const jsonObj = json as JsonObject<OfferInteraction>;
-        jsonObj.createdAt = new Date((jsonObj.createdAt as string) || new Date().getTime());
-        jsonObj.updatedAt = new Date((jsonObj.updatedAt as string) || new Date().getTime());
+        jsonObj.createdAt = JsonUtils.jsonDateToDate(jsonObj.createdAt);
+        jsonObj.updatedAt = JsonUtils.jsonDateToDate(jsonObj.updatedAt);
 
         return Object.assign(new OfferInteraction(), jsonObj);
     }

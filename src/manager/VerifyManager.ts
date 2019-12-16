@@ -11,6 +11,7 @@ export interface VerifyManager {
 
     getAllAccounts(fromDate: Date): Promise<Array<Account>>;
 
+    // fixme use Enum instead number!
     getDanglingOfferSearches(type: number): Promise<Array<OfferSearch>>;
 
     getDanglingOfferInteractions(): Promise<Array<OfferInteraction>>;
@@ -21,8 +22,10 @@ export interface VerifyManager {
 
     getSearchRequestWithoutOwner(): Promise<Array<SearchRequest>>;
 
-    getOfferInteractionsByOfferIdsAndOwners(offerIds: Array<number>, 
-                                            owners: Array<string>): Promise<Array<OfferInteraction>>;
+    getOfferInteractionsByOfferIdsAndOwners(
+        offerIds: Array<number>,
+        owners: Array<string>
+    ): Promise<Array<OfferInteraction>>;
 
     deleteUser(publicKey: string): Promise<void>;
 }

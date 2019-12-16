@@ -1,31 +1,25 @@
 import 'reflect-metadata';
-import { BehaviorSubject } from 'rxjs/Rx';
-import { version } from '../package.json';
+import { BuilderManagersModule } from './BuilderManagersModule';
+import { InternalManagerModule } from './InternalManagerModule';
 import { AccountManager } from './manager/AccountManager';
-import { AccountManagerImpl } from './manager/AccountManagerImpl';
 import { DataRequestManager } from './manager/DataRequestManager';
-import { DataRequestManagerImpl } from './manager/DataRequestManagerImpl';
 import { ExternalServicesManager } from './manager/ExternalServicesManager';
-import { ExternalServicesManagerImpl } from './manager/ExternalServicesManagerImpl';
+import { NodeManager } from './manager/NodeManager';
 import { OfferManager } from './manager/OfferManager';
-import { OfferManagerImpl } from './manager/OfferManagerImpl';
 import { OfferRankManager } from './manager/OfferRankManager';
 import { OfferRankManagerImpl } from './manager/OfferRankManagerImpl';
 import { ProfileManager } from './manager/ProfileManager';
-import { ProfileManagerImpl } from './manager/ProfileManagerImpl';
 import { SearchManager, SortOfferSearch } from './manager/SearchManager';
-import { SearchManagerImpl } from './manager/SearchManagerImpl';
 import { VerifyManager } from './manager/VerifyManager';
-import { VerifyManagerImpl } from './manager/VerifyManagerImpl';
 import { WalletManager } from './manager/WalletManager';
 import { WalletManagerImpl } from './manager/WalletManagerImpl';
-import { AccountRepository } from './repository/account/AccountRepository';
-import AccountRepositoryImpl from './repository/account/AccountRepositoryImpl';
+import { ManagersModule } from './ManagersModule';
+import { ManagersModuleFactory } from './ManagersModuleFactory';
+import { AssistantNodeFactory } from './repository/assistant/AssistantNodeFactory';
 import { AssistantNodeRepository } from './repository/assistant/AssistantNodeRepository';
 import { PermissionsSource } from './repository/assistant/PermissionsSource';
 import { SiteDataSource } from './repository/assistant/SiteDataSource';
 import { ClientDataRepository } from './repository/client/ClientDataRepository';
-import ClientDataRepositoryImpl from './repository/client/ClientDataRepositoryImpl';
 import Account from './repository/models/Account';
 import { DataRequest } from './repository/models/DataRequest';
 import { DeepCopy } from './repository/models/DeepCopy';
@@ -54,39 +48,29 @@ import { ServiceResponse } from './repository/models/services/ServiceResponse';
 import { SharedData } from './repository/models/SharedData';
 import SimpleAccount from './repository/models/SimpleAccount';
 import { Site } from './repository/models/Site';
-import { NodeInfoRepository } from './repository/node/NodeInfoRepository';
-import { NodeInfoRepositoryImpl } from './repository/node/NodeInfoRepositoryImpl';
 import { OfferRepository } from './repository/offer/OfferRepository';
-import OfferRepositoryImpl from './repository/offer/OfferRepositoryImpl';
 import { OfferShareDataRepository } from './repository/offer/OfferShareDataRepository';
 import OfferShareDataRepositoryImpl from './repository/offer/OfferShareDataRepositoryImpl';
 import { OfferRankRepositoryImpl } from './repository/offerRank/OfferRankRepositoryImpl';
 import { RepositoryStrategyType } from './repository/RepositoryStrategyType';
-import { DataRequestRepository } from './repository/requests/DataRequestRepository';
-import DataRequestRepositoryImpl from './repository/requests/DataRequestRepositoryImpl';
 import { OfferSearchRepository, OfferSearchRequestInterestMode } from './repository/search/OfferSearchRepository';
 import { OfferSearchRepositoryImpl } from './repository/search/OfferSearchRepositoryImpl';
 import { SearchRequestRepository } from './repository/search/SearchRequestRepository';
-import SearchRequestRepositoryImpl from './repository/search/SearchRequestRepositoryImpl';
 import { ExternalServicesRepository } from './repository/services/ExternalServicesRepository';
-import { ExternalServicesRepositoryImpl } from './repository/services/ExternalServicesRepositoryImpl';
-import { SiteRepository } from './repository/site/SiteRepository';
-import { SiteRepositoryImpl } from './repository/site/SiteRepositoryImpl';
-import { HttpTransport } from './repository/source/http/HttpTransport';
 import { HttpTransportImpl } from './repository/source/http/HttpTransportImpl';
-import NonceInterceptor from './repository/source/http/NonceInterceptor';
 import { RepositoryStrategyInterceptor } from './repository/source/http/RepositoryStrategyInterceptor';
-import SignInterceptor from './repository/source/http/SignInterceptor';
-import { TransportFactory } from './repository/source/TransportFactory';
+import { AccessTokenInterceptor } from './repository/source/rpc/AccessTokenInterceptor';
+import { JsonRpc } from './repository/source/rpc/JsonRpc';
+import { JsonRpcHttpInterceptorAdapter } from './repository/source/rpc/JsonRpcHttpInterceptorAdapter';
+import { RpcInterceptor } from './repository/source/rpc/RpcInterceptor';
+import { TransportInterceptor } from './repository/source/TransportInterceptor';
+
 import { VerifyRepository } from './repository/verify/VerifyRepository';
-import { VerifyRepositoryImpl } from './repository/verify/VerifyRepositoryImpl';
 import { BasicLogger, Logger } from './utils/BasicLogger';
 import { BitKeyPair } from './utils/keypair/BitKeyPair';
-import { KeyPairFactory } from './utils/keypair/KeyPairFactory';
-import { KeyPairHelper } from './utils/keypair/KeyPairHelper';
-import { MessageDecrypt } from './utils/keypair/MessageDecrypt';
-import { MessageEncrypt } from './utils/keypair/MessageEncrypt';
-import { MessageSigner } from './utils/keypair/MessageSigner';
+import { RpcAccessData } from './utils/keypair/rpc/RpcAccessData';
+import { TokenType } from './utils/keypair/rpc/RpcToken';
+import { Primitive } from './utils/types/Primitive';
 import { AbstractWalletValidator } from './utils/types/validators/AbstractWalletValidator';
 import { IsBasePublicKey } from './utils/types/validators/annotations/IsBasePublicKey';
 import { IsBtcAddress } from './utils/types/validators/annotations/IsBtcAddress';
@@ -99,7 +83,6 @@ import { ValidationResult } from './utils/types/validators/ValidationResult';
 import { WalletsValidator } from './utils/types/validators/WalletsValidator';
 import { WalletValidator } from './utils/types/validators/WalletValidator';
 import { WalletValidatorStrategy } from './utils/types/validators/WalletValidatorStrategy';
-import { WalletUtils } from './utils/WalletUtils';
 
 export { RepositoryStrategyType } from './repository/RepositoryStrategyType';
 export { CompareAction } from './repository/models/CompareAction';
@@ -108,7 +91,7 @@ export { HttpTransport } from './repository/source/http/HttpTransport';
 export { HttpInterceptor } from './repository/source/http/HttpInterceptor';
 export { TransportFactory } from './repository/source/TransportFactory';
 export { KeyPairFactory } from './utils/keypair/KeyPairFactory';
-export { RemoteSigner } from './utils/keypair/RemoteSigner';
+export { AccessTokenAccepter } from './utils/keypair/AccessTokenAccepter';
 export { CryptoUtils } from './utils/CryptoUtils';
 export { WalletUtils } from './utils/WalletUtils';
 export { BitcoinUtils } from './utils/BitcoinUtils';
@@ -119,7 +102,10 @@ export { KeyPairHelper } from './utils/keypair/KeyPairHelper';
 export { Permissions, AccessRight } from './utils/keypair/Permissions';
 export { AcceptedField } from './utils/keypair/AcceptedField';
 export { RpcToken } from './utils/keypair/rpc/RpcToken';
-export { RpcAuth } from './utils/keypair/rpc/RpcAuth';
+export { RpcAccessToken } from './utils/keypair/rpc/RpcAccessToken';
+
+export * from './utils/types/json-transform';
+export { EXPORTED_METHOD, EXPORTED_METHOD_PROPS, ExportMethod } from './utils/ExportMethod';
 
 export {
     CryptoWallets,
@@ -140,12 +126,16 @@ export {
 } from './utils/types/BaseTypes';
 
 export {
+    AssistantNodeRepository,
+    AssistantNodeFactory,
     AbstractWalletValidator,
     Account,
     AccountManager,
+    AccessTokenInterceptor,
     AppWalletValidator,
     BitKeyPair,
     BtcWalletValidator,
+    BuilderManagersModule,
     DataRequest,
     DataRequestManager,
     SharedData,
@@ -164,9 +154,14 @@ export {
     IsBtcAddress,
     IsEthAddress,
     IsTypedArray,
+    InternalManagerModule,
+    JsonRpc,
+    JsonRpcHttpInterceptorAdapter,
     JsonObject,
     JsonTransform,
     LinkType,
+    ManagersModule,
+    ManagersModuleFactory,
     OutputGraphData,
     Offer,
     OfferManager,
@@ -192,6 +187,10 @@ export {
     PermissionsSource,
     Profile,
     ProfileManager,
+    Primitive,
+    RepositoryStrategyInterceptor,
+    RpcInterceptor,
+    RpcAccessData,
     SearchManager,
     SearchRequest,
     ServiceCall,
@@ -201,6 +200,7 @@ export {
     Site,
     SiteDataSource,
     SortOfferSearch,
+    TokenType,
     ValidationResult,
     VerifyManager,
     WalletManager,
@@ -214,182 +214,97 @@ export {
     VerifyRepository
 };
 
-// @deprecated see {version}
-export const LibVersion = version;
+const {version} = require('../package.json');
 
 export default class Base {
 
-    private readonly _walletManager: WalletManager;
-    private readonly _accountManager: AccountManager;
-    private readonly _profileManager: ProfileManager;
-    private readonly _dataRequestManager: DataRequestManager;
-    private readonly _offerManager: OfferManager;
-    private readonly _searchManager: SearchManager;
-    private readonly _verifyManager: VerifyManager;
-    private readonly _externalServicesManager: ExternalServicesManager;
-    private readonly _authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
-    private readonly _repositoryStrategyInterceptor: RepositoryStrategyInterceptor;
-    private readonly _offerRankManager: OfferRankManager;
-    private readonly transport: HttpTransport;
-    private readonly nodeAssistant: AssistantNodeRepository;
+    private readonly managersModule: ManagersModule;
 
+    // fixme will be change to ManagersModule. and we will remove all another arguments
     constructor(
-        nodeHost: string,
-        siteOrigin: string,
+        nodeEndPointOrModule: string | ManagersModule,
+        siteOrigin: string = '',
         strategy: RepositoryStrategyType = RepositoryStrategyType.Postgres,
-        signerHost: string = '',
-        loggerService?: Logger
+        signerEndPoint: string = '',
+        loggerService: Logger = new BasicLogger(),
     ) {
+        if (nodeEndPointOrModule instanceof ManagersModule) {
+            this.managersModule = nodeEndPointOrModule;
 
-        if (!loggerService) {
-            loggerService = new BasicLogger();
+        } else {
+            console.info('You are still using legacy library initialization! ' +
+                'Please use new Base(ManagersModuleFactory.createSomeManagers())'
+            );
+
+            if (signerEndPoint && signerEndPoint.length > 0) {
+                this.managersModule = ManagersModuleFactory.createInsideManagersWithRemoteSigner(
+                    nodeEndPointOrModule,
+                    signerEndPoint,
+                    siteOrigin,
+                    strategy,
+                    loggerService
+                );
+
+            } else {
+                this.managersModule = ManagersModuleFactory.createInsideManagers(
+                    nodeEndPointOrModule,
+                    siteOrigin,
+                    strategy,
+                    loggerService
+                );
+            }
         }
-
-        this._repositoryStrategyInterceptor = new RepositoryStrategyInterceptor(strategy);
-
-        const assistantHttpTransport: HttpTransport = new HttpTransportImpl(nodeHost)
-            .addInterceptor(this._repositoryStrategyInterceptor);
-
-        this.nodeAssistant = this.createNodeAssistant(assistantHttpTransport);
-
-        const keyPairHelper: KeyPairHelper =
-            this.createKeyPairHelper(signerHost, this.nodeAssistant, this.nodeAssistant, siteOrigin);
-
-        const messageSigner: MessageSigner = keyPairHelper;
-        const encryptMessage: MessageEncrypt = keyPairHelper;
-        const decryptMessage: MessageDecrypt = keyPairHelper;
-
-        this.transport = TransportFactory.createHttpTransport(nodeHost, loggerService)
-            .addInterceptor(new SignInterceptor(messageSigner))
-            .addInterceptor(new NonceInterceptor(messageSigner, this.nodeAssistant))
-            .addInterceptor(this._repositoryStrategyInterceptor);
-
-        const accountRepository = new AccountRepositoryImpl(this.transport);
-        const clientDataRepository = new ClientDataRepositoryImpl(this.transport);
-        const dataRequestRepository = new DataRequestRepositoryImpl(this.transport);
-        const offerRepository = new OfferRepositoryImpl(this.transport);
-        const searchRequestRepository = new SearchRequestRepositoryImpl(this.transport);
-        const offerSearchRepository = new OfferSearchRepositoryImpl(this.transport);
-        const verifyRepository = new VerifyRepositoryImpl(this.transport);
-        const externalServicesRepository = new ExternalServicesRepositoryImpl(this.transport);
-        const offerRankRepository = new OfferRankRepositoryImpl(this.transport);
-
-        this._accountManager = new AccountManagerImpl(
-            accountRepository,
-            keyPairHelper,
-            messageSigner,
-            this._authAccountBehavior,
-            loggerService
-        );
-
-        this._dataRequestManager = new DataRequestManagerImpl(
-            dataRequestRepository,
-            this._authAccountBehavior.asObservable(),
-            encryptMessage,
-            decryptMessage
-        );
-
-        this._profileManager = new ProfileManagerImpl(
-            clientDataRepository,
-            this._authAccountBehavior.asObservable(),
-            encryptMessage,
-            decryptMessage,
-            messageSigner
-        );
-
-        this._offerManager = new OfferManagerImpl(offerRepository, this._authAccountBehavior.asObservable());
-
-        this._searchManager = new SearchManagerImpl(
-            searchRequestRepository,
-            offerSearchRepository,
-            this._authAccountBehavior.asObservable()
-        );
-
-        this._walletManager = new WalletManagerImpl(
-            this.profileManager,
-            this.dataRequestManager,
-            WalletUtils.WALLET_VALIDATOR,
-            messageSigner,
-            this._authAccountBehavior.asObservable()
-        );
-
-        this._verifyManager = new VerifyManagerImpl(
-            verifyRepository
-        );
-
-        this._externalServicesManager = new ExternalServicesManagerImpl(externalServicesRepository);
-        this._offerRankManager = new OfferRankManagerImpl(offerRankRepository);
     }
 
     public get version(): string {
         return version;
     }
 
-    public changeStrategy(strategy: RepositoryStrategyType) {
-        this._repositoryStrategyInterceptor.changeStrategy(strategy);
-    }
-
-    public get defaultTransport(): HttpTransport {
-        return this.transport;
+    public get defaultTransport(): TransportInterceptor<object> {
+        return this.managersModule.getDefaultTransport();
     }
 
     public getNodeVersion(): Promise<string> {
-        return this.nodeAssistant.getNodeVersion();
+        return this.managersModule.getNodeManager().getNodeVersion();
     }
 
     get walletManager(): WalletManager {
-        return this._walletManager;
+        return this.managersModule.getWalletManager();
     }
 
     get accountManager(): AccountManager {
-        return this._accountManager;
+        return this.managersModule.getAccountManager();
     }
 
     get profileManager(): ProfileManager {
-        return this._profileManager;
+        return this.managersModule.getProfileManager();
     }
 
     get dataRequestManager(): DataRequestManager {
-        return this._dataRequestManager;
+        return this.managersModule.getDataRequestManager();
     }
 
     get offerManager(): OfferManager {
-        return this._offerManager;
+        return this.managersModule.getOfferManager();
     }
 
     get searchManager(): SearchManager {
-        return this._searchManager;
+        return this.managersModule.getSearchManager();
     }
 
     get verifyManager(): VerifyManager {
-        return this._verifyManager;
+        return this.managersModule.getVerifyManager();
     }
 
     get externalServicesManager(): ExternalServicesManager {
-        return this._externalServicesManager;
+        return this.managersModule.getExternalServicesManager();
     }
 
     get offerRankManager(): OfferRankManager {
-        return this._offerRankManager;
+        return this.managersModule.getOfferRankManager();
     }
 
-    private createNodeAssistant(httpTransport: HttpTransport): AssistantNodeRepository {
-        const accountRepository: AccountRepository = new AccountRepositoryImpl(httpTransport);
-        const dataRequestRepository: DataRequestRepository = new DataRequestRepositoryImpl(httpTransport);
-        const siteRepository: SiteRepository = new SiteRepositoryImpl(httpTransport);
-        const nodeInfo: NodeInfoRepository = new NodeInfoRepositoryImpl(httpTransport);
-
-        return new AssistantNodeRepository(accountRepository, dataRequestRepository, siteRepository, nodeInfo);
-    }
-
-    private createKeyPairHelper(
-        signerHost: string,
-        permissionSource: PermissionsSource,
-        siteDataSource: SiteDataSource,
-        siteOrigin: string
-    ): KeyPairHelper {
-        return (signerHost.length === 0)
-               ? KeyPairFactory.createDefaultKeyPair(permissionSource, siteDataSource, siteOrigin)
-               : KeyPairFactory.createRpcKeyPair(TransportFactory.createJsonRpcHttpTransport(signerHost));
+    get nodeManager(): NodeManager {
+        return this.managersModule.getNodeManager();
     }
 }

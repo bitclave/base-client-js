@@ -25,6 +25,7 @@
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
     "types": [
+      "mocha",
       "reflect-metadata"
     ]
   },

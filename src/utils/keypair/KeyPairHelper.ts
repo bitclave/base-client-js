@@ -8,5 +8,4 @@ export interface KeyPairHelper extends MessageSigner, MessageEncrypt, MessageDec
     createKeyPair(passPhrase: string): Promise<KeyPair>;
 
     generateMnemonicPhrase(): Promise<string>;
-
 }

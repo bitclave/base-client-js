@@ -4,8 +4,8 @@ export default class RpcFieldPassword extends RpcToken {
 
     public readonly fieldName: string;
 
-    constructor(accessToken: string, fieldName: string) {
-        super(accessToken);
+    constructor(fieldName: string) {
+        super();
         this.fieldName = fieldName;
     }
 

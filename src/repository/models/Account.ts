@@ -1,3 +1,4 @@
+import { JsonUtils } from '../../utils/JsonUtils';
 import { ClassCreator } from './DeepCopy';
 import { JsonObject } from './JsonObject';
 import SimpleAccount from './SimpleAccount';
@@ -8,8 +9,8 @@ export default class Account extends SimpleAccount {
     public sig: string = '';
 
     public static fromJson(json: JsonObject<Account>): Account {
-        json.createdAt = new Date((json.createdAt as string) || new Date().getTime());
-        json.updatedAt = new Date((json.updatedAt as string) || new Date().getTime());
+        json.createdAt = JsonUtils.jsonDateToDate(json.createdAt);
+        json.updatedAt = JsonUtils.jsonDateToDate(json.updatedAt);
 
         return Object.assign(new Account(), json);
     }

@@ -1,3 +1,4 @@
+import { JsonUtils } from '../../utils/JsonUtils';
 import { ClassCreator, DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
 
@@ -9,8 +10,8 @@ export default class SimpleAccount extends DeepCopy<SimpleAccount> {
     public readonly updatedAt: Date = new Date();
 
     public static fromJson(json: JsonObject<SimpleAccount>): SimpleAccount {
-        json.createdAt = new Date((json.createdAt as string) || new Date().getTime());
-        json.updatedAt = new Date((json.updatedAt as string) || new Date().getTime());
+        json.createdAt = JsonUtils.jsonDateToDate(json.createdAt);
+        json.updatedAt = JsonUtils.jsonDateToDate(json.updatedAt);
 
         return Object.assign(new SimpleAccount(), json);
     }

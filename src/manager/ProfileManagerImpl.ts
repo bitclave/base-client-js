@@ -1,44 +1,40 @@
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { ClientDataRepository } from '../repository/client/ClientDataRepository';
 import Account from '../repository/models/Account';
 import { DataRequest } from '../repository/models/DataRequest';
 import { FieldData } from '../repository/models/FieldData';
 import { FileMeta } from '../repository/models/FileMeta';
+import { JsonObject } from '../repository/models/JsonObject';
 import { SharedData } from '../repository/models/SharedData';
 import { BasicLogger, Logger } from '../utils/BasicLogger';
+import { ExportMethod } from '../utils/ExportMethod';
 import { JsonUtils } from '../utils/JsonUtils';
 import { AcceptedField } from '../utils/keypair/AcceptedField';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
 import { AccessRight } from '../utils/keypair/Permissions';
+import { ParamDeserializer } from '../utils/types/json-transform';
+import { ArrayDeserializer } from '../utils/types/json-transform/deserializers/ArrayDeserializer';
+import { SimpleMapDeserializer } from '../utils/types/json-transform/deserializers/SimpleMapDeserializer';
 import { ProfileManager } from './ProfileManager';
 
 export class ProfileManagerImpl implements ProfileManager {
 
-    private clientDataRepository: ClientDataRepository;
     private account: Account = new Account();
-    private encrypt: MessageEncrypt;
-    private decrypt: MessageDecrypt;
-    private signer: MessageSigner;
     private logger: Logger;
 
     constructor(
-        clientRepository: ClientDataRepository,
+        private readonly clientDataRepository: ClientDataRepository,
         authAccountBehavior: Observable<Account>,
-        encrypt: MessageEncrypt,
-        decrypt: MessageDecrypt,
-        signer: MessageSigner,
+        private readonly encrypt: MessageEncrypt,
+        private readonly decrypt: MessageDecrypt,
+        private readonly signer: MessageSigner,
         loggerService?: Logger
     ) {
-        this.clientDataRepository = clientRepository;
 
         authAccountBehavior
             .subscribe(this.onChangeAccount.bind(this));
-
-        this.encrypt = encrypt;
-        this.decrypt = decrypt;
-        this.signer = signer;
 
         if (!loggerService) {
             loggerService = new BasicLogger();
@@ -47,14 +43,17 @@ export class ProfileManagerImpl implements ProfileManager {
         this.logger = loggerService;
     }
 
+    @ExportMethod()
     public signMessage(data: string): Promise<string> {
         return this.signer.signMessage(data);
     }
 
+    @ExportMethod()
     public decryptMessage(senderPk: string, encryptedMessage: string): Promise<string> {
         return this.decrypt.decryptMessage(senderPk, encryptedMessage);
     }
 
+    @ExportMethod()
     public encryptMessage(recipientPk: string, message: string): Promise<string> {
         return this.encrypt.encryptMessage(recipientPk, message);
     }
@@ -65,7 +64,7 @@ export class ProfileManagerImpl implements ProfileManager {
      *
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
-
+    @ExportMethod()
     public async getData(fieldKey?: string | Array<string>): Promise<Map<string, string>> {
         if (
             this.account == null ||
@@ -92,6 +91,7 @@ export class ProfileManagerImpl implements ProfileManager {
      *
      * @returns {Promise<Map<string, string>>} Map key => value.
      */
+    @ExportMethod()
     public getRawData(
         anyPublicKey: string,
         fieldKey?: string | Array<string>
@@ -107,8 +107,11 @@ export class ProfileManagerImpl implements ProfileManager {
      * @returns {Promise<SharedData>}  sharedData->DataRequest-> responseData is client value or undefined if not
      * have access
      */
-    public async getAuthorizedData(acceptedRequests: Array<DataRequest>): Promise<SharedData> {
-        if (acceptedRequests.length <= 0) {
+    @ExportMethod()
+    public async getAuthorizedData(
+        @ParamDeserializer(new ArrayDeserializer(DataRequest)) acceptedRequests: Array<DataRequest>
+    ): Promise<SharedData> {
+        if (!acceptedRequests || acceptedRequests.length <= 0) {
             return new SharedData();
         }
 
@@ -144,7 +147,10 @@ export class ProfileManagerImpl implements ProfileManager {
      *
      * @returns {Promise<SharedData>} sharedData->DataRequest-> responseData is Password.
      */
-    public async getAuthorizedEncryptionKeys(acceptedRequests: Array<DataRequest>): Promise<SharedData> {
+    @ExportMethod()
+    public async getAuthorizedEncryptionKeys(
+        @ParamDeserializer(new ArrayDeserializer(DataRequest)) acceptedRequests: Array<DataRequest>
+    ): Promise<SharedData> {
         const result = new SharedData();
 
         for (const data of acceptedRequests) {
@@ -200,7 +206,10 @@ export class ProfileManagerImpl implements ProfileManager {
      *
      * @returns {Promise<Map<string, string>>} Map with encrypted data.
      */
-    public updateData(data: Map<string, string>): Promise<Map<string, string>> {
+    @ExportMethod()
+    public updateData(
+        @ParamDeserializer(new SimpleMapDeserializer()) data: Map<string, string>
+    ): Promise<Map<string, string>> {
         return this.encrypt.encryptFields(data)
             .then(encrypted => this.clientDataRepository.updateData(this.account.publicKey, encrypted));
     }
@@ -215,11 +224,12 @@ export class ProfileManagerImpl implements ProfileManager {
      *
      * @returns {Promise<FileMeta>} Encrypted FileMeta.
      */
-    public async uploadFile(file: FileMeta, key: string): Promise<FileMeta> {
+    @ExportMethod()
+    public async uploadFile(@ParamDeserializer(FileMeta) file: FileMeta, key: string): Promise<FileMeta> {
         const encrypted: string = await this.encrypt.encryptFile(file.content || '', key);
         const existedMeta = await this.getFileMetaWithGivenKey(key);
         const fileId: number = existedMeta ? existedMeta.id : 0;
-        const fileForUpload = file.copy({content: encrypted});
+        const fileForUpload = file.copy({content: encrypted} as JsonObject<FileMeta>);
         const updatedMeta = await this.clientDataRepository
             .uploadFile(this.account.publicKey, fileForUpload, fileId);
 
@@ -237,6 +247,7 @@ export class ProfileManagerImpl implements ProfileManager {
      *
      * @returns {Promise<string>} decrypted file Base64 data.
      */
+    @ExportMethod()
     public async downloadFile(id: number, key: string, publicKey?: string, existedPassword?: string): Promise<string> {
         const pk = publicKey ? publicKey : this.account.publicKey;
         const encodedFile = await this.clientDataRepository.getFile(pk, id);
@@ -244,6 +255,7 @@ export class ProfileManagerImpl implements ProfileManager {
         return await this.decrypt.decryptFile(encodedFile, key, existedPassword);
     }
 
+    @ExportMethod()
     public async getFileMetaWithGivenKey(key: string): Promise<FileMeta | undefined> {
         const myData: Map<string, string> = await this.getData(key);
         let fileMeta: FileMeta | undefined;

@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs/Rx';
+import { BehaviorSubject } from 'rxjs';
 import { DataRequestManager } from '../../src/manager/DataRequestManager';
 import { DataRequestManagerImpl } from '../../src/manager/DataRequestManagerImpl';
 import { ProfileManager } from '../../src/manager/ProfileManager';
@@ -8,8 +8,8 @@ import { Site } from '../../src/repository/models/Site';
 import { KeyPairFactory } from '../../src/utils/keypair/KeyPairFactory';
 import { KeyPairHelper } from '../../src/utils/keypair/KeyPairHelper';
 import { AccessRight } from '../../src/utils/keypair/Permissions';
-import ClientDataRepositoryImplMock from '../profile/ClientDataRepositoryImplMock';
 import { AssistantPermissions } from './AssistantPermissions';
+import ClientDataRepositoryImplMock from './ClientDataRepositoryImplMock';
 import DataRequestRepositoryImplMock from './DataRequestRepositoryImplMock';
 
 require('chai')

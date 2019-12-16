@@ -1,9 +1,16 @@
+export enum TokenType {
+    BASIC = 0,
+    KEYCLOACK_JWT = 1,
+}
+
 export class RpcToken {
 
-    public readonly accessToken: string;
+    public accessToken: string;
+    public tokenType: TokenType;
 
-    constructor(accessToken: string) {
+    constructor(accessToken: string = '', tokenType: TokenType = TokenType.BASIC) {
         this.accessToken = accessToken;
+        this.tokenType = tokenType;
     }
 
     public getAccessTokenSig(): string {
@@ -13,5 +20,4 @@ export class RpcToken {
     public getClearAccessToken(): string {
         return this.accessToken.substring(0, 32);
     }
-
 }

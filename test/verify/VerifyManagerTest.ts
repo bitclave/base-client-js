@@ -1,52 +1,21 @@
 import Base, { CompareAction, Offer, OfferSearch, SearchRequest } from '../../src/Base';
 import Account from '../../src/repository/models/Account';
-import { RepositoryStrategyType } from '../../src/repository/RepositoryStrategyType';
-import { RpcTransport } from '../../src/repository/source/rpc/RpcTransport';
-import { TransportFactory } from '../../src/repository/source/TransportFactory';
-import AuthenticatorHelper from '../AuthenticatorHelper';
+import { BaseClientHelper } from '../BaseClientHelper';
 
 require('chai')
     .use(require('chai-as-promised'))
     .should();
-const someSigMessage = 'some unique message for signature';
-const baseNodeUrl = process.env.BASE_NODE_URL || 'https://base2-bitclva-com.herokuapp.com';
-const rpcSignerHost = process.env.SIGNER || 'http://localhost:3545';
-const rpcTransport: RpcTransport = TransportFactory.createJsonRpcHttpTransport(rpcSignerHost);
-const authenticatorHelper: AuthenticatorHelper = new AuthenticatorHelper(rpcTransport);
-
-async function createUser(user: Base, pass: string): Promise<Account> {
-    let accessToken: string = '';
-    try {
-        accessToken = await authenticatorHelper.generateAccessToken(pass);
-        await user.accountManager.authenticationByAccessToken(accessToken, someSigMessage);
-        await user.accountManager.unsubscribe();
-    } catch (e) {
-        console.log('check createUser', e);
-        // ignore error if user not exist
-    }
-
-    return await user.accountManager.registration(pass, someSigMessage); // this method private.
-}
 
 describe('Verify Manager', async () => {
     const passPhraseAlisa: string = 'Alice';
     const passPhraseSeller: string = 'Seller';
 
-    const businessBase: Base = createBase();
-    const baseAlice: Base = createBase();
+    let businessBase: Base;
+    let baseAlice: Base;
 
     let accAlice: Account;
 
     const fromDate: Date = new Date();
-
-    function createBase(): Base {
-        return new Base(
-            baseNodeUrl,
-            'localhost',
-            RepositoryStrategyType.Postgres,
-            rpcSignerHost
-        );
-    }
 
     function offerFactory(): Offer {
         const offerTags = new Map<string, string>([
@@ -80,12 +49,9 @@ describe('Verify Manager', async () => {
     }
 
     beforeEach(async () => {
-        await createUser(businessBase, passPhraseSeller);
-        accAlice = await createUser(baseAlice, passPhraseAlisa);
-    });
-
-    after(async () => {
-        // rpcClient.disconnect();
+        businessBase = await BaseClientHelper.createRegistered(passPhraseSeller);
+        baseAlice = await BaseClientHelper.createRegistered(passPhraseAlisa);
+        accAlice = baseAlice.accountManager.getAccount();
     });
 
     it('should get offer search list by ids', async () => {
@@ -98,7 +64,7 @@ describe('Verify Manager', async () => {
             const searchRequest = requestFactory();
             const insertedSearchRequest = await baseAlice.searchManager.createRequest(searchRequest);
 
-            const offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id, ['created']);
+            const offerSearch = new OfferSearch(insertedSearchRequest.id, businessOffer.id);
             await baseAlice.searchManager.addResultItem(offerSearch);
 
             const searchRequests = (await baseAlice.searchManager.getSearchResult(insertedSearchRequest.id)).content;

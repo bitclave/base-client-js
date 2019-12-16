@@ -1,3 +1,4 @@
+import { JsonUtils } from '../../utils/JsonUtils';
 import { ClassCreator, DeepCopy } from './DeepCopy';
 import { JsonObject } from './JsonObject';
 
@@ -8,8 +9,8 @@ export class OfferRank extends DeepCopy<OfferRank> {
     public static fromJson(jsonObj: object) {
         const json = jsonObj as JsonObject<OfferRank>;
 
-        json.createdAt = new Date((json.createdAt as string) || new Date());
-        json.updatedAt = new Date((json.updatedAt as string) || new Date());
+        json.createdAt = JsonUtils.jsonDateToDate(json.createdAt);
+        json.updatedAt = JsonUtils.jsonDateToDate(json.updatedAt);
         json.id = Number(json.id);
         json.rank = Number(json.rank);
         json.offerId = Number(json.offerId);

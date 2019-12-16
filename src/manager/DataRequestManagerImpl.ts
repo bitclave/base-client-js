@@ -1,41 +1,41 @@
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import Account from '../repository/models/Account';
 import { DataRequest } from '../repository/models/DataRequest';
 import { FieldData } from '../repository/models/FieldData';
 import { InputGraphData } from '../repository/models/InputGraphData';
+import { JsonObject } from '../repository/models/JsonObject';
 import { OutputGraphData } from '../repository/models/OutputGraphData';
 import { SharedData } from '../repository/models/SharedData';
 import { DataRequestRepository } from '../repository/requests/DataRequestRepository';
+import { ExportMethod } from '../utils/ExportMethod';
 import { JsonUtils } from '../utils/JsonUtils';
 import { AcceptedField } from '../utils/keypair/AcceptedField';
 import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { AccessRight } from '../utils/keypair/Permissions';
+import { ParamDeserializer } from '../utils/types/json-transform';
+import { AccessRightMapDeserializer } from '../utils/types/json-transform/deserializers/AccessRightMapDeserializer';
 import { DataRequestManager } from './DataRequestManager';
 import { WalletManagerImpl } from './WalletManagerImpl';
 
 export class DataRequestManagerImpl implements DataRequestManager {
 
     private account: Account;
-    private dataRequestRepository: DataRequestRepository;
-    private encrypt: MessageEncrypt;
-    private decrypt: MessageDecrypt;
 
     constructor(
-        dataRequestRepository: DataRequestRepository,
+        private readonly dataRequestRepository: DataRequestRepository,
         authAccountBehavior: Observable<Account>,
-        encrypt: MessageEncrypt,
-        decrypt: MessageDecrypt
+        private readonly encrypt: MessageEncrypt,
+        private readonly decrypt: MessageDecrypt
     ) {
-        this.dataRequestRepository = dataRequestRepository;
-        this.encrypt = encrypt;
-        this.decrypt = decrypt;
-
         authAccountBehavior
             .subscribe(this.onChangeAccount.bind(this));
     }
 
-    public getRequestsGraph(data: InputGraphData): Promise<OutputGraphData> {
+    @ExportMethod()
+    public getRequestsGraph(
+        @ParamDeserializer(InputGraphData) data: InputGraphData
+    ): Promise<OutputGraphData> {
         return this.dataRequestRepository.getRequestsGraph(data);
     }
 
@@ -47,6 +47,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
      *
      * @returns {Promise<void>}
      */
+    @ExportMethod()
     public async requestPermissions(recipientPk: string, fields: Array<string>): Promise<void> {
         const requestDataList = fields
             .map(item => new DataRequest(this.account.publicKey, recipientPk, recipientPk, item.toLowerCase(), ''));
@@ -61,6 +62,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
      *
      * @returns {Promise<Array<DataRequest>>}  List of {@link DataRequest}, or empty list
      */
+    @ExportMethod()
     public getRequests(fromPk: string | null, toPk: string | null): Promise<Array<DataRequest>> {
         return this.dataRequestRepository.getRequests(fromPk, toPk);
     }
@@ -74,9 +76,10 @@ export class DataRequestManagerImpl implements DataRequestManager {
      *
      * @returns {Promise<void>}
      */
+    @ExportMethod()
     public async grantAccessForClient(
         clientPk: string,
-        acceptedFields: Map<string, AccessRight>,
+        @ParamDeserializer(new AccessRightMapDeserializer()) acceptedFields: Map<string, AccessRight>,
         rootPk?: string,
     ): Promise<void> {
         let encrypted: Map<string, string> = new Map();
@@ -120,6 +123,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
      *
      * @returns {Promise<void>}
      */
+    @ExportMethod()
     public async revokeAccessForClient(clientPk: string, revokeFields: Array<string>): Promise<void> {
         const requestDataList = revokeFields.map(item =>
             new DataRequest(
@@ -138,6 +142,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
      * @param {string} requestedFromPk id (baseID) of the client whose permissions were requested. is optional.
      * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
+    @ExportMethod()
     public async getRequestedPermissions(requestedFromPk?: string | undefined): Promise<Array<FieldData>> {
         const requests = await this.getRequests(this.account.publicKey, requestedFromPk || null);
         const shared = await this.decodeRequestedPermissions(requests, true);
@@ -150,6 +155,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
      * @param {string} whoRequestedPk id (baseID) of the client that asked for permission from <me>. is optional.
      * @returns {Promise<Array<string>>} Array of field names that were requested for access
      */
+    @ExportMethod()
     public async getRequestedPermissionsToMe(whoRequestedPk?: string | undefined): Promise<Array<FieldData>> {
         const requests = await this.getRequests(whoRequestedPk || null, this.account.publicKey);
         const shared = await this.decodeRequestedPermissions(requests, false);
@@ -162,6 +168,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
      * @param {string} clientPk id (baseID) of the client that granted me permission.
      * @returns {Promise<Array<string>>} Array of field names that were authorized for access
      */
+    @ExportMethod()
     public async getGrantedPermissions(clientPk: string): Promise<Array<string>> {
         const requests = await this.getRequests(this.account.publicKey, clientPk);
         return await this.getDecodeGrantPermissions(requests, clientPk);
@@ -174,6 +181,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
      * @param {string} clientPk id (baseID) of the client that received access permission from <me>
      * @returns {Promise<Array<string>>} Array of field names that were authorized for access
      */
+    @ExportMethod()
     public async getGrantedPermissionsToMe(clientPk: string): Promise<Array<string>> {
         const requests = await this.getRequests(clientPk, this.account.publicKey);
         return await this.getDecodeGrantPermissions(requests, clientPk);
@@ -188,10 +196,11 @@ export class DataRequestManagerImpl implements DataRequestManager {
      *
      * @returns {Promise<void>}
      */
+    @ExportMethod()
     public grantAccessForOffer(
         offerSearchId: number,
         offerOwner: string,
-        acceptedFields: Map<string, AccessRight>,
+        @ParamDeserializer(new AccessRightMapDeserializer()) acceptedFields: Map<string, AccessRight>,
         priceId: number
     ): Promise<void> {
 
@@ -218,6 +227,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
      *
      * @returns {object | null} object with data or null if was error.
      */
+    @ExportMethod()
     public decryptMessage(senderPk: string, encrypted: string): Promise<object | string> {
         return this.decrypt.decryptMessage(senderPk, encrypted)
             .then(decrypted => {
@@ -249,7 +259,7 @@ export class DataRequestManagerImpl implements DataRequestManager {
                 jsonDecrypt
             );
 
-            const accepted = acceptedByRoot.copy({access: AccessRight.R});
+            const accepted = acceptedByRoot.copy({access: AccessRight.R} as JsonObject<AcceptedField>);
             const value = await this.encrypt.encryptMessage(recipientPk, JSON.stringify(accepted));
             result.set(data.requestData, value);
         }
@@ -363,5 +373,4 @@ export class DataRequestManagerImpl implements DataRequestManager {
     private onChangeAccount(account: Account) {
         this.account = account;
     }
-
 }
