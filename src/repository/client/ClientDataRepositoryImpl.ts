@@ -1,4 +1,5 @@
 import { JsonUtils } from '../../utils/JsonUtils';
+import { TimeMeasureLogger } from '../../utils/TimeMeasureLogger';
 import { FileMeta } from '../models/FileMeta';
 import { HttpMethod } from '../source/http/HttpMethod';
 import { HttpTransport } from '../source/http/HttpTransport';
@@ -38,13 +39,20 @@ export default class ClientDataRepositoryImpl implements ClientDataRepository {
             .then((response) => JsonUtils.jsonToMap<string, string>(response.json));
     }
 
-    public updateData(pk: string, data: Map<string, string>): Promise<Map<string, string>> {
-        return this.transport
+    public async updateData(pk: string, data: Map<string, string>): Promise<Map<string, string>> {
+        TimeMeasureLogger.time('repo updateData-> send request');
+        const response = await this.transport
             .sendRequest(
                 this.CLIENT_SET_DATA,
                 HttpMethod.Patch, JsonUtils.mapToJson(data)
-            )
-            .then((response) => JsonUtils.jsonToMap<string, string>(response.json));
+            );
+        TimeMeasureLogger.timeEnd('repo updateData-> send request');
+
+        TimeMeasureLogger.time('repo updateData-> transform');
+        const result = JsonUtils.jsonToMap<string, string>(response.json);
+        TimeMeasureLogger.timeEnd('repo updateData-> transform');
+
+        return result;
     }
 
     public getFile(pk: string, fileId: number): Promise<string> {

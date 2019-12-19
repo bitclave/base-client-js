@@ -14,9 +14,10 @@ import { MessageDecrypt } from '../utils/keypair/MessageDecrypt';
 import { MessageEncrypt } from '../utils/keypair/MessageEncrypt';
 import { MessageSigner } from '../utils/keypair/MessageSigner';
 import { AccessRight } from '../utils/keypair/Permissions';
+import { TimeMeasureLogger } from '../utils/TimeMeasureLogger';
 import { ParamDeserializer } from '../utils/types/json-transform';
-import { ArrayDeserializer } from '../utils/types/json-transform/deserializers/ArrayDeserializer';
-import { SimpleMapDeserializer } from '../utils/types/json-transform/deserializers/SimpleMapDeserializer';
+import { ArrayDeserializer } from '../utils/types/json-transform';
+import { SimpleMapDeserializer } from '../utils/types/json-transform';
 import { ProfileManager } from './ProfileManager';
 
 export class ProfileManagerImpl implements ProfileManager {
@@ -207,11 +208,18 @@ export class ProfileManagerImpl implements ProfileManager {
      * @returns {Promise<Map<string, string>>} Map with encrypted data.
      */
     @ExportMethod()
-    public updateData(
+    public async updateData(
         @ParamDeserializer(new SimpleMapDeserializer()) data: Map<string, string>
     ): Promise<Map<string, string>> {
-        return this.encrypt.encryptFields(data)
-            .then(encrypted => this.clientDataRepository.updateData(this.account.publicKey, encrypted));
+        TimeMeasureLogger.time('updateData-> encryptFields');
+        const encryptedFields = await this.encrypt.encryptFields(data);
+        TimeMeasureLogger.timeEnd('updateData-> encryptFields');
+
+        TimeMeasureLogger.time('updateData-> updateData');
+        const result = await this.clientDataRepository.updateData(this.account.publicKey, encryptedFields);
+        TimeMeasureLogger.timeEnd('updateData-> updateData');
+
+        return result;
     }
 
     /**

@@ -1,4 +1,5 @@
 import { BasicLogger, Logger } from '../../../utils/BasicLogger';
+import { TimeMeasureLogger } from '../../../utils/TimeMeasureLogger';
 import { FileMeta } from '../../models/FileMeta';
 import { JsonTransform } from '../../models/JsonTransform';
 import { HttpInterceptor } from './HttpInterceptor';
@@ -61,12 +62,15 @@ export class HttpTransportImpl implements HttpTransport {
                     dataJson,
                     data
                 ));
+                const logName = `request: ${cortege.method} ${cortege.path}`;
 
+                TimeMeasureLogger.time(logName);
                 const url = cortege.path ? this.getHost() + cortege.path : this.getHost();
                 const request: XMLHttpRequest = new HttpRequest();
                 request.open(method, url);
 
                 request.onload = () => {
+                    TimeMeasureLogger.timeEnd(logName);
                     const result: Response<T> = new Response(request.responseText, request.status);
                     if (request.status >= 200 && request.status < 300) {
                         resolve(result);
@@ -75,7 +79,9 @@ export class HttpTransportImpl implements HttpTransport {
                         reject(result);
                     }
                 };
+
                 request.onerror = () => {
+                    TimeMeasureLogger.timeEnd(logName);
                     const result: Response<object> = new Response(request.responseText, request.status);
                     reject(result);
                 };
@@ -135,12 +141,20 @@ export class HttpTransportImpl implements HttpTransport {
     }
 
     protected async acceptInterceptor(interceptorCortege: InterceptorCortege): Promise<InterceptorCortege> {
-        let nextInterceptor = interceptorCortege;
+        let cortege = interceptorCortege;
+
+        const rnd = Math.random();
+
+        TimeMeasureLogger.time(`http->acceptInterceptor ${rnd}`);
 
         for (const interceptor of this.interceptors) {
-            nextInterceptor = await interceptor.onIntercept(nextInterceptor);
+            // @ts-ignore
+            TimeMeasureLogger.time(`call interceptor ${interceptor.__proto__.constructor.name}`);
+            cortege = await interceptor.onIntercept(cortege);
+            // @ts-ignore
+            TimeMeasureLogger.timeEnd(`call interceptor ${interceptor.__proto__.constructor.name}`);
         }
-
-        return nextInterceptor;
+        TimeMeasureLogger.timeEnd(`http->acceptInterceptor ${rnd}`);
+        return cortege;
     }
 }
