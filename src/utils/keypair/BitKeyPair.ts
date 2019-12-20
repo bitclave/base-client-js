@@ -4,6 +4,7 @@ import { DataRequest } from '../../repository/models/DataRequest';
 import { Site } from '../../repository/models/Site';
 import { CryptoUtils } from '../CryptoUtils';
 import { JsonUtils } from '../JsonUtils';
+import { TimeMeasureLogger } from '../TimeMeasureLogger';
 import { AcceptedField } from './AcceptedField';
 import { KeyPair } from './KeyPair';
 import { KeyPairHelper } from './KeyPairHelper';
@@ -208,8 +209,11 @@ export class BitKeyPair implements KeyPairHelper {
     ): Promise<Map<string, string>> {
         const result: Map<string, string> = new Map<string, string>();
 
+        TimeMeasureLogger.time('full sync permissions');
         await this.syncPermissions();
+        TimeMeasureLogger.timeEnd('full sync permissions');
 
+        TimeMeasureLogger.time('full decrypt');
         for (const [key, value] of data.entries()) {
             if (!this.hasPermissions(key, !encrypt)) {
                 continue;
@@ -227,6 +231,7 @@ export class BitKeyPair implements KeyPairHelper {
                 result.set(key.toLowerCase(), changedValue);
             }
         }
+        TimeMeasureLogger.timeEnd('full decrypt');
 
         return result;
     }
@@ -245,14 +250,18 @@ export class BitKeyPair implements KeyPairHelper {
 
     private async syncPermissions() {
         if (!this.isConfidential && this.permissions.fields.size === 0) {
+            TimeMeasureLogger.time('get site data');
             const site: Site = await this.siteDataSource.getSiteData(this.origin);
+            TimeMeasureLogger.timeEnd('get site data');
             this.isConfidential = site.confidential;
 
             if (!site.confidential) {
+                TimeMeasureLogger.time('getGrandAccessRecords');
                 const requests: Array<DataRequest> = await this.permissionsSource.getGrandAccessRecords(
                     site.publicKey, this.getPublicKey()
                 );
-
+                TimeMeasureLogger.timeEnd('getGrandAccessRecords');
+                TimeMeasureLogger.time('decrypt permissions');
                 for (const request of requests) {
                     const strDecrypt: string = await this.decryptMessage(site.publicKey, request.responseData);
                     const jsonDecrypt = JSON.parse(strDecrypt);
@@ -277,23 +286,24 @@ export class BitKeyPair implements KeyPairHelper {
                         this
                     );
                 }
+                TimeMeasureLogger.timeEnd('decrypt permissions');
             }
         }
     }
 
-    private generatePasswordForField(fieldName: string): Promise<string> {
-        return new Promise<string>(resolve => {
-            // const result: string = CryptoUtils.PBKDF2(
-            //     CryptoUtils.keccak256(this.privateKey.toString(16)) + fieldName.toLowerCase(),
-            //     384
-            // );
+    private async generatePasswordForField(fieldName: string): Promise<string> {
+        // const result: string = CryptoUtils.PBKDF2(
+        //     CryptoUtils.keccak256(this.privateKey.toString(16)) + fieldName.toLowerCase(),
+        //     384
+        // );
 
-            const result: string = bitcore.crypto.Hash.sha256hmac(
-                bitcore.deps.Buffer(this.privateKey.toString(16)),
-                bitcore.deps.Buffer(fieldName.toLowerCase())
-            ).toString('hex');
+        TimeMeasureLogger.time('generate password for field');
+        const result: string = bitcore.crypto.Hash.sha256hmac(
+            bitcore.deps.Buffer(this.privateKey.toString(16)),
+            bitcore.deps.Buffer(fieldName.toLowerCase())
+        ).toString('hex');
+        TimeMeasureLogger.timeEnd('generate password for field');
 
-            resolve(result);
-        });
+        return result;
     }
 }
