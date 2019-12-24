@@ -4,7 +4,6 @@ npm-debug.log
 /scratch/
 /.nyc_output/
 /coverage/
-/dist
 /lib
 /base-client-js-bundle/dist/@types
 /base-client-js-bundle/node_modules
