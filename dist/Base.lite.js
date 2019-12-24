@@ -34009,6 +34009,9 @@ var TimeMeasureLogger = /** @class */function () {
     TimeMeasureLogger.enableLogger = function (enable) {
         TimeMeasureLogger.enabled = enable;
     };
+    TimeMeasureLogger.setSubLabel = function (label) {
+        TimeMeasureLogger.subLabel = label;
+    };
     TimeMeasureLogger.time = function (label) {
         if (TimeMeasureLogger.enabled) {
             TimeMeasureLogger.timers.set(label, TimeMeasureLogger.getTimeMs());
@@ -34018,11 +34021,10 @@ var TimeMeasureLogger = /** @class */function () {
         if (TimeMeasureLogger.enabled) {
             var ms = TimeMeasureLogger.timers.get(label);
             if (ms === undefined) {
-                console.log('TimeMeasureLogger.ts:22 ' + ("timer for '" + label + "' not found!"));
+                console.log('TimeMeasureLogger.ts:27 ' + ("timer for '" + label + "' not found!"));
             } else {
                 var result = TimeMeasureLogger.getTimeMs() - ms;
-                TimeMeasureLogger.measure.set(label, result);
-                console.log('TimeMeasureLogger.ts:27 ' + (label + " " + result + "ms"));
+                TimeMeasureLogger.measure.set(TimeMeasureLogger.constructLabel(label), result);
             }
         }
     };
@@ -34043,7 +34045,11 @@ var TimeMeasureLogger = /** @class */function () {
             return new Date().getTime();
         }
     };
+    TimeMeasureLogger.constructLabel = function (originLabel) {
+        return TimeMeasureLogger.subLabel && TimeMeasureLogger.subLabel.length > 0 ? TimeMeasureLogger.subLabel + "-" + originLabel : originLabel;
+    };
     TimeMeasureLogger.enabled = false;
+    TimeMeasureLogger.subLabel = '';
     TimeMeasureLogger.timers = new Map();
     TimeMeasureLogger.measure = new Map();
     return TimeMeasureLogger;
