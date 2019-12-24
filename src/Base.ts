@@ -10,6 +10,7 @@ import { OfferRankManager } from './manager/OfferRankManager';
 import { OfferRankManagerImpl } from './manager/OfferRankManagerImpl';
 import { ProfileManager } from './manager/ProfileManager';
 import { SearchManager, SortOfferSearch } from './manager/SearchManager';
+import { TimeMeasureManager } from './manager/TimeMeasureManager';
 import { VerifyManager } from './manager/VerifyManager';
 import { WalletManager } from './manager/WalletManager';
 import { WalletManagerImpl } from './manager/WalletManagerImpl';
@@ -308,5 +309,9 @@ export default class Base {
 
     get nodeManager(): NodeManager {
         return this.managersModule.getNodeManager();
+    }
+
+    get timeMeasureManager(): TimeMeasureManager {
+        return this.managersModule.getTimeMeasureManager();
     }
 }

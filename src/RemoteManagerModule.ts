@@ -14,9 +14,11 @@ import { RemoteOfferManagerImpl } from './manager/remote/RemoteOfferManagerImpl'
 import { RemoteOfferRankManagerImpl } from './manager/remote/RemoteOfferRankManagerImpl';
 import { RemoteProfileManagerImpl } from './manager/remote/RemoteProfileManagerImpl';
 import { RemoteSearchManagerImpl } from './manager/remote/RemoteSearchManagerImpl';
+import { RemoteTimeMeasureManagerImpl } from './manager/remote/RemoteTimeMeasureManagerImpl';
 import { RemoteVerifyManagerImpl } from './manager/remote/RemoteVerifyManagerImpl';
 import { RemoteWalletManagerImpl } from './manager/remote/RemoteWalletManagerImpl';
 import { SearchManager } from './manager/SearchManager';
+import { TimeMeasureManager } from './manager/TimeMeasureManager';
 import { VerifyManager } from './manager/VerifyManager';
 import { WalletManager } from './manager/WalletManager';
 import { ManagersModule } from './ManagersModule';
@@ -40,6 +42,7 @@ export class RemoteManagerModule extends ManagersModule {
     private readonly _authAccountBehavior: BehaviorSubject<Account> = new BehaviorSubject<Account>(new Account());
     private readonly _offerRankManager: OfferRankManager;
     private readonly _nodeManager: NodeManager;
+    private readonly _timeMeasureManager: TimeMeasureManager;
     private readonly transport: RpcTransport;
 
     public constructor(remoteManagersEndPoint: string, logger: Logger = new BasicLogger()) {
@@ -59,6 +62,7 @@ export class RemoteManagerModule extends ManagersModule {
         this._externalServicesManager = new RemoteExternalServicesManagerImpl(this.transport);
         this._offerRankManager = new RemoteOfferRankManagerImpl(this.transport);
         this._nodeManager = new RemoteNodeManagerImpl(this.transport);
+        this._timeMeasureManager = new RemoteTimeMeasureManagerImpl(this.transport);
     }
 
     public getAccountManager(): AccountManager {
@@ -103,5 +107,9 @@ export class RemoteManagerModule extends ManagersModule {
 
     public getNodeManager(): NodeManager {
         return this._nodeManager;
+    }
+
+    public getTimeMeasureManager(): TimeMeasureManager {
+        return this._timeMeasureManager;
     }
 }
