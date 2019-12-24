@@ -17,6 +17,8 @@ import { ProfileManager } from './manager/ProfileManager';
 import { ProfileManagerImpl } from './manager/ProfileManagerImpl';
 import { SearchManager } from './manager/SearchManager';
 import { SearchManagerImpl } from './manager/SearchManagerImpl';
+import { TimeMeasureManager } from './manager/TimeMeasureManager';
+import { TimeMeasureManagerImpl } from './manager/TimeMeasureManagerImpl';
 import { VerifyManager } from './manager/VerifyManager';
 import { VerifyManagerImpl } from './manager/VerifyManagerImpl';
 import { WalletManager } from './manager/WalletManager';
@@ -55,6 +57,7 @@ export class InternalManagerModule extends ManagersModule {
     private readonly _offerRankManager: OfferRankManager;
     private readonly transport: HttpTransport;
     private readonly _nodeManager: NodeManager;
+    private readonly _timeMeasureManager: TimeMeasureManager;
 
     public static Builder(nodeEndPoint: string, siteOrigin: string) {
         return new BuilderManagersModule(nodeEndPoint, siteOrigin);
@@ -78,6 +81,8 @@ export class InternalManagerModule extends ManagersModule {
         const externalServicesRepository = new ExternalServicesRepositoryImpl(this.transport);
         const offerRankRepository = new OfferRankRepositoryImpl(this.transport);
         const assistantRepository = AssistantNodeFactory.defaultNodeAssistant(this.transport);
+
+        this._timeMeasureManager = new TimeMeasureManagerImpl();
 
         this._accountManager = new AccountManagerImpl(
             accountRepository,
@@ -169,5 +174,9 @@ export class InternalManagerModule extends ManagersModule {
 
     public getNodeManager(): NodeManager {
         return this._nodeManager;
+    }
+
+    public getTimeMeasureManager(): TimeMeasureManager {
+        return this._timeMeasureManager;
     }
 }

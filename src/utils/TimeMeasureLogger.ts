@@ -1,11 +1,16 @@
 export class TimeMeasureLogger {
 
     private static enabled: boolean = false;
-    private static timers = new Map<string, number>();
-    private static measure = new Map<string, number>();
+    private static subLabel = '';
+    private static readonly timers = new Map<string, number>();
+    private static readonly measure = new Map<string, number>();
 
     public static enableLogger(enable: boolean) {
         TimeMeasureLogger.enabled = enable;
+    }
+
+    public static setSubLabel(label: string) {
+        TimeMeasureLogger.subLabel = label;
     }
 
     public static time(label: string) {
@@ -23,8 +28,7 @@ export class TimeMeasureLogger {
 
             } else {
                 const result = TimeMeasureLogger.getTimeMs() - ms;
-                TimeMeasureLogger.measure.set(label, result);
-                console.log(`${label} ${result}ms`);
+                TimeMeasureLogger.measure.set(TimeMeasureLogger.constructLabel(label), result);
             }
         }
     }
@@ -49,5 +53,11 @@ export class TimeMeasureLogger {
         } else {
             return new Date().getTime();
         }
+    }
+
+    private static constructLabel(originLabel: string): string {
+        return TimeMeasureLogger.subLabel && TimeMeasureLogger.subLabel.length > 0
+               ? `${TimeMeasureLogger.subLabel}-${originLabel}`
+               : originLabel;
     }
 }

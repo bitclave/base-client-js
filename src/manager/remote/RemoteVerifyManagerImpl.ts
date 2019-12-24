@@ -3,7 +3,7 @@ import { OfferInteraction } from '../../repository/models/OfferInteraction';
 import { OfferSearch } from '../../repository/models/OfferSearch';
 import SearchRequest from '../../repository/models/SearchRequest';
 import { RpcTransport } from '../../repository/source/rpc/RpcTransport';
-import { ArrayDeserializer } from '../../utils/types/json-transform/deserializers/ArrayDeserializer';
+import { ArrayDeserializer } from '../../utils/types/json-transform';
 import { VerifyManager } from '../VerifyManager';
 
 export class RemoteVerifyManagerImpl implements VerifyManager {
