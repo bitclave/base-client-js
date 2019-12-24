@@ -11,6 +11,7 @@ import { OfferRankManagerImpl } from './manager/OfferRankManagerImpl';
 import { ProfileManager } from './manager/ProfileManager';
 import { SearchManager, SortOfferSearch } from './manager/SearchManager';
 import { TimeMeasureManager } from './manager/TimeMeasureManager';
+import { TimeMeasureManagerImpl } from './manager/TimeMeasureManagerImpl';
 import { VerifyManager } from './manager/VerifyManager';
 import { WalletManager } from './manager/WalletManager';
 import { WalletManagerImpl } from './manager/WalletManagerImpl';
@@ -204,6 +205,8 @@ export {
     SortOfferSearch,
     TokenType,
     TimeMeasureLogger,
+    TimeMeasureManager,
+    TimeMeasureManagerImpl,
     ValidationResult,
     VerifyManager,
     WalletManager,
