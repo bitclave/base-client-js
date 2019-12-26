@@ -1,5 +1,5 @@
 import { ExportMethod } from '../utils/ExportMethod';
-import { TimeMeasureLogger } from '../utils/TimeMeasureLogger';
+import { TimeMeasureLogger, TimeMeasureStackItem } from '../utils/TimeMeasureLogger';
 import { TimeMeasureManager } from './TimeMeasureManager';
 
 export class TimeMeasureManagerImpl implements TimeMeasureManager {
@@ -15,7 +15,7 @@ export class TimeMeasureManagerImpl implements TimeMeasureManager {
     }
 
     @ExportMethod({public: true})
-    public async getCollectedMeasure(): Promise<Map<string, number>> {
+    public async getCollectedMeasure(): Promise<Array<TimeMeasureStackItem>> {
         return TimeMeasureLogger.getCollectedMeasure();
     }
 }
