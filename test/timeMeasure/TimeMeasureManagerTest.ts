@@ -19,11 +19,13 @@ describe('Time Measure Manager', async () => {
         TimeMeasureLogger.time('test3');
         TimeMeasureLogger.time('test4');
         TimeMeasureLogger.time('test6');
-        TimeMeasureLogger.timeEnd('test6', 6);
         TimeMeasureLogger.time('test5');
+        TimeMeasureLogger.timeEnd('test6', 6);
         TimeMeasureLogger.time('test7');
         TimeMeasureLogger.timeEnd('test7', 7);
+        TimeMeasureLogger.time('test9');
         TimeMeasureLogger.time('test8');
+        TimeMeasureLogger.timeEnd('test9');
         TimeMeasureLogger.timeEnd('test8', 8);
         TimeMeasureLogger.timeEnd('test5', 5);
         TimeMeasureLogger.timeEnd('test4', 4);

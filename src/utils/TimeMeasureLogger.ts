@@ -43,6 +43,10 @@ export class TimeMeasureLogger {
 
     public static time(label: string) {
         if (TimeMeasureLogger.enabled) {
+            if (TimeMeasureLogger.timers.has(label)) {
+                throw new Error(`Timer ${label} already exist`);
+            }
+
             TimeMeasureLogger.timers.set(label, TimeMeasureLogger.getTimeMs());
             TimeMeasureLogger.addToStack(label);
         }
@@ -100,7 +104,7 @@ export class TimeMeasureLogger {
         TimeMeasureLogger.stackItemsByName.set(label, item);
 
         if (TimeMeasureLogger.root.length <= 0 ||
-            TimeMeasureLogger.root.length >= 0 && TimeMeasureLogger.current.prev === null) {
+            TimeMeasureLogger.current.prev === null) {
             TimeMeasureLogger.current = item;
             TimeMeasureLogger.root.push(TimeMeasureLogger.current);
             return;
@@ -113,12 +117,44 @@ export class TimeMeasureLogger {
     private static removeFromStack(label: string, time: number): void {
         const forClose = TimeMeasureLogger.stackItemsByName.get(label);
 
-        if (TimeMeasureLogger.current.name !== forClose!.name) {
-            throw new Error(`Violation of the order of closing counters.` +
-                `close ${TimeMeasureLogger.current.name} before ${forClose!.name}`);
+        if (forClose) {
+            forClose.time = time;
+            const prev = TimeMeasureLogger.getNotClosed(forClose.prev);
+            const currentNotClosed = forClose.calls.filter(item => item.time < 0);
+
+            currentNotClosed.forEach(item => {
+                const pos = forClose.calls.indexOf(item);
+
+                if (pos > -1) {
+                    forClose.calls.splice(pos, 1);
+                }
+            });
+
+            currentNotClosed.forEach(item => {
+                if (!prev && !TimeMeasureLogger.root.includes(item)) {
+                    TimeMeasureLogger.root.push(item);
+
+                } else if (prev) {
+                    prev.calls.push(item);
+                }
+            });
+
+            if (currentNotClosed.length > 0) {
+                TimeMeasureLogger.current = currentNotClosed[currentNotClosed.length - 1];
+                return;
+            }
+
+            TimeMeasureLogger.current = prev || new TimeMeasureStackItem('');
         }
-        TimeMeasureLogger.current.time = time;
-        const prev = TimeMeasureLogger.stackItemsByName.get(TimeMeasureLogger.current.prev || '');
-        TimeMeasureLogger.current = prev || new TimeMeasureStackItem('');
+    }
+
+    private static getNotClosed(from: string | null): TimeMeasureStackItem | undefined {
+        const prev = TimeMeasureLogger.stackItemsByName.get(from || '');
+
+        if (!prev) {
+            return undefined;
+        }
+
+        return prev.time < 0 ? prev : TimeMeasureLogger.getNotClosed(prev.prev || '');
     }
 }

@@ -297,12 +297,13 @@ export class BitKeyPair implements KeyPairHelper {
         //     384
         // );
 
-        TimeMeasureLogger.time('generate password for field');
+        const rnd = Math.random();
+        TimeMeasureLogger.time(`generate password for field rnd-${rnd}`);
         const result: string = bitcore.crypto.Hash.sha256hmac(
             bitcore.deps.Buffer(this.privateKey.toString(16)),
             bitcore.deps.Buffer(fieldName.toLowerCase())
         ).toString('hex');
-        TimeMeasureLogger.timeEnd('generate password for field');
+        TimeMeasureLogger.timeEnd(`generate password for field rnd-${rnd}`);
 
         return result;
     }

@@ -66,7 +66,7 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
                 await this.acceptInterceptor(transaction.cortege);
 
                 const cortege: InterceptorCortege = transaction.cortege;
-                const logName = `request: ${cortege.method} ${cortege.path}`;
+                const logName = `request: ${cortege.method} ${cortege.path} rnd-${Math.random()}`;
 
                 TimeMeasureLogger.time(logName);
                 const url = cortege.path ? this.getHost() + cortege.path : this.getHost();
