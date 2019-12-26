@@ -21,22 +21,23 @@ export default class NonceInterceptor implements HttpInterceptor {
     }
 
     public async onIntercept(cortege: InterceptorCortege): Promise<InterceptorCortege> {
-        TimeMeasureLogger.time('NonceInterceptor all');
+        const rnd = Math.random();
+        TimeMeasureLogger.time(`NonceInterceptor all ${rnd}`);
 
         if ((cortege.data instanceof SignedRequest) && cortege.isTransaction()) {
-            TimeMeasureLogger.time('NonceInterceptor reflection');
+            TimeMeasureLogger.time(`NonceInterceptor reflection ${rnd}`);
             const metaKeys = cortege.originalData && Reflect.getMetadataKeys(cortege.originalData.constructor);
-            TimeMeasureLogger.timeEnd('NonceInterceptor reflection');
+            TimeMeasureLogger.timeEnd(`NonceInterceptor reflection ${rnd}`);
 
             if (!metaKeys || metaKeys.length <= 0 || metaKeys.indexOf(NonceInterceptor.DECORATOR_KEY) <= -1) {
-                TimeMeasureLogger.time('NonceInterceptor getNonce');
+                TimeMeasureLogger.time(`NonceInterceptor getNonce ${rnd}`);
                 const nonce = await this.nonceSource.getNonce(this.messageSigner.getPublicKey());
-                TimeMeasureLogger.timeEnd('NonceInterceptor getNonce');
+                TimeMeasureLogger.timeEnd(`NonceInterceptor getNonce ${rnd}`);
 
                 (cortege.data as SignedRequest).nonce = nonce + 1;
             }
         }
-        TimeMeasureLogger.timeEnd('NonceInterceptor all');
+        TimeMeasureLogger.timeEnd(`NonceInterceptor all ${rnd}`);
 
         return cortege;
     }

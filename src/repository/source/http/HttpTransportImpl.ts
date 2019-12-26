@@ -62,7 +62,7 @@ export class HttpTransportImpl implements HttpTransport {
                     dataJson,
                     data
                 ));
-                const logName = `request: ${cortege.method} ${cortege.path}`;
+                const logName = `request: ${cortege.method} ${cortege.path} rnd-${Math.random()}`;
 
                 TimeMeasureLogger.time(logName);
                 const url = cortege.path ? this.getHost() + cortege.path : this.getHost();
@@ -149,10 +149,10 @@ export class HttpTransportImpl implements HttpTransport {
 
         for (const interceptor of this.interceptors) {
             // @ts-ignore
-            TimeMeasureLogger.time(`call interceptor ${interceptor.__proto__.constructor.name}`);
+            TimeMeasureLogger.time(`call interceptor ${interceptor.__proto__.constructor.name} ${rnd}`);
             cortege = await interceptor.onIntercept(cortege);
             // @ts-ignore
-            TimeMeasureLogger.timeEnd(`call interceptor ${interceptor.__proto__.constructor.name}`);
+            TimeMeasureLogger.timeEnd(`call interceptor ${interceptor.__proto__.constructor.name} ${rnd}`);
         }
         TimeMeasureLogger.timeEnd(`http->acceptInterceptor ${rnd}`);
         return cortege;
