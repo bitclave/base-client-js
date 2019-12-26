@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>CryptoWallet | @bitclave/base-client-js</title>
+	<title>TimeMeasureStackItem | @bitclave/base-client-js</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,13 +54,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_utils_types_basetypes_.html">&quot;utils/types/BaseTypes&quot;</a>
+					<a href="../modules/_utils_timemeasurelogger_.html">&quot;utils/TimeMeasureLogger&quot;</a>
 				</li>
 				<li>
-					<a href="_utils_types_basetypes_.cryptowallet.html">CryptoWallet</a>
+					<a href="_utils_timemeasurelogger_.timemeasurestackitem.html">TimeMeasureStackItem</a>
 				</li>
 			</ul>
-			<h1>Class CryptoWallet</h1>
+			<h1>Class TimeMeasureStackItem</h1>
 		</div>
 	</div>
 </header>
@@ -71,21 +71,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">CryptoWallet</span>
-						<ul class="tsd-hierarchy">
-							<li>
-								<a href="_utils_types_basetypes_.ethcryptowallet.html" class="tsd-signature-type">EthCryptoWallet</a>
-							</li>
-							<li>
-								<a href="_utils_types_basetypes_.btccryptowallet.html" class="tsd-signature-type">BtcCryptoWallet</a>
-							</li>
-							<li>
-								<a href="_utils_types_basetypes_.appcryptowallet.html" class="tsd-signature-type">AppCryptoWallet</a>
-							</li>
-							<li>
-								<a href="_utils_types_basetypes_.usdcryptowallet.html" class="tsd-signature-type">UsdCryptoWallet</a>
-							</li>
-						</ul>
+						<span class="target">TimeMeasureStackItem</span>
 					</li>
 				</ul>
 			</section>
@@ -96,14 +82,22 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_utils_types_basetypes_.cryptowallet.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_utils_timemeasurelogger_.timemeasurestackitem.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_utils_types_basetypes_.cryptowallet.html#address" class="tsd-kind-icon">address</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_utils_types_basetypes_.cryptowallet.html#baseid" class="tsd-kind-icon">base<wbr>Id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_utils_timemeasurelogger_.timemeasurestackitem.html#calls" class="tsd-kind-icon">calls</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_utils_timemeasurelogger_.timemeasurestackitem.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_utils_timemeasurelogger_.timemeasurestackitem.html#prev" class="tsd-kind-icon">prev</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_utils_timemeasurelogger_.timemeasurestackitem.html#time" class="tsd-kind-icon">time</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_utils_timemeasurelogger_.timemeasurestackitem.html#fromjson" class="tsd-kind-icon">from<wbr>Json</a></li>
 							</ul>
 						</section>
 					</div>
@@ -115,25 +109,31 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Crypto<wbr>Wallet<span class="tsd-signature-symbol">(</span>baseId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_utils_types_basetypes_.cryptowallet.html" class="tsd-signature-type">CryptoWallet</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Time<wbr>Measure<wbr>Stack<wbr>Item<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, calls<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_utils_timemeasurelogger_.timemeasurestackitem.html" class="tsd-signature-type">TimeMeasureStackItem</a><span class="tsd-signature-symbol">&gt;</span>, time<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, prev<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_utils_timemeasurelogger_.timemeasurestackitem.html" class="tsd-signature-type">TimeMeasureStackItem</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/105d1ea3/src/utils/types/BaseTypes.ts#L89">src/utils/types/BaseTypes.ts:89</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/105d1ea3/src/utils/TimeMeasureLogger.ts#L16">src/utils/TimeMeasureLogger.ts:16</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>baseId: <span class="tsd-signature-type">string</span></h5>
+									<h5>name: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5>address: <span class="tsd-signature-type">string</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> calls: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_utils_timemeasurelogger_.timemeasurestackitem.html" class="tsd-signature-type">TimeMeasureStackItem</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> time: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;-1</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> prev: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> =&nbsp;null</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_utils_types_basetypes_.cryptowallet.html" class="tsd-signature-type">CryptoWallet</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_utils_timemeasurelogger_.timemeasurestackitem.html" class="tsd-signature-type">TimeMeasureStackItem</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -141,24 +141,70 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="address" class="tsd-anchor"></a>
-					<h3>address</h3>
-					<div class="tsd-signature tsd-kind-icon">address<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="calls" class="tsd-anchor"></a>
+					<h3>calls</h3>
+					<div class="tsd-signature tsd-kind-icon">calls<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_utils_timemeasurelogger_.timemeasurestackitem.html" class="tsd-signature-type">TimeMeasureStackItem</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/105d1ea3/src/utils/types/BaseTypes.ts#L89">src/utils/types/BaseTypes.ts:89</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/105d1ea3/src/utils/TimeMeasureLogger.ts#L7">src/utils/TimeMeasureLogger.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="baseid" class="tsd-anchor"></a>
-					<h3>base<wbr>Id</h3>
-					<div class="tsd-signature tsd-kind-icon">base<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="name" class="tsd-anchor"></a>
+					<h3>name</h3>
+					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/105d1ea3/src/utils/types/BaseTypes.ts#L86">src/utils/types/BaseTypes.ts:86</a></li>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/105d1ea3/src/utils/TimeMeasureLogger.ts#L6">src/utils/TimeMeasureLogger.ts:6</a></li>
 						</ul>
 					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="prev" class="tsd-anchor"></a>
+					<h3>prev</h3>
+					<div class="tsd-signature tsd-kind-icon">prev<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/105d1ea3/src/utils/TimeMeasureLogger.ts#L9">src/utils/TimeMeasureLogger.ts:9</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="time" class="tsd-anchor"></a>
+					<h3>time</h3>
+					<div class="tsd-signature tsd-kind-icon">time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/105d1ea3/src/utils/TimeMeasureLogger.ts#L8">src/utils/TimeMeasureLogger.ts:8</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="fromjson" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> from<wbr>Json</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">from<wbr>Json<span class="tsd-signature-symbol">(</span>json<span class="tsd-signature-symbol">: </span><a href="../modules/_repository_models_jsonobject_.html#jsonobject" class="tsd-signature-type">JsonObject</a><span class="tsd-signature-symbol">&lt;</span><a href="_utils_timemeasurelogger_.timemeasurestackitem.html" class="tsd-signature-type">TimeMeasureStackItem</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_utils_timemeasurelogger_.timemeasurestackitem.html" class="tsd-signature-type">TimeMeasureStackItem</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/105d1ea3/src/utils/TimeMeasureLogger.ts#L11">src/utils/TimeMeasureLogger.ts:11</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>json: <a href="../modules/_repository_models_jsonobject_.html#jsonobject" class="tsd-signature-type">JsonObject</a><span class="tsd-signature-symbol">&lt;</span><a href="_utils_timemeasurelogger_.timemeasurestackitem.html" class="tsd-signature-type">TimeMeasureStackItem</a><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_utils_timemeasurelogger_.timemeasurestackitem.html" class="tsd-signature-type">TimeMeasureStackItem</a></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -169,72 +215,42 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_utils_types_basetypes_.html">&quot;utils/types/<wbr>Base<wbr>Types&quot;</a>
+						<a href="../modules/_utils_timemeasurelogger_.html">&quot;utils/<wbr>Time<wbr>Measure<wbr>Logger&quot;</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_utils_types_basetypes_.appcryptowallet.html" class="tsd-kind-icon">App<wbr>Crypto<wbr>Wallet</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_utils_types_basetypes_.appwalletdata.html" class="tsd-kind-icon">App<wbr>Wallet<wbr>Data</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_utils_types_basetypes_.btccryptowallet.html" class="tsd-kind-icon">Btc<wbr>Crypto<wbr>Wallet</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_utils_types_basetypes_.btcwalletdata.html" class="tsd-kind-icon">Btc<wbr>Wallet<wbr>Data</a>
+						<a href="_utils_timemeasurelogger_.timemeasurelogger.html" class="tsd-kind-icon">Time<wbr>Measure<wbr>Logger</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_utils_types_basetypes_.cryptowallet.html" class="tsd-kind-icon">Crypto<wbr>Wallet</a>
+						<a href="_utils_timemeasurelogger_.timemeasurestackitem.html" class="tsd-kind-icon">Time<wbr>Measure<wbr>Stack<wbr>Item</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_utils_types_basetypes_.cryptowallet.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_utils_timemeasurelogger_.timemeasurestackitem.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_utils_types_basetypes_.cryptowallet.html#address" class="tsd-kind-icon">address</a>
+								<a href="_utils_timemeasurelogger_.timemeasurestackitem.html#calls" class="tsd-kind-icon">calls</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_utils_types_basetypes_.cryptowallet.html#baseid" class="tsd-kind-icon">base<wbr>Id</a>
+								<a href="_utils_timemeasurelogger_.timemeasurestackitem.html#name" class="tsd-kind-icon">name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_utils_timemeasurelogger_.timemeasurestackitem.html#prev" class="tsd-kind-icon">prev</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_utils_timemeasurelogger_.timemeasurestackitem.html#time" class="tsd-kind-icon">time</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_utils_timemeasurelogger_.timemeasurestackitem.html#fromjson" class="tsd-kind-icon">from<wbr>Json</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_utils_types_basetypes_.cryptowallets.html" class="tsd-kind-icon">Crypto<wbr>Wallets</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_utils_types_basetypes_.cryptowalletsdata.html" class="tsd-kind-icon">Crypto<wbr>Wallets<wbr>Data</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_utils_types_basetypes_.ethcryptowallet.html" class="tsd-kind-icon">Eth<wbr>Crypto<wbr>Wallet</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_utils_types_basetypes_.ethwalletdata.html" class="tsd-kind-icon">Eth<wbr>Wallet<wbr>Data</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_utils_types_basetypes_.profileuser.html" class="tsd-kind-icon">Profile<wbr>User</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_utils_types_basetypes_.stringmessage.html" class="tsd-kind-icon">String<wbr>Message</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_utils_types_basetypes_.stringsignedmessage.html" class="tsd-kind-icon">String<wbr>Signed<wbr>Message</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter">
-						<a href="_utils_types_basetypes_.supportsignedmessagedata.html" class="tsd-kind-icon">Support<wbr>Signed<wbr>Message<wbr>Data</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_utils_types_basetypes_.usdcryptowallet.html" class="tsd-kind-icon">Usd<wbr>Crypto<wbr>Wallet</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_utils_types_basetypes_.usdwalletdata.html" class="tsd-kind-icon">Usd<wbr>Wallet<wbr>Data</a>
-					</li>
 				</ul>
 			</nav>
 		</div>

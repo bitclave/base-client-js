@@ -24505,6 +24505,7 @@ var RpcToken_1 = __webpack_require__(/*! ./utils/keypair/rpc/RpcToken */ "./src/
 exports.TokenType = RpcToken_1.TokenType;
 var TimeMeasureLogger_1 = __webpack_require__(/*! ./utils/TimeMeasureLogger */ "./src/utils/TimeMeasureLogger.ts");
 exports.TimeMeasureLogger = TimeMeasureLogger_1.TimeMeasureLogger;
+exports.TimeMeasureStackItem = TimeMeasureLogger_1.TimeMeasureStackItem;
 var AbstractWalletValidator_1 = __webpack_require__(/*! ./utils/types/validators/AbstractWalletValidator */ "./src/utils/types/validators/AbstractWalletValidator.ts");
 exports.AbstractWalletValidator = AbstractWalletValidator_1.AbstractWalletValidator;
 var IsBasePublicKey_1 = __webpack_require__(/*! ./utils/types/validators/annotations/IsBasePublicKey */ "./src/utils/types/validators/annotations/IsBasePublicKey.ts");
@@ -24596,7 +24597,7 @@ var Base = /** @class */function () {
         if (nodeEndPointOrModule instanceof ManagersModule_1.ManagersModule) {
             this.managersModule = nodeEndPointOrModule;
         } else {
-            console.info('Base.ts:241 ' + 'You are still using legacy library initialization! ' + 'Please use new Base(ManagersModuleFactory.createSomeManagers())');
+            console.info('Base.ts:242 ' + 'You are still using legacy library initialization! ' + 'Please use new Base(ManagersModuleFactory.createSomeManagers())');
             if (signerEndPoint && signerEndPoint.length > 0) {
                 this.managersModule = ManagersModuleFactory_1.ManagersModuleFactory.createInsideManagersWithRemoteSigner(nodeEndPointOrModule, signerEndPoint, siteOrigin, strategy, loggerService);
             } else {
@@ -28173,15 +28174,10 @@ var RemoteTimeMeasureManagerImpl = /** @class */function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        return [4 /*yield*/, this.transport.request('timeMeasureManager.getCollectedMeasure', [], new json_transform_1.SimpleMapDeserializer())];
+                        return [4 /*yield*/, this.transport.request('timeMeasureManager.getCollectedMeasure', [], new json_transform_1.ArrayDeserializer(TimeMeasureLogger_1.TimeMeasureStackItem))];
                     case 1:
                         result = _a.sent();
-                        TimeMeasureLogger_1.TimeMeasureLogger.getCollectedMeasure().forEach(function (value, key) {
-                            if (!result.has(key)) {
-                                result.set(key, value);
-                            }
-                        });
-                        return [2 /*return*/, result];
+                        return [2 /*return*/, result.concat(TimeMeasureLogger_1.TimeMeasureLogger.getCollectedMeasure())];
                 }
             });
         });
@@ -34004,6 +34000,32 @@ exports.JsonUtils = JsonUtils;
 /* WEBPACK VAR INJECTION */(function(process) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var json_transform_1 = __webpack_require__(/*! ./types/json-transform */ "./src/utils/types/json-transform/index.ts");
+var TimeMeasureStackItem = /** @class */function () {
+    function TimeMeasureStackItem(name, calls, time, prev) {
+        if (calls === void 0) {
+            calls = [];
+        }
+        if (time === void 0) {
+            time = -1;
+        }
+        if (prev === void 0) {
+            prev = null;
+        }
+        this.prev = null;
+        this.name = name;
+        this.calls = calls;
+        this.time = time;
+        this.prev = prev;
+    }
+    TimeMeasureStackItem.fromJson = function (json) {
+        var deserializer = new json_transform_1.ArrayDeserializer(TimeMeasureStackItem);
+        var calls = deserializer.fromJson(json.calls);
+        return new TimeMeasureStackItem(json.name, calls, json.time, json.prev);
+    };
+    return TimeMeasureStackItem;
+}();
+exports.TimeMeasureStackItem = TimeMeasureStackItem;
 var TimeMeasureLogger = /** @class */function () {
     function TimeMeasureLogger() {}
     TimeMeasureLogger.enableLogger = function (enable) {
@@ -34015,25 +34037,30 @@ var TimeMeasureLogger = /** @class */function () {
     TimeMeasureLogger.time = function (label) {
         if (TimeMeasureLogger.enabled) {
             TimeMeasureLogger.timers.set(label, TimeMeasureLogger.getTimeMs());
+            TimeMeasureLogger.addToStack(label);
         }
     };
-    TimeMeasureLogger.timeEnd = function (label) {
+    TimeMeasureLogger.timeEnd = function (label, time) {
         if (TimeMeasureLogger.enabled) {
             var ms = TimeMeasureLogger.timers.get(label);
-            if (ms === undefined) {
-                console.log('TimeMeasureLogger.ts:27 ' + ("timer for '" + label + "' not found!"));
+            if (ms === undefined || !TimeMeasureLogger.stackItemsByName.has(label)) {
+                console.log('TimeMeasureLogger.ts:56 ' + ("timer for '" + label + "' not found!"));
             } else {
-                var result = TimeMeasureLogger.getTimeMs() - ms;
+                var result = time !== undefined ? time : TimeMeasureLogger.getTimeMs() - ms;
                 TimeMeasureLogger.measure.set(TimeMeasureLogger.constructLabel(label), result);
+                TimeMeasureLogger.removeFromStack(label, result);
             }
         }
     };
     TimeMeasureLogger.getCollectedMeasure = function () {
-        return new Map(TimeMeasureLogger.measure);
+        return TimeMeasureLogger.root.slice(0, TimeMeasureLogger.root.length);
     };
     TimeMeasureLogger.clearCollectedMeasure = function () {
         TimeMeasureLogger.measure.clear();
         TimeMeasureLogger.timers.clear();
+        TimeMeasureLogger.root = new Array();
+        TimeMeasureLogger.stackItemsByName.clear();
+        TimeMeasureLogger.current = new TimeMeasureStackItem('');
     };
     TimeMeasureLogger.getTimeMs = function () {
         if (typeof window !== 'undefined' && typeof window.performance !== 'undefined') {
@@ -34048,10 +34075,34 @@ var TimeMeasureLogger = /** @class */function () {
     TimeMeasureLogger.constructLabel = function (originLabel) {
         return TimeMeasureLogger.subLabel && TimeMeasureLogger.subLabel.length > 0 ? TimeMeasureLogger.subLabel + "-" + originLabel : originLabel;
     };
+    TimeMeasureLogger.addToStack = function (label) {
+        var item = new TimeMeasureStackItem(TimeMeasureLogger.constructLabel(label));
+        item.prev = TimeMeasureLogger.current.name;
+        TimeMeasureLogger.stackItemsByName.set(label, item);
+        if (TimeMeasureLogger.root.length <= 0 || TimeMeasureLogger.root.length >= 0 && TimeMeasureLogger.current.prev === null) {
+            TimeMeasureLogger.current = item;
+            TimeMeasureLogger.root.push(TimeMeasureLogger.current);
+            return;
+        }
+        TimeMeasureLogger.current.calls.push(item);
+        TimeMeasureLogger.current = item;
+    };
+    TimeMeasureLogger.removeFromStack = function (label, time) {
+        var forClose = TimeMeasureLogger.stackItemsByName.get(label);
+        if (TimeMeasureLogger.current.name !== forClose.name) {
+            throw new Error("Violation of the order of closing counters." + ("close " + TimeMeasureLogger.current.name + " before " + forClose.name));
+        }
+        TimeMeasureLogger.current.time = time;
+        var prev = TimeMeasureLogger.stackItemsByName.get(TimeMeasureLogger.current.prev || '');
+        TimeMeasureLogger.current = prev || new TimeMeasureStackItem('');
+    };
     TimeMeasureLogger.enabled = false;
     TimeMeasureLogger.subLabel = '';
     TimeMeasureLogger.timers = new Map();
     TimeMeasureLogger.measure = new Map();
+    TimeMeasureLogger.root = new Array();
+    TimeMeasureLogger.stackItemsByName = new Map();
+    TimeMeasureLogger.current = new TimeMeasureStackItem('');
     return TimeMeasureLogger;
 }();
 exports.TimeMeasureLogger = TimeMeasureLogger;

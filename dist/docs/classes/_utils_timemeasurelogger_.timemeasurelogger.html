@@ -105,7 +105,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/e246dfe7/src/utils/TimeMeasureLogger.ts#L40">src/utils/TimeMeasureLogger.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/105d1ea3/src/utils/TimeMeasureLogger.ts#L70">src/utils/TimeMeasureLogger.ts:70</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -122,7 +122,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/e246dfe7/src/utils/TimeMeasureLogger.ts#L8">src/utils/TimeMeasureLogger.ts:8</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/105d1ea3/src/utils/TimeMeasureLogger.ts#L36">src/utils/TimeMeasureLogger.ts:36</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -139,16 +139,16 @@
 					<a name="getcollectedmeasure" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Collected<wbr>Measure</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Collected<wbr>Measure<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Collected<wbr>Measure<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_utils_timemeasurelogger_.timemeasurestackitem.html" class="tsd-signature-type">TimeMeasureStackItem</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/e246dfe7/src/utils/TimeMeasureLogger.ts#L36">src/utils/TimeMeasureLogger.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/105d1ea3/src/utils/TimeMeasureLogger.ts#L66">src/utils/TimeMeasureLogger.ts:66</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_utils_timemeasurelogger_.timemeasurestackitem.html" class="tsd-signature-type">TimeMeasureStackItem</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -162,7 +162,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/e246dfe7/src/utils/TimeMeasureLogger.ts#L12">src/utils/TimeMeasureLogger.ts:12</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/105d1ea3/src/utils/TimeMeasureLogger.ts#L40">src/utils/TimeMeasureLogger.ts:40</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -185,7 +185,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/e246dfe7/src/utils/TimeMeasureLogger.ts#L16">src/utils/TimeMeasureLogger.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/105d1ea3/src/utils/TimeMeasureLogger.ts#L44">src/utils/TimeMeasureLogger.ts:44</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -202,19 +202,22 @@
 					<a name="timeend" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> time<wbr>End</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">time<wbr>End<span class="tsd-signature-symbol">(</span>label<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">time<wbr>End<span class="tsd-signature-symbol">(</span>label<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, time<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/e246dfe7/src/utils/TimeMeasureLogger.ts#L22">src/utils/TimeMeasureLogger.ts:22</a></li>
+									<li>Defined in <a href="https://github.com/bitclave/base-client-js/blob/105d1ea3/src/utils/TimeMeasureLogger.ts#L51">src/utils/TimeMeasureLogger.ts:51</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>label: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> time: <span class="tsd-signature-type">number</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -263,6 +266,9 @@
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_utils_timemeasurelogger_.timemeasurestackitem.html" class="tsd-kind-icon">Time<wbr>Measure<wbr>Stack<wbr>Item</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
