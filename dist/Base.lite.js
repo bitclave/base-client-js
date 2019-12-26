@@ -32263,7 +32263,7 @@ var HttpTransportImpl = /** @class */function () {
                             return [4 /*yield*/, this.acceptInterceptor(new InterceptorCortege_1.InterceptorCortege(path, method, headers, dataJson, data))];
                         case 1:
                             cortege = _a.sent();
-                            logName_1 = "request: " + cortege.method + " " + cortege.path;
+                            logName_1 = "request: " + cortege.method + " " + cortege.path + " rnd-" + Math.random();
                             TimeMeasureLogger_1.TimeMeasureLogger.time(logName_1);
                             url = cortege.path ? this.getHost() + cortege.path : this.getHost();
                             request_1 = new HttpRequest();
@@ -32349,12 +32349,12 @@ var HttpTransportImpl = /** @class */function () {
                         if (!!_b.done) return [3 /*break*/, 5];
                         interceptor = _b.value;
                         // @ts-ignore
-                        TimeMeasureLogger_1.TimeMeasureLogger.time("call interceptor " + interceptor.__proto__.constructor.name);
+                        TimeMeasureLogger_1.TimeMeasureLogger.time("call interceptor " + interceptor.__proto__.constructor.name + " " + rnd);
                         return [4 /*yield*/, interceptor.onIntercept(cortege)];
                     case 3:
                         cortege = _d.sent();
                         // @ts-ignore
-                        TimeMeasureLogger_1.TimeMeasureLogger.timeEnd("call interceptor " + interceptor.__proto__.constructor.name);
+                        TimeMeasureLogger_1.TimeMeasureLogger.timeEnd("call interceptor " + interceptor.__proto__.constructor.name + " " + rnd);
                         _d.label = 4;
                     case 4:
                         _b = _a.next();
@@ -32546,7 +32546,7 @@ var HttpTransportSyncedImpl = /** @class */function (_super) {
                         case 1:
                             _a.sent();
                             cortege = transaction.cortege;
-                            logName_1 = "request: " + cortege.method + " " + cortege.path;
+                            logName_1 = "request: " + cortege.method + " " + cortege.path + " rnd-" + Math.random();
                             TimeMeasureLogger_1.TimeMeasureLogger.time(logName_1);
                             url = cortege.path ? this.getHost() + cortege.path : this.getHost();
                             request_1 = new HttpRequest();
@@ -32742,25 +32742,26 @@ var NonceInterceptor = /** @class */function () {
     }
     NonceInterceptor.prototype.onIntercept = function (cortege) {
         return __awaiter(this, void 0, void 0, function () {
-            var metaKeys, nonce;
+            var rnd, metaKeys, nonce;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        TimeMeasureLogger_1.TimeMeasureLogger.time('NonceInterceptor all');
+                        rnd = Math.random();
+                        TimeMeasureLogger_1.TimeMeasureLogger.time("NonceInterceptor all " + rnd);
                         if (!(cortege.data instanceof SignedRequest_1.default && cortege.isTransaction())) return [3 /*break*/, 2];
-                        TimeMeasureLogger_1.TimeMeasureLogger.time('NonceInterceptor reflection');
+                        TimeMeasureLogger_1.TimeMeasureLogger.time("NonceInterceptor reflection " + rnd);
                         metaKeys = cortege.originalData && Reflect.getMetadataKeys(cortege.originalData.constructor);
-                        TimeMeasureLogger_1.TimeMeasureLogger.timeEnd('NonceInterceptor reflection');
+                        TimeMeasureLogger_1.TimeMeasureLogger.timeEnd("NonceInterceptor reflection " + rnd);
                         if (!(!metaKeys || metaKeys.length <= 0 || metaKeys.indexOf(NonceInterceptor.DECORATOR_KEY) <= -1)) return [3 /*break*/, 2];
-                        TimeMeasureLogger_1.TimeMeasureLogger.time('NonceInterceptor getNonce');
+                        TimeMeasureLogger_1.TimeMeasureLogger.time("NonceInterceptor getNonce " + rnd);
                         return [4 /*yield*/, this.nonceSource.getNonce(this.messageSigner.getPublicKey())];
                     case 1:
                         nonce = _a.sent();
-                        TimeMeasureLogger_1.TimeMeasureLogger.timeEnd('NonceInterceptor getNonce');
+                        TimeMeasureLogger_1.TimeMeasureLogger.timeEnd("NonceInterceptor getNonce " + rnd);
                         cortege.data.nonce = nonce + 1;
                         _a.label = 2;
                     case 2:
-                        TimeMeasureLogger_1.TimeMeasureLogger.timeEnd('NonceInterceptor all');
+                        TimeMeasureLogger_1.TimeMeasureLogger.timeEnd("NonceInterceptor all " + rnd);
                         return [2 /*return*/, cortege];
                 }
             });
@@ -34036,6 +34037,9 @@ var TimeMeasureLogger = /** @class */function () {
     };
     TimeMeasureLogger.time = function (label) {
         if (TimeMeasureLogger.enabled) {
+            if (TimeMeasureLogger.timers.has(label)) {
+                throw new Error("Timer " + label + " already exist");
+            }
             TimeMeasureLogger.timers.set(label, TimeMeasureLogger.getTimeMs());
             TimeMeasureLogger.addToStack(label);
         }
@@ -34044,7 +34048,7 @@ var TimeMeasureLogger = /** @class */function () {
         if (TimeMeasureLogger.enabled) {
             var ms = TimeMeasureLogger.timers.get(label);
             if (ms === undefined || !TimeMeasureLogger.stackItemsByName.has(label)) {
-                console.log('TimeMeasureLogger.ts:56 ' + ("timer for '" + label + "' not found!"));
+                console.log('TimeMeasureLogger.ts:60 ' + ("timer for '" + label + "' not found!"));
             } else {
                 var result = time !== undefined ? time : TimeMeasureLogger.getTimeMs() - ms;
                 TimeMeasureLogger.measure.set(TimeMeasureLogger.constructLabel(label), result);
@@ -34079,7 +34083,7 @@ var TimeMeasureLogger = /** @class */function () {
         var item = new TimeMeasureStackItem(TimeMeasureLogger.constructLabel(label));
         item.prev = TimeMeasureLogger.current.name;
         TimeMeasureLogger.stackItemsByName.set(label, item);
-        if (TimeMeasureLogger.root.length <= 0 || TimeMeasureLogger.root.length >= 0 && TimeMeasureLogger.current.prev === null) {
+        if (TimeMeasureLogger.root.length <= 0 || TimeMeasureLogger.current.prev === null) {
             TimeMeasureLogger.current = item;
             TimeMeasureLogger.root.push(TimeMeasureLogger.current);
             return;
@@ -34089,12 +34093,38 @@ var TimeMeasureLogger = /** @class */function () {
     };
     TimeMeasureLogger.removeFromStack = function (label, time) {
         var forClose = TimeMeasureLogger.stackItemsByName.get(label);
-        if (TimeMeasureLogger.current.name !== forClose.name) {
-            throw new Error("Violation of the order of closing counters." + ("close " + TimeMeasureLogger.current.name + " before " + forClose.name));
+        if (forClose) {
+            forClose.time = time;
+            var prev_1 = TimeMeasureLogger.getNotClosed(forClose.prev);
+            var currentNotClosed = forClose.calls.filter(function (item) {
+                return item.time < 0;
+            });
+            currentNotClosed.forEach(function (item) {
+                var pos = forClose.calls.indexOf(item);
+                if (pos > -1) {
+                    forClose.calls.splice(pos, 1);
+                }
+            });
+            currentNotClosed.forEach(function (item) {
+                if (!prev_1 && !TimeMeasureLogger.root.includes(item)) {
+                    TimeMeasureLogger.root.push(item);
+                } else if (prev_1) {
+                    prev_1.calls.push(item);
+                }
+            });
+            if (currentNotClosed.length > 0) {
+                TimeMeasureLogger.current = currentNotClosed[currentNotClosed.length - 1];
+                return;
+            }
+            TimeMeasureLogger.current = prev_1 || new TimeMeasureStackItem('');
         }
-        TimeMeasureLogger.current.time = time;
-        var prev = TimeMeasureLogger.stackItemsByName.get(TimeMeasureLogger.current.prev || '');
-        TimeMeasureLogger.current = prev || new TimeMeasureStackItem('');
+    };
+    TimeMeasureLogger.getNotClosed = function (from) {
+        var prev = TimeMeasureLogger.stackItemsByName.get(from || '');
+        if (!prev) {
+            return undefined;
+        }
+        return prev.time < 0 ? prev : TimeMeasureLogger.getNotClosed(prev.prev || '');
     };
     TimeMeasureLogger.enabled = false;
     TimeMeasureLogger.subLabel = '';
@@ -34752,15 +34782,12 @@ var BitKeyPair = /** @class */function () {
     };
     BitKeyPair.prototype.generatePasswordForField = function (fieldName) {
         return __awaiter(this, void 0, void 0, function () {
-            var result;
+            var rnd, result;
             return __generator(this, function (_a) {
-                // const result: string = CryptoUtils.PBKDF2(
-                //     CryptoUtils.keccak256(this.privateKey.toString(16)) + fieldName.toLowerCase(),
-                //     384
-                // );
-                TimeMeasureLogger_1.TimeMeasureLogger.time('generate password for field');
+                rnd = Math.random();
+                TimeMeasureLogger_1.TimeMeasureLogger.time("generate password for field rnd-" + rnd);
                 result = bitcore.crypto.Hash.sha256hmac(bitcore.deps.Buffer(this.privateKey.toString(16)), bitcore.deps.Buffer(fieldName.toLowerCase())).toString('hex');
-                TimeMeasureLogger_1.TimeMeasureLogger.timeEnd('generate password for field');
+                TimeMeasureLogger_1.TimeMeasureLogger.timeEnd("generate password for field rnd-" + rnd);
                 return [2 /*return*/, result];
             });
         });

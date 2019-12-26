@@ -25,4 +25,5 @@ export declare class TimeMeasureLogger {
     private static constructLabel;
     private static addToStack;
     private static removeFromStack;
+    private static getNotClosed;
 }
