@@ -1,6 +1,6 @@
 import { RpcTransport } from '../../repository/source/rpc/RpcTransport';
-import { TimeMeasureLogger } from '../../utils/TimeMeasureLogger';
-import { SimpleMapDeserializer } from '../../utils/types/json-transform';
+import { TimeMeasureLogger, TimeMeasureStackItem } from '../../utils/TimeMeasureLogger';
+import { ArrayDeserializer } from '../../utils/types/json-transform';
 import { TimeMeasureManager } from '../TimeMeasureManager';
 
 export class RemoteTimeMeasureManagerImpl implements TimeMeasureManager {
@@ -18,19 +18,13 @@ export class RemoteTimeMeasureManagerImpl implements TimeMeasureManager {
         return this.transport.request('timeMeasureManager.enableLogger', [enable]);
     }
 
-    public async getCollectedMeasure(): Promise<Map<string, number>> {
-        const result = await this.transport.request<Map<string, number>>(
+    public async getCollectedMeasure(): Promise<Array<TimeMeasureStackItem>> {
+        const result = await this.transport.request<Array<TimeMeasureStackItem>>(
             'timeMeasureManager.getCollectedMeasure',
             [],
-            new SimpleMapDeserializer()
+            new ArrayDeserializer(TimeMeasureStackItem)
         );
 
-        TimeMeasureLogger.getCollectedMeasure().forEach((value, key) => {
-            if (!result.has(key)) {
-                result.set(key, value);
-            }
-        });
-
-        return result;
+        return result.concat(TimeMeasureLogger.getCollectedMeasure());
     }
 }
