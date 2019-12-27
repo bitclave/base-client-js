@@ -14,7 +14,7 @@ describe('Time Measure Manager', async () => {
         TimeMeasureLogger.clearCollectedMeasure();
     });
 
-    afterEach(async  ()=> {
+    afterEach(async ()=> {
         TimeMeasureLogger.enableLogger(false);
         TimeMeasureLogger.clearCollectedMeasure();
     });
