@@ -9,22 +9,27 @@ export class RemoteTimeMeasureManagerImpl implements TimeMeasureManager {
     }
 
     public async clearCollectedMeasure(): Promise<void> {
+        await this.transport.request('timeMeasureManager.clearCollectedMeasure', []);
         TimeMeasureLogger.clearCollectedMeasure();
-        return this.transport.request('timeMeasureManager.clearCollectedMeasure', []);
     }
 
     public async enableLogger(enable: boolean): Promise<void> {
+        await this.transport.request('timeMeasureManager.enableLogger', [enable]);
         TimeMeasureLogger.enableLogger(enable);
-        return this.transport.request('timeMeasureManager.enableLogger', [enable]);
     }
 
     public async getCollectedMeasure(): Promise<Array<TimeMeasureStackItem>> {
+        const isEnabledLogger = TimeMeasureLogger.isEnabled();
+        TimeMeasureLogger.enableLogger(false);
+
         const result = await this.transport.request<Array<TimeMeasureStackItem>>(
             'timeMeasureManager.getCollectedMeasure',
             [],
             new ArrayDeserializer(TimeMeasureStackItem)
         );
 
-        return result.concat(TimeMeasureLogger.getCollectedMeasure());
+        TimeMeasureLogger.enableLogger(isEnabledLogger);
+
+        return TimeMeasureLogger.getCollectedMeasure().concat(result);
     }
 }

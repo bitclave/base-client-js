@@ -9,6 +9,11 @@ chai.use(chaiAsPromised).should();
 describe('Time Measure Manager', async () => {
     const passPhraseAlisa: string = 'I\'m Alisa. This is my secret password';
 
+    beforeEach(async () => {
+        TimeMeasureLogger.enableLogger(false);
+        TimeMeasureLogger.clearCollectedMeasure();
+    });
+
     it('should has true order (tree) of logs', async () => {
         TimeMeasureLogger.enableLogger(true);
         TimeMeasureLogger.time('test1');
@@ -42,7 +47,6 @@ describe('Time Measure Manager', async () => {
     });
 
     it('should enable time measure and collect info', async () => {
-
         const user = await BaseClientHelper.createRegistered(passPhraseAlisa);
         await user.timeMeasureManager.enableLogger(true);
 
@@ -55,7 +59,6 @@ describe('Time Measure Manager', async () => {
     });
 
     it('should clear collection', async () => {
-
         const user = await BaseClientHelper.createRegistered(passPhraseAlisa);
         await user.timeMeasureManager.enableLogger(true);
 
