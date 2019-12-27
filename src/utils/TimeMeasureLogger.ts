@@ -1,7 +1,8 @@
 import { JsonObject } from '../repository/models/JsonObject';
+import { JsonTransform } from '../repository/models/JsonTransform';
 import { ArrayDeserializer } from './types/json-transform';
 
-export class TimeMeasureStackItem {
+export class TimeMeasureStackItem extends JsonTransform {
 
     public readonly name: string;
     public readonly calls: Array<TimeMeasureStackItem>;
@@ -16,10 +17,19 @@ export class TimeMeasureStackItem {
     }
 
     constructor(name: string, calls: Array<TimeMeasureStackItem> = [], time: number = -1, prev: string | null = null) {
+        super();
+
         this.name = name;
         this.calls = calls;
         this.time = time;
         this.prev = prev;
+    }
+
+    public toJson(): object {
+        const json = JSON.parse(JSON.stringify(this));
+        json.calls = this.calls.map(item => item.toJson());
+
+        return json;
     }
 }
 
