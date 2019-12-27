@@ -72,7 +72,7 @@ import { BasicLogger, Logger } from './utils/BasicLogger';
 import { BitKeyPair } from './utils/keypair/BitKeyPair';
 import { RpcAccessData } from './utils/keypair/rpc/RpcAccessData';
 import { TokenType } from './utils/keypair/rpc/RpcToken';
-import { TimeMeasureLogger } from './utils/TimeMeasureLogger';
+import { TimeMeasureLogger, TimeMeasureStackItem } from './utils/TimeMeasureLogger';
 import { Primitive } from './utils/types/Primitive';
 import { AbstractWalletValidator } from './utils/types/validators/AbstractWalletValidator';
 import { IsBasePublicKey } from './utils/types/validators/annotations/IsBasePublicKey';
@@ -205,6 +205,7 @@ export {
     SortOfferSearch,
     TokenType,
     TimeMeasureLogger,
+    TimeMeasureStackItem,
     TimeMeasureManager,
     TimeMeasureManagerImpl,
     ValidationResult,
