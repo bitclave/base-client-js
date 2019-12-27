@@ -82139,14 +82139,14 @@ var HttpTransportImpl = /** @class */function () {
     };
     HttpTransportImpl.prototype.acceptInterceptor = function (interceptorCortege) {
         return __awaiter(this, void 0, void 0, function () {
-            var cortege, rnd, _a, _b, interceptor, e_2_1;
+            var cortege, rnd, _a, _b, interceptor, rnd1, e_2_1;
             var e_2, _c;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
                         cortege = interceptorCortege;
                         rnd = Math.random();
-                        TimeMeasureLogger_1.TimeMeasureLogger.time("http->acceptInterceptor " + rnd);
+                        TimeMeasureLogger_1.TimeMeasureLogger.time("http->callAllInterceptors " + rnd);
                         _d.label = 1;
                     case 1:
                         _d.trys.push([1, 6, 7, 8]);
@@ -82155,13 +82155,14 @@ var HttpTransportImpl = /** @class */function () {
                     case 2:
                         if (!!_b.done) return [3 /*break*/, 5];
                         interceptor = _b.value;
+                        rnd1 = Math.random();
                         // @ts-ignore
-                        TimeMeasureLogger_1.TimeMeasureLogger.time("call interceptor " + interceptor.__proto__.constructor.name + " " + rnd);
+                        TimeMeasureLogger_1.TimeMeasureLogger.time("call interceptor by name " + interceptor.__proto__.constructor.name + " " + rnd1);
                         return [4 /*yield*/, interceptor.onIntercept(cortege)];
                     case 3:
                         cortege = _d.sent();
                         // @ts-ignore
-                        TimeMeasureLogger_1.TimeMeasureLogger.timeEnd("call interceptor " + interceptor.__proto__.constructor.name + " " + rnd);
+                        TimeMeasureLogger_1.TimeMeasureLogger.timeEnd("call interceptor by name " + interceptor.__proto__.constructor.name + " " + rnd1);
                         _d.label = 4;
                     case 4:
                         _b = _a.next();
@@ -82180,7 +82181,7 @@ var HttpTransportImpl = /** @class */function () {
                         }
                         return [7 /*endfinally*/];
                     case 8:
-                        TimeMeasureLogger_1.TimeMeasureLogger.timeEnd("http->acceptInterceptor " + rnd);
+                        TimeMeasureLogger_1.TimeMeasureLogger.timeEnd("http->callAllInterceptors " + rnd);
                         return [2 /*return*/, cortege];
                 }
             });
