@@ -14,6 +14,11 @@ describe('Time Measure Manager', async () => {
         TimeMeasureLogger.clearCollectedMeasure();
     });
 
+    afterEach(async  ()=> {
+        TimeMeasureLogger.enableLogger(false);
+        TimeMeasureLogger.clearCollectedMeasure();
+    });
+
     it('should has true order (tree) of logs', async () => {
         TimeMeasureLogger.enableLogger(true);
         TimeMeasureLogger.time('test1');
