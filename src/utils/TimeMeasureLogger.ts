@@ -28,7 +28,6 @@ export class TimeMeasureLogger {
     private static enabled: boolean = false;
     private static subLabel = '';
     private static readonly timers = new Map<string, number>();
-    private static readonly measure = new Map<string, number>();
     private static root = new Array<TimeMeasureStackItem>();
     private static readonly stackItemsByName = new Map<string, TimeMeasureStackItem>();
     private static current = new TimeMeasureStackItem('');
@@ -48,21 +47,21 @@ export class TimeMeasureLogger {
             }
 
             TimeMeasureLogger.timers.set(label, TimeMeasureLogger.getTimeMs());
-            TimeMeasureLogger.addToStack(label);
+            TimeMeasureLogger.addToStack(TimeMeasureLogger.constructLabel(label));
         }
     }
 
     public static timeEnd(label: string, time?: number) {
         if (TimeMeasureLogger.enabled) {
             const ms = TimeMeasureLogger.timers.get(label);
+            const updatedLabel = TimeMeasureLogger.constructLabel(label);
 
-            if (ms === undefined || !TimeMeasureLogger.stackItemsByName.has(label)) {
+            if (ms === undefined || !TimeMeasureLogger.stackItemsByName.has(updatedLabel)) {
                 console.log(`timer for '${label}' not found!`);
 
             } else {
                 const result = time !== undefined ? time : TimeMeasureLogger.getTimeMs() - ms;
-                TimeMeasureLogger.measure.set(TimeMeasureLogger.constructLabel(label), result);
-                TimeMeasureLogger.removeFromStack(label, result);
+                TimeMeasureLogger.removeFromStack(updatedLabel, result);
             }
         }
     }
@@ -72,7 +71,6 @@ export class TimeMeasureLogger {
     }
 
     public static clearCollectedMeasure() {
-        TimeMeasureLogger.measure.clear();
         TimeMeasureLogger.timers.clear();
         TimeMeasureLogger.root = new Array<TimeMeasureStackItem>();
         TimeMeasureLogger.stackItemsByName.clear();
@@ -99,7 +97,7 @@ export class TimeMeasureLogger {
     }
 
     private static addToStack(label: string): void {
-        const item = new TimeMeasureStackItem(TimeMeasureLogger.constructLabel(label));
+        const item = new TimeMeasureStackItem(label);
         item.prev = TimeMeasureLogger.current.name;
         TimeMeasureLogger.stackItemsByName.set(label, item);
 
