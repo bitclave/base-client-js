@@ -42,6 +42,10 @@ export class TimeMeasureLogger {
     private static readonly stackItemsByName = new Map<string, TimeMeasureStackItem>();
     private static current = new TimeMeasureStackItem('');
 
+    public static isEnabled(): boolean {
+        return TimeMeasureLogger.enabled;
+    }
+
     public static enableLogger(enable: boolean) {
         TimeMeasureLogger.enabled = enable;
     }
