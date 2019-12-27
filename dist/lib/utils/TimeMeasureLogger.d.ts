@@ -11,7 +11,6 @@ export declare class TimeMeasureLogger {
     private static enabled;
     private static subLabel;
     private static readonly timers;
-    private static readonly measure;
     private static root;
     private static readonly stackItemsByName;
     private static current;

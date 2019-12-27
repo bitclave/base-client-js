@@ -83831,18 +83831,18 @@ var TimeMeasureLogger = /** @class */function () {
                 throw new Error("Timer " + label + " already exist");
             }
             TimeMeasureLogger.timers.set(label, TimeMeasureLogger.getTimeMs());
-            TimeMeasureLogger.addToStack(label);
+            TimeMeasureLogger.addToStack(TimeMeasureLogger.constructLabel(label));
         }
     };
     TimeMeasureLogger.timeEnd = function (label, time) {
         if (TimeMeasureLogger.enabled) {
             var ms = TimeMeasureLogger.timers.get(label);
-            if (ms === undefined || !TimeMeasureLogger.stackItemsByName.has(label)) {
+            var updatedLabel = TimeMeasureLogger.constructLabel(label);
+            if (ms === undefined || !TimeMeasureLogger.stackItemsByName.has(updatedLabel)) {
                 console.log('TimeMeasureLogger.ts:60 ' + ("timer for '" + label + "' not found!"));
             } else {
                 var result = time !== undefined ? time : TimeMeasureLogger.getTimeMs() - ms;
-                TimeMeasureLogger.measure.set(TimeMeasureLogger.constructLabel(label), result);
-                TimeMeasureLogger.removeFromStack(label, result);
+                TimeMeasureLogger.removeFromStack(updatedLabel, result);
             }
         }
     };
@@ -83850,7 +83850,6 @@ var TimeMeasureLogger = /** @class */function () {
         return TimeMeasureLogger.root.slice(0, TimeMeasureLogger.root.length);
     };
     TimeMeasureLogger.clearCollectedMeasure = function () {
-        TimeMeasureLogger.measure.clear();
         TimeMeasureLogger.timers.clear();
         TimeMeasureLogger.root = new Array();
         TimeMeasureLogger.stackItemsByName.clear();
@@ -83870,7 +83869,7 @@ var TimeMeasureLogger = /** @class */function () {
         return TimeMeasureLogger.subLabel && TimeMeasureLogger.subLabel.length > 0 ? TimeMeasureLogger.subLabel + "-" + originLabel : originLabel;
     };
     TimeMeasureLogger.addToStack = function (label) {
-        var item = new TimeMeasureStackItem(TimeMeasureLogger.constructLabel(label));
+        var item = new TimeMeasureStackItem(label);
         item.prev = TimeMeasureLogger.current.name;
         TimeMeasureLogger.stackItemsByName.set(label, item);
         if (TimeMeasureLogger.root.length <= 0 || TimeMeasureLogger.current.prev === null) {
@@ -83919,7 +83918,6 @@ var TimeMeasureLogger = /** @class */function () {
     TimeMeasureLogger.enabled = false;
     TimeMeasureLogger.subLabel = '';
     TimeMeasureLogger.timers = new Map();
-    TimeMeasureLogger.measure = new Map();
     TimeMeasureLogger.root = new Array();
     TimeMeasureLogger.stackItemsByName = new Map();
     TimeMeasureLogger.current = new TimeMeasureStackItem('');
