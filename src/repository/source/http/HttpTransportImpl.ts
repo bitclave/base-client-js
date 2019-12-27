@@ -145,16 +145,17 @@ export class HttpTransportImpl implements HttpTransport {
 
         const rnd = Math.random();
 
-        TimeMeasureLogger.time(`http->acceptInterceptor ${rnd}`);
+        TimeMeasureLogger.time(`http->callAllInterceptors ${rnd}`);
 
         for (const interceptor of this.interceptors) {
+            const rnd1 = Math.random();
             // @ts-ignore
-            TimeMeasureLogger.time(`call interceptor ${interceptor.__proto__.constructor.name} ${rnd}`);
+            TimeMeasureLogger.time(`call interceptor by name ${interceptor.__proto__.constructor.name} ${rnd1}`);
             cortege = await interceptor.onIntercept(cortege);
             // @ts-ignore
-            TimeMeasureLogger.timeEnd(`call interceptor ${interceptor.__proto__.constructor.name} ${rnd}`);
+            TimeMeasureLogger.timeEnd(`call interceptor by name ${interceptor.__proto__.constructor.name} ${rnd1}`);
         }
-        TimeMeasureLogger.timeEnd(`http->acceptInterceptor ${rnd}`);
+        TimeMeasureLogger.timeEnd(`http->callAllInterceptors ${rnd}`);
         return cortege;
     }
 }
