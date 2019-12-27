@@ -101440,9 +101440,28 @@ exports.JsonUtils = JsonUtils;
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
+var __extends = this && this.__extends || function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
+            d.__proto__ = b;
+        } || function (d, b) {
+            for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+        };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+}();
 Object.defineProperty(exports, "__esModule", { value: true });
+var JsonTransform_1 = __webpack_require__(/*! ../repository/models/JsonTransform */ "./src/repository/models/JsonTransform.ts");
 var json_transform_1 = __webpack_require__(/*! ./types/json-transform */ "./src/utils/types/json-transform/index.ts");
-var TimeMeasureStackItem = /** @class */function () {
+var TimeMeasureStackItem = /** @class */function (_super) {
+    __extends(TimeMeasureStackItem, _super);
     function TimeMeasureStackItem(name, calls, time, prev) {
         if (calls === void 0) {
             calls = [];
@@ -101453,19 +101472,28 @@ var TimeMeasureStackItem = /** @class */function () {
         if (prev === void 0) {
             prev = null;
         }
-        this.prev = null;
-        this.name = name;
-        this.calls = calls;
-        this.time = time;
-        this.prev = prev;
+        var _this = _super.call(this) || this;
+        _this.prev = null;
+        _this.name = name;
+        _this.calls = calls;
+        _this.time = time;
+        _this.prev = prev;
+        return _this;
     }
     TimeMeasureStackItem.fromJson = function (json) {
         var deserializer = new json_transform_1.ArrayDeserializer(TimeMeasureStackItem);
         var calls = deserializer.fromJson(json.calls);
         return new TimeMeasureStackItem(json.name, calls, json.time, json.prev);
     };
+    TimeMeasureStackItem.prototype.toJson = function () {
+        var json = JSON.parse(JSON.stringify(this));
+        json.calls = this.calls.map(function (item) {
+            return item.toJson();
+        });
+        return json;
+    };
     return TimeMeasureStackItem;
-}();
+}(JsonTransform_1.JsonTransform);
 exports.TimeMeasureStackItem = TimeMeasureStackItem;
 var TimeMeasureLogger = /** @class */function () {
     function TimeMeasureLogger() {}
@@ -101489,7 +101517,7 @@ var TimeMeasureLogger = /** @class */function () {
             var ms = TimeMeasureLogger.timers.get(label);
             var updatedLabel = TimeMeasureLogger.constructLabel(label);
             if (ms === undefined || !TimeMeasureLogger.stackItemsByName.has(updatedLabel)) {
-                console.log('TimeMeasureLogger.ts:60 ' + ("timer for '" + label + "' not found!"));
+                console.log('TimeMeasureLogger.ts:70 ' + ("timer for '" + label + "' not found!"));
             } else {
                 var result = time !== undefined ? time : TimeMeasureLogger.getTimeMs() - ms;
                 TimeMeasureLogger.removeFromStack(updatedLabel, result);
