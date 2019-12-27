@@ -77947,29 +77947,44 @@ var RemoteTimeMeasureManagerImpl = /** @class */function () {
     RemoteTimeMeasureManagerImpl.prototype.clearCollectedMeasure = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                TimeMeasureLogger_1.TimeMeasureLogger.clearCollectedMeasure();
-                return [2 /*return*/, this.transport.request('timeMeasureManager.clearCollectedMeasure', [])];
+                switch (_a.label) {
+                    case 0:
+                        return [4 /*yield*/, this.transport.request('timeMeasureManager.clearCollectedMeasure', [])];
+                    case 1:
+                        _a.sent();
+                        TimeMeasureLogger_1.TimeMeasureLogger.clearCollectedMeasure();
+                        return [2 /*return*/];
+                }
             });
         });
     };
     RemoteTimeMeasureManagerImpl.prototype.enableLogger = function (enable) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                TimeMeasureLogger_1.TimeMeasureLogger.enableLogger(enable);
-                return [2 /*return*/, this.transport.request('timeMeasureManager.enableLogger', [enable])];
+                switch (_a.label) {
+                    case 0:
+                        return [4 /*yield*/, this.transport.request('timeMeasureManager.enableLogger', [enable])];
+                    case 1:
+                        _a.sent();
+                        TimeMeasureLogger_1.TimeMeasureLogger.enableLogger(enable);
+                        return [2 /*return*/];
+                }
             });
         });
     };
     RemoteTimeMeasureManagerImpl.prototype.getCollectedMeasure = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var result;
+            var isEnabledLogger, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        isEnabledLogger = TimeMeasureLogger_1.TimeMeasureLogger.isEnabled();
+                        TimeMeasureLogger_1.TimeMeasureLogger.enableLogger(false);
                         return [4 /*yield*/, this.transport.request('timeMeasureManager.getCollectedMeasure', [], new json_transform_1.ArrayDeserializer(TimeMeasureLogger_1.TimeMeasureStackItem))];
                     case 1:
                         result = _a.sent();
-                        return [2 /*return*/, result.concat(TimeMeasureLogger_1.TimeMeasureLogger.getCollectedMeasure())];
+                        TimeMeasureLogger_1.TimeMeasureLogger.enableLogger(isEnabledLogger);
+                        return [2 /*return*/, TimeMeasureLogger_1.TimeMeasureLogger.getCollectedMeasure().concat(result)];
                 }
             });
         });
@@ -83847,6 +83862,9 @@ var TimeMeasureStackItem = /** @class */function (_super) {
 exports.TimeMeasureStackItem = TimeMeasureStackItem;
 var TimeMeasureLogger = /** @class */function () {
     function TimeMeasureLogger() {}
+    TimeMeasureLogger.isEnabled = function () {
+        return TimeMeasureLogger.enabled;
+    };
     TimeMeasureLogger.enableLogger = function (enable) {
         TimeMeasureLogger.enabled = enable;
     };
@@ -83867,7 +83885,7 @@ var TimeMeasureLogger = /** @class */function () {
             var ms = TimeMeasureLogger.timers.get(label);
             var updatedLabel = TimeMeasureLogger.constructLabel(label);
             if (ms === undefined || !TimeMeasureLogger.stackItemsByName.has(updatedLabel)) {
-                console.log('TimeMeasureLogger.ts:70 ' + ("timer for '" + label + "' not found!"));
+                console.log('TimeMeasureLogger.ts:74 ' + ("timer for '" + label + "' not found!"));
             } else {
                 var result = time !== undefined ? time : TimeMeasureLogger.getTimeMs() - ms;
                 TimeMeasureLogger.removeFromStack(updatedLabel, result);

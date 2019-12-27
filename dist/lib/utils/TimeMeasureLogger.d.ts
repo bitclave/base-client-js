@@ -16,6 +16,7 @@ export declare class TimeMeasureLogger {
     private static root;
     private static readonly stackItemsByName;
     private static current;
+    static isEnabled(): boolean;
     static enableLogger(enable: boolean): void;
     static setSubLabel(label: string): void;
     static time(label: string): void;
