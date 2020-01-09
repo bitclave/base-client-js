@@ -105,5 +105,6 @@ export class BaseClientHelper {
             }
         }
         console.log('count of success deleted users', deletedSuccess);
+        BaseClientHelper.CREATED_BASE_CLIENTS.clear();
     }
 }
