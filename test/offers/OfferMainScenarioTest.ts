@@ -203,8 +203,8 @@ describe('Offer main scenario', async () => {
             await userBase.searchManager.addEventToOfferSearch('ta-da-bada', searchResult.id);
             const updated = (await userBase.searchManager.getInteractions());
 
-            updated[0].events[0].should.be.eql('tram-param-pam');
-            updated[0].events[1].should.be.eql('ta-da-bada');
+            updated[0].events.should.be.contain('tram-param-pam');
+            updated[0].events.should.be.contain('ta-da-bada');
 
             const byOfferId = (await userBase.searchManager.getInteractions([updated[0].offerId]));
             byOfferId.length.should.be.eq(1);
