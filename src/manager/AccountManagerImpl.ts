@@ -137,8 +137,9 @@ export class AccountManagerImpl implements AccountManager {
      * @returns {Promise<event>} void if client exist or http exception if fail.
      */
     @ExportMethod()
-    public unsubscribe(): Promise<void> {
-        return this.accountRepository.unsubscribe(this.authAccountBehavior.getValue());
+    public async unsubscribe(): Promise<void> {
+        await this.accountRepository.unsubscribe(this.authAccountBehavior.getValue());
+        this.authAccountBehavior.next(new Account());
     }
 
     @ExportMethod({public: true})
