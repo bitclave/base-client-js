@@ -21,31 +21,35 @@ describe('Time Measure Manager', async () => {
 
     it('should has true order (tree) of logs', async () => {
         TimeMeasureLogger.enableLogger(true);
-        TimeMeasureLogger.time('test1');
-        TimeMeasureLogger.time('test2');
-        TimeMeasureLogger.timeEnd('test2');
-        TimeMeasureLogger.timeEnd('test1');
+        const rnd = Math.random();
 
-        TimeMeasureLogger.time('test3');
-        TimeMeasureLogger.time('test4');
-        TimeMeasureLogger.time('test6');
-        TimeMeasureLogger.timeEnd('test6', 6);
-        TimeMeasureLogger.time('test5');
-        TimeMeasureLogger.time('test7');
-        TimeMeasureLogger.timeEnd('test7', 7);
-        TimeMeasureLogger.time('test8');
-        TimeMeasureLogger.timeEnd('test8', 8);
-        TimeMeasureLogger.timeEnd('test5', 5);
-        TimeMeasureLogger.timeEnd('test4', 4);
-        TimeMeasureLogger.timeEnd('test3', 3);
+        TimeMeasureLogger.time('test1', rnd);
+        TimeMeasureLogger.time('test2', rnd);
+        TimeMeasureLogger.timeEnd('test2', rnd);
+        TimeMeasureLogger.timeEnd('test1', rnd);
+
+        TimeMeasureLogger.time('test3', rnd);
+        TimeMeasureLogger.time('test4', rnd);
+        TimeMeasureLogger.time('test6', rnd);
+        TimeMeasureLogger.timeEnd('test6', rnd, 6);
+        TimeMeasureLogger.time('test5', rnd);
+        TimeMeasureLogger.time('test7', rnd);
+        TimeMeasureLogger.timeEnd('test7', rnd, 7);
+        TimeMeasureLogger.time('test8', rnd);
+        TimeMeasureLogger.timeEnd('test8', rnd, 8);
+        TimeMeasureLogger.timeEnd('test5', rnd, 5);
+        TimeMeasureLogger.timeEnd('test4', rnd, 4);
+        TimeMeasureLogger.timeEnd('test3', rnd, 3);
         TimeMeasureLogger.enableLogger(false);
     });
 
     it('should disable time measure by default', async () => {
         const user = await BaseClientHelper.createRegistered(passPhraseAlisa);
-        TimeMeasureLogger.time('test');
+
+        const rnd = Math.random();
+        TimeMeasureLogger.time('test', rnd);
         await user.profileManager.updateData(new Map<string, string>());
-        TimeMeasureLogger.timeEnd('test');
+        TimeMeasureLogger.timeEnd('test', rnd);
 
         const result = await user.timeMeasureManager.getCollectedMeasure();
         result.should.be.empty;
@@ -55,9 +59,11 @@ describe('Time Measure Manager', async () => {
         const user = await BaseClientHelper.createRegistered(passPhraseAlisa);
         await user.timeMeasureManager.enableLogger(true);
 
-        TimeMeasureLogger.time('test');
+        const rnd = Math.random();
+
+        TimeMeasureLogger.time('test', rnd);
         await user.profileManager.updateData(new Map<string, string>());
-        TimeMeasureLogger.timeEnd('test');
+        TimeMeasureLogger.timeEnd('test', rnd);
 
         const result = await user.timeMeasureManager.getCollectedMeasure();
         result.should.be.not.empty;
@@ -66,10 +72,11 @@ describe('Time Measure Manager', async () => {
     it('should clear collection', async () => {
         const user = await BaseClientHelper.createRegistered(passPhraseAlisa);
         await user.timeMeasureManager.enableLogger(true);
+        const rnd = Math.random();
 
-        TimeMeasureLogger.time('test');
+        TimeMeasureLogger.time('test', rnd);
         await user.profileManager.updateData(new Map<string, string>());
-        TimeMeasureLogger.timeEnd('test');
+        TimeMeasureLogger.timeEnd('test', rnd);
 
         let result = await user.timeMeasureManager.getCollectedMeasure();
         result.should.be.not.empty;

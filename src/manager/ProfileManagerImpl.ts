@@ -211,13 +211,15 @@ export class ProfileManagerImpl implements ProfileManager {
     public async updateData(
         @ParamDeserializer(new SimpleMapDeserializer()) data: Map<string, string>
     ): Promise<Map<string, string>> {
-        TimeMeasureLogger.time('updateData-> encryptFields');
-        const encryptedFields = await this.encrypt.encryptFields(data);
-        TimeMeasureLogger.timeEnd('updateData-> encryptFields');
+        const rnd = Math.random();
 
-        TimeMeasureLogger.time('updateData-> updateData');
+        TimeMeasureLogger.time('updateData-> encryptFields', rnd);
+        const encryptedFields = await this.encrypt.encryptFields(data);
+        TimeMeasureLogger.timeEnd('updateData-> encryptFields', rnd);
+
+        TimeMeasureLogger.time('updateData-> updateData', rnd);
         const result = await this.clientDataRepository.updateData(this.account.publicKey, encryptedFields);
-        TimeMeasureLogger.timeEnd('updateData-> updateData');
+        TimeMeasureLogger.timeEnd('updateData-> updateData', rnd);
 
         return result;
     }
