@@ -46,6 +46,7 @@ export class BaseClientHelper {
         new AuthenticatorHelper(TransportFactory.createJsonRpcHttpTransport(SIGNER_ULR));
 
     private static readonly ACTIVE_MANAGERS = getManagersType();
+    private static readonly CREATED_BASE_CLIENTS = new Map<string, Base>();
 
     public static getBaseNodeUrl(): string {
         return BASE_NODE_URL;
@@ -82,10 +83,28 @@ export class BaseClientHelper {
                ? base.accountManager.authenticationByAccessToken(passOrToken, TokenType.BASIC, message)
                : base.accountManager.authenticationByPassPhrase(passOrToken, message));
 
+        BaseClientHelper.CREATED_BASE_CLIENTS.set(pass, base);
+
         return base;
     }
 
     public static createUnRegistered(): Base {
         return new Base(getModule());
+    }
+
+    public static async deleteAllCreatedUsers(): Promise<void> {
+        console.log('count of created users', Array.from(BaseClientHelper.CREATED_BASE_CLIENTS.keys()).length);
+        let deletedSuccess = 0;
+
+        for (const base of BaseClientHelper.CREATED_BASE_CLIENTS.values()) {
+            try {
+                await base.accountManager.unsubscribe();
+                deletedSuccess++;
+            } catch (e) {
+                console.warn('try delete client after test', e);
+            }
+        }
+        console.log('count of success deleted users', deletedSuccess);
+        BaseClientHelper.CREATED_BASE_CLIENTS.clear();
     }
 }
