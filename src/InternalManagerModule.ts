@@ -35,7 +35,6 @@ import { OfferSearchRepositoryImpl } from './repository/search/OfferSearchReposi
 import SearchRequestRepositoryImpl from './repository/search/SearchRequestRepositoryImpl';
 import { ExternalServicesRepositoryImpl } from './repository/services/ExternalServicesRepositoryImpl';
 import { HttpTransport } from './repository/source/http/HttpTransport';
-import NonceInterceptor from './repository/source/http/NonceInterceptor';
 import { RepositoryStrategyInterceptor } from './repository/source/http/RepositoryStrategyInterceptor';
 import SignInterceptor from './repository/source/http/SignInterceptor';
 import { TransportFactory } from './repository/source/TransportFactory';
@@ -68,7 +67,8 @@ export class InternalManagerModule extends ManagersModule {
 
         this.transport = TransportFactory.createHttpTransport(builder.nodeEndPoint, builder.logger)
             .addInterceptor(new SignInterceptor(builder.messageSigner))
-            .addInterceptor(new NonceInterceptor(builder.messageSigner, builder.nonceSource))
+            // disable nonce increment. and fetch nonce from base-node
+            // .addInterceptor(new NonceInterceptor(builder.messageSigner, builder.nonceSource))
             .addInterceptor(new RepositoryStrategyInterceptor(builder.strategy));
 
         const accountRepository = new AccountRepositoryImpl(this.transport);
