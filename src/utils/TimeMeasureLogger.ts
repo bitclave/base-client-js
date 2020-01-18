@@ -35,7 +35,7 @@ export class TimeMeasureStackItem extends JsonTransform {
 
 export class TimeMeasureLogger {
 
-    private static enabled: boolean = false;
+    private static enabled: boolean = true;
     private static subLabel = '';
     private static readonly timers = new Map<string, number>();
     private static root = new Array<TimeMeasureStackItem>();
@@ -54,21 +54,25 @@ export class TimeMeasureLogger {
         TimeMeasureLogger.subLabel = label;
     }
 
-    public static time(label: string) {
+    public static time(label: string, rnd: number) {
+        const labelWithRnd = `${label} - rnd-${rnd}`;
+
         if (TimeMeasureLogger.enabled) {
-            if (TimeMeasureLogger.timers.has(label)) {
+            if (TimeMeasureLogger.timers.has(labelWithRnd)) {
                 throw new Error(`Timer ${label} already exist`);
             }
 
-            TimeMeasureLogger.timers.set(label, TimeMeasureLogger.getTimeMs());
-            TimeMeasureLogger.addToStack(TimeMeasureLogger.constructLabel(label));
+            TimeMeasureLogger.timers.set(labelWithRnd, TimeMeasureLogger.getTimeMs());
+            TimeMeasureLogger.addToStack(TimeMeasureLogger.constructLabel(labelWithRnd));
         }
     }
 
-    public static timeEnd(label: string, time?: number) {
+    public static timeEnd(label: string, rnd: number, time?: number) {
+        const labelWithRnd = `${label} - rnd-${rnd}`;
+
         if (TimeMeasureLogger.enabled) {
-            const ms = TimeMeasureLogger.timers.get(label);
-            const updatedLabel = TimeMeasureLogger.constructLabel(label);
+            const ms = TimeMeasureLogger.timers.get(labelWithRnd);
+            const updatedLabel = TimeMeasureLogger.constructLabel(labelWithRnd);
 
             if (ms === undefined || !TimeMeasureLogger.stackItemsByName.has(updatedLabel)) {
                 console.log(`timer for '${label}' not found!`);

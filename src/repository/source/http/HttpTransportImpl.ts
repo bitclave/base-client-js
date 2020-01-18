@@ -2,6 +2,7 @@ import { BasicLogger, Logger } from '../../../utils/BasicLogger';
 import { TimeMeasureLogger } from '../../../utils/TimeMeasureLogger';
 import { FileMeta } from '../../models/FileMeta';
 import { JsonTransform } from '../../models/JsonTransform';
+import { JsonRpc } from '../rpc/JsonRpc';
 import { HttpInterceptor } from './HttpInterceptor';
 import { HttpMethod } from './HttpMethod';
 import { HttpTransport } from './HttpTransport';
@@ -62,15 +63,20 @@ export class HttpTransportImpl implements HttpTransport {
                     dataJson,
                     data
                 ));
-                const logName = `request: ${cortege.method} ${cortege.path} rnd-${Math.random()}`;
 
-                TimeMeasureLogger.time(logName);
+                const isJsonRpc = data instanceof JsonRpc;
+                const logName = `request: ${cortege.method} ${cortege.path}` +
+                    ` ${isJsonRpc ? `rpc method: ${(data as JsonRpc).method}` : ''}`;
+
+                const rnd = Math.random();
+
+                TimeMeasureLogger.time(logName, rnd);
                 const url = cortege.path ? this.getHost() + cortege.path : this.getHost();
                 const request: XMLHttpRequest = new HttpRequest();
                 request.open(method, url);
 
                 request.onload = () => {
-                    TimeMeasureLogger.timeEnd(logName);
+                    TimeMeasureLogger.timeEnd(logName, rnd);
                     const result: Response<T> = new Response(request.responseText, request.status);
                     if (request.status >= 200 && request.status < 300) {
                         resolve(result);
@@ -81,7 +87,7 @@ export class HttpTransportImpl implements HttpTransport {
                 };
 
                 request.onerror = () => {
-                    TimeMeasureLogger.timeEnd(logName);
+                    TimeMeasureLogger.timeEnd(logName, rnd);
                     const result: Response<object> = new Response(request.responseText, request.status);
                     reject(result);
                 };
@@ -145,17 +151,17 @@ export class HttpTransportImpl implements HttpTransport {
 
         const rnd = Math.random();
 
-        TimeMeasureLogger.time(`http->callAllInterceptors ${rnd}`);
+        TimeMeasureLogger.time(`http->callAllInterceptors`, rnd);
 
         for (const interceptor of this.interceptors) {
             const rnd1 = Math.random();
             // @ts-ignore
-            TimeMeasureLogger.time(`call interceptor by name ${interceptor.__proto__.constructor.name} ${rnd1}`);
+            TimeMeasureLogger.time(`call interceptor by name ${interceptor.__proto__.constructor.name}`, rnd1);
             cortege = await interceptor.onIntercept(cortege);
             // @ts-ignore
-            TimeMeasureLogger.timeEnd(`call interceptor by name ${interceptor.__proto__.constructor.name} ${rnd1}`);
+            TimeMeasureLogger.timeEnd(`call interceptor by name ${interceptor.__proto__.constructor.name}`, rnd1);
         }
-        TimeMeasureLogger.timeEnd(`http->callAllInterceptors ${rnd}`);
+        TimeMeasureLogger.timeEnd(`http->callAllInterceptors`, rnd);
         return cortege;
     }
 }

@@ -212,13 +212,14 @@ export class ProfileManagerImpl implements ProfileManager {
         @ParamDeserializer(new SimpleMapDeserializer()) data: Map<string, string>
     ): Promise<Map<string, string>> {
         const rnd = Math.random();
-        TimeMeasureLogger.time(`updateData-> encryptFields rnd-${rnd}`);
-        const encryptedFields = await this.encrypt.encryptFields(data);
-        TimeMeasureLogger.timeEnd(`updateData-> encryptFields rnd-${rnd}`);
 
-        TimeMeasureLogger.time(`updateData-> updateData rnd-${rnd}`);
+        TimeMeasureLogger.time('updateData-> encryptFields', rnd);
+        const encryptedFields = await this.encrypt.encryptFields(data);
+        TimeMeasureLogger.timeEnd('updateData-> encryptFields', rnd);
+
+        TimeMeasureLogger.time('updateData-> updateData', rnd);
         const result = await this.clientDataRepository.updateData(this.account.publicKey, encryptedFields);
-        TimeMeasureLogger.timeEnd(`updateData-> updateData rnd-${rnd}`);
+        TimeMeasureLogger.timeEnd('updateData-> updateData', rnd);
 
         return result;
     }

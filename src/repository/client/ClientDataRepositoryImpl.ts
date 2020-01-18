@@ -40,17 +40,18 @@ export default class ClientDataRepositoryImpl implements ClientDataRepository {
     }
 
     public async updateData(pk: string, data: Map<string, string>): Promise<Map<string, string>> {
-        TimeMeasureLogger.time('repo updateData-> send request');
+        const rnd = Math.random();
+        TimeMeasureLogger.time('repo updateData-> send request', rnd);
         const response = await this.transport
             .sendRequest(
                 this.CLIENT_SET_DATA,
                 HttpMethod.Patch, JsonUtils.mapToJson(data)
             );
-        TimeMeasureLogger.timeEnd('repo updateData-> send request');
+        TimeMeasureLogger.timeEnd('repo updateData-> send request', rnd);
 
-        TimeMeasureLogger.time('repo updateData-> transform');
+        TimeMeasureLogger.time('repo updateData-> transform', rnd);
         const result = JsonUtils.jsonToMap<string, string>(response.json);
-        TimeMeasureLogger.timeEnd('repo updateData-> transform');
+        TimeMeasureLogger.timeEnd('repo updateData-> transform', rnd);
 
         return result;
     }

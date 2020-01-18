@@ -1,6 +1,7 @@
 import { TimeMeasureLogger } from '../../../utils/TimeMeasureLogger';
 import { FileMeta } from '../../models/FileMeta';
 import { JsonTransform } from '../../models/JsonTransform';
+import { JsonRpc } from '../rpc/JsonRpc';
 import { HttpMethod } from './HttpMethod';
 import { HttpTransportImpl } from './HttpTransportImpl';
 import { InterceptorCortege } from './InterceptorCortege';
@@ -66,16 +67,21 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
                 await this.acceptInterceptor(transaction.cortege);
 
                 const cortege: InterceptorCortege = transaction.cortege;
-                const logName = `request: ${cortege.method} ${cortege.path} rnd-${Math.random()}`;
 
-                TimeMeasureLogger.time(logName);
+                const isJsonRpc = cortege.originalData instanceof JsonRpc;
+                const logName = `request: ${cortege.method} ${cortege.path}` +
+                    ` ${isJsonRpc ? `rpc method: ${(cortege.originalData as JsonRpc).method}` : ''}`;
+
+                const rnd = Math.random();
+
+                TimeMeasureLogger.time(logName, rnd);
                 const url = cortege.path ? this.getHost() + cortege.path : this.getHost();
                 const request = new HttpRequest();
 
                 request.open(cortege.method, url);
 
                 request.onload = () => {
-                    TimeMeasureLogger.timeEnd(logName);
+                    TimeMeasureLogger.timeEnd(logName, rnd);
                     const result: Response<object> = new Response(request.responseText, request.status);
                     if (request.status >= 200 && request.status < 300) {
                         transaction.resolve(result);
@@ -91,7 +97,7 @@ export class HttpTransportSyncedImpl extends HttpTransportImpl {
                 };
 
                 request.onerror = () => {
-                    TimeMeasureLogger.timeEnd(logName);
+                    TimeMeasureLogger.timeEnd(logName, rnd);
                     const result: Response<object> = new Response(request.responseText, request.status);
                     this.logger.error(`Error runTransaction onErrorRequest: ${JSON.stringify(result)}`);
                     transaction.reject(result);
